@@ -36,19 +36,7 @@ function get_exp(lvl) {
     }
 }
 
-function increment(num) {
-    if (game.level < 60) {
-        game.total_exp += num
-        if (game.total_exp <= 10) {
-            game.level = 1
-        }else{
-            game.level = get_level(game.total_exp)
-        }
-        
-        game.exp = game.total_exp - Math.ceil(get_exp(game.level-1))
-        game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level-1))
-    }
-
+function upgrade_update() {
     if (game.level >= 2) {
         document.getElementById("boost").style.display = "block"
         document.getElementById("boost_button").style.display = "block"
@@ -83,6 +71,22 @@ function increment(num) {
     }else{
         document.getElementById("amp_button").innerHTML = "LVL 60"
     }
+}
+
+function increment(num) {
+    if (game.level < 60) {
+        game.total_exp += num
+        if (game.total_exp <= 10) {
+            game.level = 1
+        }else{
+            game.level = get_level(game.total_exp)
+        }
+        
+        game.exp = game.total_exp - Math.ceil(get_exp(game.level-1))
+        game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level-1))
+    }
+
+    upgrade_update()
 
     if (game.level < 60)
         document.getElementById("exp").innerHTML = "LVL " + game.level + "<br>" + game.exp + " / " + game.goal + " EXP"
@@ -173,6 +177,8 @@ var savegame = JSON.parse(localStorage.getItem("exp_simulator_save"))
 if (savegame !== null) {
     game = savegame
 }
+
+upgrade_update()
 
 document.getElementById("amplifier").innerHTML = "<br><br>+1 AMP<br>Current: " + game.amp + " AMP"
 document.getElementById("amp_button").innerHTML = "LVL 60"
