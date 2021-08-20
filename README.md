@@ -1,2 +1,3 @@
 # EXP-Simulator
-an incremental about leveling up (still in development right now, this is sort of an alpha version)
+an incremental about leveling up
+(still very much in development right now, this is sort of an alpha version)
