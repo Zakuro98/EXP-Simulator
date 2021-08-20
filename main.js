@@ -84,6 +84,10 @@ function increment(num) {
         
         game.exp = game.total_exp - Math.ceil(get_exp(game.level-1))
         game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level-1))
+
+        document.getElementById("progress").setAttribute("value",100*game.exp/game.goal)
+    }else{
+        document.getElementById("progress").setAttribute("value",100)
     }
 
     upgrade_update()
@@ -186,6 +190,11 @@ document.getElementById("total_exp").innerHTML = game.total_exp + " Total EXP"
 document.getElementById("boost").innerHTML = "<br><br>EXP Boost <br> Tier " + game.boost_tier + ": +" + game.exp_add + " EXP/click"
 document.getElementById("click").innerHTML = "+" + game.exp_add + " EXP"
 document.getElementById("auto").innerHTML = "Autoclicker <br> Tier " + game.auto_tier + ": " + game.cps + " clicks/s"
+if (game.level < 60) {
+    document.getElementById("progress").setAttribute("value",100*game.exp/game.goal)
+}else{
+    document.getElementById("progress").setAttribute("value",100)
+}
 
 var save_loop = window.setInterval(function() {
     localStorage.setItem("exp_simulator_save",JSON.stringify(game))
