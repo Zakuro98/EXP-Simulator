@@ -174,6 +174,16 @@ if (savegame !== null) {
     game = savegame
 }
 
+document.getElementById("amplifier").innerHTML = "<br><br>+1 AMP<br>Current: " + game.amp + " AMP"
+document.getElementById("amp_button").innerHTML = "LVL 60"
+document.getElementById("exp").innerHTML = "LVL " + game.level + "<br>" + game.exp + " / " + game.goal + " EXP"
+document.getElementById("total_exp").innerHTML = game.total_exp + " Total EXP"
+document.getElementById("boost").innerHTML = "<br><br>EXP Boost <br> Tier " + game.boost_tier + ": +" + game.exp_add + " EXP/click"
+document.getElementById("boost_button").innerHTML = "UPGRADE!"
+document.getElementById("click").innerHTML = "+" + game.exp_add + " EXP"
+document.getElementById("auto").innerHTML = "Autoclicker <br> Tier " + game.auto_tier + ": " + game.cps + " clicks/s"
+document.getElementById("auto_button").innerHTML = "UPGRADE!"
+
 var save_loop = window.setInterval(function() {
     localStorage.setItem("exp_simulator_save",JSON.stringify(game))
 }, 15000)
