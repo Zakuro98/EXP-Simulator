@@ -171,6 +171,8 @@ function prestige() {
     document.getElementById("click").innerHTML = "+" + game.exp_add + " EXP"
     document.getElementById("auto").innerHTML = "Autoclicker <br> Tier " + game.auto_tier + ": " + game.cps + " clicks/s"
     document.getElementById("auto_button").innerHTML = "UPGRADE!"
+
+    document.getElementById("progress").setAttribute("value",0)
 }
 
 var tick_loop = window.setInterval(function() {
