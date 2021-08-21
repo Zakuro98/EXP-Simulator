@@ -9,6 +9,13 @@ body {
     margin: 16px;
 }
 
+@media screen and (min-width: 1216px) {
+    .container {
+        width: 1168px;
+        margin: auto;
+    }
+}
+
 .clr {
     clear: both;
 }
@@ -100,29 +107,27 @@ body {
     width: 0%;
 }
 
-@media screen and (min-width: 900px){
+@media screen and (min-width: 720px){
     .upgrades {
-        margin-left: 22.5%;
-        margin-right: 10%;
         margin-top: 20px;
     }
     
     .item {
         float: left;
-        margin-right: 6px;
-        width: 48%;
+        padding-right: 6px;
+        width: 50%;
+        box-sizing: border-box;
     }
 }
 
-@media screen and (max-width: 899px){
+@media screen and (max-width: 719px){
     .upgrades {
-        margin-left: 17%;
-        margin-right: 17%;
         margin-top: 20px;
     }
     
     .item {
         width: 100%;
+        padding-right: 6px;
     }
 }
 
