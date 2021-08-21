@@ -5,12 +5,12 @@ body {
     font-weight: normal;
 }
 
-.ui {
+main {
     margin: 16px;
 }
 
 @media (min-width: 1216px) {
-    .container {
+    .ui {
         width: 1168px;
         margin: auto;
     }
@@ -25,7 +25,7 @@ body {
     color: white;
     padding: 0.3em 0.5em;
     font-family: Abel, sans-serif;
-    font-size: 20px;
+    font-size: 0.714em;
     font-weight: normal;
     border: 1px solid white;
     margin-top: -1em;
@@ -45,20 +45,20 @@ body {
     float: left;
 }
 
-.lvltext {
+#lvltext {
     display: inline;
     font-size: 36px;
     color: white;
 }
 
-.lvlnum {
+#lvlnum {
     display: inline;
     font-family: "Josefin Sans";
     color: #0055ff;
     font-size: 80px;
 }
 
-.exp {
+#exp {
     display: inline;
     text-align: right;
     color: white;
@@ -88,7 +88,7 @@ body {
     color: black;
 }
 
-.total_exp {
+#total_exp {
     color: white;
     float:right;
     margin-top: 0.714em;
@@ -98,10 +98,10 @@ body {
     background: black;
     height: 1.428em;
     width: 100%;
-    margin-top: 0px;
+    margin-top: 0em;
 }
 
-.progress {
+#progress {
     display: block;
     background: #0055ff;
     height: 1.428em;
@@ -109,12 +109,12 @@ body {
 }
 
 .upgrades {
-    margin-top: 20px;
+    margin-top: 0.714em;
 }
 
 .item {
     float: left;
-    padding-right: 6px;
+    padding-right: 0.214em;
     width: 50%;
     box-sizing: border-box;
 }
@@ -122,7 +122,7 @@ body {
 @media (max-width: 719px){
     .item {
         width: 100%;
-        padding-right: 6px;
+        padding-right: 0.214em;
     }
 }
 
@@ -133,5 +133,5 @@ body {
 
 .info {
     color: white;
-    font-size: 20px;
+    font-size: 0.714em;
 }
