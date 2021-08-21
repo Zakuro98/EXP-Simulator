@@ -23,12 +23,12 @@ body {
 .button {
     background-color: #410a4a;
     color: white;
-    padding: 6px 10px;
+    padding: 0.3em 0.5em;
     font-family: Abel, sans-serif;
     font-size: 20px;
     font-weight: normal;
     border: 1px solid white;
-    margin-top: -20px;
+    margin-top: -1em;
 }
 
 .button:hover {
@@ -61,21 +61,21 @@ body {
     display: inline;
     text-align: right;
     color: white;
-    margin-top: 40px;
-    margin-bottom: 0px;
+    margin-top: 1.428em;
+    margin-bottom: 0em;
     float: right;
 }
 
 .click {
     background-color: #410a4a;
     color: white;
-    padding: 8px 16px;
+    padding: 0.285em 0.571em;
     font-family: Abel, sans-serif;
     font-size: 28px;
     font-weight: normal;
     border: 1px solid white;
     float: left;
-    margin-top: 24px;
+    margin-top: 0.857em;
 }
 
 .click:hover {
@@ -90,7 +90,7 @@ body {
 .total_exp {
     color: white;
     float:right;
-    margin-top: 20px;
+    margin-top: 0.714em;
 }
 
 .back {
@@ -107,24 +107,18 @@ body {
     width: 0%;
 }
 
-@media screen and (min-width: 720px){
-    .upgrades {
-        margin-top: 20px;
-    }
-    
-    .item {
-        float: left;
-        padding-right: 6px;
-        width: 50%;
-        box-sizing: border-box;
-    }
+.upgrades {
+    margin-top: 20px;
 }
 
-@media screen and (max-width: 719px){
-    .upgrades {
-        margin-top: 20px;
-    }
-    
+.item {
+    float: left;
+    padding-right: 6px;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 719px){
     .item {
         width: 100%;
         padding-right: 6px;
