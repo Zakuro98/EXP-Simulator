@@ -67,7 +67,7 @@ main {
     float: right;
 }
 
-#click {
+.click {
     background-color: #410a4a;
     color: white;
     padding: 0.285em 0.571em;
@@ -79,11 +79,11 @@ main {
     margin-top: 0.857em;
 }
 
-#click:hover {
+.click:hover {
     background-color: #5d0d61;
 }
 
-#click:active {
+.click:active {
     background-color: white;
     color: black;
 }
