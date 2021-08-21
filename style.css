@@ -61,7 +61,7 @@ body {
     display: inline;
     text-align: right;
     color: white;
-    margin-top: 40px;
+    margin-top: 3.4%;
     margin-bottom: 0px;
     float: right;
 }
@@ -75,7 +75,7 @@ body {
     font-weight: normal;
     border: 1px solid white;
     float: left;
-    margin-top: 1.5%;
+    margin-top: 2%;
 }
 
 .click:hover {
