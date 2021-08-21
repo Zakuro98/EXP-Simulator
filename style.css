@@ -61,7 +61,7 @@ body {
     display: inline;
     text-align: right;
     color: white;
-    margin-top: 3.4%;
+    margin-top: 40px;
     margin-bottom: 0px;
     float: right;
 }
@@ -75,7 +75,7 @@ body {
     font-weight: normal;
     border: 1px solid white;
     float: left;
-    margin-top: 2%;
+    margin-top: 24px;
 }
 
 .click:hover {
@@ -90,7 +90,7 @@ body {
 .total_exp {
     color: white;
     float:right;
-    margin-top: 1.5%;
+    margin-top: 20px;
 }
 
 .back {
@@ -137,6 +137,7 @@ body {
 
 .info {
     color: white;
+    font-size: 20px;
 }
 
 #boost {
