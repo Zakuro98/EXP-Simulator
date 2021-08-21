@@ -9,7 +9,7 @@ body {
     margin: 16px;
 }
 
-@media screen and (min-width: 1216px) {
+@media (min-width: 1216px) {
     .container {
         width: 1168px;
         margin: auto;
