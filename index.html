@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>EXP Simulator</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel|Josefin+Sans:700">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <div class = "ui">
+        <div class="lvlbar">
+            <div class="level">
+                <p id="lvltext" class="lvltext">
+                    LVL
+                </p>
+                <p id="lvlnum" class="lvlnum">
+                    1
+                </p>
+            </div>
+            <p id="exp" class="exp" class="nocolor">
+                0 / 32 EXP
+            </p>
+        </div>
+        <div class="clr"></div>
+
+        <div class="back">
+            <div id="progress" class="progress"></div>
+        </div>
+
+        <button id="click" class="click" onclick="increment(game.exp_add)">
+            +1 EXP
+        </button>
+        <p id="total_exp" class="total_exp">
+            0 Total EXP
+        </p>
+        <div class="clr"></div>
+
+        <p id="amplifier" class="uptext">
+            +1 AMP<br>Current: 1 AMP
+        </p>
+        <button id="amp_button" class="button" onclick="prestige()">
+            PRESTIGE!
+        </button>
+
+        <div class="upgrades">
+            <div class="item">
+                <p id="boost" class="uptext">
+                    EXP Boost<br>Tier 0: +1 EXP/click
+                </p>
+                <button id="boost_button" class="button" onclick="upgrade(0)">
+                    UPGRADE!
+                </button>
+            </div>
+            <div class = "item">
+                <p id="auto" class="uptext">
+                    Autoclicker<br>Tier 0: 0 clicks/s
+                </p>
+                <button id="auto_button" class="button" onclick="upgrade(1)">
+                    UPGRADE!
+                </button>
+            </div>
+        </div>
+        <div class="clr"></div>
+
+        <p class="info">
+            <br><br><br>EXP Simulator v2.0.100<br>Made by Zakuro
+        </p>
+    </div>
+    <script src="main.js" charset="utf-8" type="text/javascript"></script>
+  </body>
+</html>
+
+<div class="upgrades">
+    <div class="boost">
+        <p id="boost" class="uptext">
+            EXP Boost<br>Tier 0: +1 EXP/click
+        </p>
+        <button id="boost_button" class="button" onclick="upgrade(0)">
+            UPGRADE!
+        </button>
+    </div>
+    <div class = "autoclicker">
+        <p id="auto" class="uptext">
+            Autoclicker<br>Tier 0: 0 clicks/s
+        </p>
+        <button id="auto_button" class="button" onclick="upgrade(1)">
+            UPGRADE!
+        </button>
+    </div>
+</div>

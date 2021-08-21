@@ -1,0 +1,159 @@
+body {
+    background-color: #311838;
+    font-family: Abel, sans-serif;
+    font-size: 28px;
+    font-weight: normal;
+}
+
+.ui {
+    margin: 16px;
+}
+
+.clr {
+    clear: both;
+}
+
+.button {
+    background-color: #410a4a;
+    color: white;
+    padding: 6px 10px;
+    font-family: Abel, sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+    border: 1px solid white;
+    margin-top: -20px;
+}
+
+.button:hover {
+    background-color: #5d0d61;
+}
+
+.button:active {
+    background-color: white;
+    color: black;
+}
+
+.level {
+    float: left;
+}
+
+.lvltext {
+    display: inline;
+    font-size: 36px;
+    color: white;
+}
+
+.lvlnum {
+    display: inline;
+    font-family: "Josefin Sans";
+    color: #0055ff;
+    font-size: 80px;
+}
+
+.exp {
+    display: inline;
+    text-align: right;
+    color: white;
+    margin-top: 40px;
+    margin-bottom: 0px;
+    float: right;
+}
+
+.click {
+    background-color: #410a4a;
+    color: white;
+    padding: 8px 16px;
+    font-family: Abel, sans-serif;
+    font-size: 28px;
+    font-weight: normal;
+    border: 1px solid white;
+    float: left;
+    margin-top: 16px;
+}
+
+.click:hover {
+    background-color: #5d0d61;
+}
+
+.click:active {
+    background-color: white;
+    color: black;
+}
+
+.total_exp {
+    color: white;
+    float:right;
+    margin-top: 9px;
+}
+
+.back {
+    background: black;
+    height: 40px;
+    width: 100%;
+    margin-top: -10px;
+}
+
+.progress {
+    display: block;
+    background: #0055ff;
+    height: 40px;
+    width: 0%;
+}
+
+@media screen and (min-width: 900px){
+    .upgrades {
+        margin-left: 22.5%;
+        margin-right: 10%;
+        margin-top: 20px;
+    }
+    
+    .item {
+        float: left;
+        margin-right: 6px;
+        width: 48%;
+    }
+}
+
+@media screen and (max-width: 899px){
+    .upgrades {
+        margin-left: 17%;
+        margin-right: 17%;
+        margin-top: 20px;
+    }
+    
+    .item {
+        width: 100%;
+    }
+}
+
+.uptext {
+    color: white;
+}
+
+.info {
+    color: white;
+}
+
+#boost {
+    display: none;
+}
+
+#boost_button {
+    display: none;
+}
+
+#auto {
+    display: none;
+}
+
+#auto_button {
+    display: none;
+}
+
+#amplifier {
+    display: none;
+}
+
+#amp_button {
+    display: none;
+}
