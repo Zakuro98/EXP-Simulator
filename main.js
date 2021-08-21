@@ -102,7 +102,7 @@ function upgrade_update() {
         document.getElementById("amp_button").style.display = "block"
     }if (game.level >= 60) {
         document.getElementById("amp_button").innerHTML = "PRESTIGE!"
-        document.getElementById("boost_button").style.color = "#ffffff"
+        document.getElementById("amp_button").style.color = "#ffffff"
     }else{
         document.getElementById("amp_button").innerHTML = "LVL 60"
         document.getElementById("amp_button").style.color = get_color(6)
