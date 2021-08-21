@@ -75,7 +75,7 @@ body {
     font-weight: normal;
     border: 1px solid white;
     float: left;
-    margin-top: 16px;
+    margin-top: 1.5%;
 }
 
 .click:hover {
@@ -90,14 +90,14 @@ body {
 .total_exp {
     color: white;
     float:right;
-    margin-top: 9px;
+    margin-top: 1.5%;
 }
 
 .back {
     background: black;
     height: 40px;
     width: 100%;
-    margin-top: -10px;
+    margin-top: 0px;
 }
 
 .progress {
