@@ -29,6 +29,7 @@ body {
     font-weight: normal;
     border: 1px solid white;
     margin-top: -1em;
+    display: none;
 }
 
 .button:hover {
@@ -127,33 +128,10 @@ body {
 
 .uptext {
     color: white;
+    display: none;
 }
 
 .info {
     color: white;
     font-size: 20px;
-}
-
-#boost {
-    display: none;
-}
-
-#boost_button {
-    display: none;
-}
-
-#auto {
-    display: none;
-}
-
-#auto_button {
-    display: none;
-}
-
-#amplifier {
-    display: none;
-}
-
-#amp_button {
-    display: none;
 }
