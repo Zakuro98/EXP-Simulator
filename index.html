@@ -9,7 +9,7 @@
   </head>
   <body>
     <main>
-        <div class = "ui">
+        <div class="ui">
             <div class="lvlbar">
                 <div class="level">
                     <p id="lvltext">
@@ -23,26 +23,31 @@
                     0 / 32 EXP
                 </p>
             </div>
-            <div class="clr"></div>
 
             <div class="back">
                 <div id="progress"></div>
             </div>
 
-            <button id="click" onclick="player_increment()">
-                +1 EXP
-            </button>
-            <p id="total_exp">
-                0 Total EXP
-            </p>
-            <div class="clr"></div>
+            <div class="lvlbar2">
+                <button id="click" onclick="player_increment()">
+                    +1 EXP
+                </button>
+                <div class="resources">
+                    <p id="total_exp">
+                        0 Total EXP
+                    </p>
+                    <p id="amp">
+                        
+                    </p>
+                </div>
+            </div>
 
-            <p id="amplifier" class="uptext">
-                +1 AMP<br>Current: 1 AMP
-            </p>
             <button id="amp_button" class="button" onclick="prestige()">
                 PRESTIGE!
             </button>
+            <p id="amplifier" class="uptext">
+                +1 AMP
+            </p>
 
             <div class="menu">
                 <button id="upgrades" class="tab" onclick="goto_tab(1)">
@@ -130,7 +135,7 @@
             </div>
 
             <p class="info">
-                <br><br><br>EXP Simulator v2.0.201<br>Made by Zakuro
+                <br><br><br>EXP Simulator v2.0.203<br>Made by Zakuro
             </p>
         </div>
     </main>
