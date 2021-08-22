@@ -149,13 +149,13 @@ function format_num(num) {
     return output
 }
 
-function format_time(time) {
-    time /= game.tickspeed
+function format_time(input) {
+    var time = input/game.tickspeed
     let output = undefined
     if (time == Infinity){
         output = "a very long time"
     } else if (time < 10) {
-        output = seconds.toFixed(2) + "s"
+        output = time.toFixed(2) + "s"
     } else if (time < 60) {
         output = time.toFixed(1) + "s"
     } else if (time < 3600) {
@@ -460,6 +460,9 @@ function wipe() {
     game.all_time = 0
     game.fastest_prestige = Infinity
 
+    document.getElementById("amplifier").style.display = "none"
+    document.getElementById("amp_button").style.display = "none"
+
     save()
 }
 
@@ -496,8 +499,6 @@ if (game.tab == 2) {
     document.getElementById("save_button").style.display = "block"
     document.getElementById("notation_text").style.display = "inline"
     document.getElementById("notation_button").style.display = "inline"
-    document.getElementById("tickspeed_text").style.display = "inline"
-    document.getElementById("tickspeed_button").style.display = "inline"
     document.getElementById("wipe_button").style.display = "block"
     switch (game.notation) {
         case 0: document.getElementById("notation_button").innerHTML = "LONG"; break
