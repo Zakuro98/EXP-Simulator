@@ -29,7 +29,7 @@
                 <div id="progress"></div>
             </div>
 
-            <button id="click" onclick="increment(game.exp_add)">
+            <button id="click" onclick="player_increment()">
                 +1 EXP
             </button>
             <p id="total_exp">
@@ -43,6 +43,18 @@
             <button id="amp_button" class="button" onclick="prestige()">
                 PRESTIGE!
             </button>
+
+            <div class="menu">
+                <button id="upgrades" class="tab" onclick="goto_tab(1)">
+                    UPGRADES
+                </button>
+                <button id="statistics" class="tab" onclick="goto_tab(2)">
+                    STATISTICS
+                </button>
+                <button id="settings" class="tab" onclick="goto_tab(3)">
+                    SETTINGS
+                </button>
+            </div>
 
             <div class="upgrades">
                 <div class="item">
@@ -64,8 +76,61 @@
             </div>
             <div class="clr"></div>
 
+            <div class="statistics">
+                <p id="stat_left">
+                    Current Level:
+                    <br>Highest Level:
+                    <br>Current EXP:
+                    <br>Total EXP (Current Prestige):
+                    <br>Total EXP (All Time):
+                    <br><br>EXP/click:
+                    <br>Autoclicking:
+                    <br><br>Total Clicks (Current Prestige):
+                    <br>Total Clicks (All Time):
+                    <br><br>Times Prestiged:
+                    <br>Amplifier:
+                    <br><br>Time Played (Current Prestige):
+                    <br>Fastest Prestige:
+                    <br>Time Played (All Time):
+                </p>
+                <p id="stat_right">
+                    LVL 1
+                    <br>LVL 1
+                    <br>0 / 32 EXP
+                    <br>0 EXP
+                    <br>0 EXP
+                    <br><br>0 EXP
+                    <br>0 clicks/sec
+                    <br><br>0
+                    <br>0
+                    <br><br>0
+                    <br>1 AMP
+                    <br><br>0.00s
+                    <br>24:00:00
+                    <br>0.00s
+                </p>
+            </div>
+            <div class="clr"></div>
+
+            <div class="settings">
+                <button id="save_button" class="option option_button" onclick="save()">
+                    SAVE
+                </button>
+                <div class="option">
+                    <p id="notation_text" class="option_text">
+                        Notation
+                    </p>
+                    <button id="notation_button" class="option_button small" onclick="notation()">
+                        LONG
+                    </button>
+                </div>
+                <button id="wipe_button" class="option wipe_button" onclick="wipe()">
+                    DELETE SAVE
+                </button>
+            </div>
+
             <p class="info">
-                <br><br><br>EXP Simulator v2.0.108<br>Made by Zakuro
+                <br><br><br>EXP Simulator v2.0.200<br>Made by Zakuro
             </p>
         </div>
     </main>
