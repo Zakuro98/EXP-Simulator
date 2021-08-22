@@ -20,6 +20,31 @@ main {
     clear: both;
 }
 
+.menu {
+    display: table;
+    margin: auto;
+}
+
+.tab {
+    background-color: #410a4a;
+    color: white;
+    padding: 0.15em 0.25em;
+    font-family: Abel;
+    font-size: 28px;
+    font-weight: bold;
+    border: 2px solid white;
+    margin-top: 0.857em;
+}
+
+.tab:hover {
+    background-color: #5d0d61;
+}
+
+.tab:active {
+    background-color: white;
+    color: black;
+}
+
 .button {
     background-color: #410a4a;
     color: white;
@@ -28,7 +53,7 @@ main {
     font-size: 0.714em;
     font-weight: normal;
     border: 1px solid white;
-    margin-top: -1em;
+    margin-top: -0.82em;
     display: none;
 }
 
@@ -108,10 +133,6 @@ main {
     width: 0%;
 }
 
-.upgrades {
-    margin-top: 0.714em;
-}
-
 .item {
     float: left;
     padding-right: 0.214em;
@@ -126,8 +147,104 @@ main {
     }
 }
 
+.statistics{
+    font-size: 20px;
+    color: white;
+    margin-top: 1.1em;
+}
+
+#stat_left {
+    float: left;
+    display: none;
+    text-align: right;
+    padding-right: 0.321em;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+#stat_right {
+    float: left;
+    display: none;
+    text-align: left;
+    padding-left: 0.321em;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.settings {
+    font-size: 24px;
+    color: white;
+    display: table;
+    margin: auto;
+    margin-top: 1.35em;
+}
+
+.option {
+    margin: auto;
+    margin-bottom: 1.4em;
+}
+
+.option_text {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    display: none;
+}
+
+.option_button {
+    background-color: #410a4a;
+    color: white;
+    padding: 0.2em 0.4em;
+    font-family: Abel, sans-serif;
+    font-size: 1em;
+    font-weight: normal;
+    border: 1px solid white;
+    margin-top: 0em;
+    display: none;
+}
+
+.option_button:hover {
+    background-color: #5d0d61;
+}
+
+.option_button:active {
+    background-color: white;
+    color: black;
+}
+
+.small {
+    padding: 0em 0.2em;
+    margin-left: 0.3em;
+}
+
+.wipe_button {
+    background-color: #410a4a;
+    color: red;
+    padding: 0.2em 0.4em;
+    font-family: Abel, sans-serif;
+    font-size: 1em;
+    font-weight: normal;
+    border: 1px solid white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    display: none;
+}
+
+.wipe_button:hover {
+    background-color: #5d0d61;
+}
+
+.wipe_button:active {
+    background-color: white;
+    color: black;
+}
+
+#amplifier {
+    margin-top: 0.35em;
+}
+
 .uptext {
     color: white;
+    font-size: 24px;
     display: none;
 }
 
