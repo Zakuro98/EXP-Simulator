@@ -54,79 +54,29 @@ function format_num(num) {
     } if (num >= 1000000) {
         switch (game.notation) {
             case 1:
+                const single_array = [null, "m", "b", "tr", "quadr", "quint", "sext", "sept", "oct", "non"]
+                const one_array = [null, "un", "duo", "tre", "quattuor", "quin", "se", "septe", "octo", "nove"]
+                const ten_array = [null, "dec", "vigint", "trigint", "quadragint", "quinquagint", "sexagint", "septuagint", "octagint", "nonagint"]
+            
                 let order = Math.floor(Math.log10(num)/3)-1
                 let one_str = ""
                 let one_mod = ""
                 let ten_str = ""
                 if (order < 10) {
-                    switch (order) {
-                        case 1: one_str = "m"; break
-                        case 2: one_str = "b"; break
-                        case 3: one_str = "tr"; break
-                        case 4: one_str = "quadr"; break
-                        case 5: one_str = "quint"; break
-                        case 6: one_str = "sext"; break
-                        case 7: one_str = "sept"; break
-                        case 8: one_str = "oct"; break
-                        case 9: one_str = "non"; break
-                    }
+                    one_str = single_array[order]
                 } else {
-                    switch (order % 10) {
-                        case 1: one_str = "un"; break
-                        case 2: one_str = "duo"; break
-                        case 3: one_str = "tre"; break
-                        case 4: one_str = "quattuor"; break
-                        case 5: one_str = "quin"; break
-                        case 6: one_str = "se"; break
-                        case 7: one_str = "septe"; break
-                        case 8: one_str = "octo"; break
-                        case 9: one_str = "nove"; break
-                    }
+                    one_str = one_array[order % 10]
+                    ten_str = ten_array[Math.floor(order/10)]
 
-                    switch (Math.floor(order/10)) {
-                        case 1:
-                            ten_str = "dec"
-                            if (order % 10 == 7 || order % 10 == 9) one_mod = "n"
-                            break
-                        case 2:
-                            ten_str = "vigint"
-                            if (order % 10 == 7 || order % 10 == 9) one_mod = "m"
-                            if (order % 10 == 3 || order % 10 == 6) one_mod = "s"
-                            break
-                        case 3:
-                            ten_str = "trigint"
-                            if (order % 10 == 7 || order % 10 == 9) one_mod = "n"
-                            if (order % 10 == 3 || order % 10 == 6) one_mod = "s"
-                            break
-                        case 4:
-                            ten_str = "quadragint"
-                            if (order % 10 == 7 || order % 10 == 9) one_mod = "n"
-                            if (order % 10 == 3 || order % 10 == 6) one_mod = "s"
-                            break
-                        case 5:
-                            ten_str = "quinquagint"
-                            if (order % 10 == 7 || order % 10 == 9) one_mod = "n"
-                            if (order % 10 == 3 || order % 10 == 6) one_mod = "s"
-                            break
-                        case 6:
-                            ten_str = "sexagint"
-                            if (order % 10 == 7 || order % 10 == 9) one_mod = "n"
-                            break
-                        case 7:
-                            ten_str = "septuagint"
-                            if (order % 10 == 7 || order % 10 == 9) one_mod = "n"
-                            break
-                        case 8:
-                            ten_str = "octogint"
-                            if (order % 10 == 7 || order % 10 == 9) one_mod = "m"
-                            if (order % 10 == 3) one_mod = "s"
-                            if (order % 10 == 6) one_mod = "x"
-                            break
-                        case 9: ten_str = "nonagint"; break
-                    }
+                    const r_order = Math.floor(order / 10)
+                    if ((order % 10 === 7 || order % 10 === 9) && r_order !== 9)
+                    if (r_order === 2 || r_order === 8) one_mod = "m"
+                    else one_mod = "n"
+                    if ((order % 10 === 3 || order % 10 === 6) && ((r_order >= 2 && r_order <= 5) || r_order === 8)) one_mod = "s"
+                    if (order % 10 === 6 && r_order === 8) one_mod = "x"
                 }
 
-                let lead = num/Math.pow(10,3*order+3)
+                let lead = num/(10**(3*order+3))
                 let lead_str = ""
                 if (lead < 10) {
                     lead_str = lead.toFixed(3)
@@ -140,7 +90,7 @@ function format_num(num) {
                 break
             case 2:
                 let exponent = Math.floor(Math.log10(num))
-                let mantissa = num/Math.pow(10,exponent)
+                let mantissa = num/(10**exponent)
                 output = mantissa.toFixed(3) + "e" + exponent
                 break
         }
@@ -174,32 +124,20 @@ function format_time(input) {
 }
 
 function get_level(xp) {
-    return Math.floor(Math.pow(27*xp/32,1/3) - 2) + 1
+    return Math.floor((27*xp/32)**(1/3) - 2) + 1
 }
 
 function get_exp(lvl) {
     if (lvl == 0) {
         return lvl
     } else {
-        return 32/27*Math.pow(lvl+2,3)
+        return 32/27*(lvl+2)**3
     }
 }
 
+const colors = ["#0055ff","#00d5ff","#00ffd0","#00ff2a","#c5ff00","#ffe700","#ff8e00","#ff3200","#ff0066","#ff00df","#b900ff","#5500ff"]
 function get_color(num) {
-    switch (num) {
-        case 0: return "#0055ff"; break
-        case 1: return "#00d5ff"; break
-        case 2: return "#00ffd0"; break
-        case 3: return "#00ff2a"; break
-        case 4: return "#c5ff00"; break
-        case 5: return "#ffe700"; break
-        case 6: return "#ff8e00"; break
-        case 7: return "#ff3200"; break
-        case 8: return "#ff0066"; break
-        case 9: return "#ff00df"; break
-        case 10: return "#b900ff"; break
-        case 11: return "#5500ff"; break
-    }
+    return colors[num]
 }
 
 function color_update() {
@@ -214,12 +152,16 @@ function color_update() {
 
 function ampbutton_update() {
     if (game.level >= 60 || game.amp > 1) {
-        document.getElementById("amplifier").style.display = "block"
-        document.getElementById("amp_button").style.display = "block"
+        document.getElementById("amplifier").style.display = "inline"
+        document.getElementById("amp_button").style.display = "inline"
+        document.getElementById("amp").innerHTML = game.amp + " AMP"
     } if (game.level >= 60) {
+        document.getElementById("amplifier").style.display = "inline"
+        document.getElementById("amplifier").innerHTML = "+1 AMP"
         document.getElementById("amp_button").innerHTML = "PRESTIGE!"
-        document.getElementById("amp_button").style.color = "#ffffff"
+        document.getElementById("amp_button").style.color = white
     } else {
+        document.getElementById("amplifier").innerHTML = "+0 AMP"
         document.getElementById("amp_button").innerHTML = "LVL 60"
         document.getElementById("amp_button").style.color = get_color(6)
     }
@@ -399,20 +341,14 @@ function upgrade(id) {
     }
 }
 
-function prestige() {
-    game.amp += 1
-    game.prestige += 1
-    document.getElementById("amplifier").innerHTML = "+1 AMP<br>Current: " + format_num(game.amp) + " AMP"
-    document.getElementById("amp_button").innerHTML = "LVL 60"
-    document.getElementById("amp_button").style.color = get_color(6)
-
+function reset() {
     document.getElementById("boost").style.display = "none"
     document.getElementById("boost_button").style.display = "none"
     document.getElementById("auto").style.display = "none"
     document.getElementById("auto_button").style.display = "none"
 
     game.total_exp = 0
-    game.exp_add = game.amp
+    game.exp_add = 1
     if (game.level > game.highest_level) game.highest_level = game.level
     game.level = 1
     game.exp = 0
@@ -446,12 +382,26 @@ function prestige() {
     document.getElementById("progress").style.width = 0 + "%"
 }
 
+function prestige() {
+    if (game.level >= 60) {
+        game.amp += 1
+        game.prestige += 1
+        document.getElementById("amp").innerHTML = game.amp + " AMP"
+        document.getElementById("amp_button").innerHTML = "LVL 60"
+        document.getElementById("amp_button").style.color = get_color(6)
+
+        reset()
+        game.exp_add = game.amp
+        document.getElementById("click").innerHTML = "+" + format_num(game.exp_add) + " EXP"
+    }
+}
+
 function save() {
     localStorage.setItem("exp_simulator_save",JSON.stringify(game))
 }
 
 function wipe() {
-    prestige()
+    reset()
     game.amp = 1
     game.prestige = 0
     game.all_time_exp = 0
@@ -507,7 +457,6 @@ if (game.tab == 2) {
     }
 }
 
-document.getElementById("amplifier").innerHTML = "+1 AMP<br>Current: " + format_num(game.amp) + " AMP"
 document.getElementById("lvlnum").innerHTML = format_num(game.level)
 document.getElementById("exp").innerHTML = format_num(game.exp) + " / " + format_num(game.goal) + " EXP"
 document.getElementById("total_exp").innerHTML = format_num(game.total_exp) + " Total EXP"
