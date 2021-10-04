@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <title>EXP Simulator</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel|Josefin+Sans:700">
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <main>
+        <div class="ui">
+            <div class="lvlbar">
+                <div class="level">
+                    <p id="lvltext">
+                        LVL
+                    </p>
+                    <p id="lvlnum">
+                        1
+                    </p>
+                </div>
+                <p id="exp">
+                    0 / 32 EXP
+                </p>
+            </div>
+
+            <div class="back">
+                <div id="progress"></div>
+            </div>
+
+            <div class="lvlbar2">
+                <div class="lvlbuttons">
+                    <button id="click" onclick="player_increment()">
+                        +1 EXP
+                    </button>
+                    <div class="amp_area">
+                        <button id="amp_button" class="button" onclick="prestige()">
+                            PRESTIGE!
+                        </button>
+                        <button id="amp_auto" class="button autoup" onclick="pr_toggle()">
+                            OFF
+                        </button>
+                        <p id="amp_up" class="uptext">
+                            +1 AMP
+                        </p>
+                        <p id="pp_up" class="uptext">
+                            +1 PP
+                        </p>
+                    </div>
+                </div>
+                <div class="resources">
+                    <p id="total_exp">
+                        0 Total EXP
+                    </p>
+                    <p id="amp">
+                        1 AMP
+                    </p>
+                    <p id="pp">
+                        0 PP
+                    </p>
+                </div>
+            </div>
+
+            <div class="menu">
+                <button id="upgrades" class="tab" onclick="goto_tab(1)">
+                    UPGRADES
+                </button>
+                <button id="prestige" class="tab" onclick="goto_tab(4)">
+                    PRESTIGE
+                </button>
+                <button id="statistics" class="tab" onclick="goto_tab(2)">
+                    STATISTICS
+                </button>
+                <button id="settings" class="tab" onclick="goto_tab(3)">
+                    SETTINGS
+                </button>
+            </div>
+
+            <div id="upgrades_page">
+                <div class="upgrades">
+                    <div class="item">
+                        <p id="boost" class="uptext">
+                            EXP Boost<br>Tier 0: +1 EXP/click
+                        </p>
+                        <button id="boost_button" class="button" onclick="upgrade(0,false)">
+                            UPGRADE!
+                        </button>
+                        <button id="boost_auto" class="button autoup" onclick="up_toggle(0)">
+                            OFF
+                        </button>
+                    </div>
+                    <div class = "item">
+                        <p id="auto" class="uptext">
+                            Autoclicker<br>Tier 0: 0 clicks/s
+                        </p>
+                        <button id="auto_button" class="button" onclick="upgrade(1,false)">
+                            UPGRADE!
+                        </button>
+                        <button id="auto_auto" class="button autoup" onclick="up_toggle(1)">
+                            OFF
+                        </button>
+                    </div>
+                </div>
+                <div class="upgrades">
+                    <div class = "item">
+                        <p id="fluct" class="uptext">
+                            EXP Fluctuation<br>Tier 0: +0 max extra EXP/click
+                        </p>
+                        <button id="fluct_button" class="button" onclick="upgrade(2,false)">
+                            UPGRADE!
+                        </button>
+                        <button id="fluct_auto" class="button autoup" onclick="up_toggle(2)">
+                            OFF
+                        </button>
+                    </div>
+                    <div class = "item">
+                        <p id="fact" class="uptext">
+                            EXP Factor<br>Tier 0: 1x EXP/click
+                        </p>
+                        <button id="fact_button" class="button" onclick="upgrade(3,false)">
+                            UPGRADE!
+                        </button>
+                        <button id="fact_auto" class="button autoup" onclick="up_toggle(3)">
+                            OFF
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="prestige" id="prestige_page">
+                <div id="auto_config">
+                    <p class="auto_header">
+                        Autoprestige Configuration
+                    </p>
+                    <div id="auto_level">
+                        <p class="goal_text">
+                            Autoprestige Level: 
+                        </p>
+                        <input class="goal_input" id="level_input" type="number" value="60" min="60">
+                    </div>
+                </div>
+            </div>
+
+            <div class="statistics" id="statistics_page">
+                <p id="stat_left">
+                    Current Level:
+                    <br>Highest Level:
+                    <br>Current EXP:
+                    <br>Total EXP (Current Prestige):
+                    <br>Total EXP (All Time):
+                    <br><br>EXP/click:
+                    <br>Autoclicking:
+                    <br><br>Total Clicks (Current Prestige):
+                    <br>Total Clicks (All Time):
+                    <br><br>Times Prestiged:
+                    <br>Amplifier:
+                    <br><br>Time Played (Current Prestige):
+                    <br>Fastest Prestige:
+                    <br>Time Played (All Time):
+                </p>
+                <p id="stat_right">
+                    LVL 1
+                    <br>LVL 1
+                    <br>0 / 32 EXP
+                    <br>0 EXP
+                    <br>0 EXP
+                    <br><br>1 EXP
+                    <br>0 clicks/sec
+                    <br><br>0
+                    <br>0
+                    <br><br>0
+                    <br>1 AMP
+                    <br><br>0.00s
+                    <br>a very long time
+                    <br>0.00s
+                </p>
+            </div>
+
+            <div class="settings" id="settings_page">
+                <button id="save_button" class="option option_button" onclick="save()">
+                    SAVE
+                </button>
+                <div class="option">
+                    <p id="notation_text" class="option_text">
+                        Notation
+                    </p>
+                    <button id="notation_button" class="option_button small" onclick="notation()">
+                        LONG
+                    </button>
+                </div>
+                <button id="wipe_button" class="option wipe_button" onclick="wipe()">
+                    DELETE SAVE
+                </button>
+            </div>
+
+            <p class="info">
+                <br><br><br>EXP Simulator v2.1.000<br>Made by Zakuro
+            </p>
+            <a href="changelog.html" target="_blank" class="info link">Changelog</a>
+        </div>
+    </main>
+    <script src="main.js" charset="utf-8" type="text/javascript"></script>
+  </body>
+</html>
