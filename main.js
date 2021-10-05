@@ -94,7 +94,7 @@ class pp_upgrade {
         pp_button.innerText = "-" + this.price + " PP"
         pp_button.className = "pp_button pp_locked"
         pp_button.addEventListener("click",() => {
-            if (game.pp >= this.price && this.can_buy() == true) {
+            if (game.pp >= this.price && this.can_buy() == true && game.pp_bought[this.id] == false) {
                 game.pp -= this.price
                 game.pp_bought[this.id] = true
                 this.on_purchase()
@@ -584,6 +584,14 @@ function increment(num) {
         document.getElementById("progress").style.width = 100*game.exp/game.goal + "%"
     } else {
         document.getElementById("progress").style.width = 100 + "%"
+        if (game.pp_bought[6] == false && game.level >= game.pr_min) {
+            game.all_time_exp -= game.total_exp - Math.ceil(get_exp(game.pr_min-1))
+            game.total_exp = Math.ceil(get_exp(game.pr_min-1))
+            game.level = game.pr_min
+
+            game.exp = game.total_exp - Math.ceil(get_exp(game.level-1))
+            game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level-1))
+        }
     }
 
     color_update()
@@ -1022,6 +1030,15 @@ function prestige() {
         game.exp_fact = 1+game.starter_kit
         click_update()
         game.cps = game.starter_kit*2
+
+        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add) + " EXP/click"
+        document.getElementById("boost_button").innerText = "UPGRADE!"
+        document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
+        document.getElementById("auto_button").innerText = "UPGRADE!"
+        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(game.exp_fluct) + " max extra EXP/click"
+        document.getElementById("fluct_button").innerText = "UPGRADE!"
+        document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": " + format_num(game.exp_fact) + "x EXP/click"
+        document.getElementById("fact_button").innerText = "UPGRADE!"
 
         switch (game.jumpstart) {
             case 1:
