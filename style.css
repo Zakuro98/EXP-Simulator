@@ -241,13 +241,15 @@ main {
 
 .option {
     margin-bottom: 1.4em;
-    display: block;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 .option_text {
     margin-top: 0em;
-    margin-bottom: 0em;
-    display: inline;
+    margin-bottom: 0.2em;
+    display: block;
 }
 
 .option_button {
@@ -272,8 +274,11 @@ main {
 
 .small {
     padding: 0em 0.2em;
-    margin-left: 0.3em;
-    display: inline;
+    display: block;
+}
+
+#hidden {
+    display: none;
 }
 
 .wipe_button {
@@ -284,7 +289,7 @@ main {
     font-size: 1em;
     font-weight: normal;
     border: 1px solid white;
-    margin-top: 0em;
+    margin-top: 0.6em;
     margin-bottom: 0em;
     display: inline;
 }
@@ -312,6 +317,7 @@ main {
 
 .pp_text {
     flex-grow: 1;
+    padding-right: 0.75em;
 }
 
 .pp_name {
