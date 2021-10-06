@@ -1168,6 +1168,11 @@ if (game.level < 60) {
     document.getElementById("progress").style.width = 100 + "%"
 }
 
+if (game.pp_bought[3] == true) {
+    document.getElementById("amp_auto").style.display = "inline"
+    if (game.pp_bought[6] == true) document.getElementById("auto_config").style.display = "block"
+}
+
 document.getElementById("level_input").value = game.autopr_goal
 
 //setting up the autosave loop
