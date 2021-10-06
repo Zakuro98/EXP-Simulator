@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.1.000",
+    version: "2.1.003",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -53,7 +53,10 @@ let game = {
     fluct_tier: 0,
     fluct_level: 6,
     fact_tier: 0,
-    fact_level: 15
+    fact_level: 15,
+
+    //v2.1.003 variables
+    pp_hide: false
 }
 
 //initialize map
@@ -99,7 +102,7 @@ class pp_upgrade {
                 game.pp_bought[this.id] = true
                 this.on_purchase()
                 pp_update()
-                document.getElementById("pp").innerText = game.pp + " PP"
+                document.getElementById("pp").innerText = format_num(game.pp) + " PP"
             }
         })
 
@@ -152,7 +155,7 @@ let ml1 = new pp_upgrade("Manual Labor I","Unautomated clicks are 2x stronger",1
 let autoupgrade = new pp_upgrade("Auto-Upgrading","Unlocks automation for all upgrades",2,function(){
     upgrade_update()
 })
-//auto prestige [4]
+//auto prestige [3]
 let autoprestige = new pp_upgrade_child("Auto-Prestiging","Unlocks automation for Prestige",3,function(){
     document.getElementById("amp_auto").style.display = "inline"
 },autoupgrade)
@@ -210,13 +213,26 @@ new pp_upgrade_child("Manual Labor III","Unautomated clicks are 8x stronger",20,
 function notation() {
     game.notation += 1
     if (game.notation >= 5) game.notation = 0
-
+    pp_update()
     switch (game.notation) {
         case 0: document.getElementById("notation_button").innerText = "LONG"; break
         case 1: document.getElementById("notation_button").innerText = "STANDARD"; break
         case 2: document.getElementById("notation_button").innerText = "SCIENTIFIC"; break
         case 3: document.getElementById("notation_button").innerText = "ENGINEERING"; break
         case 4: document.getElementById("notation_button").innerText = "CONDENSED"; break
+    }
+}
+
+//hidden purchased pp upgrades toggle
+function pp_hidden() {
+    if (game.pp_hide == false) {
+        game.pp_hide = true
+        document.getElementById("hidden_button").innerText = "ON"
+        pp_update()
+    } else {
+        game.pp_hide = false
+        document.getElementById("hidden_button").innerText = "OFF"
+        pp_update()
     }
 }
 
@@ -444,6 +460,7 @@ function ampbutton_update() {
 
     if (game.amp > 1) {
         document.getElementById("prestige").style.display = "inline"
+        document.getElementById("hidden").style.display = "flex"
     } else {
         document.getElementById("amp").style.display = "none"
         document.getElementById("pp").style.display = "none"
@@ -557,7 +574,15 @@ function pp_update() {
 
         if (game.pp_bought[upgrade.id] == true) {
             button.className = "pp_button pp_bought"
+            button.innerText = "PURCHASED"
+
+            if (game.pp_hide == true) {
+                element.style.display = "none"
+            } else {
+                element.style.display = "flex"
+            }
         } else {
+            button.innerText = "-" + format_num(upgrade.price) + " PP"
             if (game.pp >= upgrade.price) {
                 button.className = "pp_button pp_unlocked"
             } else {
@@ -702,6 +727,7 @@ function goto_tab(id) {
     switch (id) {
         case 1:
             document.getElementById("upgrades_page").style.display = "block"
+            upgrade_update()
             break
         case 2:
             document.getElementById("statistics_page").style.display = "flex"
@@ -1110,6 +1136,7 @@ function wipe() {
 
     document.getElementById("amp_auto").style.display = "none"
     document.getElementById("prestige").style.display = "none"
+    document.getElementById("hidden").style.display = "none"
 
     save()
 }
@@ -1120,13 +1147,21 @@ let tick_loop = window.setInterval(function() {
 }, 1000/game.tickspeed)
 
 //version compatibility checks
-//v2.0.000, v2.0.100, v2.0.200
 let savegame = JSON.parse(localStorage.getItem("exp_simulator_save"))
-if (savegame !== null) {    
-    if (savegame.version != "2.0.200" && savegame.version != undefined) {
-        game = savegame
-    } else {
+if (savegame !== null) {
+    //v2.0.000, v2.0.100, v2.0.200
+    if (savegame.version == "2.0.200" || savegame.version == undefined) {
         alert("Your save has been wiped, very sorry!\nv2.0.xxx saves are not compatible with v2.1.xxx");
+    }
+    //v2.1.000
+    if (savegame.version == "2.1.000") {
+        game = savegame
+        game.pp_hide = false
+        game.version = "2.1.003"
+    }
+    //v2.1.003
+    if (savegame.version == "2.1.003"){
+        game = savegame
     }
 }
 
@@ -1134,19 +1169,14 @@ if (savegame !== null) {
 color_update()
 ampbutton_update()
 pp_update()
-upgrade_update()
-if (game.tab == 1) document.getElementById("upgrades_page").style.display = "block"
-if (game.tab == 2) document.getElementById("statistics_page").style.display = "flex"
-if (game.tab == 3) {
-    document.getElementById("settings_page").style.display = "flex"
-    switch (game.notation) {
-        case 0: document.getElementById("notation_button").innerText = "LONG"; break
-        case 1: document.getElementById("notation_button").innerText = "STANDARD"; break
-        case 2: document.getElementById("notation_button").innerText = "SCIENTIFIC"; break
-        case 3: document.getElementById("notation_button").innerText = "ENGINEERING"; break
-        case 4: document.getElementById("notation_button").innerText = "CONDENSED"; break
-    }
-} if (game.tab == 4) document.getElementById("prestige_page").style.display = "block"
+goto_tab(game.tab)
+switch (game.notation) {
+    case 0: document.getElementById("notation_button").innerText = "LONG"; break
+    case 1: document.getElementById("notation_button").innerText = "STANDARD"; break
+    case 2: document.getElementById("notation_button").innerText = "SCIENTIFIC"; break
+    case 3: document.getElementById("notation_button").innerText = "ENGINEERING"; break
+    case 4: document.getElementById("notation_button").innerText = "CONDENSED"; break
+}
 
 document.getElementById("lvlnum").innerText = format_num(game.level)
 document.getElementById("exp").innerText = format_num(game.exp) + " / " + format_num(game.goal) + " EXP"
