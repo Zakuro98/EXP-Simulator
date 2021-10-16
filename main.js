@@ -302,9 +302,9 @@ function format_num(num) {
     } if (num >= 1000000) {
         switch (game.notation) {
             case 1:
-                const single_array = [null, "m", "b", "tr", "quadr", "quint", "sext", "sept", "oct", "non"]
-                const one_array = [null, "un", "duo", "tre", "quattuor", "quin", "se", "septe", "octo", "nove"]
-                const ten_array = [null, "dec", "vigint", "trigint", "quadragint", "quinquagint", "sexagint", "septuagint", "octagint", "nonagint"]
+                const single_array = ["", "m", "b", "tr", "quadr", "quint", "sext", "sept", "oct", "non"]
+                const one_array = ["", "un", "duo", "tre", "quattuor", "quin", "se", "septe", "octo", "nove"]
+                const ten_array = ["", "dec", "vigint", "trigint", "quadragint", "quinquagint", "sexagint", "septuagint", "octagint", "nonagint"]
             
                 let order = Math.floor(Math.log10(num)/3)-1
                 let one_str = ""
@@ -353,9 +353,9 @@ function format_num(num) {
                 }
                 break
             case 4:
-                const single_array_cond = [null, "M", "B", "T", "Qa", "Qn", "Se", "Sp", "Oc", "No"]
-                const one_array_cond = [null, "U", "D", "T", "Qa", "Qn", "Se", "Sp", "O", "N"]
-                const ten_array_cond = [null, "Dc", "Vg", "Tg", "Qg", "Qi", "Sx", "Sg", "Og", "Ng"]
+                const single_array_cond = ["", "M", "B", "T", "Qa", "Qn", "Se", "Sp", "Oc", "No"]
+                const one_array_cond = ["", "U", "D", "T", "Qa", "Qn", "Se", "Sp", "O", "N"]
+                const ten_array_cond = ["", "Dc", "Vg", "Tg", "Qg", "Qi", "Sx", "Sg", "Og", "Ng"]
             
                 let order2 = Math.floor(Math.log10(num)/3)-1
                 let one_str2 = ""
@@ -1303,7 +1303,8 @@ function prestige() {
 
 //calculating amp/sec
 function amp_tick() {
-    game.amp_eff = get_amp(game.level)*game.tickspeed/game.time
+    if (game.time > 0) game.amp_eff = get_amp(game.level)*game.tickspeed/game.time
+    else game.amp_eff = get_amp(game.level)*game.tickspeed
     if (game.pp_bought[10] == true) {
         ampbutton_update()
     }
