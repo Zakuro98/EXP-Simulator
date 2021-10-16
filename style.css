@@ -75,6 +75,16 @@ main {
     color: black;
 }
 
+.mode_active {
+    background-color: white;
+    color: black;
+}
+
+.mode_active:hover {
+    background-color: white;
+    color: black;
+}
+
 .autoup {
     display: none;
     color: red;
@@ -205,6 +215,75 @@ main {
         width: 100%;
         padding-right: 0.214em;
     }
+}
+
+#overclock {
+    display: none;
+}
+
+.oc_top {
+    display: flex;
+    font-size: 0.857em;
+    align-items: flex-end;
+    color: white;
+    margin-top: 2em;
+    margin-bottom: 0em;
+}
+
+#oc_text {
+    flex-grow: 1;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#oc_timer {
+    text-align: right;
+    flex-grow: 1;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.oc_bottom {
+    display: flex;
+    font-size: 0.857em;
+    align-items: flex-end;
+    color: white;
+    margin-top: 0.2em;
+    margin-bottom: 0em;
+}
+
+.oc_back {
+    background: black;
+    height: 0.214em;
+    width: 100%;
+    margin-top: 0.2em;
+    margin-bottom: 0em;
+}
+
+#oc_state {
+    flex-grow: 1;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#oc-activator {
+    text-align: right;
+    margin-top: 0em;
+}
+
+#oc_button {
+    display: none;
+}
+
+#oc_auto {
+    display: none;
+}
+
+#oc_progress {
+    display: block;
+    background: #ff2f00;
+    height: 0.214em;
+    width: 100%;
 }
 
 .statistics{
@@ -396,8 +475,44 @@ main {
     display: inline;
 }
 
+#auto_mode {
+    display: none;
+    margin-top: 0.1em;
+}
+
+#level_mode {
+    display: inline;
+}
+
+#amp_mode {
+    display: inline;
+}
+
+#pp_mode {
+    display: inline;
+}
+
+#time_mode {
+    display: inline;
+}
+
 #auto_level {
     display: block;
+    margin-top: 0.1em;
+}
+
+#auto_amp {
+    display: none;
+    margin-top: 0.1em;
+}
+
+#auto_pp {
+    display: none;
+    margin-top: 0.1em;
+}
+
+#auto_time {
+    display: none;
     margin-top: 0.1em;
 }
 
