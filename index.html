@@ -103,8 +103,9 @@
                         </button>
                     </div>
                 </div>
+
                 <div class="upgrades">
-                    <div class = "item">
+                    <div class="item">
                         <p id="fluct" class="uptext">
                             EXP Fluctuation<br>Tier 0: +0 max extra EXP/click
                         </p>
@@ -115,7 +116,7 @@
                             OFF
                         </button>
                     </div>
-                    <div class = "item">
+                    <div class="item">
                         <p id="fact" class="uptext">
                             EXP Factor<br>Tier 0: 1x EXP/click
                         </p>
@@ -127,6 +128,35 @@
                         </button>
                     </div>
                 </div>
+
+                <div id="overclock">
+                    <div class="oc_top">
+                        <p id="oc_text">
+                            EXP Overclocker
+                        </p>
+                        <p id="oc_timer">
+                            3:00 Left
+                        </p>
+                    </div>
+
+                    <div class="oc_back">
+                        <div id="oc_progress"></div>
+                    </div>
+
+                    <div class="oc_bottom">
+                        <p id="oc_state">
+                            Recharging
+                        </p>
+                        <div id="oc_activator">
+                            <button id="oc_button" class="button" onclick="oc_activate()">
+                                ACTIVATE
+                            </button>
+                            <button id="oc_auto" class="button autoup" onclick="oc_toggle()">
+                                OFF
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="prestige" id="prestige_page">
@@ -134,11 +164,46 @@
                     <p class="auto_header">
                         Autoprestige Configuration
                     </p>
+                    <div id="auto_mode">
+                        <p class="goal_text">
+                            Autoprestige Mode:
+                        </p>
+                        <button id="level_mode" class="button mode_active" onclick="autopr_switch(0)">
+                            LEVEL
+                        </button>
+                        <button id="amp_mode" class="button" onclick="autopr_switch(1)">
+                            AMP
+                        </button>
+                        <button id="pp_mode" class="button" onclick="autopr_switch(2)">
+                            PP
+                        </button>
+                        <button id="time_mode" class="button" onclick="autopr_switch(3)">
+                            TIME
+                        </button>
+                    </div>
                     <div id="auto_level">
                         <p class="goal_text">
                             Autoprestige Level: 
                         </p>
                         <input class="goal_input" id="level_input" type="number" value="60" min="60">
+                    </div>
+                    <div id="auto_amp">
+                        <p class="goal_text">
+                            Autoprestige AMP: 
+                        </p>
+                        <input class="goal_input" id="amp_input" type="number" value="1" min="1">
+                    </div>
+                    <div id="auto_pp">
+                        <p class="goal_text">
+                            Autoprestige PP: 
+                        </p>
+                        <input class="goal_input" id="pp_input" type="number" value="1" min="1">
+                    </div>
+                    <div id="auto_time">
+                        <p class="goal_text">
+                            Autoprestige Time (in seconds): 
+                        </p>
+                        <input class="goal_input" id="time_input" type="number" value="0" step="0.01" min="0">
                     </div>
                 </div>
             </div>
@@ -204,7 +269,7 @@
             </div>
 
             <p class="info">
-                <br><br><br>EXP Simulator v2.1.003<br>Made by Zakuro
+                <br><br><br>EXP Simulator v2.1.100<br>Made by Zakuro
             </p>
             <a href="changelog.html" target="_blank" class="info link">Changelog</a>
         </div>
