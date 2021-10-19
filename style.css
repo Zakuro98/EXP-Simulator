@@ -325,6 +325,10 @@ main {
     flex-direction: column;
 }
 
+#export_button {
+    margin-bottom: 0.285em;
+}
+
 .option_text {
     margin-top: 0em;
     margin-bottom: 0.2em;
