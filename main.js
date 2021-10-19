@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.1.100",
+    version: "2.1.102",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -48,7 +48,7 @@ let game = {
 
     autoup_toggle: new Array(4).fill(false),
     autopr_toggle: false,
-    autopr_goal: 60,
+    autopr_goal: [60, 1, 1, 0],
 
     fluct_tier: 0,
     fluct_level: 6,
@@ -58,7 +58,7 @@ let game = {
     //v2.1.003 variables
     pp_hide: false,
 
-    //v2.1.100
+    //v2.1.100 variables
     amp_eff: 0,
     autopr_mode: 0,
     exp_oc: 1,
@@ -814,24 +814,24 @@ function tick() {
     document.getElementById("level_input").min = game.pr_min
     switch (game.autopr_mode) {
         case 0:
-            game.autopr_goal = Number(document.getElementById("level_input").value)
-            if (game.autopr_goal == NaN) game.autopr_goal = game.pr_min
-            if (game.autopr_goal < game.pr_min) game.autopr_goal = game.pr_min
+            game.autopr_goal[0] = Number(document.getElementById("level_input").value)
+            if (game.autopr_goal[0] == NaN) game.autopr_goal[0] = game.pr_min
+            if (game.autopr_goal[0] < game.pr_min) game.autopr_goal[0] = game.pr_min
             break
         case 1:
-            game.autopr_goal = Number(document.getElementById("amp_input").value)
-            if (game.autopr_goal == NaN) game.autopr_goal = 1
-            if (game.autopr_goal < 1) game.autopr_goal = 1
+            game.autopr_goal[1] = Number(document.getElementById("amp_input").value)
+            if (game.autopr_goal[1] == NaN) game.autopr_goal[1] = 1
+            if (game.autopr_goal[1] < 1) game.autopr_goal[1] = 1
             break
         case 2:
-            game.autopr_goal = Number(document.getElementById("pp_input").value)
-            if (game.autopr_goal == NaN) game.autopr_goal = 1
-            if (game.autopr_goal < 1) game.autopr_goal = 1
+            game.autopr_goal[2] = Number(document.getElementById("pp_input").value)
+            if (game.autopr_goal[2] == NaN) game.autopr_goal[2] = 1
+            if (game.autopr_goal[2] < 1) game.autopr_goal[2] = 1
             break
         case 3:
-            game.autopr_goal = Number(document.getElementById("time_input").value)
-            if (game.autopr_goal == NaN) game.autopr_goal = 0
-            if (game.autopr_goal < 0) game.autopr_goal = 0
+            game.autopr_goal[3] = Number(document.getElementById("time_input").value)
+            if (game.autopr_goal[3] == NaN) game.autopr_goal[3] = 0
+            if (game.autopr_goal[3] < 0) game.autopr_goal[3] = 0
             break
     }
 
@@ -840,22 +840,22 @@ function tick() {
         if (game.pp_bought[6] == true) {
             switch (game.autopr_mode) {
                 case 0:
-                    if (game.level >= game.autopr_goal) {
+                    if (game.level >= game.autopr_goal[0]) {
                         prestige()
                     } break
                 case 1:
-                    if (game.level >= game.pr_min && get_amp(game.level) >= game.autopr_goal) {
+                    if (game.level >= game.pr_min && get_amp(game.level) >= game.autopr_goal[1]) {
                         prestige()
                     } break
                 case 2:
                     let pp_amount = 0
                     if (game.prestige <= 21) pp_amount += 1
                     if (game.level > game.highest_level) pp_amount += get_pp(game.level) - get_pp(game.highest_level)
-                    if (game.level >= game.pr_min && pp_amount >= game.autopr_goal) {
+                    if (game.level >= game.pr_min && pp_amount >= game.autopr_goal[2]) {
                         prestige()
                     } break
                 case 3:
-                    if (game.level >= game.pr_min && game.time >= game.autopr_goal*game.tickspeed) {
+                    if (game.level >= game.pr_min && game.time >= game.autopr_goal[3]*game.tickspeed) {
                         prestige()
                     } break
             }
@@ -1315,64 +1315,88 @@ function save() {
     localStorage.setItem("exp_simulator_save",JSON.stringify(game))
 }
 
+//exporting a save file
+function export_save() {
+    navigator.clipboard.writeText(btoa(JSON.stringify(game)))
+}
+
+//importing a save file
+function import_save() {
+    let save_file = atob(prompt("Paste your exported save code here:"))
+    let valid_json = true
+    try {
+        JSON.parse(save_file)
+    } catch {
+        valid_json = false
+    }
+    
+    if (valid_json == true) {
+        if (JSON.parse(save_file) != null) {
+            load(JSON.parse(save_file))
+        }
+    }
+}
+
 //wiping the save
 function wipe() {
-    reset()
-    game.amp = 1
-    game.pp = 0
-    game.pr_min = 60
-    for (let i=0; i<20; i++) {
-        game.pp_bought[i] = false
+    if (confirm("Are you sure you want to wipe your save?\nThis will reset EVERYTHING!") == true) {
+        reset()
+        game.amp = 1
+        game.pp = 0
+        game.pr_min = 60
+        for (let i=0; i<20; i++) {
+            game.pp_bought[i] = false
+        }
+
+        game.prestige = 0
+        game.all_time_exp = 0
+        game.highest_level = 1
+        game.total_clicks = 0
+        game.all_time = 0
+        game.fastest_prestige = 10**21
+
+        game.ml_boost = 1
+        game.jumpstart = 0
+        game.starter_kit = 0
+
+        game.autopr_toggle = false
+        game.autopr_goal = [60,1,1,0]
+        for (let i=0; i<4; i++) {
+            game.autoup_toggle[i] = false
+        } for (let i=0; i<4; i++) {
+            up_toggle(i)
+            up_toggle(i)
+        }
+
+        game.autopr_mode = 0
+        game.exp_oc = 1
+        game.oc_state = 0
+        game.oc_time = 180*30
+        game.autooc_toggle = false
+
+        ampbutton_update()
+        click_update()
+
+        document.getElementById("amp_up").style.display = "none"
+        document.getElementById("pp_up").style.display = "none"
+        document.getElementById("amp_button").style.display = "none"
+
+        document.getElementById("boost_auto").style.display = "none"
+        document.getElementById("auto_auto").style.display = "none"
+        document.getElementById("fluct_auto").style.display = "none"
+        document.getElementById("fact_auto").style.display = "none"
+
+        document.getElementById("amp_auto").style.display = "none"
+        document.getElementById("prestige").style.display = "none"
+        document.getElementById("hidden").style.display = "none"
+        document.getElementById("auto_config").style.display = "none"
+        document.getElementById("auto_mode").style.display = "none"
+
+        document.getElementById("overclock").style.display = "none"
+        document.getElementById("oc_auto").style.display = "none"
+
+        save()
     }
-
-    game.prestige = 0
-    game.all_time_exp = 0
-    game.highest_level = 1
-    game.total_clicks = 0
-    game.all_time = 0
-    game.fastest_prestige = 10**21
-
-    game.ml_boost = 1
-    game.jumpstart = 0
-    game.starter_kit = 0
-
-    game.autopr_toggle = false
-    game.autopr_goal = 60
-    for (let i=0; i<4; i++) {
-        game.autoup_toggle[i] = false
-    } for (let i=0; i<4; i++) {
-        up_toggle(i)
-        up_toggle(i)
-    }
-
-    game.autopr_mode = 0
-    game.exp_oc = 1
-    game.oc_state = 0
-    game.oc_time = 180*30
-    game.autooc_toggle = false
-
-    ampbutton_update()
-    click_update()
-
-    document.getElementById("amp_up").style.display = "none"
-    document.getElementById("pp_up").style.display = "none"
-    document.getElementById("amp_button").style.display = "none"
-
-    document.getElementById("boost_auto").style.display = "none"
-    document.getElementById("auto_auto").style.display = "none"
-    document.getElementById("fluct_auto").style.display = "none"
-    document.getElementById("fact_auto").style.display = "none"
-
-    document.getElementById("amp_auto").style.display = "none"
-    document.getElementById("prestige").style.display = "none"
-    document.getElementById("hidden").style.display = "none"
-    document.getElementById("auto_config").style.display = "none"
-    document.getElementById("auto_mode").style.display = "none"
-
-    document.getElementById("overclock").style.display = "none"
-    document.getElementById("oc_auto").style.display = "none"
-
-    save()
 }
 
 //setting up the tick loop
@@ -1385,139 +1409,157 @@ let amp_tick_loop = window.setInterval(function() {
     amp_tick()
 }, 100)
 
-//version compatibility checks
-let savegame = JSON.parse(localStorage.getItem("exp_simulator_save"))
-if (savegame !== null) {
-    //v2.0.000, v2.0.100, v2.0.200
-    if (savegame.version == "2.0.200" || savegame.version == undefined) {
-        alert("Your save has been wiped, very sorry!\nv2.0.xxx saves are not compatible with v2.1.xxx");
-    }
-    //v2.1.000
-    if (savegame.version == "2.1.000") {
-        if (savegame.highest_level < 300) {
-            game = savegame
-            game.pp_hide = false
-            game.amp_eff = 0
-            game.autopr_mode = 0
-            game.exp_oc = 1
-            game.oc_state = 0
-            game.oc_time = 180*game.tickspeed
-            game.version = "2.1.100"
-            let old_bought = game.pp_bought
-            game.pp_bought = new Array(20).fill(false)
-            for (let i=0; i<10; i++) {
-                game.pp_bought[i] = old_bought[i]
+//load the game
+function load(save_file) {
+    //version compatibility checks
+    let savegame = save_file
+    if (savegame !== null) {
+        //v2.0.000, v2.0.100, v2.0.200
+        if (savegame.version == "2.0.200" || savegame.version == undefined) {
+            alert("Your save has been wiped, very sorry!\nv2.0.xxx saves are not compatible with v2.1.xxx");
+        }
+        //v2.1.000
+        if (savegame.version == "2.1.000") {
+            if (savegame.highest_level < 300) {
+                game = savegame
+                game.pp_hide = false
+                game.amp_eff = 0
+                game.autopr_mode = 0
+                game.exp_oc = 1
+                game.oc_state = 0
+                game.oc_time = 180*game.tickspeed
+                game.autopr_goal = [60,1,1,0]
+                game.version = "2.1.102"
+                let old_bought = game.pp_bought
+                game.pp_bought = new Array(20).fill(false)
+                for (let i=0; i<10; i++) {
+                    game.pp_bought[i] = old_bought[i]
+                }
+                game.pp_bought[11] = old_bought[10]
+                game.pp_bought[12] = old_bought[11]
+            } else {
+                alert("Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary");
             }
-            game.pp_bought[11] = old_bought[10]
-            game.pp_bought[12] = old_bought[11]
-        } else {
-            alert("Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary");
         }
-    }
-    //v2.1.003
-    if (savegame.version == "2.1.003"){
-        if (savegame.highest_level < 300) {
-            game = savegame
-            game.amp_eff = 0
-            game.autopr_mode = 0
-            game.exp_oc = 1
-            game.oc_state = 0
-            game.oc_time = 180*game.tickspeed
-            game.version = "2.1.100"
-            let old_bought = game.pp_bought
-            game.pp_bought = new Array(20).fill(false)
-            for (let i=0; i<10; i++) {
-                game.pp_bought[i] = old_bought[i]
+        //v2.1.003
+        if (savegame.version == "2.1.003"){
+            if (savegame.highest_level < 300) {
+                game = savegame
+                game.amp_eff = 0
+                game.autopr_mode = 0
+                game.exp_oc = 1
+                game.oc_state = 0
+                game.oc_time = 180*game.tickspeed
+                game.autopr_goal = [60,1,1,0]
+                game.version = "2.1.102"
+                let old_bought = game.pp_bought
+                game.pp_bought = new Array(20).fill(false)
+                for (let i=0; i<10; i++) {
+                    game.pp_bought[i] = old_bought[i]
+                }
+                game.pp_bought[11] = old_bought[10]
+                game.pp_bought[12] = old_bought[11]
+            } else {
+                alert("Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary");
             }
-            game.pp_bought[11] = old_bought[10]
-            game.pp_bought[12] = old_bought[11]
-        } else {
-            alert("Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary");
+        }
+        //v2.1.100
+        if (savegame.version == "2.1.100"){
+            game = savegame
+            game.autopr_goal = [60,1,1,0]
+            game.version = "2.1.102"
+        }
+        //v2.1.102
+        if (savegame.version == "2.1.102"){
+            game = savegame
         }
     }
-    //v2.1.100
-    if (savegame.version == "2.1.100"){
-        game = savegame
+
+    //make all gui match the loaded save data
+    color_update()
+    ampbutton_update()
+    pp_update()
+    goto_tab(game.tab)
+    switch (game.notation) {
+        case 0: document.getElementById("notation_button").innerText = "LONG"; break
+        case 1: document.getElementById("notation_button").innerText = "STANDARD"; break
+        case 2: document.getElementById("notation_button").innerText = "SCIENTIFIC"; break
+        case 3: document.getElementById("notation_button").innerText = "ENGINEERING"; break
+        case 4: document.getElementById("notation_button").innerText = "CONDENSED"; break
+    } if (game.pp_hide == false) {
+        document.getElementById("hidden_button").innerText = "OFF"
+    } else {
+        document.getElementById("hidden_button").innerText = "ON"
     }
-}
 
-//make all gui match the loaded save data
-color_update()
-ampbutton_update()
-pp_update()
-goto_tab(game.tab)
-switch (game.notation) {
-    case 0: document.getElementById("notation_button").innerText = "LONG"; break
-    case 1: document.getElementById("notation_button").innerText = "STANDARD"; break
-    case 2: document.getElementById("notation_button").innerText = "SCIENTIFIC"; break
-    case 3: document.getElementById("notation_button").innerText = "ENGINEERING"; break
-    case 4: document.getElementById("notation_button").innerText = "CONDENSED"; break
-} if (game.pp_hide = false) {
-    document.getElementById("hidden_button").innerText = "OFF"
-} else {
-    document.getElementById("hidden_button").innerText = "ON"
-}
+    document.getElementById("lvlnum").innerText = format_num(game.level)
+    document.getElementById("exp").innerText = format_num(game.exp) + " / " + format_num(game.goal) + " EXP"
+    document.getElementById("total_exp").innerText = format_num(game.total_exp) + " Total EXP"
+    document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact) + " EXP/click"
+    document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
+    document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(game.exp_fluct*game.exp_fact) + " max extra EXP/click"
+    document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fact_tier+game.starter_kit) + ": " + format_num(game.exp_fact) + "x EXP/click"
+    click_update()
+    for (let i=0; i<4; i++) {
+        up_toggle(i)
+        up_toggle(i)
+    }
+    pr_toggle()
+    pr_toggle()
+    oc_toggle()
+    oc_toggle()
+    if (game.level < 60) {
+        document.getElementById("progress").style.width = 100*game.exp/game.goal + "%"
+    } else {
+        document.getElementById("progress").style.width = 100 + "%"
+    }
 
-document.getElementById("lvlnum").innerText = format_num(game.level)
-document.getElementById("exp").innerText = format_num(game.exp) + " / " + format_num(game.goal) + " EXP"
-document.getElementById("total_exp").innerText = format_num(game.total_exp) + " Total EXP"
-document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact) + " EXP/click"
-document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
-document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(game.exp_fluct*game.exp_fact) + " max extra EXP/click"
-document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fact_tier+game.starter_kit) + ": " + format_num(game.exp_fact) + "x EXP/click"
-click_update()
-for (let i=0; i<4; i++) {
-    up_toggle(i)
-    up_toggle(i)
-}
-pr_toggle()
-pr_toggle()
-if (game.level < 60) {
-    document.getElementById("progress").style.width = 100*game.exp/game.goal + "%"
-} else {
-    document.getElementById("progress").style.width = 100 + "%"
-}
-
-if (game.pp_bought[3] == true) {
-    document.getElementById("amp_auto").style.display = "inline"
-    if (game.pp_bought[6] == true) {
-        document.getElementById("auto_config").style.display = "block"
-        if (game.pp_bought[13] == true) {
-            document.getElementById("auto_mode").style.display = "block"
-            autopr_switch(game.autopr_mode)
+    if (game.pp_bought[3] == true) {
+        document.getElementById("amp_auto").style.display = "inline"
+        if (game.pp_bought[6] == true) {
+            document.getElementById("auto_config").style.display = "block"
+            if (game.pp_bought[13] == true) {
+                document.getElementById("auto_mode").style.display = "block"
+                autopr_switch(game.autopr_mode)
+            }
         }
     }
-}
 
-if (game.pp_bought[15] == true) {
-    document.getElementById("overclock").style.display = "block"
-    switch (game.oc_state) {
-        case 0:
-            document.getElementById("oc_button").style.display = "none"
-            document.getElementById("oc_state").innerText = "Recharging"
-            document.getElementById("oc_timer").style.display = "block"
-            document.getElementById("oc_progress").style.background = "#ff2f00"
-            break
-        case 1:
-            document.getElementById("oc_button").style.display = "inline"
-            document.getElementById("oc_state").innerText = "Standby"
-            document.getElementById("oc_timer").style.display = "none"
-            document.getElementById("oc_progress").style.background = "#ff2f00"
-            break
-        case 2:
-            document.getElementById("oc_button").style.display = "none"
-            document.getElementById("oc_state").innerText = "Boosting " + game.exp_oc + "x"
-            document.getElementById("oc_timer").style.display = "block"
-            document.getElementById("oc_progress").style.background = "#ff7f00"
-            break
+    if (game.pp_bought[15] == true) {
+        document.getElementById("overclock").style.display = "block"
+        switch (game.oc_state) {
+            case 0:
+                document.getElementById("oc_button").style.display = "none"
+                document.getElementById("oc_state").innerText = "Recharging"
+                document.getElementById("oc_timer").style.display = "block"
+                document.getElementById("oc_progress").style.background = "#ff2f00"
+                break
+            case 1:
+                document.getElementById("oc_button").style.display = "inline"
+                document.getElementById("oc_state").innerText = "Standby"
+                document.getElementById("oc_timer").style.display = "none"
+                document.getElementById("oc_progress").style.background = "#ff2f00"
+                break
+            case 2:
+                document.getElementById("oc_button").style.display = "none"
+                document.getElementById("oc_state").innerText = "Boosting " + game.exp_oc + "x"
+                document.getElementById("oc_timer").style.display = "block"
+                document.getElementById("oc_progress").style.background = "#ff7f00"
+                break
+        }
+
+        if (game.pp_bought[17] == true) {
+            document.getElementById("oc_auto").style.display = "inline"
+        }
     }
 
-    if (game.pp_bought[17] == true) {
-        document.getElementById("oc_auto").style.display = "inline"
-    }
+    document.getElementById("level_input").value = game.autopr_goal[0]
+    document.getElementById("amp_input").value = game.autopr_goal[1]
+    document.getElementById("pp_input").value = game.autopr_goal[2]
+    document.getElementById("time_input").value = game.autopr_goal[3]
 }
 
-document.getElementById("level_input").value = game.autopr_goal
+load(JSON.parse(localStorage.getItem("exp_simulator_save")))
 
 //setting up the autosave loop
 let save_loop = window.setInterval(function() {
