@@ -130,6 +130,20 @@
                     </div>
                 </div>
 
+                <div class="upgrades">
+                    <div class="item">
+                        <p id="flux" class="uptext">
+                            EXP Flux<br>Tier 0: +0x flux/min
+                        </p>
+                        <button id="flux_button" class="button" onclick="upgrade(4,false)">
+                            UPGRADE!
+                        </button>
+                        <button id="flux_auto" class="button autoup" onclick="up_toggle(4)">
+                            OFF
+                        </button>
+                    </div>
+                </div>
+
                 <div id="overclock">
                     <div class="oc_top">
                         <p id="oc_text">
@@ -264,10 +278,10 @@
                 </div>
                 <div class="option" id="hidden">
                     <p id="hidden_text" class="option_text">
-                        Hide Purchased PP Upgrades
+                        PP Upgrades
                     </p>
                     <button id="hidden_button" class="option_button small" onclick="pp_hidden()">
-                        OFF
+                        SHOW ALL
                     </button>
                 </div>
                 <button id="wipe_button" class="option wipe_button" onclick="wipe()">
@@ -276,7 +290,7 @@
             </div>
 
             <p class="info">
-                <br><br><br>EXP Simulator v2.1.102<br>Made by Zakuro
+                <br><br><br>EXP Simulator v2.1.200<br>Made by Zakuro
             </p>
             <a href="changelog.html" target="_blank" class="info link">Changelog</a>
         </div>
