@@ -1606,7 +1606,7 @@ function load(save_file) {
                 game.flux_tier = 0
                 game.flux_level = 75
                 let old_bought = game.pp_bought
-                game.pp_bought = new Array(24).fill(false)
+                game.pp_bought = new Array(25).fill(false)
                 for (let i=0; i<=7; i++) {
                     game.pp_bought[i] = old_bought[i]
                 } for (let i=9; i<=11; i++) {
@@ -1636,7 +1636,7 @@ function load(save_file) {
                 game.flux_tier = 0
                 game.flux_level = 75
                 let old_bought = game.pp_bought
-                game.pp_bought = new Array(24).fill(false)
+                game.pp_bought = new Array(25).fill(false)
                 for (let i=0; i<=7; i++) {
                     game.pp_bought[i] = old_bought[i]
                 } for (let i=9; i<=11; i++) {
@@ -1660,7 +1660,7 @@ function load(save_file) {
             game.flux_tier = 0
             game.flux_level = 75
             let old_bought = game.pp_bought
-            game.pp_bought = new Array(24).fill(false)
+            game.pp_bought = new Array(25).fill(false)
             for (let i=0; i<=7; i++) {
                 game.pp_bought[i] = old_bought[i]
             }
@@ -1684,7 +1684,7 @@ function load(save_file) {
             game.flux_tier = 0
             game.flux_level = 75
             let old_bought = game.pp_bought
-            game.pp_bought = new Array(24).fill(false)
+            game.pp_bought = new Array(25).fill(false)
             for (let i=0; i<=7; i++) {
                 game.pp_bought[i] = old_bought[i]
             }
