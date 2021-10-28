@@ -400,7 +400,7 @@ main {
 
 .pp_text {
     flex-grow: 1;
-    padding-right: 0.75em;
+    padding-right: 1.2em;
 }
 
 .pp_name {
@@ -420,6 +420,7 @@ main {
     font-size: 1em;
     font-family: Abel, sans-serif;
     font-weight: normal;
+    flex: 0 0 6.4em;
 }
 
 .pp_locked {
