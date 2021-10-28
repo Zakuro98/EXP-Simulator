@@ -284,8 +284,6 @@ new pp_upgrade_child("Manual Labor V","Unautomated clicks are boosted a further 
     pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
     click_update()
 },ml4)
-//exp battery [25]
-/*let battery = new pp_upgrade_child("EXP Battery","Unlocks an upgrade that gives an additional multiplier to EXP with active and idle modes",1000,function(){},flux)*/
 //done initializing pp upgrades
 
 //notation switching
