@@ -284,6 +284,8 @@ new pp_upgrade_child("Manual Labor V","Unautomated clicks are boosted a further 
     pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
     click_update()
 },ml4)
+//exp battery [25]
+/*let battery = new pp_upgrade_child("EXP Battery","Unlocks an upgrade that gives an additional multiplier to EXP with active and idle modes",1000,function(){},flux)*/
 //done initializing pp upgrades
 
 //notation switching
@@ -1730,8 +1732,9 @@ function load(save_file) {
     document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
     document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(game.exp_fluct*game.exp_fact) + " max extra EXP/click"
     document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fact_tier+game.starter_kit) + ": " + format_num(game.exp_fact) + "x EXP/click"
+    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15) + "x flux/min"
     click_update()
-    for (let i=0; i<4; i++) {
+    for (let i=0; i<5; i++) {
         up_toggle(i)
         up_toggle(i)
     }
