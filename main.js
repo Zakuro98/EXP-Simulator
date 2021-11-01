@@ -841,6 +841,9 @@ function pp_update() {
     }
 
     //spare power description
+    if (game.pp != 0) pp_upgrade.upgrades[22].desc = "EXP production is boosted based on how much spare PP you have\n(Currently: " + format_eff(Math.log10(game.pp)**1.5+1) + "x)"
+    else pp_upgrade.upgrades[22].desc = "EXP production is boosted based on how much spare PP you have\n(Currently: 1x)"
+    pp_map.get(pp_upgrade.upgrades[22]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[22].desc
     if (game.pp_bought[22] == true) {
         if (game.pp != 0) {
             game.pp_power = Math.log10(game.pp)**1.5+1
@@ -848,8 +851,6 @@ function pp_update() {
             game.pp_power = 1
         }
 
-        pp_upgrade.upgrades[22].desc = "EXP production is boosted based on how much spare PP you have\n(Currently: " + format_eff(game.pp_power) + "x)"
-        pp_map.get(pp_upgrade.upgrades[22]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[22].desc
         click_update()
         if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
         else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
@@ -1216,10 +1217,10 @@ function upgrade(id,max) {
                         game.auto_level += 5
                         game.cps = 2*(game.auto_tier + game.starter_kit)
                         document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
+                        pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +16% for every Autoclicker tier\n(Currently: " + format_eff(16+game.cps*0.08) + "x)"
+                        pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
                         if (game.pp_bought[24] == true) {
                             game.ml_boost = 16 + game.cps*0.08
-                            pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +16% for every Autoclicker tier\n(Currently: " + format_eff(16+game.cps*0.08) + "x)"
-                            pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
                             click_update()
                         }
                     } if (game.level < game.auto_level) {
@@ -1349,10 +1350,10 @@ function upgrade(id,max) {
                     }
                     game.cps = 2*(game.auto_tier + game.starter_kit)
                     document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
+                    pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +16% for every Autoclicker tier\n(Currently: " + format_eff(16+game.cps*0.08) + "x)"
+                    pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
                     if (game.pp_bought[24] == true) {
                         game.ml_boost = 16 + game.cps*0.08
-                        pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +16% for every Autoclicker tier\n(Currently: " + format_eff(16+game.cps*0.08) + "x)"
-                        pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
                         click_update()
                     }
                     if (game.level < game.auto_level) {
@@ -1702,17 +1703,17 @@ function prestige() {
             pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
         }
 
+        pp_upgrade.upgrades[27].desc = "EXP production is boosted based on how many times you have Prestiged\n(Currently: " + format_eff(1 + (game.prestige/1000)**(1/2)) + "x)"
+        pp_map.get(pp_upgrade.upgrades[27]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[27].desc
         if (game.pp_bought[27] == true) {
             game.prestige_power = 1 + (game.prestige/1000)**(1/2)
-            pp_upgrade.upgrades[27].desc = "EXP production is boosted based on how many times you have Prestiged\n(Currently: " + format_eff(game.prestige_power) + "x)"
-            pp_map.get(pp_upgrade.upgrades[27]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[27].desc
             click_update()
         }
 
+        pp_upgrade.upgrades[30].desc = "EXP production is boosted based on your highest level\n(Currently: " + format_eff(1 + (game.highest_level/400)) + "x)"
+        pp_map.get(pp_upgrade.upgrades[30]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[30].desc
         if (game.pp_bought[30] == true) {
             game.depth_power = 1 + (game.highest_level/400)
-            pp_upgrade.upgrades[30].desc = "EXP production is boosted based on your highest level\n(Currently: " + format_eff(game.depth_power) + "x)"
-            pp_map.get(pp_upgrade.upgrades[30]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[30].desc
             click_update()
         }
 
