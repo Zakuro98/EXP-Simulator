@@ -142,6 +142,20 @@
                             OFF
                         </button>
                     </div>
+                    <div class="item">
+                        <p id="battery" class="uptext">
+                            EXP Battery<br>Tier 0: 1x manual EXP production
+                        </p>
+                        <button id="battery_button" class="button" onclick="upgrade(5,false)">
+                            UPGRADE!
+                        </button>
+                        <button id="battery_mode" class="button" onclick="battery_toggle()">
+                            ACTIVE
+                        </button>
+                        <button id="battery_auto" class="button autoup" onclick="up_toggle(5)">
+                            OFF
+                        </button>
+                    </div>
                 </div>
 
                 <div id="overclock">
@@ -284,13 +298,21 @@
                         SHOW ALL
                     </button>
                 </div>
+                <div class="option">
+                    <p id="epilepsy_text" class="option_text">
+                        Anti-Seizure Progress Bar
+                    </p>
+                    <button id="epilepsy_button" class="option_button small" onclick="epilepsy()">
+                        OFF
+                    </button>
+                </div>
                 <button id="wipe_button" class="option wipe_button" onclick="wipe()">
                     DELETE SAVE
                 </button>
             </div>
 
             <p class="info">
-                <br><br><br>EXP Simulator v2.1.203<br>Made by Zakuro
+                <br><br><br>EXP Simulator v2.1.300<br>Made by Zakuro
             </p>
             <a href="changelog.html" target="_blank" class="info link">Changelog</a>
         </div>
