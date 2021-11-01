@@ -75,6 +75,10 @@ main {
     color: black;
 }
 
+#battery_mode {
+    color: red;
+}
+
 .mode_active {
     background-color: white;
     color: black;
