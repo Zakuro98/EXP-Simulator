@@ -294,7 +294,7 @@ new pp_upgrade_child("Spare Power","EXP production is boosted based on how much 
 //extra cycles 2 [23]
 let ec2 = new pp_upgrade_child("Extra Cycles II","EXP Overclocker now boosts EXP 5x",600,function(){},ec1)
 //manual labor 5 [24]
-new pp_upgrade_child("Manual Labor V","Unautomated clicks are boosted a further +16% for every Autoclicker tier\n(Currently: 16x)",840,function(){
+new pp_upgrade_child("Manual Labor V","Unautomated clicks are boosted a further +24% for every Autoclicker tier\n(Currently: 16x)",840,function(){
     game.ml_boost = 16 + game.cps * 0.08
     pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +16% for every Autoclicker tier\n(Currently: " + format_eff(16+game.cps*0.08) + "x)"
     pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
@@ -1217,10 +1217,10 @@ function upgrade(id,max) {
                         game.auto_level += 5
                         game.cps = 2*(game.auto_tier + game.starter_kit)
                         document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
-                        pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +16% for every Autoclicker tier\n(Currently: " + format_eff(16+game.cps*0.08) + "x)"
+                        pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +24% for every Autoclicker tier\n(Currently: " + format_eff(16+game.cps*0.12) + "x)"
                         pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
                         if (game.pp_bought[24] == true) {
-                            game.ml_boost = 16 + game.cps*0.08
+                            game.ml_boost = 16 + game.cps*0.12
                             click_update()
                         }
                     } if (game.level < game.auto_level) {
@@ -1350,10 +1350,10 @@ function upgrade(id,max) {
                     }
                     game.cps = 2*(game.auto_tier + game.starter_kit)
                     document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
-                    pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +16% for every Autoclicker tier\n(Currently: " + format_eff(16+game.cps*0.08) + "x)"
+                    pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +24% for every Autoclicker tier\n(Currently: " + format_eff(16+game.cps*0.12) + "x)"
                     pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
                     if (game.pp_bought[24] == true) {
-                        game.ml_boost = 16 + game.cps*0.08
+                        game.ml_boost = 16 + game.cps*0.12
                         click_update()
                     }
                     if (game.level < game.auto_level) {
