@@ -1699,7 +1699,7 @@ function prestige() {
         
         if (game.pp_bought[24] == true) {
             game.ml_boost = 16
-            pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +16% for every Autoclicker tier\n(Currently: 16x)"
+            pp_upgrade.upgrades[24].desc = "Unautomated clicks are boosted a further +24% for every Autoclicker tier\n(Currently: 16x)"
             pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[24].desc
         }
 
