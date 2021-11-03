@@ -911,7 +911,7 @@ function increment(num) {
             document.getElementById("progress").style.width = 100*game.exp/game.goal + "%"
         } else {
             let eps = (game.exp_add+game.exp_fluct/2)*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power*game.cps
-            if (game.battery_mode = 1) eps *= game.exp_battery
+            if (game.battery_mode == 1) eps *= game.exp_battery
             if (eps/game.goal >= 3) {
                 document.getElementById("progress").style.width = 100 + "%"
             } else {
