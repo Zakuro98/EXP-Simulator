@@ -186,6 +186,54 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="capacitor">
+                    <p id="cap_title" class="cap_text">
+                        EXP Capacitor
+                    </p>
+                    <div class="backpanel">
+                        <div id="capacitance">
+                            <div id="cap_mode">
+                                <p class="cap_text">
+                                    Capacitance Mode:
+                                </p>
+                                <button id="cap_off" class="button mode_active" onclick="set_capacitance(0)">
+                                    OFF
+                                </button>
+                                <button id="cap_25" class="button" onclick="set_capacitance(1)">
+                                    25%
+                                </button>
+                                <button id="cap_50" class="button" onclick="set_capacitance(2)">
+                                    50%
+                                </button>
+                                <button id="cap_75" class="button" onclick="set_capacitance(3)">
+                                    75%
+                                </button>
+                                <button id="cap_100" class="button" onclick="set_capacitance(4)">
+                                    100%
+                                </button>
+                                <p id="cap_disc" class="cap_text">
+                                    (switching Discharges)
+                                </p>
+                            </div>
+                            <p id="cap_stats" class="cap_text">
+                                Base EXP Production: 0 EXP/sec<br>Effective EXP Production: 0 EXP/sec<br>Stored EXP: 0s of EXP<br>If Discharged: +0 EXP (Not Active)
+                            </p>
+                        </div>
+                        <div id="discharge">
+                            <button id="discharge_button" class="button blocked" onclick="discharge()">
+                                DISCHARGE!
+                            </button>
+                            <button id="dis_auto" class="button autoup" onclick="ds_toggle()">
+                                OFF
+                            </button>
+                            <p id="dis_text" class="cap_text">
+                                Discharge at (seconds):
+                            </p>
+                            <input class="goal_input" id="dis_input" type="number" value="30" step="0.01" min="1" max="300"> 
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="prestige" id="prestige_page">
@@ -306,15 +354,28 @@
                         OFF
                     </button>
                 </div>
+                <div class="option">
+                    <p id="color_text" class="option_text">
+                        Level Color
+                    </p>
+                    <button id="color_button" class="option_button small" onclick="level_color()">
+                        AUTOMATIC
+                    </button>
+                    <p id="custom_hue_text" class="option_text">
+                        Hue:
+                    </p>
+                    <input class="goal_input" id="hue_input" type="number" value="0" min="0" max="359">
+                </div>
                 <button id="wipe_button" class="option wipe_button" onclick="wipe()">
                     DELETE SAVE
                 </button>
             </div>
 
             <p class="info">
-                <br><br><br>EXP Simulator v2.1.303<br>Made by Zakuro
+                <br><br><br>EXP Simulator v2.1.400<br>Made by Zakuro
             </p>
             <a href="changelog.html" target="_blank" class="info link">Changelog</a>
+            <a href="https://discord.gg/fuQSBkYYqH" target="_blank" class="info link">Discord</a>
         </div>
     </main>
     <script src="main.js" charset="utf-8" type="text/javascript"></script>
