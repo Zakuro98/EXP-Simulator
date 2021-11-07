@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.1.300",
+    version: "2.1.400",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -32,11 +32,11 @@ let game = {
     fastest_prestige: 10**21,
 
     tab: 0,
-    notation: 0,
+    notation: 1,
 
     //v2.1.000 variables
     pp: 0,
-    pp_bought: new Array(32).fill(false),
+    pp_bought: new Array(39).fill(false),
     pr_min: 60,
 
     ml_boost: 1,
@@ -83,7 +83,22 @@ let game = {
     battery_tier: 0,
     battery_level: 150,
 
-    epilepsy: true
+    epilepsy: true,
+
+    //v2.1.400 variables
+    cap_mode: 0,
+    prev_mode: 0,
+    cap_boost: 1,
+    stored_exp: 0,
+
+    global_multiplier: 1,
+    flux_boost: 1,
+
+    autods_toggle: false,
+    autods_goal: 30,
+
+    color_mode: 0,
+    custom_hue: 0
 }
 
 //initialize map
@@ -292,7 +307,7 @@ new pp_upgrade_child("Stretched Time","EXP Overclocker now stays active twice as
 //pp power [22]
 new pp_upgrade_child("Spare Power","EXP production is boosted based on how much spare PP you have",450,function(){},flux)
 //extra cycles 2 [23]
-let ec2 = new pp_upgrade_child("Extra Cycles II","EXP Overclocker now boosts EXP 5x",600,function(){},ec1)
+new pp_upgrade_child("Extra Cycles II","EXP Overclocker now boosts EXP 5x",600,function(){},ec1)
 //manual labor 5 [24]
 new pp_upgrade_child("Manual Labor V","Unautomated clicks are boosted a further +24% for every Autoclicker tier\n(Currently: 16x)",840,function(){
     game.ml_boost = 16 + game.cps * 0.08
@@ -318,17 +333,16 @@ new pp_upgrade_child("Starter Kit III","+6 free tiers for every upgrade",1850,fu
     game.cps += 6
     game.exp_fluct += 3*game.amp
     game.exp_fact += 3
-    if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power) + " EXP/click"
-    else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power) + " EXP/click"
+    if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " EXP/click"
+    else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " EXP/click"
     document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
-    if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power) + " max extra EXP/click"
-    else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power) + " max extra EXP/click"
+    if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " max extra EXP/click"
+    else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " max extra EXP/click"
     document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fact_tier) + ": " + format_num(game.exp_fact) + "x EXP/click"
-    if (game.pp_bought[20] == true) document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15) + "x flux/min"
-    if (game.pp_bought[25] == true) {
-        if (game.battery_mode == 0) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x manual EXP production"
-        else if (game.battery_mode == 1) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x automated EXP production"
-    }
+    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15) + "x flux/min"
+    game.exp_battery += 3
+    if (game.battery_mode == 0) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x manual EXP production"
+    else if (game.battery_mode == 1) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x automated EXP production"
     click_update()
     upgrade_update()
 },battery)
@@ -342,9 +356,59 @@ new pp_upgrade_child("Depth Power","EXP production is boosted based on your high
     click_update()
 },prst_power)
 //triple a [31]
-new pp_upgrade_child("AAA","EXP Battery is now 3x as strong",10000,function(){
+let aaa = new pp_upgrade_child("AAA","EXP Battery is now 3x stronger",10000,function(){
     game.exp_battery *= 3
 },prst_power)
+//exp capacitor [32]
+let capacitor = new pp_upgrade_child("EXP Capacitor","Unlocks the EXP Capacitor, which takes some of your EXP production and stores it\nStored EXP can later be discharged at a 2x boost",15000,function(){
+    document.getElementById("capacitor").style.display = "block"
+},aaa)
+//magnified flux [33]
+let magflux = new pp_upgrade_child("Magnified Flux","EXP Flux is now 5x stronger",20000,function(){
+    game.flux_boost = 5
+    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15*game.flux_boost) + "x flux/min"
+},capacitor)
+//starter kit 4 [34]
+new pp_upgrade_child("Starter Kit IV","+10 free tiers for every upgrade",25000,function(){
+    game.starter_kit = 10
+    game.exp_add += 4*game.amp
+    game.cps += 8
+    game.exp_fluct += 4*game.amp
+    game.exp_fact += 4
+    if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " EXP/click"
+    else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " EXP/click"
+    document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
+    if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " max extra EXP/click"
+    else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " max extra EXP/click"
+    document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fact_tier) + ": " + format_num(game.exp_fact) + "x EXP/click"
+    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15) + "x flux/min"
+    game.exp_battery += 4
+    if (game.battery_mode == 0) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x manual EXP production"
+    else if (game.battery_mode == 1) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x automated EXP production"
+    click_update()
+    upgrade_update()
+},capacitor)
+//high voltage 1 [35]
+let hv1 = new pp_upgrade_child("High Voltage I","Unlocks 50% Capacitance mode, which gives a 4x boost on Discharge\nAlso unlocks automation for Discharge",30000,function(){
+    document.getElementById("cap_50").style.display = "inline"
+    document.getElementById("cap_disc").style.display = "inline"
+    document.getElementById("dis_auto").style.display = "block"
+    document.getElementById("dis_text").style.display = "block"
+    document.getElementById("dis_input").style.display = "block"
+},capacitor)
+//9 volt [36]
+new pp_upgrade_child("9-Volt","EXP Battery is now 9x stronger",40000,function(){
+    game.exp_battery *= 3
+},magflux)
+//high voltage 2 [37]
+let hv2 = new pp_upgrade_child("High Voltage II","Unlocks 75% Capacitance mode, giving a 6x boost on Discharge",45000,function(){
+    document.getElementById("cap_75").style.display = "inline"
+},hv1)
+//high voltage 3 [38]
+new pp_upgrade_child("High Voltage III","Unlocks 100% Capacitance mode, giving a 8x boost on Discharge\nAlso unlocks continuous Discharge (put in 0 for auto-discharge amount)",60000,function(){
+    document.getElementById("cap_100").style.display = "inline"
+    document.getElementById("dis_input").min = 0
+},hv2)
 //done initializing pp upgrades
 
 //notation switching
@@ -381,6 +445,24 @@ function epilepsy() {
     } else {
         game.epilepsy = true
         document.getElementById("epilepsy_button").innerText = "OFF"
+    }
+}
+
+function level_color() {
+    game.color_mode += 1
+    if (game.color_mode >= 3) game.color_mode = 0
+    switch (game.color_mode) {
+        case 0: 
+            document.getElementById("color_button").innerText = "AUTOMATIC"
+            document.getElementById("custom_hue_text").style.display = "none"
+            document.getElementById("hue_input").style.display = "none"
+            break
+        case 1: document.getElementById("color_button").innerText = "RAINBOW"; break
+        case 2:
+            document.getElementById("color_button").innerText = "CUSTOM"
+            document.getElementById("custom_hue_text").style.display = "block"
+            document.getElementById("hue_input").style.display = "block"
+            break
     }
 }
 
@@ -529,9 +611,12 @@ function get_level(xp) {
     const g = 32/27*(1020+f)**6.5+d-e
     const h = (13**(8/7)*(g-d+e)**(88/91))/(2**(401/91)*3**(9/91))
     const i = (27*h/32)**(1/8)
-    const j = 32/27*(1680+i)**8+g-h
+    const j = 32/27*(2880+i)**8+g-h
     const k = (2**(221/64)*(j-g+h)**(63/64))/(3**(147/64))
     const l = (27*k/32)**(1/9)
+    const m = 32/27*(7800+l)**9+j-k
+    const n = (3*(m-j+k)**(32/33))/(2**(67/33))
+    const o = (27*n/32)**(1/12)
 
     if (xp < a) {
         return Math.floor((27*xp/32)**(1/3) - 1)
@@ -541,8 +626,10 @@ function get_level(xp) {
         return Math.floor((27*(xp+e-d)/32)**(2/13)+300-f)
     } else if (xp < j) {
         return Math.floor((27*(xp+h-g)/32)**(1/8)+1320-i)
+    } else if (xp < m) {
+        return Math.floor((27*(xp+k-j)/32)**(1/9)+4200-l)
     } else {
-        return Math.floor((27*(xp+k-j)/32)**(1/9)+3000-l)
+        return Math.floor((27*(xp+n-m)/32)**(1/12)+12000-o)
     }
 }
 
@@ -557,9 +644,12 @@ function get_exp(lvl) {
     const g = 32/27*(1020+f)**6.5+d-e
     const h = (13**(8/7)*(g-d+e)**(88/91))/(2**(401/91)*3**(9/91))
     const i = (27*h/32)**(1/8)
-    const j = 32/27*(1680+i)**8+g-h
+    const j = 32/27*(2880+i)**8+g-h
     const k = (2**(221/64)*(j-g+h)**(63/64))/(3**(147/64))
     const l = (27*k/32)**(1/9)
+    const m = 32/27*(7800+l)**9+j-k
+    const n = (3*(m-j+k)**(32/33))/(2**(67/33))
+    const o = (27*n/32)**(1/12)
 
     if (lvl == 0) {
         return lvl
@@ -570,10 +660,12 @@ function get_exp(lvl) {
             return 32/27*(lvl-59+c)**5+a-b
         } else if (lvl < 1320) {
             return 32/27*(lvl-299+f)**6.5+d-e
-        } else if (lvl < 3000) {
+        } else if (lvl < 4200) {
             return 32/27*(lvl-1319+i)**8+g-h
+        } else if (lvl < 12000) {
+            return 32/27*(lvl-4199+l)**9+j-k
         } else {
-            return 32/27*(lvl-2999+l)**9+j-k
+            return 32/27*(lvl-11999+o)**12+m-n
         }
     }
 }
@@ -599,7 +691,20 @@ function get_pp(lvl) {
 //getting level colors
 const colors = ["#0055ff","#00d5ff","#00ffd0","#00ff2a","#c5ff00","#ffe700","#ff8e00","#ff3200","#ff0066","#ff00df","#b900ff","#5500ff"]
 function get_color(num) {
-    return colors[num]
+    let color = "#0055ff"
+    switch (game.color_mode) {
+        case 0:
+            color = colors[num]
+            break
+        case 1:
+            color = "hsl(" + (game.all_time*36/game.tickspeed)%360 + ",100%,50%)"
+            break
+        case 2:
+            color = "hsl(" + game.custom_hue + ",100%,50%)"
+            break
+    }
+
+    return color
 }
 
 //updating the color of the level bar
@@ -616,11 +721,11 @@ function color_update() {
 //updating text on the exp button
 function click_update() {
     if (game.fluct_tier == 0 && game.starter_kit == 0) {
-        if (game.battery_mode == 1) document.getElementById("click").innerText = "+" + format_num(Math.round(game.exp_add*game.ml_boost*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP"
-        else document.getElementById("click").innerText = "+" + format_num(Math.round(game.exp_add*game.ml_boost*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP"
+        if (game.battery_mode == 1) document.getElementById("click").innerText = "+" + format_num(Math.round(game.exp_add*game.ml_boost*game.global_multiplier)) + " EXP"
+        else document.getElementById("click").innerText = "+" + format_num(Math.round(game.exp_add*game.ml_boost*game.global_multiplier*game.exp_battery)) + " EXP"
     } else if (game.fluct_tier >= 1 || game.starter_kit >= 1) {
-        if (game.battery_mode == 1) document.getElementById("click").innerText = "+" + format_num(Math.round(game.exp_add*game.ml_boost*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.ml_boost*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP"
-        else document.getElementById("click").innerText = "+" + format_num(Math.round(game.exp_add*game.ml_boost*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.ml_boost*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP"
+        if (game.battery_mode == 1) document.getElementById("click").innerText = "+" + format_num(Math.round(game.exp_add*game.ml_boost*game.global_multiplier)) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.ml_boost*game.global_multiplier)) + " EXP"
+        else document.getElementById("click").innerText = "+" + format_num(Math.round(game.exp_add*game.ml_boost*game.global_multiplier*game.exp_battery)) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.ml_boost*game.global_multiplier*game.exp_battery)) + " EXP"
     }
 }
 
@@ -846,16 +951,25 @@ function pp_update() {
     pp_map.get(pp_upgrade.upgrades[22]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[22].desc
     if (game.pp_bought[22] == true) {
         if (game.pp != 0) {
-            game.pp_power = Math.log10(game.pp)**1.5+1
+            game.pp_power = Math.log(game.pp/100+1)**2+1
         } else {
             game.pp_power = 1
         }
 
         click_update()
-        if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-        else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-        if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
-        else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+        if (game.battery_mode == 1) {
+            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+        } else {
+            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP/click"
+            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+        } if (game.battery_mode == 1) {
+            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+        } else {
+            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.cap_boost)) + " max extra EXP/click"
+            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+        }
     }
 }
 
@@ -910,9 +1024,10 @@ function increment(num) {
         if (game.epilepsy == true) {
             document.getElementById("progress").style.width = 100*game.exp/game.goal + "%"
         } else {
-            let eps = (game.exp_add+game.exp_fluct/2)*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power*game.cps
+            let eps = (game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.cap_boost*game.cps
+            if (game.autods_toggle == true && game.autods_goal == 0) eps = (game.exp_add+game.exp_fluct/2)*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)*game.cps
             if (game.battery_mode == 1) eps *= game.exp_battery
-            if (eps/game.goal >= 3) {
+            if (eps/game.goal >= 2) {
                 document.getElementById("progress").style.width = 100 + "%"
             } else {
                 document.getElementById("progress").style.width = 100*game.exp/game.goal + "%"
@@ -956,12 +1071,12 @@ function player_increment() {
         if (Date.now() - click_time >= 50) legit = true
         else legit = false
     } if (legit == true) {
-        if (game.battery_mode == 0) increment(Math.round((game.exp_add+fluct_increment(game.exp_fluct))*game.ml_boost*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power))
-        else increment(Math.round((game.exp_add+fluct_increment(game.exp_fluct))*game.ml_boost*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power))
+        if (game.battery_mode == 0) increment(Math.round((game.exp_add+fluct_increment(game.exp_fluct))*game.ml_boost*game.global_multiplier*game.exp_battery))
+        else increment(Math.round((game.exp_add+fluct_increment(game.exp_fluct))*game.ml_boost*game.global_multiplier))
         game.clicks += 1
         game.total_clicks += 1
+        click_time = Date.now()
     }
-    click_time = Date.now()
 }
 
 //game operations run every tick
@@ -970,8 +1085,8 @@ function tick() {
     if (game.cps > 0) {
         game.click_time += game.cps/game.tickspeed
         if (game.click_time >= 1) {
-            if (game.battery_mode == 1) increment(Math.round((game.exp_add+fluct_increment(game.exp_fluct))*Math.floor(game.click_time)*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power))
-            else increment(Math.round((game.exp_add+fluct_increment(game.exp_fluct))*Math.floor(game.click_time)*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power))
+            if (game.battery_mode == 1) increment(Math.round((game.exp_add+fluct_increment(game.exp_fluct))*Math.floor(game.click_time)*game.global_multiplier*game.exp_battery*game.cap_boost))
+            else increment(Math.round((game.exp_add+fluct_increment(game.exp_fluct))*Math.floor(game.click_time)*game.global_multiplier*game.cap_boost))
             game.click_time -= Math.floor(game.click_time)
         }
     }
@@ -984,32 +1099,48 @@ function tick() {
     if (game.tab == 2) {
         let exp_plus = ""
         if (game.fluct_tier == 0 && game.starter_kit == 0) {
-            if (game.battery_mode == 1) exp_plus = format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP"
-            else exp_plus = format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP"
+            if (game.battery_mode == 1) {
+                exp_plus = format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP"
+                if (game.autods_toggle == true && game.autods_goal == 0) exp_plus = format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP (Discharging)"
+            } else {
+                exp_plus = format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP"
+                if (game.autods_toggle == true && game.autods_goal == 0) exp_plus = format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP (Discharging)"
+            }
         } else if (game.fluct_tier >= 1 || game.starter_kit >= 1) {
-            if (game.battery_mode == 1) exp_plus = format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP"
-            else exp_plus = format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP"
+            if (game.battery_mode == 1) {
+                exp_plus = format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP"
+                if (game.autods_toggle == true && game.autods_goal == 0) exp_plus = format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP (Discharging)"
+            } else {
+                exp_plus = format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.global_multiplier*game.cap_boost)) + " EXP"
+                if (game.autods_toggle == true && game.autods_goal == 0) exp_plus = format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " - " + format_num(Math.round((game.exp_add+game.exp_fluct)*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP (Discharging)"
+            }
         }
 
         let exp_eff = ""
         let exp_eff_stat = ""
         if (game.cps >= 10 || game.prestige >= 1) {
-            if (game.battery_mode == 1) exp_eff = "\n" + format_num((game.exp_add+game.exp_fluct/2)*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power*game.cps) + " EXP/sec"
-            else exp_eff = "\n" + format_num((game.exp_add+game.exp_fluct/2)*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power*game.cps) + " EXP/sec"
+            if (game.battery_mode == 1) {
+                exp_eff = "\n" + format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.exp_battery*game.cap_boost*game.cps) + " EXP/sec"
+                if (game.autods_toggle == true && game.autods_goal == 0) exp_eff = "\n" + format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)*game.cps) + " EXP/sec (Discharging)"
+            } else {
+                exp_eff = "\n" + format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.cap_boost*game.cps) + " EXP/sec"
+                if (game.autods_toggle == true && game.autods_goal == 0) exp_eff = "\n" + format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)*game.cps) + " EXP/sec (Discharging)"
+            }
             exp_eff_stat = "\nEXP Automation Power:"
         }
 
         let total_boost = ""
         let total_boost_stat = ""
         if (game.pp_bought[20] == true || game.pp_bought[5] == true) {
-            total_boost = "\n" + format_eff(game.amp*game.exp_fact*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power*game.exp_oc) + "x"
+            total_boost = "\n" + format_eff(game.amp*game.global_multiplier*game.cap_boost) + "x"
+            if (game.autods_toggle == true && game.autods_goal == 0) total_boost = "\n" + format_eff(game.amp*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)) + "x (Discharging)"
             total_boost_stat = "\nTotal EXP Multiplier:"
         }
         
         if (game.prestige <= 0) {
             if (game.level < 5) {
                 document.getElementById("stat_left").innerText = "Current Level:\nCurrent EXP:\nTotal EXP:\n\nEXP/click:\n\nTotal Clicks:\n\nTime Played:"
-                document.getElementById("stat_right").innerText = "LVL " + format_num(game.level) + "\n" + format_num(game.exp) + " / " + format_num(game.goal) + " EXP\n" + format_num(game.total_exp) + " EXP\n\n"  + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP\n\n" + format_num(game.clicks) + "\n\n" + format_time(game.time)
+                document.getElementById("stat_right").innerText = "LVL " + format_num(game.level) + "\n" + format_num(game.exp) + " / " + format_num(game.goal) + " EXP\n" + format_num(game.total_exp) + " EXP\n\n"  + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP\n\n" + format_num(game.clicks) + "\n\n" + format_time(game.time)
             } else {
                 document.getElementById("stat_left").innerText = "Current Level:\nCurrent EXP:\nTotal EXP:\n\nEXP/click:\nAutoclicking:" + exp_eff_stat + "\n\nTotal Clicks:\n\nTime Played:"
                 document.getElementById("stat_right").innerText = "LVL " + format_num(game.level) + "\n" + format_num(game.exp) + " / " + format_num(game.goal) + " EXP\n" + format_num(game.total_exp) + " EXP\n\n"  + exp_plus + "\n" + format_num(game.cps) + " clicks/s" + exp_eff + "\n\n" + format_num(game.clicks) + "\n\n" + format_time(game.time)
@@ -1031,12 +1162,21 @@ function tick() {
     if (game.pp_bought[20] == true) {
         game.exp_flux += 0.0025*(game.flux_tier+game.starter_kit)/game.tickspeed
         if (game.exp_flux >= 20) game.exp_flux = 20
-        pp_upgrade.upgrades[20].desc = "Unlocks an upgrade that generates a boost to EXP production, increasing over time\n(Currently: " + format_eff(game.exp_flux) + "x)"
+        pp_upgrade.upgrades[20].desc = "Unlocks an upgrade that generates a boost to EXP production, increasing over time\n(Currently: " + format_eff(game.exp_flux*game.flux_boost) + "x)"
         pp_map.get(pp_upgrade.upgrades[20]).querySelector(".pp_desc").innerText = pp_upgrade.upgrades[20].desc
-        if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-        else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-        if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
-        else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+        if (game.battery_mode == 1) {
+            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+        } else {
+            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP/click"
+            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+        } if (game.battery_mode == 1) {
+            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+        } else {
+            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.cap_boost)) + " max extra EXP/click"
+            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+        }
     }
 
     //grabbing level from autoprestige level config
@@ -1063,6 +1203,12 @@ function tick() {
             if (game.autopr_goal[3] < 0) game.autopr_goal[3] = 0
             break
     }
+
+    //grabbing hue from custom hue input
+    game.custom_hue = Number(document.getElementById("hue_input").value)
+    if (game.custom_hue == NaN) game.custom_hue = 0
+    if (game.custom_hue < 0) game.custom_hue = 0
+    if (game.custom_hue >= 360) game.custom_hue = 359
 
     //prestige automation
     if (game.autopr_toggle == true) {
@@ -1132,8 +1278,19 @@ function tick() {
                 } else {
                     game.exp_oc = 1
                     game.oc_state = 0
-                    document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_oc) + " EXP/click"
-                    document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_oc) + " max extra EXP/click"
+                    if (game.battery_mode == 1) {
+                        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                    } else {
+                        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                    } if (game.battery_mode == 1) {
+                        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                    } else {
+                        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.cap_boost)) + " max extra EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                    }
                     click_update()
                     document.getElementById("oc_state").innerText = "Recharging"
                     document.getElementById("oc_progress").style.background = "#ff2f00"
@@ -1157,6 +1314,52 @@ function tick() {
             ampbutton_update()
         }
     }
+
+    //capacitance handling
+    if (game.pp_bought[32] == true) {
+        let eps = (game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.cps
+        if (game.battery_mode == 1) eps *= game.exp_battery
+        let base_exp = "Base EXP Production: " + format_num(eps) + " EXP/sec"
+        let effective_exp = "Effective EXP Production: " + format_num(eps*game.cap_boost) + " EXP/sec"
+        let stored = "Stored EXP: " + format_time(game.stored_exp) + " of EXP"
+        if (game.stored_exp >= 300*game.tickspeed) stored = "Stored EXP: 5:00 of EXP (MAX)"
+        let if_discharge = "If Discharged: +0 EXP (Not Active)"
+        if (game.cap_mode >= 1) if_discharge = "If Discharged: +" + format_num(game.stored_exp/game.tickspeed*eps*game.cap_mode*2) + " EXP (" + game.cap_mode*2 + "x)"
+        document.getElementById("cap_stats").innerText = base_exp + "\n" + effective_exp + "\n" + stored + "\n" + if_discharge
+
+        if (game.stored_exp <= 300*game.tickspeed) {
+            game.stored_exp += 1-game.cap_boost
+        }
+
+        if (game.cap_mode > 0 && (game.stored_exp >= game.tickspeed || game.pp_bought[38] == true)) {
+            document.getElementById("discharge_button").className = "button ready"
+            if (game.level < 60) {
+                document.getElementById("discharge_button").style.color = get_color(Math.floor(game.level/10))
+            } else {
+                document.getElementById("discharge_button").style.color = get_color((Math.floor(game.level/60)+5)%12)
+            }
+        } else {
+            document.getElementById("discharge_button").className = "button blocked"
+            document.getElementById("discharge_button").style.color = "silver"
+        }
+    }
+
+    //grabbing amount from auto discharge config
+    game.autods_goal = Number(document.getElementById("dis_input").value)
+    if (game.autods_goal == NaN) game.autods_goal = 1
+    if (game.autods_goal < 1 && game.pp_bought[38] == false) game.autods_goal = 1
+    else if (game.autods_goal < 0 && game.pp_bought[38] == true) game.autods_goal = 0
+    if (game.autods_goal > 300) game.autods_goal = 300
+
+    //discharge automation
+    if (game.autods_toggle == true) {
+        if (game.stored_exp >= game.autods_goal*game.tickspeed) {
+            discharge()
+        }
+    }
+
+    //calculating total multiplier
+    game.global_multiplier = game.exp_fact*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power*game.depth_power
 }
 
 //tab switching
@@ -1197,8 +1400,13 @@ function upgrade(id,max) {
                         game.boost_tier += 1
                         game.boost_level += 2
                         game.exp_add = (game.boost_tier + game.starter_kit + 1)*game.amp
-                        if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-                        else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
+                        if (game.battery_mode == 1) {
+                            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                        } else {
+                            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                        }
                         click_update()
                     } if (game.level < game.boost_level) {
                         document.getElementById("boost_button").innerText = "LVL " + format_num(game.boost_level)
@@ -1240,8 +1448,13 @@ function upgrade(id,max) {
                         game.fluct_level += 3
                         if (game.pp_bought[15] == false) game.exp_fluct = (game.fluct_tier+game.starter_kit)*game.amp
                         else game.exp_fluct = (game.fluct_tier+game.starter_kit)*game.amp*2
-                        if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
-                        else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+                        if (game.battery_mode == 1) {
+                            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                        } else {
+                            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.cap_boost)) + " max extra EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                        }
                         click_update()
                     } if (game.level < game.fluct_level) {
                         document.getElementById("fluct_button").innerText = "LVL " + format_num(game.fluct_level)
@@ -1262,10 +1475,19 @@ function upgrade(id,max) {
                         else if (game.fact_tier >= 5) game.fact_level += 60
                         game.exp_fact = game.fact_tier+game.starter_kit+1
                         document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fact_tier+game.starter_kit) + ": " + format_num(game.exp_fact) + "x EXP/click"
-                        if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-                        else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-                        if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
-                        else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+                        if (game.battery_mode == 1) {
+                            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                        } else {
+                            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                        } if (game.battery_mode == 1) {
+                            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                        } else {
+                            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.cap_boost)) + " max extra EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                        }
                         click_update()
                     } if (game.level < game.fact_level) {
                         document.getElementById("fact_button").innerText = "LVL " + format_num(game.fact_level)
@@ -1282,7 +1504,7 @@ function upgrade(id,max) {
                     if (game.level >= game.flux_level) {
                         game.flux_tier += 1
                         game.flux_level += 75
-                        document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15) + "x flux/min"
+                        document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15*game.flux_boost) + "x flux/min"
                     } if (game.level < game.flux_level) {
                         document.getElementById("flux_button").innerText = "LVL " + format_num(game.flux_level)
                         if (game.flux_level < 60) {
@@ -1299,14 +1521,17 @@ function upgrade(id,max) {
                         game.battery_tier += 1
                         game.battery_level += 90
                         if (game.pp_bought[31] == false) game.exp_battery = game.battery_tier+game.starter_kit+1
-                        else game.exp_battery = (game.battery_tier+game.starter_kit+1)*3
+                        else if (game.pp_bought[36] == false) game.exp_battery = (game.battery_tier+game.starter_kit+1)*3
+                        else game.exp_battery = (game.battery_tier+game.starter_kit+1)*9
                         if (game.battery_mode == 0) {
                             document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x manual EXP production"
                             click_update()
                         } else if (game.battery_mode == 1) {
                             document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x automated EXP production"
-                            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-                            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+                            document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                            document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+                            if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
                         }
                     } if (game.level < game.battery_level) {
                         document.getElementById("battery_button").innerText = "LVL " + format_num(game.battery_level)
@@ -1329,8 +1554,13 @@ function upgrade(id,max) {
                         game.boost_level += 2
                     }
                     game.exp_add = (game.boost_tier + game.starter_kit + 1)*game.amp
-                    if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-                    else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
+                    if (game.battery_mode == 1) {
+                        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                    } else {
+                        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                    }
                     click_update()
                     if (game.level < game.boost_level) {
                         document.getElementById("boost_button").innerText = "LVL " + format_num(game.boost_level)
@@ -1374,8 +1604,13 @@ function upgrade(id,max) {
                     }
                     if (game.pp_bought[15] == false) game.exp_fluct = (game.fluct_tier+game.starter_kit)*game.amp
                     else game.exp_fluct = (game.fluct_tier+game.starter_kit)*game.amp*2
-                    if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
-                    else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+                    if (game.battery_mode == 1) {
+                        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                    } else {
+                        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.cap_boost)) + " max extra EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                    }
                     click_update()
                     if (game.level < game.fluct_level) {
                         document.getElementById("fluct_button").innerText = "LVL " + format_num(game.fluct_level)
@@ -1397,10 +1632,19 @@ function upgrade(id,max) {
                     }
                     game.exp_fact = game.fact_tier+game.starter_kit+1
                     document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fact_tier+game.starter_kit) + ": " + format_num(game.exp_fact) + "x EXP/click"
-                    if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-                    else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-                    if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
-                    else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+                    if (game.battery_mode == 1) {
+                        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                    } else {
+                        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                    } if (game.battery_mode == 1) {
+                        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                    } else {
+                        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.cap_boost)) + " max extra EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+                    }
                     click_update()
                     if (game.level < game.fact_level) {
                         document.getElementById("fact_button").innerText = "LVL " + format_num(game.fact_level)
@@ -1418,7 +1662,7 @@ function upgrade(id,max) {
                         game.flux_tier += 1
                         game.flux_level += 75
                     }
-                    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15) + "x flux/min"
+                    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15*game.flux_boost) + "x flux/min"
                     if (game.level < game.flux_level) {
                         document.getElementById("flux_button").innerText = "LVL " + format_num(game.flux_level)
                         if (game.flux_level < 60) {
@@ -1436,14 +1680,17 @@ function upgrade(id,max) {
                         game.battery_level += 90
                     }
                     if (game.pp_bought[31] == false) game.exp_battery = game.battery_tier+game.starter_kit+1
-                    else game.exp_battery = (game.battery_tier+game.starter_kit+1)*3
+                    else if (game.pp_bought[36] == false) game.exp_battery = (game.battery_tier+game.starter_kit+1)*3
+                        else game.exp_battery = (game.battery_tier+game.starter_kit+1)*9
                     if (game.battery_mode == 0) {
                         document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x manual EXP production"
                         click_update()
                     } else if (game.battery_mode == 1) {
                         document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x automated EXP production"
-                        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-                        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+                        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+                        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+                        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
                     } if (game.level < game.battery_level) {
                         document.getElementById("battery_button").innerText = "LVL " + format_num(game.battery_level)
                         if (game.battery_level < 60) {
@@ -1463,15 +1710,67 @@ function oc_activate() {
     game.exp_oc = 3
     if (game.pp_bought[19] == true) game.exp_oc = 4
     if (game.pp_bought[23] == true) game.exp_oc = 5
-    if (game.battery_mode == 1) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-    else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-    if (game.battery_mode == 1) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
-    else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+    if (game.battery_mode == 1) {
+        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+    } else {
+        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP/click"
+        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+    } if (game.battery_mode == 1) {
+        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+    } else {
+        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.cap_boost)) + " max extra EXP/click"
+        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
+    }
     click_update()
     document.getElementById("oc_state").innerText = "Boosting " + game.exp_oc + "x"
     document.getElementById("oc_button").style.display = "none"
     document.getElementById("oc_timer").style.display = "block"
     document.getElementById("oc_progress").style.background = "#ff7f00"
+}
+
+//capacitance switching
+function set_capacitance(mode) {
+    if (game.cap_mode != 0) game.prev_mode = game.cap_mode
+    game.cap_mode = mode
+    if (game.cap_mode > game.prev_mode) discharge()
+    
+    document.getElementById("cap_off").className = "button"
+    document.getElementById("cap_25").className = "button"
+    document.getElementById("cap_50").className = "button"
+    document.getElementById("cap_75").className = "button"
+    document.getElementById("cap_100").className = "button"
+
+    game.cap_boost = 1-0.25*mode
+
+    switch (mode) {
+        case 0:
+            document.getElementById("cap_off").className = "button mode_active"
+            break
+        case 1:
+            document.getElementById("cap_25").className = "button mode_active"
+            break
+        case 2:
+            document.getElementById("cap_50").className = "button mode_active"
+            break
+        case 3:
+            document.getElementById("cap_75").className = "button mode_active"
+            break
+        case 4:
+            document.getElementById("cap_100").className = "button mode_active"
+            break
+    }
+}
+
+//discharging the capacitor
+function discharge() {
+    if (game.cap_mode >= 1 && (game.stored_exp >= game.tickspeed || game.pp_bought[38] == true)) {
+        let eps = (game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.cps
+        if (game.battery_mode == 1) eps *= game.exp_battery
+        increment(game.stored_exp/game.tickspeed*eps*game.cap_mode*2)
+        game.stored_exp = 0
+    }
 }
 
 //upgrade automation toggles
@@ -1573,21 +1872,38 @@ function oc_toggle() {
     }
 }
 
+//discharge automation toggle
+function ds_toggle() {
+    if (game.autods_toggle == false) {
+        game.autods_toggle = true
+        document.getElementById("dis_auto").innerText = "ON"
+        document.getElementById("dis_auto").style.color = "#00ff00"
+    } else {
+        game.autods_toggle = false
+        document.getElementById("dis_auto").innerText = "OFF"
+        document.getElementById("dis_auto").style.color = "#ff0000"
+    }
+}
+
 //battery mode toggle
 function battery_toggle() {
     if (game.battery_mode == 0){
         game.battery_mode = 1
         click_update()
-        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*game.cap_boost)) + " EXP/click"
+        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*game.cap_boost)) + " max extra EXP/click"
+        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
         document.getElementById("battery_mode").innerText = "IDLE"
         document.getElementById("battery_mode").style.color = "#00ffff"
     } else {
         game.battery_mode = 0
         click_update()
         document.getElementById("battery_mode").innerText = "ACTIVE"
-        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " EXP/click"
-        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power*game.depth_power)) + " max extra EXP/click"
+        document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*game.cap_boost)) + " EXP/click"
+        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_add*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " EXP/click"
+        document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*game.cap_boost)) + " max extra EXP/click"
+        if (game.autods_toggle == true && game.autods_goal == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(Math.round(game.exp_fluct*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2))) + " max extra EXP/click"
         document.getElementById("battery_mode").style.color = "#ff0000"
     }
 }
@@ -1661,7 +1977,7 @@ function reset() {
     document.getElementById("fluct_button").innerText = "UPGRADE!"
     document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": " + format_num(game.exp_fact) + "x EXP/click"
     document.getElementById("fact_button").innerText = "UPGRADE!"
-    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_num(0.15*(game.flux_tier+game.starter_kit)) + "x flux/min"
+    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_num(game.flux_boost*0.15*(game.flux_tier+game.starter_kit)) + "x flux/min"
     document.getElementById("flux_button").innerText = "UPGRADE!"
     if (game.battery_mode == 0) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x manual EXP production"
     else if (game.battery_mode == 1) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x automated EXP production"
@@ -1725,7 +2041,7 @@ function prestige() {
         document.getElementById("fluct_button").innerText = "UPGRADE!"
         document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": " + format_num(game.exp_fact) + "x EXP/click"
         document.getElementById("fact_button").innerText = "UPGRADE!"
-        document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_num(0.15*(game.flux_tier+game.starter_kit)) + "x flux/min"
+        document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_num(game.flux_boost*0.15*(game.flux_tier+game.starter_kit)) + "x flux/min"
         document.getElementById("flux_button").innerText = "UPGRADE!"
         if (game.battery_mode == 0) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x manual EXP production"
         else if (game.battery_mode == 1) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x automated EXP production"
@@ -1814,6 +2130,9 @@ function wipe() {
 
         game.autopr_toggle = false
         game.autopr_goal = [60,1,1,0]
+        game.autooc_toggle = false
+        game.autods_toggle = false
+        game.autods_goal = 30
         for (let i=0; i<4; i++) {
             game.autoup_toggle[i] = false
         } for (let i=0; i<4; i++) {
@@ -1831,7 +2150,11 @@ function wipe() {
         game.patience = 1
         game.oc_state = 0
         game.oc_time = 180*30
-        game.autooc_toggle = false
+        game.cap_mode = 0
+        game.prev_mode = 0
+        game.cap_boost = 1
+        game.stored_exp = 0
+        game.flux_boost = 1
 
         ampbutton_update()
         click_update()
@@ -1856,6 +2179,14 @@ function wipe() {
         document.getElementById("overclock").style.display = "none"
         document.getElementById("oc_auto").style.display = "none"
 
+        document.getElementById("capacitor").style.display = "none"
+        document.getElementById("cap_50").style.display = "none"
+        document.getElementById("cap_75").style.display = "none"
+        document.getElementById("cap_100").style.display = "none"
+        document.getElementById("cap_disc").style.display = "none"
+        document.getElementById("dis_auto").style.display = "none"
+        document.getElementById("dis_text").style.display = "none"
+        document.getElementById("dis_input").style.display = "none"
         save()
     }
 }
@@ -1909,8 +2240,16 @@ function load(save_file) {
                 game.patience = 1
                 game.prestige_power = 1
                 game.depth_power = 1
+                game.cap_mode = 0
+                game.prev_mode = 0
+                game.cap_boost = 1
+                game.stored_exp = 0
+                game.global_multiplier = 1
+                game.flux_boost = 1
+                game.autods_toggle = false
+                game.autods_goal = 30
                 let old_bought = game.pp_bought
-                game.pp_bought = new Array(32).fill(false)
+                game.pp_bought = new Array(39).fill(false)
                 for (let i=0; i<=7; i++) {
                     game.pp_bought[i] = old_bought[i]
                 } for (let i=9; i<=11; i++) {
@@ -1920,7 +2259,7 @@ function load(save_file) {
                     case 1: game.pr_min = 70; break
                     case 2: game.pr_min = 80; break
                 }
-                game.version = "2.1.300"
+                game.version = "2.1.400"
             } else {
                 alert("Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary")
             }
@@ -1947,8 +2286,16 @@ function load(save_file) {
                 game.patience = 1
                 game.prestige_power = 1
                 game.depth_power = 1
+                game.cap_mode = 0
+                game.prev_mode = 0
+                game.cap_boost = 1
+                game.stored_exp = 0
+                game.global_multiplier = 1
+                game.flux_boost = 1
+                game.autods_toggle = false
+                game.autods_goal = 30
                 let old_bought = game.pp_bought
-                game.pp_bought = new Array(32).fill(false)
+                game.pp_bought = new Array(39).fill(false)
                 for (let i=0; i<=7; i++) {
                     game.pp_bought[i] = old_bought[i]
                 } for (let i=9; i<=11; i++) {
@@ -1958,7 +2305,7 @@ function load(save_file) {
                     case 1: game.pr_min = 70; break
                     case 2: game.pr_min = 80; break
                 }
-                game.version = "2.1.300"
+                game.version = "2.1.400"
             } else {
                 alert("Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary")
             }
@@ -1979,8 +2326,16 @@ function load(save_file) {
             game.patience = 1
             game.prestige_power = 1
             game.depth_power = 1
+            game.cap_mode = 0
+            game.prev_mode = 0
+            game.cap_boost = 1
+            game.stored_exp = 0
+            game.global_multiplier = 1
+            game.flux_boost = 1
+            game.autods_toggle = false
+            game.autods_goal = 30
             let old_bought = game.pp_bought
-            game.pp_bought = new Array(32).fill(false)
+            game.pp_bought = new Array(39).fill(false)
             for (let i=0; i<=7; i++) {
                 game.pp_bought[i] = old_bought[i]
             }
@@ -1994,7 +2349,7 @@ function load(save_file) {
                 case 2: game.pr_min = 80; break
                 case 3: game.pr_min = 90; break
             }
-            game.version = "2.1.300"
+            game.version = "2.1.400"
         }
         //v2.1.102
         if (savegame.version == "2.1.102") {
@@ -2011,8 +2366,16 @@ function load(save_file) {
             game.patience = 1
             game.prestige_power = 1
             game.depth_power = 1
+            game.cap_mode = 0
+            game.prev_mode = 0
+            game.cap_boost = 1
+            game.stored_exp = 0
+            game.global_multiplier = 1
+            game.flux_boost = 1
+            game.autods_toggle = false
+            game.autods_goal = 30
             let old_bought = game.pp_bought
-            game.pp_bought = new Array(32).fill(false)
+            game.pp_bought = new Array(39).fill(false)
             for (let i=0; i<=7; i++) {
                 game.pp_bought[i] = old_bought[i]
             }
@@ -2026,7 +2389,7 @@ function load(save_file) {
                 case 2: game.pr_min = 80; break
                 case 3: game.pr_min = 90; break
             }
-            game.version = "2.1.300"
+            game.version = "2.1.400"
         }
         //v2.1.200
         if (savegame.version == "2.1.200") {
@@ -2039,15 +2402,41 @@ function load(save_file) {
             game.patience = 1
             game.prestige_power = 1
             game.depth_power = 1
+            game.cap_mode = 0
+            game.prev_mode = 0
+            game.cap_boost = 1
+            game.stored_exp = 0
+            game.global_multiplier = 1
+            game.flux_boost = 1
+            game.autods_toggle = false
+            game.autods_goal = 30
             let old_bought = game.pp_bought
-            game.pp_bought = new Array(32).fill(false)
+            game.pp_bought = new Array(39).fill(false)
             for (let i=0; i<=24; i++) {
                 game.pp_bought[i] = old_bought[i]
             }
-            game.version = "2.1.300"
+            game.version = "2.1.400"
         }
         //v2.1.300
         if (savegame.version == "2.1.300") {
+            game = savegame
+            game.cap_mode = 0
+            game.prev_mode = 0
+            game.cap_boost = 1
+            game.stored_exp = 0
+            game.global_multiplier = 1
+            game.flux_boost = 1
+            game.autods_toggle = false
+            game.autods_goal = 30
+            let old_bought = game.pp_bought
+            game.pp_bought = new Array(39).fill(false)
+            for (let i=0; i<=31; i++) {
+                game.pp_bought[i] = old_bought[i]
+            }
+            game.version = "2.1.400"
+        }
+        //v2.1.400
+        if (savegame.version == "2.1.400") {
             game = savegame
         }
     }
@@ -2071,18 +2460,26 @@ function load(save_file) {
         document.getElementById("epilepsy_button").innerText = "OFF"
     } else {
         document.getElementById("epilepsy_button").innerText = "ON"
+    } switch (game.color_mode) {
+        case 0: document.getElementById("color_button").innerText = "AUTOMATIC"; break
+        case 1: document.getElementById("color_button").innerText = "RAINBOW"; break
+        case 2:
+            document.getElementById("color_button").innerText = "CUSTOM"
+            document.getElementById("custom_hue_text").style.display = "block"
+            document.getElementById("hue_input").style.display = "block"
+            break
     }
 
     document.getElementById("lvlnum").innerText = format_num(game.level)
     document.getElementById("exp").innerText = format_num(game.exp) + " / " + format_num(game.goal) + " EXP"
     document.getElementById("total_exp").innerText = format_num(game.total_exp) + " Total EXP"
-    if (game.battery_mode == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power) + " EXP/click"
-    else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power) + " EXP/click"
+    if (game.battery_mode == 0) document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " EXP/click"
+    else document.getElementById("boost").innerText = "EXP Boost\nTier " + format_num(game.boost_tier+game.starter_kit) + ": +" + format_num(game.exp_add*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " EXP/click"
     document.getElementById("auto").innerText = "Autoclicker\nTier " + format_num(game.auto_tier+game.starter_kit) + ": " + format_num(game.cps) + " clicks/s"
-    if (game.battery_mode == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power) + " max extra EXP/click"
-    else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.pp_power*game.prestige_power) + " max extra EXP/click"
+    if (game.battery_mode == 0) document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " max extra EXP/click"
+    else document.getElementById("fluct").innerText = "EXP Fluctuation\nTier " + format_num(game.fluct_tier+game.starter_kit) + ": +" + format_num(game.exp_fluct*game.exp_fact*game.exp_battery*game.exp_oc*game.exp_flux*game.flux_boost*game.pp_power*game.prestige_power) + " max extra EXP/click"
     document.getElementById("fact").innerText = "EXP Factor\nTier " + format_num(game.fact_tier+game.starter_kit) + ": " + format_num(game.exp_fact) + "x EXP/click"
-    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15) + "x flux/min"
+    document.getElementById("flux").innerText = "EXP Flux\nTier " + format_num(game.flux_tier+game.starter_kit) + ": +" + format_eff((game.flux_tier+game.starter_kit)*0.15*game.flux_boost) + "x flux/min"
     if (game.battery_mode == 0) document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x manual EXP production"
     else document.getElementById("battery").innerText = "EXP Battery\nTier " + format_num(game.battery_tier+game.starter_kit) + ": " + format_num(game.exp_battery) + "x automated EXP production"
     click_update()
@@ -2094,6 +2491,8 @@ function load(save_file) {
     pr_toggle()
     oc_toggle()
     oc_toggle()
+    ds_toggle()
+    ds_toggle()
     battery_toggle()
     battery_toggle()
     if (game.level < 60) {
@@ -2155,10 +2554,35 @@ function load(save_file) {
         click_update()
     }
 
+    if (game.pp_bought[32] == true) {
+        document.getElementById("capacitor").style.display = "block"
+        set_capacitance(game.cap_mode)
+    }
+
+    if (game.pp_bought[35] == true) {
+        document.getElementById("cap_50").style.display = "inline"
+        document.getElementById("cap_disc").style.display = "inline"
+        document.getElementById("dis_auto").style.display = "block"
+        document.getElementById("dis_text").style.display = "block"
+        document.getElementById("dis_input").style.display = "block"
+        document.getElementById("dis_input").value = game.autods_goal
+    }
+
+    if (game.pp_bought[37] == true) {
+        document.getElementById("cap_75").style.display = "inline"
+    }
+
+    if (game.pp_bought[38] == true) {
+        document.getElementById("cap_100").style.display = "inline"
+        document.getElementById("dis_input").min = 0
+    }
+
     document.getElementById("level_input").value = game.autopr_goal[0]
     document.getElementById("amp_input").value = game.autopr_goal[1]
     document.getElementById("pp_input").value = game.autopr_goal[2]
     document.getElementById("time_input").value = game.autopr_goal[3]
+
+    document.getElementById("hue_input").value = game.custom_hue
 }
 
 //load the game when opened
