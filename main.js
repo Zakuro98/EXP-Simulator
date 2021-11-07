@@ -2112,7 +2112,7 @@ function wipe() {
         game.amp = 1
         game.pp = 0
         game.pr_min = 60
-        for (let i=0; i<32; i++) {
+        for (let i=0; i<39; i++) {
             game.pp_bought[i] = false
         }
 
