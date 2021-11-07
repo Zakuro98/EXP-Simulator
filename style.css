@@ -290,6 +290,120 @@ main {
     width: 100%;
 }
 
+#capacitor {
+    margin-top: 1.4em;
+    display: none;
+}
+
+.backpanel {
+    display: flex;
+    margin-top: 0.25em;
+    background-color: #44194d;
+    padding: 0.4em;
+}
+
+#capacitance {
+    display: block;
+    flex-grow: 1;
+}
+
+#discharge {
+    display: flex;
+    flex-direction: column;
+}
+
+.cap_text {
+    color: white;
+    font-size: 24px;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    display: inline;
+}
+
+#cap_mode {
+    margin-bottom: 0.5em;
+}
+
+#dis_text {
+    display: none;
+    margin-top: 0.4em;
+    align-self: center;
+}
+
+#dis_auto {
+    display: none;
+    margin-top: 0.4em;
+    padding: 0.1em 0em;
+}
+
+#dis_input {
+    display: none;
+    width: 10.5em;
+    margin-top: 0.4em;
+}
+
+#cap_off {
+    display: inline;
+}
+
+#cap_25 {
+    display: inline;
+}
+
+#cap_50 {
+    display: none;
+}
+
+#cap_75 {
+    display: none;
+}
+
+#cap_100 {
+    display: none;
+}
+
+#cap_disc {
+    display: none;
+    font-size: 0.65em;
+    margin-left: 0.25em;
+}
+
+.blocked {
+    display: inline;
+    color: silver;
+    width: 7.88em;
+    padding: 0.285em 0.571em;
+    font-size: 28px;
+    margin-top: 0em;
+    flex-basis: 2.6em;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.blocked:hover {
+    background-color: #410a4a;
+}
+
+.blocked:active {
+    background-color: #410a4a;
+    color: silver;
+}
+
+.ready {
+    display: inline;
+    width: 7.88em;
+    padding: 0.285em 0.571em;
+    font-size: 28px;
+    margin-top: 0em;
+    flex-basis: 2.6em;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.ready:active {
+    color: black;
+}
+
 .statistics{
     font-size: 0.714em;
     color: white;
@@ -337,6 +451,17 @@ main {
     margin-top: 0em;
     margin-bottom: 0.2em;
     display: block;
+}
+
+#custom_hue_text {
+    margin-top: 0.25em;
+    display: none;
+}
+
+#hue_input {
+    display: none;
+    font-size: 0.8em;
+    width: 2.8em;
 }
 
 .option_button {
