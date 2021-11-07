@@ -2223,6 +2223,8 @@ function load(save_file) {
                 game = savegame
                 game.pp_hide = false
                 game.epilepsy = true
+                game.color_mode = 0
+                game.custom_hue = 0
                 game.amp_eff = 0
                 game.autopr_mode = 0
                 game.exp_oc = 1
@@ -2269,6 +2271,8 @@ function load(save_file) {
             if (savegame.highest_level < 300) {
                 game = savegame
                 game.epilepsy = true
+                game.color_mode = 0
+                game.custom_hue = 0
                 game.amp_eff = 0
                 game.autopr_mode = 0
                 game.exp_oc = 1
@@ -2314,6 +2318,8 @@ function load(save_file) {
         if (savegame.version == "2.1.100") {
             game = savegame
             game.epilepsy = true
+            game.color_mode = 0
+            game.custom_hue = 0
             game.autopr_goal = [60,1,1,0]
             game.exp_flux = 1
             game.pp_power = 1
@@ -2355,6 +2361,8 @@ function load(save_file) {
         if (savegame.version == "2.1.102") {
             game = savegame
             game.epilepsy = true
+            game.color_mode = 0
+            game.custom_hue = 0
             game.exp_flux = 1
             game.pp_power = 1
             game.flux_tier = 0
@@ -2395,6 +2403,8 @@ function load(save_file) {
         if (savegame.version == "2.1.200") {
             game = savegame
             game.epilepsy = true
+            game.color_mode = 0
+            game.custom_hue = 0
             game.exp_battery = 1
             game.battery_mode = 0
             game.battery_tier = 0
@@ -2420,6 +2430,8 @@ function load(save_file) {
         //v2.1.300
         if (savegame.version == "2.1.300") {
             game = savegame
+            game.color_mode = 0
+            game.custom_hue = 0
             game.cap_mode = 0
             game.prev_mode = 0
             game.cap_boost = 1
