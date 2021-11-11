@@ -197,6 +197,21 @@ main {
     width: 0%;
 }
 
+.pp_back {
+    display: none;
+    background: black;
+    height: 0.142em;
+    width: 100%;
+    margin-top: 0.285em;
+}
+
+#pp_progress {
+    display: block;
+    background: #d000ff;
+    height: 0.142em;
+    width: 0%;
+}
+
 #upgrades_page {
     display: block;
 }
@@ -493,6 +508,10 @@ main {
     display: none;
 }
 
+#pp_bar {
+    display: none;
+}
+
 .wipe_button {
     background-color: #410a4a;
     color: red;
@@ -513,6 +532,12 @@ main {
 .wipe_button:active {
     background-color: white;
     color: black;
+}
+
+#hotkeys_list {
+    font-size: 0.7em;
+    margin-top: 2.4em;
+    text-align: center;
 }
 
 .prestige {
