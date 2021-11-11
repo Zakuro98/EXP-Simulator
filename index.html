@@ -31,6 +31,10 @@
                 <div id="progress"></div>
             </div>
 
+            <div id="pp_back" class="pp_back">
+                <div id="pp_progress"></div>
+            </div>
+
             <div class="lvlbar2">
                 <div class="lvlbuttons">
                     <button id="click" onclick="player_increment()">
@@ -68,13 +72,13 @@
                 <button id="upgrades" class="tab" onclick="goto_tab(1)">
                     UPGRADES
                 </button>
-                <button id="prestige" class="tab" onclick="goto_tab(4)">
+                <button id="prestige" class="tab" onclick="goto_tab(2)">
                     PRESTIGE
                 </button>
-                <button id="statistics" class="tab" onclick="goto_tab(2)">
+                <button id="statistics" class="tab" onclick="goto_tab(3)">
                     STATISTICS
                 </button>
-                <button id="settings" class="tab" onclick="goto_tab(3)">
+                <button id="settings" class="tab" onclick="goto_tab(4)">
                     SETTINGS
                 </button>
             </div>
@@ -338,6 +342,14 @@
                         LONG
                     </button>
                 </div>
+                <div class="option" id="hotkeys">
+                    <p id="hotkeys_text" class="option_text">
+                        Hotkeys
+                    </p>
+                    <button id="hotkeys_button" class="option_button small" onclick="hotkeys()">
+                        DISABLED
+                    </button>
+                </div>
                 <div class="option" id="hidden">
                     <p id="hidden_text" class="option_text">
                         PP Upgrades
@@ -346,12 +358,20 @@
                         SHOW ALL
                     </button>
                 </div>
+                <div class="option" id="pp_bar">
+                    <p id="pp_bar_text" class="option_text">
+                        PP Progress Bar
+                    </p>
+                    <button id="pp_bar_button" class="option_button small" onclick="pp_bar()">
+                        DISABLED
+                    </button>
+                </div>
                 <div class="option">
                     <p id="epilepsy_text" class="option_text">
                         Anti-Seizure Progress Bar
                     </p>
                     <button id="epilepsy_button" class="option_button small" onclick="epilepsy()">
-                        OFF
+                        DISABLED
                     </button>
                 </div>
                 <div class="option">
@@ -369,10 +389,17 @@
                 <button id="wipe_button" class="option wipe_button" onclick="wipe()">
                     DELETE SAVE
                 </button>
+                <p id="hotkeys_list" class="option_text">
+                    Hotkeys:
+                    <br>Left/Right: Change tab
+                    <br>Space: EXP button
+                    <br>1-6: Buy Upgrade (on upgrades tab)
+                    <br>M: Buy all upgrades
+                </p>
             </div>
 
-            <p class="info">
-                <br><br><br>EXP Simulator v2.1.400<br>Made by Zakuro
+            <p id="version" class="info">
+                <br><br><br>EXP Simulator v2.1.401<br>Made by Zakuro
             </p>
             <a href="changelog.html" target="_blank" class="info link">Changelog</a>
             <a href="https://discord.gg/fuQSBkYYqH" target="_blank" class="info link">Discord</a>
