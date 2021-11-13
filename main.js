@@ -36,7 +36,7 @@ let game = {
 
     //v2.1.000 variables
     pp: 0,
-    pp_bought: new Array(39).fill(false),
+    pp_bought: [],
     pr_min: 60,
 
     ml_boost: 1,
@@ -5435,7 +5435,7 @@ function wipe() {
         game.total_pp = 0
         game.pp_progress = false
         game.pr_min = 60
-        for (let i = 0; i < 39; i++) {
+        for (let i = 0; i < pp_upgrade.upgrades.length; i++) {
             game.pp_bought[i] = false
         }
 
@@ -5543,352 +5543,7 @@ window.addEventListener("keydown", e => {
     }
 })
 
-//load the game
-function load(save_file) {
-    //version compatibility checks
-    let savegame = save_file
-    if (savegame !== null) {
-        //v2.0.000, v2.0.100, v2.0.200
-        if (savegame.version === "2.0.200" || savegame.version === undefined) {
-            alert(
-                "Your save has been wiped, very sorry!\nv2.0.xxx saves are not compatible with v2.1.xxx"
-            )
-        }
-        //v2.1.000
-        if (savegame.version === "2.1.000") {
-            if (savegame.highest_level < 300) {
-                game = savegame
-                game.pp_hide = false
-                game.epilepsy = true
-                game.color_mode = 0
-                game.custom_hue = 0
-                game.amp_eff = 0
-                game.autopr_mode = 0
-                game.exp_oc = 1
-                game.oc_state = 0
-                game.oc_time = 180 * game.tickspeed
-                game.autopr_goal = [60, 1, 1, 0]
-                game.exp_flux = 1
-                game.pp_power = 1
-                game.flux_tier = 0
-                game.flux_level = 75
-                game.exp_battery = 1
-                game.battery_mode = 0
-                game.battery_tier = 0
-                game.battery_level = 90
-                game.patience = 1
-                game.prestige_power = 1
-                game.depth_power = 1
-                game.cap_mode = 0
-                game.prev_mode = 0
-                game.cap_boost = 1
-                game.stored_exp = 0
-                game.global_multiplier = 1
-                game.flux_boost = 1
-                game.autods_toggle = false
-                game.autods_goal = 30
-                let old_bought = game.pp_bought
-                game.pp_bought = new Array(39).fill(false)
-                for (let i = 0; i <= 7; i++) {
-                    game.pp_bought[i] = old_bought[i]
-                }
-                for (let i = 9; i <= 11; i++) {
-                    game.pp_bought[i] = old_bought[i]
-                }
-                switch (game.jumpstart) {
-                    case 0:
-                        game.pr_min = 60
-                        break
-                    case 1:
-                        game.pr_min = 70
-                        break
-                    case 2:
-                        game.pr_min = 80
-                        break
-                }
-                game.pp_progress = false
-                game.hotkeys = false
-                game.total_pp = game.pp
-                for (let i = 0; i <= 38; i++) {
-                    if (game.pp_bought[i]) {
-                        game.total_pp += pp_upgrade.upgrades[i].price
-                    }
-                }
-                game.version = "2.1.401"
-            } else {
-                alert(
-                    "Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary"
-                )
-            }
-        }
-        //v2.1.003
-        if (savegame.version === "2.1.003") {
-            if (savegame.highest_level < 300) {
-                game = savegame
-                game.epilepsy = true
-                game.color_mode = 0
-                game.custom_hue = 0
-                game.amp_eff = 0
-                game.autopr_mode = 0
-                game.exp_oc = 1
-                game.oc_state = 0
-                game.oc_time = 180 * game.tickspeed
-                game.autopr_goal = [60, 1, 1, 0]
-                game.exp_flux = 1
-                game.pp_power = 1
-                game.flux_tier = 0
-                game.flux_level = 75
-                game.exp_battery = 1
-                game.battery_mode = 0
-                game.battery_tier = 0
-                game.battery_level = 90
-                game.patience = 1
-                game.prestige_power = 1
-                game.depth_power = 1
-                game.cap_mode = 0
-                game.prev_mode = 0
-                game.cap_boost = 1
-                game.stored_exp = 0
-                game.global_multiplier = 1
-                game.flux_boost = 1
-                game.autods_toggle = false
-                game.autods_goal = 30
-                let old_bought = game.pp_bought
-                game.pp_bought = new Array(39).fill(false)
-                for (let i = 0; i <= 7; i++) {
-                    game.pp_bought[i] = old_bought[i]
-                }
-                for (let i = 9; i <= 11; i++) {
-                    game.pp_bought[i] = old_bought[i]
-                }
-                switch (game.jumpstart) {
-                    case 0:
-                        game.pr_min = 60
-                        break
-                    case 1:
-                        game.pr_min = 70
-                        break
-                    case 2:
-                        game.pr_min = 80
-                        break
-                }
-                game.pp_progress = false
-                game.hotkeys = false
-                game.total_pp = game.pp
-                for (let i = 0; i <= 38; i++) {
-                    if (game.pp_bought[i]) {
-                        game.total_pp += pp_upgrade.upgrades[i].price
-                    }
-                }
-                game.version = "2.1.401"
-            } else {
-                alert(
-                    "Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary"
-                )
-            }
-        }
-        //v2.1.100
-        if (savegame.version === "2.1.100") {
-            game = savegame
-            game.epilepsy = true
-            game.color_mode = 0
-            game.custom_hue = 0
-            game.autopr_goal = [60, 1, 1, 0]
-            game.exp_flux = 1
-            game.pp_power = 1
-            game.flux_tier = 0
-            game.flux_level = 75
-            game.exp_battery = 1
-            game.battery_mode = 0
-            game.battery_tier = 0
-            game.battery_level = 90
-            game.patience = 1
-            game.prestige_power = 1
-            game.depth_power = 1
-            game.cap_mode = 0
-            game.prev_mode = 0
-            game.cap_boost = 1
-            game.stored_exp = 0
-            game.global_multiplier = 1
-            game.flux_boost = 1
-            game.autods_toggle = false
-            game.autods_goal = 30
-            let old_bought = game.pp_bought
-            game.pp_bought = new Array(39).fill(false)
-            for (let i = 0; i <= 7; i++) {
-                game.pp_bought[i] = old_bought[i]
-            }
-            game.pp_bought[8] = old_bought[10]
-            game.pp_bought[9] = old_bought[9]
-            for (let i = 10; i <= 18; i++) {
-                game.pp_bought[i] = old_bought[i + 1]
-            }
-            switch (game.jumpstart) {
-                case 0:
-                    game.pr_min = 60
-                    break
-                case 1:
-                    game.pr_min = 70
-                    break
-                case 2:
-                    game.pr_min = 80
-                    break
-                case 3:
-                    game.pr_min = 90
-                    break
-            }
-            game.pp_progress = false
-            game.hotkeys = false
-            game.total_pp = game.pp
-            for (let i = 0; i <= 38; i++) {
-                if (game.pp_bought[i]) {
-                    game.total_pp += pp_upgrade.upgrades[i].price
-                }
-            }
-            game.version = "2.1.401"
-        }
-        //v2.1.102
-        if (savegame.version === "2.1.102") {
-            game = savegame
-            game.epilepsy = true
-            game.color_mode = 0
-            game.custom_hue = 0
-            game.exp_flux = 1
-            game.pp_power = 1
-            game.flux_tier = 0
-            game.flux_level = 75
-            game.exp_battery = 1
-            game.battery_mode = 0
-            game.battery_tier = 0
-            game.battery_level = 90
-            game.patience = 1
-            game.prestige_power = 1
-            game.depth_power = 1
-            game.cap_mode = 0
-            game.prev_mode = 0
-            game.cap_boost = 1
-            game.stored_exp = 0
-            game.global_multiplier = 1
-            game.flux_boost = 1
-            game.autods_toggle = false
-            game.autods_goal = 30
-            let old_bought = game.pp_bought
-            game.pp_bought = new Array(39).fill(false)
-            for (let i = 0; i <= 7; i++) {
-                game.pp_bought[i] = old_bought[i]
-            }
-            game.pp_bought[8] = old_bought[10]
-            game.pp_bought[9] = old_bought[9]
-            for (let i = 10; i <= 18; i++) {
-                game.pp_bought[i] = old_bought[i + 1]
-            }
-            switch (game.jumpstart) {
-                case 0:
-                    game.pr_min = 60
-                    break
-                case 1:
-                    game.pr_min = 70
-                    break
-                case 2:
-                    game.pr_min = 80
-                    break
-                case 3:
-                    game.pr_min = 90
-                    break
-            }
-            game.pp_progress = false
-            game.hotkeys = false
-            game.total_pp = game.pp
-            for (let i = 0; i <= 38; i++) {
-                if (game.pp_bought[i]) {
-                    game.total_pp += pp_upgrade.upgrades[i].price
-                }
-            }
-            game.version = "2.1.401"
-        }
-        //v2.1.200
-        if (savegame.version === "2.1.200") {
-            game = savegame
-            game.epilepsy = true
-            game.color_mode = 0
-            game.custom_hue = 0
-            game.exp_battery = 1
-            game.battery_mode = 0
-            game.battery_tier = 0
-            game.battery_level = 90
-            game.patience = 1
-            game.prestige_power = 1
-            game.depth_power = 1
-            game.cap_mode = 0
-            game.prev_mode = 0
-            game.cap_boost = 1
-            game.stored_exp = 0
-            game.global_multiplier = 1
-            game.flux_boost = 1
-            game.autods_toggle = false
-            game.autods_goal = 30
-            let old_bought = game.pp_bought
-            game.pp_bought = new Array(39).fill(false)
-            for (let i = 0; i <= 24; i++) {
-                game.pp_bought[i] = old_bought[i]
-            }
-            game.pp_progress = false
-            game.hotkeys = false
-            game.total_pp = game.pp
-            for (let i = 0; i <= 38; i++) {
-                if (game.pp_bought[i]) {
-                    game.total_pp += pp_upgrade.upgrades[i].price
-                }
-            }
-            game.version = "2.1.401"
-        }
-        //v2.1.300
-        if (savegame.version === "2.1.300") {
-            game = savegame
-            game.color_mode = 0
-            game.custom_hue = 0
-            game.cap_mode = 0
-            game.prev_mode = 0
-            game.cap_boost = 1
-            game.stored_exp = 0
-            game.global_multiplier = 1
-            game.flux_boost = 1
-            game.autods_toggle = false
-            game.autods_goal = 30
-            let old_bought = game.pp_bought
-            game.pp_bought = new Array(39).fill(false)
-            for (let i = 0; i <= 31; i++) {
-                game.pp_bought[i] = old_bought[i]
-            }
-            game.pp_progress = false
-            game.hotkeys = false
-            game.total_pp = game.pp
-            for (let i = 0; i <= 38; i++) {
-                if (game.pp_bought[i]) {
-                    game.total_pp += pp_upgrade.upgrades[i].price
-                }
-            }
-            game.version = "2.1.401"
-        }
-        //v2.1.400
-        if (savegame.version === "2.1.400") {
-            game = savegame
-            game.pp_progress = false
-            game.hotkeys = false
-            game.total_pp = game.pp
-            for (let i = 0; i <= 38; i++) {
-                if (game.pp_bought[i]) {
-                    game.total_pp += pp_upgrade.upgrades[i].price
-                }
-            }
-            game.version = "2.1.401"
-        }
-        //v2.1.401
-        if (savegame.version === "2.1.401") {
-            game = savegame
-        }
-    }
-
+function regenerate_ui() {
     //make all gui match the loaded save data
     color_update()
     ampbutton_update()
@@ -6235,6 +5890,114 @@ function load(save_file) {
     document.getElementById("time_input").value = game.autopr_goal[3]
 
     document.getElementById("hue_input").value = game.custom_hue
+}
+
+//load the game
+function load(savegame) {
+    if (savegame !== null) return
+    //version compatibility checks
+
+    //v2.0.000, v2.0.100, v2.0.200
+    if (savegame.version == "2.0.200" || savegame.version == undefined) {
+        alert(
+            "Your save has been wiped, very sorry!\nv2.0.xxx saves are not compatible with v2.1.xxx"
+        )
+        regenerate_ui()
+        return
+    }
+    const [edition, major, minor] = savegame.version
+        .split(".")
+        .map(val => parseInt(val))
+    if (minor < 100 && savegame.highest_level >= 300) {
+        alert(
+            "Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary"
+        )
+        regenerate_ui()
+        return
+    }
+    game = savegame
+    game.version = "2.1.401"
+    //v2.1.400
+    if (minor < 401) {
+        game.pp_progress = false
+        game.hotkeys = false
+        game.total_pp = game.pp
+        for (let i = 0; i <= pp_upgrade.upgrades.length; i++) {
+            if (game.pp_bought[i] == true) {
+                game.total_pp += pp_upgrade.upgrades[i].price
+            }
+        }
+    }
+    //v2.1.300
+    if (minor < 400) {
+        game.color_mode = 0
+        game.custom_hue = 0
+        game.cap_mode = 0
+        game.prev_mode = 0
+        game.cap_boost = 1
+        game.stored_exp = 0
+        game.global_multiplier = 1
+        game.flux_boost = 1
+        game.autods_toggle = false
+        game.autods_goal = 30
+    }
+    //v2.1.200
+    if (minor < 300) {
+        game.epilepsy = true
+        game.exp_battery = 1
+        game.battery_mode = 0
+        game.battery_tier = 0
+        game.battery_level = 90
+        game.patience = 1
+        game.prestige_power = 1
+        game.depth_power = 1
+    }
+    //v2.1.102
+    if (minor < 200) {
+        game.exp_flux = 1
+        game.pp_power = 1
+        game.fluct_tier = 0
+        game.flux_level = 75
+        game.pr_min = 60 + game.jumpstart * 10
+        let old_bought = game.pp_bought
+        game.pp_bought = new Array(pp_upgrade.upgrades.length).fill(false)
+        if (minor < 100)
+            for (let i = 0; i <= old_bought.length; i++) {
+                if (i === 8) game.pp_bought[i] = false
+                else game.pp_bought[i] = old_bought[i]
+            }
+        else {
+            for (let i = 0; i <= 7; i++) {
+                game.pp_bought[i] = old_bought[i]
+            }
+            game.pp_bought[8] = old_bought[10]
+            game.pp_bought[9] = old_bought[9]
+            for (let i = 10; i <= old_bought.length; i++) {
+                game.pp_bought[i] = old_bought[i + 1]
+            }
+        }
+    } else
+        while (game.pp_bought.length < pp_upgrade.upgrades.length) {
+            game.pp_bought.push(false)
+        }
+
+    //v2.1.100
+    if (minor < 102) {
+        game.autopr_goal = [60, 1, 1, 0]
+    }
+    //v2.1.003
+    if (minor < 100) {
+        game.amp_eff = 0
+        game.autopr_mode = 0
+        game.exp_oc = 1
+        game.oc_state = 0
+        game.oc_state = game.tickspeed * 180
+    }
+    //v2.1.000
+    if (minor < 3) {
+        game.pp_hide = false
+    }
+    regenerate_ui()
 }
 
 //load the game when opened
