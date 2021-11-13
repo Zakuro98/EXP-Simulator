@@ -1366,10 +1366,10 @@ function tick() {
         if (game.cps >= 10 || game.prestige >= 1) {
             if (game.battery_mode === 1) {
                 exp_eff = format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.exp_battery*game.cap_boost*game.cps) + " EXP/sec"
-                if (game.autods_toggle && game.autods_goal === 0) exp_eff = "\n" + format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)*game.cps) + " EXP/sec (Discharging)"
+                if (game.autods_toggle && game.autods_goal === 0) exp_eff = format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)*game.cps) + " EXP/sec (Discharging)"
             } else {
                 exp_eff = format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*game.cap_boost*game.cps) + " EXP/sec"
-                if (game.autods_toggle && game.autods_goal === 0) exp_eff = "\n" + format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)*game.cps) + " EXP/sec (Discharging)"
+                if (game.autods_toggle && game.autods_goal === 0) exp_eff = format_num((game.exp_add+game.exp_fluct/2)*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)*game.cps) + " EXP/sec (Discharging)"
             }
         }
 
@@ -1378,11 +1378,11 @@ function tick() {
         if (game.amp > 1) {
             if (game.battery_mode === 1) {
                 total_auto = format_eff(game.amp*game.global_multiplier*game.exp_battery*game.cap_boost) + "x"
-                if (game.autods_toggle && game.autods_goal === 0) total_auto = "\n" + format_eff(game.amp*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)) + "x (Discharging)"
+                if (game.autods_toggle && game.autods_goal === 0) total_auto = format_eff(game.amp*game.global_multiplier*game.exp_battery*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)) + "x (Discharging)"
                 total_manual = format_eff(game.amp*game.global_multiplier*game.ml_boost) + "x"
             } else {
                 total_auto = format_eff(game.amp*game.global_multiplier*game.cap_boost) + "x"
-                if (game.autods_toggle && game.autods_goal === 0) total_auto = "\n" + format_eff(game.amp*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)) + "x (Discharging)"
+                if (game.autods_toggle && game.autods_goal === 0) total_auto = format_eff(game.amp*game.global_multiplier*(game.cap_boost+(1-game.cap_boost)*game.cap_mode*2)) + "x (Discharging)"
                 total_manual = format_eff(game.amp*game.global_multiplier*game.exp_battery*game.ml_boost) + "x"
             }
         }
