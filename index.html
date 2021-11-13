@@ -290,38 +290,166 @@
             </div>
 
             <div class="statistics" id="statistics_page">
-                <p id="stat_left">
-                    Current Level:
-                    <br>Highest Level:
-                    <br>Current EXP:
-                    <br>Total EXP (Current Prestige):
-                    <br>Total EXP (All Time):
-                    <br><br>EXP/click:
-                    <br>Autoclicking:
-                    <br><br>Total Clicks (Current Prestige):
-                    <br>Total Clicks (All Time):
-                    <br><br>Times Prestiged:
-                    <br>Amplifier:
-                    <br><br>Time Played (Current Prestige):
-                    <br>Fastest Prestige:
-                    <br>Time Played (All Time):
-                </p>
-                <p id="stat_right">
-                    LVL 1
-                    <br>LVL 1
-                    <br>0 / 32 EXP
-                    <br>0 EXP
-                    <br>0 EXP
-                    <br><br>1 EXP
-                    <br>0 clicks/sec
-                    <br><br>0
-                    <br>0
-                    <br><br>0
-                    <br>1 AMP
-                    <br><br>0.00s
-                    <br>a very long time
-                    <br>0.00s
-                </p>
+                <div id="current_level" class="stat_item">
+                    <p id="current_level_name" class="stat_left">
+                        Current Level:
+                    </p>
+                    <p id="current_level_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="highest_level" class="stat_item">
+                    <p id="highest_level_name" class="stat_left">
+                        Highest Level:
+                    </p>
+                    <p id="highest_level_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="current_exp" class="stat_item">
+                    <p id="current_exp_name" class="stat_left">
+                        Current EXP:
+                    </p>
+                    <p id="current_exp_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="total_exp_cp" class="stat_item">
+                    <p id="total_exp_cp_name" class="stat_left">
+                        Total EXP (Current Prestige):
+                    </p>
+                    <p id="total_exp_cp_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="total_exp_at" class="stat_item">
+                    <p id="total_exp_at_name" class="stat_left">
+                        Total EXP (All Time):
+                    </p>
+                    <p id="total_exp_at_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="exp_click_au" class="stat_item">
+                    <p id="exp_click_au_name" class="stat_left">
+                        <br>Automated EXP/click:
+                    </p>
+                    <p id="exp_click_au_stat" class="stat_right">
+                        <br>-
+                    </p>
+                </div>
+                <div id="exp_click_mn" class="stat_item">
+                    <p id="exp_click_mn_name" class="stat_left">
+                        Manual EXP/click:
+                    </p>
+                    <p id="exp_click_mn_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="exp_multi_au" class="stat_item">
+                    <p id="exp_multi_au_name" class="stat_left">
+                        Total Automated EXP Multiplier:
+                    </p>
+                    <p id="exp_multi_au_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="exp_multi_mn" class="stat_item">
+                    <p id="exp_mult_mn_name" class="stat_left">
+                        Total Manual EXP Multipler:
+                    </p>
+                    <p id="exp_multi_mn_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="autoclicking" class="stat_item">
+                    <p id="autoclicking_name" class="stat_left">
+                        <br>Autoclicking:
+                    </p>
+                    <p id="autoclicking_stat" class="stat_right">
+                        <br>-
+                    </p>
+                </div>
+                <div id="auto_power" class="stat_item">
+                    <p id="auto_power_name" class="stat_left">
+                        EXP Automation Power:
+                    </p>
+                    <p id="auto_power_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="total_clicks_cp" class="stat_item">
+                    <p id="total_clicks_cp_name" class="stat_left">
+                        <br>Total Clicks (Current Prestige):
+                    </p>
+                    <p id="total_clicks_cp_stat" class="stat_right">
+                        <br>-
+                    </p>
+                </div>
+                <div id="total_clicks_at" class="stat_item">
+                    <p id="total_clicks_at_name" class="stat_left">
+                        Total Clicks (All Time):
+                    </p>
+                    <p id="total_clicks_at_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="times_prestiged" class="stat_item">
+                    <p id="times_prestiged_name" class="stat_left">
+                        <br>Times Prestiged:
+                    </p>
+                    <p id="times_prestiged_stat" class="stat_right">
+                        <br>-
+                    </p>
+                </div>
+                <div id="amplification" class="stat_item">
+                    <p id="amplification_name" class="stat_left">
+                        Amplification Points:
+                    </p>
+                    <p id="amplification_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="current_pp" class="stat_item">
+                    <p id="current_pp_name" class="stat_left">
+                        Current Prestige Points:
+                    </p>
+                    <p id="current_pp_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="total_pp" class="stat_item">
+                    <p id="total_pp_name" class="stat_left">
+                        Total Prestige Points:
+                    </p>
+                    <p id="total_pp_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="time_played_cp" class="stat_item">
+                    <p id="time_played_cp_name" class="stat_left">
+                        <br>Time Played (Current Prestige):
+                    </p>
+                    <p id="time_played_cp_stat" class="stat_right">
+                        <br>-
+                    </p>
+                </div>
+                <div id="fastest_prestige" class="stat_item">
+                    <p id="fastest_prestige_name" class="stat_left">
+                        Fastest Prestige:
+                    </p>
+                    <p id="fastest_prestige_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
+                <div id="time_played_at" class="stat_item">
+                    <p id="time_played_at_name" class="stat_left">
+                        Time Played (All Time):
+                    </p>
+                    <p id="time_played_at_stat" class="stat_right">
+                        -
+                    </p>
+                </div>
             </div>
 
             <div class="settings" id="settings_page">
@@ -399,7 +527,7 @@
             </div>
 
             <p id="version" class="info">
-                <br><br><br>EXP Simulator v2.1.401<br>Made by Zakuro
+                <br><br><br>EXP Simulator v2.1.402<br>Made by Zakuro
             </p>
             <a href="changelog.html" target="_blank" class="info link">Changelog</a>
             <a href="https://discord.gg/fuQSBkYYqH" target="_blank" class="info link">Discord</a>
