@@ -2069,8 +2069,12 @@ function oc_activate() {
 //capacitance switching
 function set_capacitance(mode) {
     if (game.cap_mode != 0) game.prev_mode = game.cap_mode
+    if (mode > game.prev_mode) {
+        game.cap_mode = game.prev_mode
+        discharge()
+    }
+    
     game.cap_mode = mode
-    if (game.cap_mode > game.prev_mode) discharge()
     
     document.getElementById("cap_off").className = "button"
     document.getElementById("cap_25").className = "button"
