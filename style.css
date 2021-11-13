@@ -255,6 +255,11 @@ main {
 
     #click {
         width: 100%;
+        font-size: 2em;
+    }
+
+    .button {
+        font-size: 1.428em;
     }
 }
 
