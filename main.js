@@ -2760,7 +2760,6 @@ function tick() {
                     ) + " EXP/sec"
                 if (game.autods_toggle && game.autods_goal === 0)
                     exp_eff =
-                        "\n" +
                         format_num(
                             (game.exp_add + game.exp_fluct / 2) *
                                 game.global_multiplier *
@@ -2780,7 +2779,6 @@ function tick() {
                     ) + " EXP/sec"
                 if (game.autods_toggle && game.autods_goal === 0)
                     exp_eff =
-                        "\n" +
                         format_num(
                             (game.exp_add + game.exp_fluct / 2) *
                                 game.global_multiplier *
@@ -2805,7 +2803,6 @@ function tick() {
                     ) + "x"
                 if (game.autods_toggle && game.autods_goal === 0)
                     total_auto =
-                        "\n" +
                         format_eff(
                             game.amp *
                                 game.global_multiplier *
@@ -2825,7 +2822,6 @@ function tick() {
                     ) + "x"
                 if (game.autods_toggle && game.autods_goal === 0)
                     total_auto =
-                        "\n" +
                         format_eff(
                             game.amp *
                                 game.global_multiplier *
