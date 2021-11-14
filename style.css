@@ -527,6 +527,7 @@ main {
     font-weight: normal;
     border: 1px solid white;
     margin-top: 0em;
+    margin-left: 0.142em;
 }
 
 .option_button:hover {
@@ -728,6 +729,10 @@ main {
     font-size: 0.857em;
     display: none;
     margin-bottom: 0.3em;
+}
+
+#hotkeys-reset-button {
+    margin-top: 0.285em;
 }
 
 .info {
