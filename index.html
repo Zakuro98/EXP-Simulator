@@ -477,6 +477,9 @@
                     <button id="hotkeys_button" class="option_button small" onclick="hotkeys()">
                         DISABLED
                     </button>
+                    <button id="hotkeys_reset_button" class="option_button small" onclick="reset_hotkeys()">
+                        RESET HOTKEYS
+                    </button>
                 </div>
                 <div class="option" id="hidden">
                     <p id="hidden_text" class="option_text">
@@ -518,11 +521,10 @@
                     DELETE SAVE
                 </button>
                 <p id="hotkeys_list" class="option_text">
-                    Hotkeys:
-                    <br>Left/Right: Change tab
-                    <br>Space: EXP button
-                    <br>1-6: Buy Upgrade (on upgrades tab)
-                    <br>M: Buy all upgrades
+                    <span>Hotkeys:</span>
+                    <span>Left/Right: Change tab</span>
+                    <span>1-6: Buy upgrade (on upgrades tab)</span>
+                    <span id="auto_upgrade_hotkey">Shift+1-6: Toggle auto-upgrade (on upgrades tab)</span>
                 </p>
             </div>
 

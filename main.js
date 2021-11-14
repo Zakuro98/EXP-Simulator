@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.1.401",
+    version: "2.1.403",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -104,6 +104,9 @@ let game = {
     total_pp: 0,
     pp_progress: false,
     hotkeys: false,
+
+    //v2.1.403 variables
+    hotkey_configurations: {},
 }
 
 //initialize map
@@ -150,7 +153,7 @@ class pp_upgrade {
             if (
                 game.pp >= this.price &&
                 this.can_buy() &&
-                game.pp_bought[this.id] === false
+                !game.pp_bought[this.id]
             ) {
                 game.pp -= this.price
                 game.pp_bought[this.id] = true
@@ -3447,20 +3450,15 @@ function tick() {
 
     //hide spoiler items in hotkeys list
     if (game.tab === 4) {
-        let list = "Hotkeys:\nLeft/Right: Change tab\nSpace: EXP button"
-        if (game.prestige >= 1) list += "\nP: Prestige"
-        if (game.pp_bought[3]) list += "\nShift+P: Toggle auto-Prestige"
-        list += "\n1-6: Buy upgrade (on upgrades tab)"
-        if (game.pp_bought[2])
-            list += "\nShift+1-6: Toggle auto-upgrade (on upgrades tab)"
-        if (game.pp_bought[14]) list += "\nO: Activate Overclocker"
-        if (game.pp_bought[16]) list += "\nShift+O: Toggle auto-Overclock"
-        if (game.pp_bought[32]) list += "\nD: Discharge Capacitor"
-        if (game.pp_bought[35]) list += "\nShift+D: Toggle auto-Discharge"
-        if (game.pp_bought[2]) list += "\nA: Toggle all automation"
-        if (game.pp_bought[25]) list += "\nB/Ctrl+6: Switch Battery mode"
-        list += "\nM: Buy all upgrades"
-        document.getElementById("hotkeys_list").innerText = list
+        document.getElementById("auto_upgrade_hotkey").style.display = game
+            .pp_bought[2]
+            ? "unset"
+            : "none"
+        for (const hotkey of configurable_hotkey.hotkeys) {
+            if (!hotkey.unlock_condition || hotkey.unlock_condition())
+                hotkey.container.style.display = "unset"
+            else hotkey.container.style.display = "none"
+        }
     }
 
     //???
@@ -3469,7 +3467,7 @@ function tick() {
             "\n\n\nEXP Simulator v???\nMade by Zakuro"
     } else {
         document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.1.402\nMade by Zakuro"
+            "\n\n\nEXP Simulator v2.1.403\nMade by Zakuro"
     }
 
     //calculating total multiplier
@@ -5304,104 +5302,230 @@ function amp_tick() {
     }
 }
 
-//hotkeys handling
-document.addEventListener("keydown", function (event) {
-    if (game.hotkeys) {
-        if (event.code === "ArrowLeft") {
-            if (game.tab > 1) game.tab -= 1
-            if (game.tab === 2 && game.prestige === 0) game.tab = 1
-            goto_tab(game.tab)
-        }
-        if (event.code === "ArrowRight") {
-            if (game.tab < 4) game.tab += 1
-            if (game.tab === 2 && game.prestige === 0) game.tab = 3
-            goto_tab(game.tab)
-        }
-        if (event.code === "Space") {
-            if (!event.repeat) player_increment()
-        }
-        if (event.shiftKey && event.code === "KeyP") {
-            pr_toggle()
-        } else if (event.code === "KeyP") {
-            prestige()
-        }
-        if (event.shiftKey && event.code === "KeyO") {
-            oc_toggle()
-        } else if (event.code === "KeyO") {
-            oc_activate()
-        }
-        if (event.shiftKey && event.code === "KeyD") {
-            ds_toggle()
-        } else if (event.code === "KeyD") {
-            discharge()
-        }
-        if (event.code === "KeyA") {
-            let all_off = true
-            for (let i = 0; i < 6; i++) {
-                if (game.autoup_toggle[i]) all_off = false
-            }
-            if (game.autopr_toggle || game.autooc_toggle || game.autods_toggle)
-                all_off = false
+function toggle_all_automation() {
+    let all_off = true
+    for (let i = 0; i < 6; i++) {
+        if (game.autoup_toggle[i]) all_off = false
+    }
+    if (game.autopr_toggle || game.autooc_toggle || game.autods_toggle)
+        all_off = false
 
-            if (all_off) {
-                for (let i = 0; i < 6; i++) {
-                    game.autoup_toggle[i] = true
-                }
-                game.autopr_toggle = true
-                game.autooc_toggle = true
-                game.autods_toggle = true
-            } else {
-                for (let i = 0; i < 6; i++) {
-                    game.autoup_toggle[i] = false
-                }
-                game.autopr_toggle = false
-                game.autooc_toggle = false
-                game.autods_toggle = false
-            }
+    if (all_off) {
+        for (let i = 0; i < 6; i++) {
+            game.autoup_toggle[i] = true
+        }
+        game.autopr_toggle = true
+        game.autooc_toggle = true
+        game.autods_toggle = true
+    } else {
+        for (let i = 0; i < 6; i++) {
+            game.autoup_toggle[i] = false
+        }
+        game.autopr_toggle = false
+        game.autooc_toggle = false
+        game.autods_toggle = false
+    }
 
-            for (let i = 0; i < 6; i++) {
-                up_toggle(i)
-                up_toggle(i)
-            }
-            pr_toggle()
-            pr_toggle()
-            oc_toggle()
-            oc_toggle()
-            ds_toggle()
-            ds_toggle()
-            battery_toggle()
-            battery_toggle()
+    for (let i = 0; i < 6; i++) {
+        up_toggle(i)
+        up_toggle(i)
+    }
+    pr_toggle()
+    pr_toggle()
+    oc_toggle()
+    oc_toggle()
+    ds_toggle()
+    ds_toggle()
+    battery_toggle()
+    battery_toggle()
+}
+
+let recorded_hotkey = null
+
+function code_to_readable(code) {
+    if (code.startsWith("Digit")) code = code.slice(5)
+    if (code.startsWith("Key")) code = code.slice(3)
+    if (code.endsWith("Left")) code = code.slice(0, code.length - 4)
+    return code
+}
+
+const hotkey_list = document.getElementById("hotkeys_list")
+
+class configurable_hotkey {
+    static hotkeys = []
+    constructor(name, default_combination, on_activate, unlock_condition) {
+        this.name = name
+        this.on_activate = on_activate
+        this.default_combination = default_combination
+        this.parse_key(default_combination)
+        if (unlock_condition) this.unlock_condition = unlock_condition
+        configurable_hotkey.hotkeys.push(this)
+        const list = document.getElementById("hotkeys_list")
+        this.text = document.createTextNode(
+            `${this.key_to_string(true)}: ${this.name}`
+        )
+        this.container = document.createElement("span")
+        this.container.appendChild(this.text)
+        this.changeButton = document.createElement("button")
+        this.changeButton.innerText = "CHANGE"
+        this.changeButton.classList.add("option_button")
+        this.changeButton.addEventListener("click", () => {
+            if (recorded_hotkey) recorded_hotkey = null
+            else recorded_hotkey = this
+            this.changeButton.innerText =
+                recorded_hotkey === this ? "RECORDING..." : "CHANGE"
+        })
+        this.container.appendChild(this.changeButton)
+        hotkey_list.appendChild(this.container)
+    }
+    parse_key(str) {
+        this.shift = str.includes("Shift+")
+        if (this.shift) {
+            str = str.replace("Shift+", "")
         }
-        if (
-            event.code === "KeyB" ||
-            (event.ctrlKey && event.code === "Digit6" && game.tab === 1)
-        ) {
-            battery_toggle()
+        this.control = str.includes("Ctrl+")
+        if (this.control) {
+            str = str.replace("Ctrl+", "")
         }
-        for (let i = 1; i <= 6; i++) {
-            if (
-                event.shiftKey &&
-                event.code === "Digit" + i &&
-                game.tab === 1
-            ) {
-                up_toggle(i - 1)
-            } else if (
-                (event.code === "Digit" + i || event.code === "KeyM") &&
-                game.tab === 1
-            ) {
-                upgrade(i - 1, true)
-            }
+        this.alt = str.includes("Alt+")
+        if (this.alt) {
+            str = str.replace("Alt+", "")
         }
+        this.keycode = str
+    }
+    key_to_string(readable) {
+        let str = readable ? code_to_readable(this.keycode) : this.keycode
+        if (this.control) str = "Ctrl+" + str
+        if (this.shift) str = "Shift+" + str
+        if (this.alt) str = "Alt+" + str
+        return str
+    }
+}
+
+new configurable_hotkey("EXP button", "Space", ev => {
+    if (!ev.repeat) player_increment()
+})
+new configurable_hotkey("Prestige", "KeyP", prestige, () => game.prestige > 0)
+new configurable_hotkey(
+    "Toggle auto-Prestige",
+    "Shift+KeyP",
+    pr_toggle,
+    () => game.pp_bought[3]
+)
+new configurable_hotkey(
+    "Activate Overclocker",
+    "KeyO",
+    oc_activate,
+    () => game.pp_bought[14]
+)
+new configurable_hotkey(
+    "Toggle auto-Overclock",
+    "Shift+KeyO",
+    oc_toggle,
+    () => game.pp_bought[16]
+)
+new configurable_hotkey(
+    "Discharge Capacitor",
+    "KeyD",
+    discharge,
+    () => game.pp_bought[32]
+)
+new configurable_hotkey(
+    "Toggle auto-Discharge",
+    "Shift+KeyD",
+    ds_toggle,
+    () => game.pp_bought[35]
+)
+new configurable_hotkey(
+    "Toggle all automation",
+    "KeyA",
+    toggle_all_automation,
+    () => game.pp_bought[2]
+)
+new configurable_hotkey("Buy all upgrades", "KeyM", ev => {
+    for (let i = 0; i < 6; i++) {
+        upgrade(i - 1, true)
     }
 })
 
+//hotkeys handling
+document.addEventListener("keydown", function (event) {
+    if (recorded_hotkey) {
+        if (!["Control", "Shift", "Alt"].includes(code_to_readable(event.code)))
+            recorded_hotkey.keycode = event.code
+        recorded_hotkey.shift = event.shiftKey
+        recorded_hotkey.control = event.ctrlKey
+        recorded_hotkey.alt = event.altKey
+        recorded_hotkey.text.data = `${recorded_hotkey.key_to_string(true)}: ${
+            recorded_hotkey.name
+        }`
+    }
+    if (!game.hotkeys) return
+    if (event.code === "ArrowLeft") {
+        if (game.tab > 1) game.tab -= 1
+        if (game.tab == 2 && game.prestige == 0) game.tab = 1
+        goto_tab(game.tab)
+    } else if (event.code === "ArrowRight") {
+        if (game.tab < 4) game.tab += 1
+        if (game.tab == 2 && game.prestige == 0) game.tab = 3
+        goto_tab(game.tab)
+    } else {
+        for (const hotkey of configurable_hotkey.hotkeys) {
+            if (
+                hotkey.keycode === event.code &&
+                hotkey.shift === event.shiftKey &&
+                hotkey.control === event.ctrlKey &&
+                hotkey.alt === event.altKey &&
+                (!hotkey.unlock_condition || hotkey.unlock_condition())
+            ) {
+                hotkey.on_activate(event)
+            }
+        }
+    }
+
+    if (game.tab === 1)
+        for (let i = 1; i <= 6; i++) {
+            if (event.shiftKey && event.code === "Digit" + i) {
+                up_toggle(i - 1)
+            } else if (event.code === "Digit" + i) {
+                upgrade(i - 1, true)
+            }
+        }
+})
+
+document.addEventListener("keyup", function (event) {
+    if (!recorded_hotkey) return
+    if (event.code.startsWith("Shift")) recorded_hotkey.shift = false
+    if (event.code.startsWith("Control")) recorded_hotkey.control = false
+    if (event.code.startsWith("Alt")) recorded_hotkey.alt = false
+    recorded_hotkey.text.data = `${recorded_hotkey.key_to_string(true)}: ${
+        recorded_hotkey.name
+    }`
+})
+
+function reset_hotkeys() {
+    if (recorded_hotkey) recorded_hotkey = null
+    for (const hotkey of configurable_hotkey.hotkeys) {
+        hotkey.parse_key(hotkey.default_combination)
+        hotkey.text.data = `${hotkey.key_to_string(true)}: ${hotkey.name}`
+    }
+}
+
+function pre_save() {
+    for (const hotkey of configurable_hotkey.hotkeys) {
+        game.hotkey_configurations[hotkey.name] = hotkey.key_to_string()
+    }
+}
+
 //saving the game
 function save() {
+    pre_save()
     localStorage.setItem("exp_simulator_save", JSON.stringify(game))
 }
 
 //exporting a save file
 function export_save() {
+    pre_save()
     navigator.clipboard.writeText(btoa(JSON.stringify(game)))
 }
 
@@ -5894,7 +6018,7 @@ function regenerate_ui() {
 
 //load the game
 function load(savegame) {
-    if (savegame !== null) return
+    if (savegame === null) return
     //version compatibility checks
 
     //v2.0.000, v2.0.100, v2.0.200
@@ -5916,14 +6040,24 @@ function load(savegame) {
         return
     }
     game = savegame
-    game.version = "2.1.401"
+    game.version = "2.1.403"
+    //v2.1.402
+    if (minor < 403) {
+        game.hotkey_configurations = {}
+    }
+    for (const hotkey of configurable_hotkey.hotkeys) {
+        if (game.hotkey_configurations[hotkey.name])
+            hotkey.parse_key(game.hotkey_configurations[hotkey.name])
+        else hotkey.parse_key(hotkey.default_combination)
+        hotkey.text.data = `${hotkey.key_to_string(true)}: ${hotkey.name}`
+    }
     //v2.1.400
     if (minor < 401) {
         game.pp_progress = false
         game.hotkeys = false
         game.total_pp = game.pp
         for (let i = 0; i <= pp_upgrade.upgrades.length; i++) {
-            if (game.pp_bought[i] == true) {
+            if (game.pp_bought[i]) {
                 game.total_pp += pp_upgrade.upgrades[i].price
             }
         }

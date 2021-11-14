@@ -447,7 +447,7 @@ main {
     color: black;
 }
 
-.statistics{
+.statistics {
     font-size: 0.714em;
     color: white;
     margin-top: 1.142em;
@@ -737,11 +737,11 @@ main {
 }
 
 .link {
-    color: #ff00bb
+    color: #ff00bb;
 }
 
 .link:hover {
-    color: #cc0088
+    color: #cc0088;
 }
 
 .title {
@@ -769,4 +769,9 @@ main {
     font-size: 1.4em;
     margin-top: 0em;
     margin-bottom: 0em;
+}
+
+#hotkeys_list {
+    display: flex;
+    flex-direction: column;
 }
