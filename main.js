@@ -2767,8 +2767,7 @@ function tick() {
                                 (game.cap_boost +
                                     (1 - game.cap_boost) * game.cap_mode * 2) *
                                 game.cps
-                        ) +
-                        " EXP/sec (Discharging)"
+                        ) + " EXP/sec (Discharging)"
             } else {
                 exp_eff =
                     format_num(
@@ -2785,8 +2784,7 @@ function tick() {
                                 (game.cap_boost +
                                     (1 - game.cap_boost) * game.cap_mode * 2) *
                                 game.cps
-                        ) +
-                        " EXP/sec (Discharging)"
+                        ) + " EXP/sec (Discharging)"
             }
         }
 
@@ -2809,8 +2807,7 @@ function tick() {
                                 game.exp_battery *
                                 (game.cap_boost +
                                     (1 - game.cap_boost) * game.cap_mode * 2)
-                        ) +
-                        "x (Discharging)"
+                        ) + "x (Discharging)"
                 total_manual =
                     format_eff(
                         game.amp * game.global_multiplier * game.ml_boost
@@ -2827,8 +2824,7 @@ function tick() {
                                 game.global_multiplier *
                                 (game.cap_boost +
                                     (1 - game.cap_boost) * game.cap_mode * 2)
-                        ) +
-                        "x (Discharging)"
+                        ) + "x (Discharging)"
                 total_manual =
                     format_eff(
                         game.amp *
@@ -3463,7 +3459,7 @@ function tick() {
             "\n\n\nEXP Simulator v???\nMade by Zakuro"
     } else {
         document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.1.403\nMade by Zakuro"
+            "\n\n\nEXP Simulator v2.1.404\nMade by Zakuro"
     }
 
     //calculating total multiplier
@@ -5649,7 +5645,7 @@ let amp_tick_loop = window.setInterval(function () {
 
 //prevent enter abuse
 document.getElementById("click").onkeydown = function (e) {
-    if (e.code === "Enter") {
+    if (e.code === "Enter" || e.code === "Space" || e.code === "NumpadEnter") {
         e.preventDefault()
         return false
     }
