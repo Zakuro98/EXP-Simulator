@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.1.403",
+    version: "2.1.405",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -107,6 +107,11 @@ let game = {
 
     //v2.1.403 variables
     hotkey_configurations: {},
+
+    //v2.1.405 variables
+    hold_time: 0,
+    mouse_time: 0,
+    mouse_held: false,
 }
 
 //initialize map
@@ -3453,13 +3458,19 @@ function tick() {
         }
     }
 
+    //handling held mouse
+    if (game.mouse_held == true) {
+        game.mouse_time++
+        if (game.mouse_time >= game.tickspeed / 2) hold_tick()
+    }
+
     //???
     if (game.notation === 8) {
         document.getElementById("version").innerText =
             "\n\n\nEXP Simulator v???\nMade by Zakuro"
     } else {
         document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.1.404\nMade by Zakuro"
+            "\n\n\nEXP Simulator v2.1.405\nMade by Zakuro"
     }
 
     //calculating total multiplier
@@ -5294,6 +5305,15 @@ function amp_tick() {
     }
 }
 
+//hold exp key handling
+function hold_tick() {
+    game.hold_time++
+    if (game.hold_time >= game.tickspeed / 10) {
+        game.hold_time = 0
+        player_increment()
+    }
+}
+
 function toggle_all_automation() {
     let all_off = true
     for (let i = 0; i < 6; i++) {
@@ -5396,6 +5416,7 @@ class configurable_hotkey {
 
 new configurable_hotkey("EXP button", "Space", ev => {
     if (!ev.repeat) player_increment()
+    else if (ev.repeat) hold_tick()
 })
 new configurable_hotkey("Prestige", "KeyP", prestige, () => game.prestige > 0)
 new configurable_hotkey(
@@ -5438,6 +5459,14 @@ new configurable_hotkey("Buy all upgrades", "KeyM", ev => {
     for (let i = 0; i < 6; i++) {
         upgrade(i - 1, true)
     }
+})
+
+document.getElementById("click").addEventListener("mousedown", function () {
+    game.mouse_held = true
+})
+document.getElementById("click").addEventListener("mouseup", function () {
+    game.mouse_held = false
+    game.mouse_time = 0
 })
 
 //hotkeys handling
@@ -6032,8 +6061,14 @@ function load(savegame) {
         return
     }
     game = savegame
-    game.version = "2.1.403"
-    //v2.1.402
+    game.version = "2.1.405"
+    //v2.1.405
+    if (minor < 405) {
+        game.hold_time = 0
+        game.mouse_time = 0
+        game.mouse_held = false
+    }
+    //v2.1.403
     if (minor < 403) {
         game.hotkey_configurations = {}
     }
