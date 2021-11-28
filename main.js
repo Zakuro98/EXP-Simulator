@@ -5464,7 +5464,7 @@ new configurable_hotkey("Buy all upgrades", "KeyM", ev => {
 document.getElementById("click").addEventListener("mousedown", function () {
     game.mouse_held = true
 })
-document.getElementById("click").addEventListener("mouseup", function () {
+document.addEventListener("mouseup", function () {
     game.mouse_held = false
     game.mouse_time = 0
 })
