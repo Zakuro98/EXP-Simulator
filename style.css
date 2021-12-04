@@ -46,6 +46,10 @@ main {
     display: none;
 }
 
+#reboot {
+    display: none;
+}
+
 .tab:hover {
     background-color: #5d0d61;
 }
@@ -125,6 +129,12 @@ main {
     display: inline;
     color: #0055ff;
     font-size: 2.857em;
+}
+
+#lvlrequirement {
+    font-size: 1.285em;
+    display: inline;
+    color: white;
 }
 
 #exp {
@@ -545,11 +555,45 @@ main {
 }
 
 #hidden {
-    display: none;
+    flex-grow: 0;
+    flex-basis: 33.3%;
+    font-size: 0.857em;
+    color: white;
 }
 
 #pp_bar {
-    display: none;
+    flex-grow: 0;
+    flex-basis: 33.4%;
+    font-size: 0.857em;
+    color: white;
+}
+
+#respec{
+    flex-grow: 0;
+    flex-basis: 33.3%;
+}
+
+#respec_button {
+    background-color: #410a4a;
+    color: white;
+    padding: 0.433em 0.571em;
+    font-size: 1em;
+    font-family: Abel, sans-serif;
+    font-weight: normal;
+    border: 1px solid white;
+}
+
+#respec_button:hover {
+    background-color: #5d0d61;
+}
+
+#respec_button:active {
+    background-color: white;
+    color: black;
+}
+
+#pp_options {
+    display: flex;
 }
 
 .wipe_button {
@@ -609,12 +653,41 @@ main {
     margin-bottom: 0em;
 }
 
+.priority_text {
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.pp_priority {
+    display: none;
+}
+
+.priority_input {
+    background-color: #410a4a;
+    width: 2.5em;
+    color: white;
+    padding: 0.1em 0.25em;
+    font-family: Abel, sans-serif;
+    font-size: 0.714em;
+    font-weight: normal;
+    border: 1px solid white;
+    display: inline;
+    margin-left: 0.285em;
+}
+
 .pp_button {
     padding: 0.285em 0.571em;
     font-size: 1em;
     font-family: Abel, sans-serif;
     font-weight: normal;
     flex: 0 0 6.4em;
+}
+
+.pp_hidden {
+    background-color: black;
+    color: gray;
+    border: 1px solid gray;
 }
 
 .pp_locked {
@@ -695,6 +768,10 @@ main {
     display: inline;
 }
 
+#peak_mode {
+    display: none;
+}
+
 #auto_level {
     display: block;
     margin-top: 0.1em;
@@ -715,6 +792,40 @@ main {
     margin-top: 0.1em;
 }
 
+#autopp_config {
+    display: none;
+    margin-bottom: 2.4em;
+    background-color: #44194d;
+    padding: 0.4em;
+}
+
+#autopp_enabled {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#autopp_mode {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#autopp_toggle {
+    display: inline;
+    color: #ff0000;
+}
+
+#ignore_mode {
+    display: inline;
+}
+
+#weak_mode {
+    display: inline;
+}
+
+#strict_mode {
+    display: inline;
+}
+
 #amp_up {
     margin-top: 0.35em;
 }
@@ -722,6 +833,259 @@ main {
 #pp_up {
     color: #d000ff;
     margin-top: 0.35em;
+}
+
+#reboot_page {
+    display: none;
+    margin-top: 1.142em;
+}
+
+.watts_text {
+    display: block;
+    font-size: 1em;
+    color: white;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.reboot_text {
+    display: block;
+    font-size: 1em;
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#watts_block {
+    display: flex;
+    justify-content: center;
+}
+
+#gen_power_text {
+    display: inline;
+    align-self: flex-end;
+}
+
+#watts_text {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.428em;
+}
+
+#watts {
+    display: inline;
+    align-self: flex-end;
+    font-size: 3em;
+    font-weight: bold;
+    margin-bottom: -0.21em;
+    margin-left: 0.214em;
+}
+
+#watts_plus {
+    display: none;
+}
+
+.no_power {
+    color: #aaaaaa;
+}
+
+.power {
+    color: #ffff00;
+    text-shadow: 0em 0em 0.2em #ffff00;
+}
+
+#gen_boost {
+    margin-top: 0.285em;
+}
+
+#reboot_block {
+    display: flex;
+    background-color: #44194d;
+    margin-top: 1em;
+    margin-bottom: 2em;
+    padding: 0.4em;
+    border: 2px solid #ffff00;
+}
+
+#generator_requirements{
+    flex-grow: 1;
+}
+
+#reboot_panel {
+    flex-grow: 0;
+}
+
+#reboot_button {
+    padding: 0.285em 0.571em;
+    font-size: 1.2em;
+    margin-bottom: 0.18em;
+    font-family: Abel, sans-serif;
+    font-weight: normal;
+}
+
+.no_reboot_power {
+    background-color: #410a4a;
+    color: #aaaaaa;
+    border: 1px solid #aaaaaa;
+}
+
+.reboot_power {
+    background-color: #410a4a;
+    color: #ffff00;
+    text-shadow: 0em 0em 0.2em #ffff00;
+    border: 1px solid #ffff00;
+}
+
+.reboot_power:hover {
+    background-color: #5d0d61;
+    color: #ffff00;
+    text-shadow: 0em 0em 0.2em #ffff00;
+    border: 1px solid #ffff00;
+}
+
+.reboot_power:active {
+    background-color: #ffff00;
+    color: black;
+    border: 1px solid #ffff00;
+}
+
+#watts_plus {
+    text-align: right;
+}
+
+#gen_perks_text {
+    color: #ffff00;
+    text-shadow: 0em 0em 0.2em #ffff00;
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0.285em;
+}
+
+.generator_perk {
+    display: flex;
+    margin-bottom: 0.4em;
+    background-color: #44194d;
+    padding: 0.4em;
+}
+
+.incomplete_perk {
+    border: 2px solid white;
+}
+
+.complete_perk {
+    border: 2px solid #ffff00;
+}
+
+.perk_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.perk_name {
+    color: #ffff00;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    text-shadow: 0em 0em 0.2em #ffff00;
+}
+
+.perk_desc {
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.perk_complete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-family: Abel, sans-serif;
+    font-weight: normal;
+    flex: 0 0 4.8em;
+}
+
+.incomplete {
+    background-color: black;
+    border: 1px solid white;
+}
+
+.complete {
+    background-color: #ffff00;
+    border: 1px solid #ffff00;
+}
+
+.perk_requirement {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    text-align: center;
+}
+
+.incomplete_text {
+    color: #ffff00;
+    text-shadow: 0em 0em 0.2em #ffff00;
+}
+
+.complete_text {
+    color: black;
+    font-weight: bold;
+}
+
+.achievement_title {
+    color: white;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 1.285em;
+    margin-bottom: 0em;
+}
+
+.page_switcher {
+    margin-top: 0.285em;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+#slot10 {
+    margin-bottom: 1.285em;
+}
+
+.page_left {
+    display: inline;
+}
+
+.page_right {
+    display: inline;
+}
+
+.page_text {
+    display: inline;
+    color: white;
+    font-size: 1em;
+    margin-left: 0.285em;
+    margin-right: 0.285em;
+}
+
+.achievement_slot {
+    margin-bottom: 0.4em;
+    background-color: #44194d;
+    padding: 0.4em;
+}
+
+.achievement_complete {
+    border: 2px solid white;
+}
+
+.achievement_header {
+    color: #ff0000;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.achievement_requirement {
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
 }
 
 .uptext {
@@ -747,6 +1111,33 @@ main {
 
 .link:hover {
     color: #cc0088;
+}
+
+#notifications {
+    display: flex;
+    flex-direction: column-reverse;
+    position: fixed;
+    top: 0.285em;
+    right: 0em;
+    left: 0em;
+}
+
+.notification {
+    background-color: #410a4a;
+    padding: 0.2em 0.333em;
+    font-family: Abel, sans-serif;
+    font-size: 0.857em;
+    font-weight: normal;
+    border: 1px solid white;
+    width: fit-content;
+    margin-bottom: 0.285em;
+    align-self: center;
+    box-shadow: 0em 0em 0.35em black;
+}
+
+.notif_text {
+    margin-top: 0em;
+    margin-bottom: 0em;
 }
 
 .title {
