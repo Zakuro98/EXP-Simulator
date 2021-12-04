@@ -1,540 +1,810 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta charset="utf-8">
-    <meta name="keywords" content="exp, simulator, exp simulator, incremental, idle">
-    <meta name="description" content="a game about leveling up">
-    <title>EXP Simulator</title>
-    <link rel="icon" href="favicon.png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel|Josefin+Sans:700">
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
-    <main>
-        <div class="ui">
-            <div class="lvlbar">
-                <div class="level">
-                    <p id="lvltext">
-                        LVL
-                    </p>
-                    <p id="lvlnum">
-                        1
-                    </p>
-                </div>
-                <p id="exp">
-                    0 / 32 EXP
-                </p>
-            </div>
-
-            <div class="back">
-                <div id="progress"></div>
-            </div>
-
-            <div id="pp_back" class="pp_back">
-                <div id="pp_progress"></div>
-            </div>
-
-            <div class="lvlbar2">
-                <div class="lvlbuttons">
-                    <button id="click" onclick="player_increment()">
-                        +1 EXP
-                    </button>
-                    <div class="amp_area">
-                        <button id="amp_button" class="button" onclick="prestige()">
-                            PRESTIGE!
-                        </button>
-                        <button id="amp_auto" class="button autoup" onclick="pr_toggle()">
-                            OFF
-                        </button>
-                        <p id="amp_up" class="uptext">
-                            +1 AMP
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta charset="utf-8">
+        <meta name="keywords" content="exp, simulator, exp simulator, incremental, idle">
+        <meta name="description" content="a game about leveling up">
+        <title>EXP Simulator</title>
+        <link rel="icon" href="favicon.png">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel|Josefin+Sans:700">
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <main>
+            <div class="ui">
+                <div class="lvlbar">
+                    <div class="level">
+                        <p id="lvltext">
+                            LVL
                         </p>
-                        <p id="pp_up" class="uptext">
-                            +1 PP
+                        <p id="lvlnum">
+                            1
+                        </p>
+                        <p id="lvlrequirement">
+                            / 60
                         </p>
                     </div>
-                </div>
-                <div class="resources">
-                    <p id="total_exp">
-                        0 Total EXP
-                    </p>
-                    <p id="amp">
-                        1 AMP
-                    </p>
-                    <p id="pp">
-                        0 PP
+                    <p id="exp">
+                        0 / 32 EXP
                     </p>
                 </div>
-            </div>
 
-            <div class="menu">
-                <button id="upgrades" class="tab" onclick="goto_tab(1)">
-                    UPGRADES
-                </button>
-                <button id="prestige" class="tab" onclick="goto_tab(2)">
-                    PRESTIGE
-                </button>
-                <button id="statistics" class="tab" onclick="goto_tab(3)">
-                    STATISTICS
-                </button>
-                <button id="settings" class="tab" onclick="goto_tab(4)">
-                    SETTINGS
-                </button>
-            </div>
-
-            <div id="upgrades_page">
-                <div class="upgrades">
-                    <div class="item">
-                        <p id="boost" class="uptext">
-                            EXP Boost<br>Tier 0: +1 EXP/click
-                        </p>
-                        <button id="boost_button" class="button" onclick="upgrade(0,false)">
-                            UPGRADE!
-                        </button>
-                        <button id="boost_auto" class="button autoup" onclick="up_toggle(0)">
-                            OFF
-                        </button>
-                    </div>
-                    <div class = "item">
-                        <p id="auto" class="uptext">
-                            Autoclicker<br>Tier 0: 0 clicks/s
-                        </p>
-                        <button id="auto_button" class="button" onclick="upgrade(1,false)">
-                            UPGRADE!
-                        </button>
-                        <button id="auto_auto" class="button autoup" onclick="up_toggle(1)">
-                            OFF
-                        </button>
-                    </div>
+                <div class="back">
+                    <div id="progress"></div>
                 </div>
 
-                <div class="upgrades">
-                    <div class="item">
-                        <p id="fluct" class="uptext">
-                            EXP Fluctuation<br>Tier 0: +0 max extra EXP/click
-                        </p>
-                        <button id="fluct_button" class="button" onclick="upgrade(2,false)">
-                            UPGRADE!
-                        </button>
-                        <button id="fluct_auto" class="button autoup" onclick="up_toggle(2)">
-                            OFF
-                        </button>
-                    </div>
-                    <div class="item">
-                        <p id="fact" class="uptext">
-                            EXP Factor<br>Tier 0: 1x EXP/click
-                        </p>
-                        <button id="fact_button" class="button" onclick="upgrade(3,false)">
-                            UPGRADE!
-                        </button>
-                        <button id="fact_auto" class="button autoup" onclick="up_toggle(3)">
-                            OFF
-                        </button>
-                    </div>
+                <div id="pp_back" class="pp_back">
+                    <div id="pp_progress"></div>
                 </div>
 
-                <div class="upgrades">
-                    <div class="item">
-                        <p id="flux" class="uptext">
-                            EXP Flux<br>Tier 0: +0x flux/min
-                        </p>
-                        <button id="flux_button" class="button" onclick="upgrade(4,false)">
-                            UPGRADE!
+                <div class="lvlbar2">
+                    <div class="lvlbuttons">
+                        <button id="click" onclick="player_increment()">
+                            +1 EXP
                         </button>
-                        <button id="flux_auto" class="button autoup" onclick="up_toggle(4)">
-                            OFF
-                        </button>
-                    </div>
-                    <div class="item">
-                        <p id="battery" class="uptext">
-                            EXP Battery<br>Tier 0: 1x manual EXP production
-                        </p>
-                        <button id="battery_button" class="button" onclick="upgrade(5,false)">
-                            UPGRADE!
-                        </button>
-                        <button id="battery_mode" class="button" onclick="battery_toggle()">
-                            ACTIVE
-                        </button>
-                        <button id="battery_auto" class="button autoup" onclick="up_toggle(5)">
-                            OFF
-                        </button>
-                    </div>
-                </div>
-
-                <div id="overclock">
-                    <div class="oc_top">
-                        <p id="oc_text">
-                            EXP Overclocker
-                        </p>
-                        <p id="oc_timer">
-                            3:00 Left
-                        </p>
-                    </div>
-
-                    <div class="oc_back">
-                        <div id="oc_progress"></div>
-                    </div>
-
-                    <div class="oc_bottom">
-                        <p id="oc_state">
-                            Recharging
-                        </p>
-                        <div id="oc_activator">
-                            <button id="oc_button" class="button" onclick="oc_activate()">
-                                ACTIVATE
+                        <div class="amp_area">
+                            <button id="amp_button" class="button" onclick="prestige()">
+                                PRESTIGE!
                             </button>
-                            <button id="oc_auto" class="button autoup" onclick="oc_toggle()">
+                            <button id="amp_auto" class="button autoup" onclick="pr_toggle()">
+                                OFF
+                            </button>
+                            <p id="amp_up" class="uptext">
+                                +1 AMP
+                            </p>
+                            <p id="pp_up" class="uptext">
+                                +1 PP
+                            </p>
+                        </div>
+                    </div>
+                    <div class="resources">
+                        <p id="total_exp">
+                            0 Total EXP
+                        </p>
+                        <p id="amp">
+                            1 AMP
+                        </p>
+                        <p id="pp">
+                            0 PP
+                        </p>
+                    </div>
+                </div>
+
+                <div class="menu">
+                    <button id="upgrades" class="tab" onclick="goto_tab(1)">
+                        UPGRADES
+                    </button>
+                    <button id="prestige" class="tab" onclick="goto_tab(2)">
+                        PRESTIGE
+                    </button>
+                    <button id="reboot" class="tab" onclick="goto_tab(3)">
+                        REBOOT
+                    </button>
+                    <button id="statistics" class="tab" onclick="goto_tab(4)">
+                        STATISTICS
+                    </button>
+                    <button id="achievements" class="tab" onclick="goto_tab(5)">
+                        ACHIEVEMENTS
+                    </button>
+                    <button id="settings" class="tab" onclick="goto_tab(6)">
+                        SETTINGS
+                    </button>
+                </div>
+
+                <div id="upgrades_page">
+                    <div class="upgrades">
+                        <div class="item">
+                            <p id="boost" class="uptext">
+                                EXP Boost<br>Tier 0: +1 EXP/click
+                            </p>
+                            <button id="boost_button" class="button" onclick="upgrade(0,false)">
+                                UPGRADE!
+                            </button>
+                            <button id="boost_auto" class="button autoup" onclick="up_toggle(0)">
+                                OFF
+                            </button>
+                        </div>
+                        <div class="item">
+                            <p id="auto" class="uptext">
+                                Autoclicker<br>Tier 0: 0 clicks/s
+                            </p>
+                            <button id="auto_button" class="button" onclick="upgrade(1,false)">
+                                UPGRADE!
+                            </button>
+                            <button id="auto_auto" class="button autoup" onclick="up_toggle(1)">
                                 OFF
                             </button>
                         </div>
                     </div>
-                </div>
 
-                <div id="capacitor">
-                    <p id="cap_title" class="cap_text">
-                        EXP Capacitor
-                    </p>
-                    <div class="backpanel">
-                        <div id="capacitance">
-                            <div id="cap_mode">
-                                <p class="cap_text">
-                                    Capacitance Mode:
-                                </p>
-                                <button id="cap_off" class="button mode_active" onclick="set_capacitance(0)">
+                    <div class="upgrades">
+                        <div class="item">
+                            <p id="fluct" class="uptext">
+                                EXP Fluctuation<br>Tier 0: +0 max extra
+                                EXP/click
+                            </p>
+                            <button id="fluct_button" class="button" onclick="upgrade(2,false)">
+                                UPGRADE!
+                            </button>
+                            <button id="fluct_auto" class="button autoup" onclick="up_toggle(2)">
+                                OFF
+                            </button>
+                        </div>
+                        <div class="item">
+                            <p id="fact" class="uptext">
+                                EXP Factor<br>Tier 0: 1x EXP/click
+                            </p>
+                            <button  id="fact_button" class="button" onclick="upgrade(3,false)">
+                                UPGRADE!
+                            </button>
+                            <button id="fact_auto" class="button autoup" onclick="up_toggle(3)">
+                                OFF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="upgrades">
+                        <div class="item">
+                            <p id="flux" class="uptext">
+                                EXP Flux<br>Tier 0: +0x flux/min
+                            </p>
+                            <button id="flux_button" class="button" onclick="upgrade(4,false)">
+                                UPGRADE!
+                            </button>
+                            <button id="flux_auto" class="button autoup" onclick="up_toggle(4)">
+                                OFF
+                            </button>
+                        </div>
+                        <div class="item">
+                            <p id="battery" class="uptext">
+                                EXP Battery<br>Tier 0: 1x manual EXP
+                                production
+                            </p>
+                            <button id="battery_button" class="button" onclick="upgrade(5,false)">
+                                UPGRADE!
+                            </button>
+                            <button id="battery_mode" class="button" onclick="battery_toggle()">
+                                ACTIVE
+                            </button>
+                            <button id="battery_auto" class="button autoup" onclick="up_toggle(5)">
+                                OFF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="overclock">
+                        <div class="oc_top">
+                            <p id="oc_text">
+                                EXP Overclocker
+                            </p>
+                            <p id="oc_timer">
+                                3:00 Left
+                            </p>
+                        </div>
+
+                        <div class="oc_back">
+                            <div id="oc_progress"></div>
+                        </div>
+
+                        <div class="oc_bottom">
+                            <p id="oc_state">
+                                Recharging
+                            </p>
+                            <div id="oc_activator">
+                                <button id="oc_button" class="button" onclick="oc_activate()">
+                                    ACTIVATE
+                                </button>
+                                <button id="oc_auto" class="button autoup" onclick="oc_toggle()">
                                     OFF
                                 </button>
-                                <button id="cap_25" class="button" onclick="set_capacitance(1)">
-                                    25%
-                                </button>
-                                <button id="cap_50" class="button" onclick="set_capacitance(2)">
-                                    50%
-                                </button>
-                                <button id="cap_75" class="button" onclick="set_capacitance(3)">
-                                    75%
-                                </button>
-                                <button id="cap_100" class="button" onclick="set_capacitance(4)">
-                                    100%
-                                </button>
-                                <p id="cap_disc" class="cap_text">
-                                    (switching Discharges)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="capacitor">
+                        <p id="cap_title" class="cap_text">
+                            EXP Capacitor
+                        </p>
+                        <div class="backpanel">
+                            <div id="capacitance">
+                                <div id="cap_mode">
+                                    <p class="cap_text">
+                                        Capacitance Mode:
+                                    </p>
+                                    <button id="cap_off" class="button mode_active" onclick="set_capacitance(0)">
+                                        OFF
+                                    </button>
+                                    <button id="cap_25" class="button" onclick="set_capacitance(1)">
+                                        25%
+                                    </button>
+                                    <button id="cap_50" class="button" onclick="set_capacitance(2)">
+                                        50%
+                                    </button>
+                                    <button id="cap_75" class="button" onclick="set_capacitance(3)">
+                                        75%
+                                    </button>
+                                    <button id="cap_100" class="button" onclick="set_capacitance(4)">
+                                        100%
+                                    </button>
+                                    <p id="cap_disc" class="cap_text">
+                                        (switching Discharges)
+                                    </p>
+                                </div>
+                                <p id="cap_stats" class="cap_text">
+                                    Base EXP Production: 0 EXP/sec
+                                    <br>Effective EXP Production: 0 EXP/sec
+                                    <br>Stored EXP: 0s of EXP
+                                    <br>If Discharged: +0 EXP (Not Active)
                                 </p>
                             </div>
-                            <p id="cap_stats" class="cap_text">
-                                Base EXP Production: 0 EXP/sec<br>Effective EXP Production: 0 EXP/sec<br>Stored EXP: 0s of EXP<br>If Discharged: +0 EXP (Not Active)
-                            </p>
-                        </div>
-                        <div id="discharge">
-                            <button id="discharge_button" class="button blocked" onclick="discharge()">
-                                DISCHARGE!
-                            </button>
-                            <button id="dis_auto" class="button autoup" onclick="ds_toggle()">
-                                OFF
-                            </button>
-                            <p id="dis_text" class="cap_text">
-                                Discharge at (seconds):
-                            </p>
-                            <input class="goal_input" id="dis_input" type="number" value="30" step="0.01" min="1" max="300"> 
+                            <div id="discharge">
+                                <button id="discharge_button" class="button blocked" onclick="discharge()">
+                                    DISCHARGE!
+                                </button>
+                                <button id="dis_auto" class="button autoup" onclick="ds_toggle()">
+                                    OFF
+                                </button>
+                                <p id="dis_text" class="cap_text">
+                                    Discharge at (seconds):
+                                </p>
+                                <input class="goal_input" id="dis_input" type="number" value="30" step="0.01" min="1" max="300">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="prestige" id="prestige_page">
-                <div id="auto_config">
-                    <p class="auto_header">
-                        Autoprestige Configuration
-                    </p>
-                    <div id="auto_mode">
-                        <p class="goal_text">
-                            Autoprestige Mode:
+                <div class="prestige" id="prestige_page">
+                    <div id="auto_config">
+                        <p class="auto_header">
+                            Autoprestige Configuration
                         </p>
-                        <button id="level_mode" class="button mode_active" onclick="autopr_switch(0)">
-                            LEVEL
-                        </button>
-                        <button id="amp_mode" class="button" onclick="autopr_switch(1)">
-                            AMP
-                        </button>
-                        <button id="pp_mode" class="button" onclick="autopr_switch(2)">
-                            PP
-                        </button>
-                        <button id="time_mode" class="button" onclick="autopr_switch(3)">
-                            TIME
-                        </button>
+                        <div id="auto_mode">
+                            <p class="goal_text">
+                                Autoprestige Mode:
+                            </p>
+                            <button id="level_mode" class="button mode_active" onclick="autopr_switch(0)">
+                                LEVEL
+                            </button>
+                            <button id="amp_mode" class="button" onclick="autopr_switch(1)">
+                                AMP
+                            </button>
+                            <button id="pp_mode" class="button" onclick="autopr_switch(2)">
+                                PP
+                            </button>
+                            <button id="time_mode" class="button" onclick="autopr_switch(3)">
+                                TIME
+                            </button>
+                            <button id="peak_mode" class="button" onclick="autopr_switch(4)">
+                                PEAK
+                            </button>
+                        </div>
+                        <div id="auto_level">
+                            <p class="goal_text">
+                                Autoprestige Level:
+                            </p>
+                            <input class="goal_input" id="level_input" type="number" value="60" min="60">
+                        </div>
+                        <div id="auto_amp">
+                            <p class="goal_text">
+                                Autoprestige AMP:
+                            </p>
+                            <input class="goal_input" id="amp_input" type="number" value="1" min="1">
+                        </div>
+                        <div id="auto_pp">
+                            <p class="goal_text">
+                                Autoprestige PP:
+                            </p>
+                            <input class="goal_input" id="pp_input" type="number" value="1" min="1">
+                        </div>
+                        <div id="auto_time">
+                            <p class="goal_text">
+                                Autoprestige Time (in seconds):
+                            </p>
+                            <input class="goal_input" id="time_input" type="number" value="0" step="0.01" min="0">
+                        </div>
                     </div>
-                    <div id="auto_level">
-                        <p class="goal_text">
-                            Autoprestige Level: 
+                    <div id="autopp_config">
+                        <p class="auto_header">
+                            PP Auto-upgrade Configuration
                         </p>
-                        <input class="goal_input" id="level_input" type="number" value="60" min="60">
+                        <div id="autopp_enabled">
+                            <p class="goal_text">
+                                Automation:
+                            </p>
+                            <button id="autopp_toggle" class="button" onclick="pp_toggle()">
+                                DISABLED
+                            </button>
+                        </div>
+                        <div id="autopp_mode">
+                            <p class="goal_text">
+                                Priority Mode:
+                            </p>
+                            <button id="ignore_mode" class="button mode_active" onclick="pp_switch(0)">
+                                IGNORE
+                            </button>
+                            <button id="weak_mode" class="button" onclick="pp_switch(1)">
+                                WEAK
+                            </button>
+                            <button id="strict_mode" class="button" onclick="pp_switch(2)">
+                                STRICT
+                            </button>
+                        </div>
                     </div>
-                    <div id="auto_amp">
-                        <p class="goal_text">
-                            Autoprestige AMP: 
-                        </p>
-                        <input class="goal_input" id="amp_input" type="number" value="1" min="1">
-                    </div>
-                    <div id="auto_pp">
-                        <p class="goal_text">
-                            Autoprestige PP: 
-                        </p>
-                        <input class="goal_input" id="pp_input" type="number" value="1" min="1">
-                    </div>
-                    <div id="auto_time">
-                        <p class="goal_text">
-                            Autoprestige Time (in seconds): 
-                        </p>
-                        <input class="goal_input" id="time_input" type="number" value="0" step="0.01" min="0">
+                    <div id="pp_options">
+                        <div class="option" id="hidden">
+                            <p id="hidden_text" class="option_text">
+                                PP Upgrades
+                            </p>
+                            <button id="hidden_button" class="option_button small" onclick="pp_hidden()">
+                                SHOW ALL
+                            </button>
+                        </div>
+                        <div class="option" id="pp_bar">
+                            <p id="pp_bar_text" class="option_text">
+                                PP Progress Bar
+                            </p>
+                            <button id="pp_bar_button" class="option_button small" onclick="pp_bar()">
+                                DISABLED
+                            </button>
+                        </div>
+                        <div class="option" id="respec">
+                            <button id="respec_button" onclick="respec()">
+                                RESPEC!
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="statistics" id="statistics_page">
-                <div id="current_level" class="stat_item">
-                    <p id="current_level_name" class="stat_left">
-                        Current Level:
-                    </p>
-                    <p id="current_level_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="highest_level" class="stat_item">
-                    <p id="highest_level_name" class="stat_left">
-                        Highest Level:
-                    </p>
-                    <p id="highest_level_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="current_exp" class="stat_item">
-                    <p id="current_exp_name" class="stat_left">
-                        Current EXP:
-                    </p>
-                    <p id="current_exp_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="total_exp_cp" class="stat_item">
-                    <p id="total_exp_cp_name" class="stat_left">
-                        Total EXP (Current Prestige):
-                    </p>
-                    <p id="total_exp_cp_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="total_exp_at" class="stat_item">
-                    <p id="total_exp_at_name" class="stat_left">
-                        Total EXP (All Time):
-                    </p>
-                    <p id="total_exp_at_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="exp_click_au" class="stat_item">
-                    <p id="exp_click_au_name" class="stat_left">
-                        <br>Automated EXP/click:
-                    </p>
-                    <p id="exp_click_au_stat" class="stat_right">
-                        <br>-
-                    </p>
-                </div>
-                <div id="exp_click_mn" class="stat_item">
-                    <p id="exp_click_mn_name" class="stat_left">
-                        Manual EXP/click:
-                    </p>
-                    <p id="exp_click_mn_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="exp_multi_au" class="stat_item">
-                    <p id="exp_multi_au_name" class="stat_left">
-                        Total Automated EXP Multiplier:
-                    </p>
-                    <p id="exp_multi_au_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="exp_multi_mn" class="stat_item">
-                    <p id="exp_mult_mn_name" class="stat_left">
-                        Total Manual EXP Multipler:
-                    </p>
-                    <p id="exp_multi_mn_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="autoclicking" class="stat_item">
-                    <p id="autoclicking_name" class="stat_left">
-                        <br>Autoclicking:
-                    </p>
-                    <p id="autoclicking_stat" class="stat_right">
-                        <br>-
-                    </p>
-                </div>
-                <div id="auto_power" class="stat_item">
-                    <p id="auto_power_name" class="stat_left">
-                        EXP Automation Power:
-                    </p>
-                    <p id="auto_power_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="total_clicks_cp" class="stat_item">
-                    <p id="total_clicks_cp_name" class="stat_left">
-                        <br>Total Clicks (Current Prestige):
-                    </p>
-                    <p id="total_clicks_cp_stat" class="stat_right">
-                        <br>-
-                    </p>
-                </div>
-                <div id="total_clicks_at" class="stat_item">
-                    <p id="total_clicks_at_name" class="stat_left">
-                        Total Clicks (All Time):
-                    </p>
-                    <p id="total_clicks_at_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="times_prestiged" class="stat_item">
-                    <p id="times_prestiged_name" class="stat_left">
-                        <br>Times Prestiged:
-                    </p>
-                    <p id="times_prestiged_stat" class="stat_right">
-                        <br>-
-                    </p>
-                </div>
-                <div id="amplification" class="stat_item">
-                    <p id="amplification_name" class="stat_left">
-                        Amplification Points:
-                    </p>
-                    <p id="amplification_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="current_pp" class="stat_item">
-                    <p id="current_pp_name" class="stat_left">
-                        Current Prestige Points:
-                    </p>
-                    <p id="current_pp_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="total_pp" class="stat_item">
-                    <p id="total_pp_name" class="stat_left">
-                        Total Prestige Points:
-                    </p>
-                    <p id="total_pp_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="time_played_cp" class="stat_item">
-                    <p id="time_played_cp_name" class="stat_left">
-                        <br>Time Played (Current Prestige):
-                    </p>
-                    <p id="time_played_cp_stat" class="stat_right">
-                        <br>-
-                    </p>
-                </div>
-                <div id="fastest_prestige" class="stat_item">
-                    <p id="fastest_prestige_name" class="stat_left">
-                        Fastest Prestige:
-                    </p>
-                    <p id="fastest_prestige_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-                <div id="time_played_at" class="stat_item">
-                    <p id="time_played_at_name" class="stat_left">
-                        Time Played (All Time):
-                    </p>
-                    <p id="time_played_at_stat" class="stat_right">
-                        -
-                    </p>
-                </div>
-            </div>
+                <div id="reboot_page">
+                    <div id="generator">
+                        <div id="watts_block">
+                            <p id="watts" class="watts_text no_power">
+                                0
+                            </p>
+                            <p id="watts_text" class="watts_text">
+                                watts
+                            </p>
+                        </div>
+                        <p id="gen_boost" class="watts_text">
+                            producing 1x AMP gain
+                        </p>
+                        <div id="reboot_block">
+                            <div id="generator_requirements">
+                                <p class="reboot_text">
+                                    Generator requirements:
+                                </p>
+                                <p id="all_pp_req" class="reboot_text">
+                                    All Prestige upgrades purchased
+                                </p>
+                                <p id="spare_pp_req" class="reboot_text">
+                                    80,000 spare PP
+                                </p>
+                            </div>
+                            <div id="reboot_panel">
+                                <button id="reboot_button" class="no_reboot_power" onclick="reboot()">
+                                    ACTIVATE!
+                                </button>
+                                <p id="watts_plus" class="reboot_text">
+                                    +1 watt
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="settings" id="settings_page">
-                <button id="save_button" class="option option_button" onclick="save()">
-                    SAVE
-                </button>
-                <button id="export_button" class="option option_button" onclick="export_save()">
-                    EXPORT
-                </button>
-                <button id="import_button" class="option option_button" onclick="import_save()">
-                    IMPORT
-                </button>
-                <div class="option">
-                    <p id="notation_text" class="option_text">
-                        Notation
+                    <p id="gen_perks_text">
+                        GENERATOR PERKS
                     </p>
-                    <button id="notation_button" class="option_button small" onclick="notation()">
-                        LONG
-                    </button>
                 </div>
-                <div class="option" id="hotkeys">
-                    <p id="hotkeys_text" class="option_text">
-                        Hotkeys
-                    </p>
-                    <button id="hotkeys_button" class="option_button small" onclick="hotkeys()">
-                        DISABLED
-                    </button>
-                    <button id="hotkeys_reset_button" class="option_button small" onclick="reset_hotkeys()">
-                        RESET HOTKEYS
-                    </button>
+
+                <div class="statistics" id="statistics_page">
+                    <div id="current_level" class="stat_item">
+                        <p id="current_level_name" class="stat_left">
+                            Current Level:
+                        </p>
+                        <p id="current_level_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="highest_level" class="stat_item">
+                        <p id="highest_level_name" class="stat_left">
+                            Highest Level:
+                        </p>
+                        <p id="highest_level_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="highest_level_at" class="stat_item">
+                        <p id="highest_level_at_name" class="stat_left">
+                            Highest Level (All Time):
+                        </p>
+                        <p id="highest_level_at_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="current_exp" class="stat_item">
+                        <p id="current_exp_name" class="stat_left">
+                            Current EXP:
+                        </p>
+                        <p id="current_exp_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="total_exp_cp" class="stat_item">
+                        <p id="total_exp_cp_name" class="stat_left">
+                            Total EXP (Current Prestige):
+                        </p>
+                        <p id="total_exp_cp_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="total_exp_cr" class="stat_item">
+                        <p id="total_exp_cr_name" class="stat_left">
+                            Total EXP (Current Reboot):
+                        </p>
+                        <p id="total_exp_cr_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="total_exp_at" class="stat_item">
+                        <p id="total_exp_at_name" class="stat_left">
+                            Total EXP (All Time):
+                        </p>
+                        <p id="total_exp_at_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="exp_click_au" class="stat_item">
+                        <p id="exp_click_au_name" class="stat_left">
+                            <br>EXP/click:
+                        </p>
+                        <p id="exp_click_au_stat" class="stat_right">
+                            <br>-
+                        </p>
+                    </div>
+                    <div id="exp_click_mn" class="stat_item">
+                        <p id="exp_click_mn_name" class="stat_left">
+                            Manual EXP/click:
+                        </p>
+                        <p id="exp_click_mn_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="exp_multi_au" class="stat_item">
+                        <p id="exp_multi_au_name" class="stat_left">
+                            Total EXP Multiplier:
+                        </p>
+                        <p id="exp_multi_au_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="exp_multi_mn" class="stat_item">
+                        <p id="exp_mult_mn_name" class="stat_left">
+                            Total Manual EXP Multipler:
+                        </p>
+                        <p id="exp_multi_mn_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="autoclicking" class="stat_item">
+                        <p id="autoclicking_name" class="stat_left">
+                            <br>Autoclicking:
+                        </p>
+                        <p id="autoclicking_stat" class="stat_right">
+                            <br>-
+                        </p>
+                    </div>
+                    <div id="auto_power" class="stat_item">
+                        <p id="auto_power_name" class="stat_left">
+                            EXP Automation Power:
+                        </p>
+                        <p id="auto_power_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="total_clicks_cp" class="stat_item">
+                        <p id="total_clicks_cp_name" class="stat_left">
+                            <br>Total Clicks (Current Prestige):
+                        </p>
+                        <p id="total_clicks_cp_stat" class="stat_right">
+                            <br>-
+                        </p>
+                    </div>
+                    <div id="total_clicks_cr" class="stat_item">
+                        <p id="total_clicks_cr_name" class="stat_left">
+                            <br>Total Clicks (Current Reboot):
+                        </p>
+                        <p id="total_clicks_cr_stat" class="stat_right">
+                            <br>-
+                        </p>
+                    </div>
+                    <div id="total_clicks_at" class="stat_item">
+                        <p id="total_clicks_at_name" class="stat_left">
+                            Total Clicks (All Time):
+                        </p>
+                        <p id="total_clicks_at_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="times_prestiged" class="stat_item">
+                        <p id="times_prestiged_name" class="stat_left">
+                            <br>Times Prestiged:
+                        </p>
+                        <p id="times_prestiged_stat" class="stat_right">
+                            <br>-
+                        </p>
+                    </div>
+                    <div id="amplification" class="stat_item">
+                        <p id="amplification_name" class="stat_left">
+                            Amplification Points:
+                        </p>
+                        <p id="amplification_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="current_pp" class="stat_item">
+                        <p id="current_pp_name" class="stat_left">
+                            Current Prestige Points:
+                        </p>
+                        <p id="current_pp_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="total_pp" class="stat_item">
+                        <p id="total_pp_name" class="stat_left">
+                            Total Prestige Points:
+                        </p>
+                        <p id="total_pp_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="total_reboots" class="stat_item">
+                        <p id="total_reboots_name" class="stat_left">
+                            <br>Total Reboots:
+                        </p>
+                        <p id="total_reboots_stat" class="stat_right">
+                            <br>-
+                        </p>
+                    </div>
+                    <div id="generator_power" class="stat_item">
+                        <p id="generator_power_name" class="stat_left">
+                            Generator Power:
+                        </p>
+                        <p id="generator_power_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="time_played_cp" class="stat_item">
+                        <p id="time_played_cp_name" class="stat_left">
+                            <br>Time Played (Current Prestige):
+                        </p>
+                        <p id="time_played_cp_stat" class="stat_right">
+                            <br>-
+                        </p>
+                    </div>
+                    <div id="fastest_prestige" class="stat_item">
+                        <p id="fastest_prestige_name" class="stat_left">
+                            Fastest Prestige:
+                        </p>
+                        <p id="fastest_prestige_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="time_played_cr" class="stat_item">
+                        <p id="time_played_cr_name" class="stat_left">
+                            Time Played (Current Reboot):
+                        </p>
+                        <p id="time_played_cr_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="fastest_reboot" class="stat_item">
+                        <p id="fastest_reboot_name" class="stat_left">
+                            Fastest Reboot:
+                        </p>
+                        <p id="fastest_reboot_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="time_played_at" class="stat_item">
+                        <p id="time_played_at_name" class="stat_left">
+                            Time Played (All Time):
+                        </p>
+                        <p id="time_played_at_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
                 </div>
-                <div class="option" id="hidden">
-                    <p id="hidden_text" class="option_text">
-                        PP Upgrades
+
+                <div id="achievements_page">
+                    <p id="achievement_count" class="achievement_title">
+                        Achievements earned: 0 / 70
                     </p>
-                    <button id="hidden_button" class="option_button small" onclick="pp_hidden()">
-                        SHOW ALL
-                    </button>
+                    <div class="page_switcher">
+                        <button id="page_left1" class="button page_left" onclick='change_page("prev")'>
+                            PREV
+                        </button>
+                        <p id="page_text1" class="page_text">
+                            Page 1
+                        </p>
+                        <button id="page_right1" class="button page_right" onclick='change_page("next")'>
+                            NEXT
+                        </button>
+                    </div>
+                    <div id="slot1" class="achievement_slot">
+                        <p id="ach_header1" class="achievement_header">
+                            Achievement slot 1
+                        </p>
+                        <p id="ach_reqr1" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div id="slot2" class="achievement_slot">
+                        <p id="ach_header2" class="achievement_header">
+                            Achievement slot 2
+                        </p>
+                        <p id="ach_reqr2" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div id="slot3" class="achievement_slot">
+                        <p id="ach_header3" class="achievement_header">
+                            Achievement slot 3
+                        </p>
+                        <p id="ach_reqr3" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div id="slot4" class="achievement_slot">
+                        <p id="ach_header4" class="achievement_header">
+                            Achievement slot 4
+                        </p>
+                        <p id="ach_reqr4" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div id="slot5" class="achievement_slot">
+                        <p id="ach_header5" class="achievement_header">
+                            Achievement slot 5
+                        </p>
+                        <p id="ach_reqr5" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div id="slot6" class="achievement_slot">
+                        <p id="ach_header6" class="achievement_header">
+                            Achievement slot 6
+                        </p>
+                        <p id="ach_reqr6" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div id="slot7" class="achievement_slot">
+                        <p id="ach_header7" class="achievement_header">
+                            Achievement slot 7
+                        </p>
+                        <p id="ach_reqr7" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div id="slot8" class="achievement_slot">
+                        <p id="ach_header8" class="achievement_header">
+                            Achievement slot 8
+                        </p>
+                        <p id="ach_reqr8" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div id="slot9" class="achievement_slot">
+                        <p id="ach_header9" class="achievement_header">
+                            Achievement slot 9
+                        </p>
+                        <p id="ach_reqr9" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div id="slot10" class="achievement_slot">
+                        <p id="ach_header10" class="achievement_header">
+                            Achievement slot 10
+                        </p>
+                        <p id="ach_reqr10" class="achievement_requirement">
+                            Achievement requirement here
+                        </p>
+                    </div>
+                    <div class="page_switcher">
+                        <button id="page_left2" class="button page_left" onclick='change_page("prev")'>
+                            PREV
+                        </button>
+                        <p id="page_text2" class="page_text">
+                            Page 1
+                        </p>
+                        <button id="page_right2" class="button page_right" onclick='change_page("next")'>
+                            NEXT
+                        </button>
+                    </div>
                 </div>
-                <div class="option" id="pp_bar">
-                    <p id="pp_bar_text" class="option_text">
-                        PP Progress Bar
-                    </p>
-                    <button id="pp_bar_button" class="option_button small" onclick="pp_bar()">
-                        DISABLED
+
+                <div class="settings" id="settings_page">
+                    <button id="save_button" class="option option_button" onclick='save(); new notify("Game saved", "#00ddff")'>
+                        SAVE
                     </button>
-                </div>
-                <div class="option">
-                    <p id="epilepsy_text" class="option_text">
-                        Anti-Seizure Progress Bar
-                    </p>
-                    <button id="epilepsy_button" class="option_button small" onclick="epilepsy()">
-                        DISABLED
+                    <button id="export_button" class="option option_button" onclick="export_save()">
+                        EXPORT
                     </button>
-                </div>
-                <div class="option">
-                    <p id="color_text" class="option_text">
-                        Level Color
-                    </p>
-                    <button id="color_button" class="option_button small" onclick="level_color()">
-                        AUTOMATIC
+                    <button id="import_button" class="option option_button" onclick="import_save()">
+                        IMPORT
                     </button>
-                    <p id="custom_hue_text" class="option_text">
-                        Hue:
+                    <div class="option">
+                        <p id="notation_text" class="option_text">
+                            Notation
+                        </p>
+                        <button id="notation_button" class="option_button small" onclick="notation()">
+                            LONG
+                        </button>
+                    </div>
+                    <div class="option" id="hotkeys">
+                        <p id="hotkeys_text" class="option_text">
+                            Hotkeys
+                        </p>
+                        <button id="hotkeys_button" class="option_button small" onclick="hotkeys()">
+                            DISABLED
+                        </button>
+                        <button id="hotkeys_reset_button" class="option_button small" onclick="reset_hotkeys()">
+                            RESET HOTKEYS
+                        </button>
+                    </div>
+                    <div class="option">
+                        <p id="epilepsy_text" class="option_text">
+                            Anti-Seizure Progress Bar
+                        </p>
+                        <button id="epilepsy_button" class="option_button small" onclick="epilepsy()">
+                            DISABLED
+                        </button>
+                    </div>
+                    <div class="option">
+                        <p id="color_text" class="option_text">
+                            Level Color
+                        </p>
+                        <button id="color_button" class="option_button small" onclick="level_color()">
+                            AUTOMATIC
+                        </button>
+                        <p id="custom_hue_text" class="option_text">
+                            Hue:
+                        </p>
+                        <input class="goal_input" id="hue_input" type="number" value="0" min="0" max="359">
+                    </div>
+                    <div class="option" id="reboot_confirm">
+                        <p id="confirm_text" class="option_text">
+                            Reboot Confirmation
+                        </p>
+                        <button id="confirm_button" class="option_button small" onclick="confirmation()">
+                            ENABLED
+                        </button>
+                    </div>
+                    <button id="wipe_button" class="option wipe_button" onclick="wipe()">
+                        DELETE SAVE
+                    </button>
+                    <p id="hotkeys_list" class="option_text">
+                        <span>Hotkeys:</span>
+                        <span>Left/Right: Change tab</span>
+                        <span>1-6: Buy upgrade (on upgrades tab)</span>
+                        <span id="auto_upgrade_hotkey">Shift+1-6: Toggle auto-upgrade (on upgrades tab)</span>
                     </p>
-                    <input class="goal_input" id="hue_input" type="number" value="0" min="0" max="359">
                 </div>
-                <button id="wipe_button" class="option wipe_button" onclick="wipe()">
-                    DELETE SAVE
-                </button>
-                <p id="hotkeys_list" class="option_text">
-                    <span>Hotkeys:</span>
-                    <span>Left/Right: Change tab</span>
-                    <span>1-6: Buy upgrade (on upgrades tab)</span>
-                    <span id="auto_upgrade_hotkey">Shift+1-6: Toggle auto-upgrade (on upgrades tab)</span>
+
+                <p id="version" class="info">
+                    <br><br><br>EXP Simulator v2.2.000<br>Made by Zakuro
                 </p>
-            </div>
+                <a href="changelog.html" target="_blank" class="info link">
+                    Changelog
+                </a>
+                <a href="https://discord.gg/fuQSBkYYqH" target="_blank" class="info link">
+                    Discord
+                </a>
 
-            <p id="version" class="info">
-                <br><br><br>EXP Simulator v2.1.405<br>Made by Zakuro
-            </p>
-            <a href="changelog.html" target="_blank" class="info link">Changelog</a>
-            <a href="https://discord.gg/fuQSBkYYqH" target="_blank" class="info link">Discord</a>
-        </div>
-    </main>
-    <script src="main.js" charset="utf-8" type="text/javascript"></script>
-  </body>
+                <div id="notifications"></div>
+            </div>
+        </main>
+        <script src="main.js" charset="utf-8" type="text/javascript"></script>
+    </body>
 </html>
