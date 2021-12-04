@@ -7568,6 +7568,7 @@ function save() {
 function export_save() {
     pre_save()
     navigator.clipboard.writeText(btoa(JSON.stringify(game)))
+    new notify("Exported to clipboard", "#00ddff")
 }
 
 //importing a save file
