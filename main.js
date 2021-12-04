@@ -8184,6 +8184,7 @@ function load(savegame) {
         //v2.2.000
         game = savegame
         game.version = "2.2.000"
+        if (game.tab > 2) game.tab += 2
         game.reboot = 0
         game.watts = 0
         game.watt_boost = 1
