@@ -7504,6 +7504,8 @@ document.addEventListener("keydown", function (event) {
         }
     }
 
+    if (!game.achievements[67] && event.code === "KeyF") get_achievement(67)
+
     if (game.tab === 1)
         for (let i = 1; i <= 6; i++) {
             if (event.shiftKey && event.code === "Digit" + i) {
