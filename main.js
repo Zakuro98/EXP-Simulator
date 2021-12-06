@@ -1165,6 +1165,7 @@ class achievement {
         this.requirement = requirement
         this.id = id
         this.spoiler = spoiler
+        this.new = false
 
         achievement.achievements.push(this)
     }
@@ -1696,9 +1697,19 @@ function epilepsy() {
     if (game.epilepsy) {
         game.epilepsy = false
         document.getElementById("epilepsy_button").innerText = "ENABLED"
+        document.documentElement.style.setProperty(
+            "--button_background",
+            "#780e74"
+        )
+        document.documentElement.style.setProperty("--button_color", "white")
     } else {
         game.epilepsy = true
         document.getElementById("epilepsy_button").innerText = "DISABLED"
+        document.documentElement.style.setProperty(
+            "--button_background",
+            "white"
+        )
+        document.documentElement.style.setProperty("--button_color", "black")
     }
 }
 
@@ -2691,7 +2702,9 @@ function pp_update() {
         } else {
             button.innerText = "-" + format_num(upgrade.price) + " PP"
             if (game.pp >= upgrade.price) {
-                button.className = "pp_button pp_unlocked"
+                button.className = "pp_button pp_hidden"
+                if (upgrade.can_buy())
+                    button.className = "pp_button pp_unlocked"
             } else {
                 button.className = "pp_button pp_hidden"
                 if (upgrade.can_buy()) button.className = "pp_button pp_locked"
@@ -2923,6 +2936,7 @@ function watts_update() {
     let reboot_requirement = 0
     if (game.reboot >= 1) {
         reboot_requirement = 5000 * game.reboot + 80000
+        if (game.reboot >= 24) reboot_requirement = 200000
         document.getElementById("spare_pp_req").style.display = "block"
         document.getElementById("reboot_button").innerText = "REBOOT!"
     } else {
@@ -3016,6 +3030,10 @@ function achievements_update() {
                     achievement.achievements[p].requirement
                 document.getElementById("slot" + (i + 1)).className =
                     "achievement_slot achievement_complete"
+                if (achievement.achievements[p].new) {
+                    document.getElementById("slot" + (i + 1)).className =
+                        "achievement_slot achievement_complete achievement_new"
+                }
             } else {
                 document.getElementById("ach_header" + (i + 1)).innerText =
                     "?????"
@@ -3099,7 +3117,10 @@ function achievements_update() {
 //give achievement
 function get_achievement(id) {
     game.achievements[id] = true
-    new notify(achievement.achievements[id].name, "#00ff00")
+    if (document.visibilityState === "visible")
+        new notify(achievement.achievements[id].name, "#00ff00")
+    achievement.achievements[id].new = true
+    document.getElementById("achievements").style.color = "#00ff00"
 }
 
 //switching autoprestige modes
@@ -4771,7 +4792,7 @@ function tick() {
             "\n\n\nEXP Simulator v???\nMade by Zakuro"
     } else {
         document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.2.000\nMade by Zakuro"
+            "\n\n\nEXP Simulator v2.2.002\nMade by Zakuro"
     }
 
     //calculating total multiplier
@@ -4787,6 +4808,13 @@ function tick() {
 
 //tab switching
 function goto_tab(id) {
+    if (id !== 5 && game.tab === 5) {
+        document.getElementById("achievements").style.color = "#ffffff"
+        for (let i = 0; i < achievement.achievements.length; i++) {
+            achievement.achievements[i].new = false
+        }
+    }
+
     game.tab = id
 
     document.getElementById("upgrades_page").style.display = "none"
@@ -4812,6 +4840,7 @@ function goto_tab(id) {
             break
         case 5:
             document.getElementById("achievements_page").style.display = "block"
+            document.getElementById("achievements").style.color = "#ffffff"
             break
         case 6:
             document.getElementById("settings_page").style.display = "flex"
@@ -7080,6 +7109,7 @@ function reboot() {
 
     let reboot_requirement = 0
     if (game.reboot >= 1) reboot_requirement = 5000 * game.reboot + 80000
+    if (game.reboot >= 24) reboot_requirement = 200000
 
     if (!game.confirmation) confirmed = true
     else {
@@ -7570,7 +7600,8 @@ function save() {
 function export_save() {
     pre_save()
     navigator.clipboard.writeText(btoa(JSON.stringify(game)))
-    new notify("Exported to clipboard", "#00ddff")
+    if (document.visibilityState === "visible")
+        new notify("Exported to clipboard", "#00ddff")
 }
 
 //importing a save file
@@ -7711,7 +7742,8 @@ function wipe() {
         game.hold_notify = false
         game.halfway_notify = false
 
-        new notify("Save deleted", "#ff0000")
+        if (document.visibilityState === "visible")
+            new notify("Save deleted", "#ff0000")
         save()
     }
 }
@@ -7803,8 +7835,18 @@ function regenerate_ui() {
     }
     if (game.epilepsy) {
         document.getElementById("epilepsy_button").innerText = "DISABLED"
+        document.documentElement.style.setProperty(
+            "--button_background",
+            "white"
+        )
+        document.documentElement.style.setProperty("--button_color", "black")
     } else {
         document.getElementById("epilepsy_button").innerText = "ENABLED"
+        document.documentElement.style.setProperty(
+            "--button_background",
+            "#780e74"
+        )
+        document.documentElement.style.setProperty("--button_color", "white")
     }
     switch (game.color_mode) {
         case 0:
@@ -8184,9 +8226,9 @@ function load(savegame) {
             regenerate_ui()
             return
         }
-        //v2.2.000
+        //v2.1.405
         game = savegame
-        game.version = "2.2.000"
+        game.version = "2.2.002"
         if (game.tab > 2) game.tab += 2
         game.reboot = 0
         game.watts = 0
@@ -8222,13 +8264,13 @@ function load(savegame) {
             if (game.level < 5) game.hold_notify = false
             if (game.level < 30) game.halfway_notify = false
         }
-        //v2.1.405
+        //v2.1.403
         if (minor < 405) {
             game.hold_time = 0
             game.mouse_time = 0
             game.mouse_held = false
         }
-        //v2.1.403
+        //v2.1.401
         if (minor < 403) {
             game.hotkey_configurations = {}
         }
@@ -8312,5 +8354,6 @@ load(JSON.parse(localStorage.getItem("exp_simulator_save")))
 //setting up the autosave loop
 let save_loop = window.setInterval(function () {
     save()
-    new notify("Game saved", "#00ddff")
-}, 15000)
+    if (document.visibilityState === "visible")
+        new notify("Game saved", "#00ddff")
+}, 60000)
