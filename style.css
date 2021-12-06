@@ -1,7 +1,15 @@
+:root {
+    --button_background: white;
+    --button_color: black;
+    --font_small: Abel;
+    --font_large: "Josefin Sans";
+    --font_size: 28px;
+}
+
 body {
     background-color: #311838;
-    font-family: Abel, sans-serif;
-    font-size: 28px;
+    font-family: var(--font_small);
+    font-size: var(--font_size);
     font-weight: normal;
 }
 
@@ -31,7 +39,7 @@ main {
     color: white;
     padding: 0.15em 0.25em;
     font-size: 1em;
-    font-family: Abel;
+    font-family: var(--font_small);
     font-weight: bold;
     border: 2px solid white;
     margin-top: 0.857em;
@@ -55,15 +63,15 @@ main {
 }
 
 .tab:active {
-    background-color: white;
-    color: black;
+    background-color: var(--button_background);
+    color: var(--button_color);
 }
 
 .button {
     background-color: #410a4a;
     color: white;
     padding: 0.3em 0.5em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-size: 0.714em;
     font-weight: normal;
     border: 1px solid white;
@@ -76,8 +84,8 @@ main {
 }
 
 .button:active {
-    background-color: white;
-    color: black;
+    background-color: var(--button_background);
+    color: var(--button_color);
 }
 
 #battery_mode {
@@ -125,7 +133,8 @@ main {
 }
 
 #lvlnum {
-    font-family: "Josefin Sans";
+    font-family: var(--font_large);
+    font-weight: 700;
     display: inline;
     color: #0055ff;
     font-size: 2.857em;
@@ -154,7 +163,7 @@ main {
     color: white;
     padding: 0.285em 0.571em;
     font-size: 1em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-weight: normal;
     border: 1px solid white;
     margin-top: 0.857em;
@@ -165,8 +174,8 @@ main {
 }
 
 #click:active {
-    background-color: white;
-    color: black;
+    background-color: var(--button_background);
+    color: var(--button_color);
 }
 
 .resources {
@@ -532,7 +541,7 @@ main {
     background-color: #410a4a;
     color: white;
     padding: 0.2em 0.4em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-size: 1em;
     font-weight: normal;
     border: 1px solid white;
@@ -545,8 +554,8 @@ main {
 }
 
 .option_button:active {
-    background-color: white;
-    color: black;
+    background-color: var(--button_background);
+    color: var(--button_color);
 }
 
 .small {
@@ -578,7 +587,7 @@ main {
     color: white;
     padding: 0.433em 0.571em;
     font-size: 1em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-weight: normal;
     border: 1px solid white;
 }
@@ -600,7 +609,7 @@ main {
     background-color: #410a4a;
     color: red;
     padding: 0.2em 0.4em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-size: 1em;
     font-weight: normal;
     border: 1px solid white;
@@ -668,7 +677,7 @@ main {
     width: 2.5em;
     color: white;
     padding: 0.1em 0.25em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-size: 0.714em;
     font-weight: normal;
     border: 1px solid white;
@@ -679,7 +688,7 @@ main {
 .pp_button {
     padding: 0.285em 0.571em;
     font-size: 1em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-weight: normal;
     flex: 0 0 6.4em;
 }
@@ -740,7 +749,7 @@ main {
     width: 5em;
     color: white;
     padding: 0.1em 0.25em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-size: 0.714em;
     font-weight: normal;
     border: 1px solid white;
@@ -920,7 +929,7 @@ main {
     padding: 0.285em 0.571em;
     font-size: 1.2em;
     margin-bottom: 0.18em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-weight: normal;
 }
 
@@ -1001,7 +1010,7 @@ main {
     align-items: center;
     padding: 0.285em 0.571em;
     font-size: 1em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-weight: normal;
     flex: 0 0 4.8em;
 }
@@ -1076,6 +1085,10 @@ main {
     border: 2px solid white;
 }
 
+.achievement_new {
+    border: 2px solid #00ff00;
+}
+
 .achievement_header {
     color: #ff0000;
     margin-top: 0em;
@@ -1125,7 +1138,7 @@ main {
 .notification {
     background-color: #410a4a;
     padding: 0.2em 0.333em;
-    font-family: Abel, sans-serif;
+    font-family: var(--font_small);
     font-size: 0.857em;
     font-weight: normal;
     border: 1px solid white;
@@ -1141,7 +1154,7 @@ main {
 }
 
 .title {
-    font-family: "Josefin Sans";
+    font-family: var(--font_large);
     font-size: 2.857em;
     color: #ff00bb;
     margin-top: 0.4em;
