@@ -482,6 +482,11 @@ function reboot() {
             game.flux_increase = 1
             if (game.perks[3]) game.flux_boost = 5
 
+            if (game.perks[1]) {
+                game.exp_add = game.generator_kit * game.watt_boost
+                game.cps = game.generator_kit
+            }
+
             if (game.perks[7])
                 document.getElementById("autopp_config").style.display = "block"
 
