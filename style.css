@@ -44,6 +44,7 @@ main {
     border: 2px solid white;
     margin-top: 0.857em;
     margin-left: 0.285em;
+    cursor: pointer;
 }
 
 #upgrades {
@@ -77,6 +78,7 @@ main {
     border: 1px solid white;
     margin-top: -0.82em;
     display: none;
+    cursor: pointer;
 }
 
 .button:hover {
@@ -167,6 +169,7 @@ main {
     font-weight: normal;
     border: 1px solid white;
     margin-top: 0.857em;
+    cursor: pointer;
 }
 
 #click:hover {
@@ -547,6 +550,7 @@ main {
     border: 1px solid white;
     margin-top: 0em;
     margin-left: 0.285em;
+    cursor: pointer;
 }
 
 .option_button:hover {
@@ -691,6 +695,7 @@ main {
     font-family: var(--font_small);
     font-weight: normal;
     flex: 0 0 6.4em;
+    cursor: pointer;
 }
 
 .pp_hidden {
@@ -801,6 +806,52 @@ main {
     margin-top: 0.1em;
 }
 
+#smart_config {
+    display: none;
+    margin-bottom: 2.4em;
+    background-color: #44194d;
+    padding: 0.4em;
+}
+
+#smart_enabled {
+    display: block;
+    margin-top: 0.15em;
+    margin-bottom: 0.1em;
+}
+
+#smart_toggle {
+    display: inline;
+    color: #ff0000;
+}
+
+#smart_peak {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#smart_pp {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#smart_amp {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#smart_start {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#smart_peak_mode {
+    display: inline;
+}
+
+#smart_pp_mode {
+    display: inline;
+}
+
 #autopp_config {
     display: none;
     margin-bottom: 2.4em;
@@ -810,7 +861,7 @@ main {
 
 #autopp_enabled {
     display: block;
-    margin-top: 0.1em;
+    margin-top: 0.15em;
 }
 
 #autopp_mode {
@@ -931,6 +982,7 @@ main {
     margin-bottom: 0.18em;
     font-family: var(--font_small);
     font-weight: normal;
+    cursor: pointer;
 }
 
 .no_reboot_power {
@@ -969,6 +1021,39 @@ main {
     font-size: 1.5em;
     text-align: center;
     margin-bottom: 0.285em;
+}
+
+#autorb_block {
+    display: none;
+    background-color: #44194d;
+    margin-top: 1em;
+    margin-bottom: 2em;
+    padding: 0.4em;
+    border: 2px solid #ffff00;
+}
+
+#autorb_enabled {
+    display: block;
+    margin-top: 0.15em;
+}
+
+#auto_watts {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#pendingrb_enabled {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#autorb_toggle {
+    display: inline;
+    color: #ff0000;
+}
+
+#pendingrb_toggle {
+    display: inline;
 }
 
 .generator_perk {
@@ -1041,6 +1126,10 @@ main {
     font-weight: bold;
 }
 
+#achievements_page {
+    display: none;
+}
+
 .achievement_title {
     color: white;
     font-size: 1em;
@@ -1055,8 +1144,8 @@ main {
     text-align: center;
 }
 
-#slot10 {
-    margin-bottom: 1.285em;
+#bottom_switcher {
+    margin-top: 1.285em;
 }
 
 .page_left {
@@ -1120,6 +1209,7 @@ main {
 
 .link {
     color: #ff00bb;
+    cursor: pointer;
 }
 
 .link:hover {
