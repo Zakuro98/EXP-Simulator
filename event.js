@@ -62,6 +62,8 @@ function increment(num) {
             get_achievement(29)
         if (!game.achievements[30] && game.all_time_exp >= 10 ** 39)
             get_achievement(30)
+        if (!game.achievements[70] && game.all_time_exp >= 10 ** 42)
+            get_achievement(70)
 
         game.exp = game.total_exp - Math.ceil(get_exp(game.level - 1))
         game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level - 1))
@@ -75,14 +77,20 @@ function increment(num) {
                 game.global_multiplier *
                 game.cap_boost *
                 game.cps
-            if (game.autods_toggle && game.autods_goal === 0)
+            if (
+                (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                (game.autods_toggle === 2 &&
+                    game.cap_mode === 4 &&
+                    !game.smartds_oc)
+            )
                 eps =
                     (game.exp_add + game.exp_fluct / 2) *
                     game.global_multiplier *
                     (game.cap_boost +
                         (1 - game.cap_boost) * game.cap_mode * 2) *
                     game.cps
-            if (game.battery_mode === 1) eps *= game.exp_battery
+            if (game.battery_mode === 1 || game.perks[8])
+                eps *= game.exp_battery
             if (eps / game.goal >= 2) {
                 document.getElementById("progress").style.width = 100 + "%"
             } else {
@@ -202,14 +210,20 @@ function increment(num) {
                 game.global_multiplier *
                 game.cap_boost *
                 game.cps
-            if (game.autods_toggle && game.autods_goal === 0)
+            if (
+                (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                (game.autods_toggle === 2 &&
+                    game.cap_mode === 4 &&
+                    !game.smartds_oc)
+            )
                 eps =
                     (game.exp_add + game.exp_fluct / 2) *
                     game.global_multiplier *
                     (game.cap_boost +
                         (1 - game.cap_boost) * game.cap_mode * 2) *
                     game.cps
-            if (game.battery_mode === 1) eps *= game.exp_battery
+            if (game.battery_mode === 1 || game.perks[8])
+                eps *= game.exp_battery
             if (eps / goal2 >= 2) {
                 document.getElementById("pp_progress").style.width = "100%"
             }
@@ -224,7 +238,6 @@ function increment(num) {
     if (num > 0) game.afk_time = 0
 
     color_update()
-    if (game.tab === 1) upgrade_update()
     ampbutton_update()
 
     document.getElementById("lvlnum").innerText = format_num(game.level)
@@ -253,7 +266,7 @@ function player_increment() {
         else legit = false
     }
     if (legit) {
-        if (game.battery_mode === 0)
+        if (game.battery_mode === 0 || game.perks[8])
             increment(
                 Math.round(
                     (game.exp_add + fluct_increment(game.exp_fluct)) *
@@ -280,9 +293,13 @@ function player_increment() {
 //give achievement
 function get_achievement(id) {
     game.achievements[id] = true
+    let true_id = 0
+    for (let i = 0; i < achievement.achievements.length; i++) {
+        if (achievement.achievements[i].id === id) true_id = i
+    }
     if (document.visibilityState === "visible")
-        new notify(achievement.achievements[id].name, "#00ff00")
-    achievement.achievements[id].new = true
+        new notify(achievement.achievements[true_id].name, "#00ff00")
+    achievement.achievements[true_id].new = true
     document.getElementById("achievements").style.color = "#00ff00"
 }
 
@@ -308,84 +325,6 @@ function upgrade(id, max) {
                                 game.generator_kit +
                                 1) *
                             game.amp
-                        if (game.battery_mode === 1) {
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("boost").innerText =
-                                    "EXP Boost\nTier " +
-                                    format_num(
-                                        game.boost_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_add *
-                                                game.global_multiplier *
-                                                game.exp_battery *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " EXP/click"
-                        } else {
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("boost").innerText =
-                                    "EXP Boost\nTier " +
-                                    format_num(
-                                        game.boost_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_add *
-                                                game.global_multiplier *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " EXP/click"
-                        }
-                        click_update()
                     }
                     if (game.level < game.boost_level) {
                         document.getElementById("boost_button").innerText =
@@ -426,16 +365,6 @@ function upgrade(id, max) {
                             get_achievement(54)
                         if (!game.achievements[55] && game.cps >= 1000)
                             get_achievement(55)
-                        document.getElementById("auto").innerText =
-                            "Autoclicker\nTier " +
-                            format_num(
-                                game.auto_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": " +
-                            format_num(game.cps) +
-                            " clicks/s"
                         pp_upgrade.upgrades[24].desc =
                             "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: " +
                             format_eff(16 + game.cps * 0.16) +
@@ -446,7 +375,6 @@ function upgrade(id, max) {
                             pp_upgrade.upgrades[24].desc
                         if (game.pp_bought[24]) {
                             game.ml_boost = 16 + game.cps * 0.16
-                            click_update()
                         }
                     }
                     if (game.level < game.auto_level) {
@@ -490,84 +418,6 @@ function upgrade(id, max) {
                                     game.generator_kit) *
                                 game.amp *
                                 2
-                        if (game.battery_mode === 1) {
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("fluct").innerText =
-                                    "EXP Fluctuation\nTier " +
-                                    format_num(
-                                        game.fluct_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_fluct *
-                                                game.global_multiplier *
-                                                game.exp_battery *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " max extra EXP/click"
-                        } else {
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("fluct").innerText =
-                                    "EXP Fluctuation\nTier " +
-                                    format_num(
-                                        game.fluct_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_fluct *
-                                                game.global_multiplier *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " max extra EXP/click"
-                        }
-                        click_update()
                     }
                     if (game.level < game.fluct_level) {
                         document.getElementById("fluct_button").innerText =
@@ -607,171 +457,6 @@ function upgrade(id, max) {
                             game.starter_kit +
                             game.generator_kit +
                             1
-                        document.getElementById("fact").innerText =
-                            "EXP Factor\nTier " +
-                            format_num(
-                                game.fact_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": " +
-                            format_num(game.exp_fact) +
-                            "x EXP/click"
-                        if (game.battery_mode === 1) {
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("boost").innerText =
-                                    "EXP Boost\nTier " +
-                                    format_num(
-                                        game.boost_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_add *
-                                                game.global_multiplier *
-                                                game.exp_battery *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " EXP/click"
-                        } else {
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("boost").innerText =
-                                    "EXP Boost\nTier " +
-                                    format_num(
-                                        game.boost_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_add *
-                                                game.global_multiplier *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " EXP/click"
-                        }
-                        if (game.battery_mode === 1) {
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("fluct").innerText =
-                                    "EXP Fluctuation\nTier " +
-                                    format_num(
-                                        game.fluct_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_fluct *
-                                                game.global_multiplier *
-                                                game.exp_battery *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " max extra EXP/click"
-                        } else {
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("fluct").innerText =
-                                    "EXP Fluctuation\nTier " +
-                                    format_num(
-                                        game.fluct_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_fluct *
-                                                game.global_multiplier *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " max extra EXP/click"
-                        }
-                        click_update()
                     }
                     if (game.level < game.fact_level) {
                         document.getElementById("fact_button").innerText =
@@ -799,25 +484,6 @@ function upgrade(id, max) {
                         game.flux_level = game.flux_tier * 75 + 75
                         if (game.perks[6])
                             game.flux_level = Math.round(game.flux_level * 0.75)
-                        document.getElementById("flux").innerText =
-                            "EXP Flux\nTier " +
-                            format_num(
-                                game.flux_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": " +
-                            format_eff(game.exp_flux) +
-                            "x EXP/click (+" +
-                            format_eff(
-                                (game.flux_tier +
-                                    game.starter_kit +
-                                    game.generator_kit) *
-                                    0.15 *
-                                    game.flux_boost *
-                                    game.flux_increase
-                            ) +
-                            "/min)"
                     }
                     if (game.level < game.flux_level) {
                         document.getElementById("flux_button").innerText =
@@ -867,106 +533,6 @@ function upgrade(id, max) {
                                     game.generator_kit +
                                     1) *
                                 9
-                        if (game.battery_mode === 0) {
-                            document.getElementById("battery").innerText =
-                                "EXP Battery\nTier " +
-                                format_num(
-                                    game.battery_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": " +
-                                format_num(game.exp_battery) +
-                                "x manual EXP production"
-                            click_update()
-                        } else if (game.battery_mode === 1) {
-                            document.getElementById("battery").innerText =
-                                "EXP Battery\nTier " +
-                                format_num(
-                                    game.battery_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": " +
-                                format_num(game.exp_battery) +
-                                "x automated EXP production"
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("boost").innerText =
-                                    "EXP Boost\nTier " +
-                                    format_num(
-                                        game.boost_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_add *
-                                                game.global_multiplier *
-                                                game.exp_battery *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " EXP/click"
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            game.cap_boost
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                            if (game.autods_toggle && game.autods_goal === 0)
-                                document.getElementById("fluct").innerText =
-                                    "EXP Fluctuation\nTier " +
-                                    format_num(
-                                        game.fluct_tier +
-                                            game.starter_kit +
-                                            game.generator_kit
-                                    ) +
-                                    ": +" +
-                                    format_num(
-                                        Math.round(
-                                            game.exp_fluct *
-                                                game.global_multiplier *
-                                                game.exp_battery *
-                                                (game.cap_boost +
-                                                    (1 - game.cap_boost) *
-                                                        game.cap_mode *
-                                                        2)
-                                        )
-                                    ) +
-                                    " max extra EXP/click"
-                        }
                     }
                     if (game.level < game.battery_level) {
                         document.getElementById("battery_button").innerText =
@@ -1008,84 +574,6 @@ function upgrade(id, max) {
                             game.generator_kit +
                             1) *
                         game.amp
-                    if (game.battery_mode === 1) {
-                        document.getElementById("boost").innerText =
-                            "EXP Boost\nTier " +
-                            format_num(
-                                game.boost_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_add *
-                                        game.global_multiplier *
-                                        game.exp_battery *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " EXP/click"
-                    } else {
-                        document.getElementById("boost").innerText =
-                            "EXP Boost\nTier " +
-                            format_num(
-                                game.boost_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_add *
-                                        game.global_multiplier *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " EXP/click"
-                    }
-                    click_update()
                     if (game.level < game.boost_level) {
                         document.getElementById("boost_button").innerText =
                             "LVL " + format_num(game.boost_level)
@@ -1124,16 +612,6 @@ function upgrade(id, max) {
                         get_achievement(54)
                     if (!game.achievements[55] && game.cps >= 1000)
                         get_achievement(55)
-                    document.getElementById("auto").innerText =
-                        "Autoclicker\nTier " +
-                        format_num(
-                            game.auto_tier +
-                                game.starter_kit +
-                                game.generator_kit
-                        ) +
-                        ": " +
-                        format_num(game.cps) +
-                        " clicks/s"
                     pp_upgrade.upgrades[24].desc =
                         "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: " +
                         format_eff(16 + game.cps * 0.16) +
@@ -1144,7 +622,6 @@ function upgrade(id, max) {
                         pp_upgrade.upgrades[24].desc
                     if (game.pp_bought[24]) {
                         game.ml_boost = 16 + game.cps * 0.16
-                        click_update()
                     }
                     if (game.level < game.auto_level) {
                         document.getElementById("auto_button").innerText =
@@ -1188,84 +665,6 @@ function upgrade(id, max) {
                                 game.generator_kit) *
                             game.amp *
                             2
-                    if (game.battery_mode === 1) {
-                        document.getElementById("fluct").innerText =
-                            "EXP Fluctuation\nTier " +
-                            format_num(
-                                game.fluct_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_fluct *
-                                        game.global_multiplier *
-                                        game.exp_battery *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " max extra EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                    } else {
-                        document.getElementById("fluct").innerText =
-                            "EXP Fluctuation\nTier " +
-                            format_num(
-                                game.fluct_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_fluct *
-                                        game.global_multiplier *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " max extra EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                    }
-                    click_update()
                     if (game.level < game.fluct_level) {
                         document.getElementById("fluct_button").innerText =
                             "LVL " + format_num(game.fluct_level)
@@ -1305,171 +704,6 @@ function upgrade(id, max) {
                         game.starter_kit +
                         game.generator_kit +
                         1
-                    document.getElementById("fact").innerText =
-                        "EXP Factor\nTier " +
-                        format_num(
-                            game.fact_tier +
-                                game.starter_kit +
-                                game.generator_kit
-                        ) +
-                        ": " +
-                        format_num(game.exp_fact) +
-                        "x EXP/click"
-                    if (game.battery_mode === 1) {
-                        document.getElementById("boost").innerText =
-                            "EXP Boost\nTier " +
-                            format_num(
-                                game.boost_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_add *
-                                        game.global_multiplier *
-                                        game.exp_battery *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " EXP/click"
-                    } else {
-                        document.getElementById("boost").innerText =
-                            "EXP Boost\nTier " +
-                            format_num(
-                                game.boost_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_add *
-                                        game.global_multiplier *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " EXP/click"
-                    }
-                    if (game.battery_mode === 1) {
-                        document.getElementById("fluct").innerText =
-                            "EXP Fluctuation\nTier " +
-                            format_num(
-                                game.fluct_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_fluct *
-                                        game.global_multiplier *
-                                        game.exp_battery *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " max extra EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                    } else {
-                        document.getElementById("fluct").innerText =
-                            "EXP Fluctuation\nTier " +
-                            format_num(
-                                game.fluct_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_fluct *
-                                        game.global_multiplier *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " max extra EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                    }
-                    click_update()
                     if (game.level < game.fact_level) {
                         document.getElementById("fact_button").innerText =
                             "LVL " + format_num(game.fact_level)
@@ -1497,25 +731,6 @@ function upgrade(id, max) {
                         if (game.perks[6])
                             game.flux_level = Math.round(game.flux_level * 0.75)
                     }
-                    document.getElementById("flux").innerText =
-                        "EXP Flux\nTier " +
-                        format_num(
-                            game.flux_tier +
-                                game.starter_kit +
-                                game.generator_kit
-                        ) +
-                        ": " +
-                        format_eff(game.exp_flux) +
-                        "x EXP/click (+" +
-                        format_eff(
-                            (game.flux_tier +
-                                game.starter_kit +
-                                game.generator_kit) *
-                                0.15 *
-                                game.flux_boost *
-                                game.flux_increase
-                        ) +
-                        "/min)"
                     if (game.level < game.flux_level) {
                         document.getElementById("flux_button").innerText =
                             "LVL " + format_num(game.flux_level)
@@ -1565,106 +780,6 @@ function upgrade(id, max) {
                                 game.generator_kit +
                                 1) *
                             9
-                    if (game.battery_mode === 0) {
-                        document.getElementById("battery").innerText =
-                            "EXP Battery\nTier " +
-                            format_num(
-                                game.battery_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": " +
-                            format_num(game.exp_battery) +
-                            "x manual EXP production"
-                        click_update()
-                    } else if (game.battery_mode === 1) {
-                        document.getElementById("battery").innerText =
-                            "EXP Battery\nTier " +
-                            format_num(
-                                game.battery_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": " +
-                            format_num(game.exp_battery) +
-                            "x automated EXP production"
-                        document.getElementById("boost").innerText =
-                            "EXP Boost\nTier " +
-                            format_num(
-                                game.boost_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_add *
-                                        game.global_multiplier *
-                                        game.exp_battery *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("boost").innerText =
-                                "EXP Boost\nTier " +
-                                format_num(
-                                    game.boost_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_add *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " EXP/click"
-                        document.getElementById("fluct").innerText =
-                            "EXP Fluctuation\nTier " +
-                            format_num(
-                                game.fluct_tier +
-                                    game.starter_kit +
-                                    game.generator_kit
-                            ) +
-                            ": +" +
-                            format_num(
-                                Math.round(
-                                    game.exp_fluct *
-                                        game.global_multiplier *
-                                        game.exp_battery *
-                                        game.cap_boost
-                                )
-                            ) +
-                            " max extra EXP/click"
-                        if (game.autods_toggle && game.autods_goal === 0)
-                            document.getElementById("fluct").innerText =
-                                "EXP Fluctuation\nTier " +
-                                format_num(
-                                    game.fluct_tier +
-                                        game.starter_kit +
-                                        game.generator_kit
-                                ) +
-                                ": +" +
-                                format_num(
-                                    Math.round(
-                                        game.exp_fluct *
-                                            game.global_multiplier *
-                                            game.exp_battery *
-                                            (game.cap_boost +
-                                                (1 - game.cap_boost) *
-                                                    game.cap_mode *
-                                                    2)
-                                    )
-                                ) +
-                                " max extra EXP/click"
-                    }
                     if (game.level < game.battery_level) {
                         document.getElementById("battery_button").innerText =
                             "LVL " + format_num(game.battery_level)
@@ -1694,133 +809,6 @@ function oc_activate() {
     game.exp_oc = 3
     if (game.pp_bought[19]) game.exp_oc = 4
     if (game.pp_bought[23]) game.exp_oc = 5
-    if (game.battery_mode === 1) {
-        document.getElementById("boost").innerText =
-            "EXP Boost\nTier " +
-            format_num(
-                game.boost_tier + game.starter_kit + game.generator_kit
-            ) +
-            ": +" +
-            format_num(
-                Math.round(
-                    game.exp_add *
-                        game.global_multiplier *
-                        game.exp_battery *
-                        game.cap_boost
-                )
-            ) +
-            " EXP/click"
-        if (game.autods_toggle && game.autods_goal === 0)
-            document.getElementById("boost").innerText =
-                "EXP Boost\nTier " +
-                format_num(
-                    game.boost_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": +" +
-                format_num(
-                    Math.round(
-                        game.exp_add *
-                            game.global_multiplier *
-                            game.exp_battery *
-                            (game.cap_boost +
-                                (1 - game.cap_boost) * game.cap_mode * 2)
-                    )
-                ) +
-                " EXP/click"
-    } else {
-        document.getElementById("boost").innerText =
-            "EXP Boost\nTier " +
-            format_num(
-                game.boost_tier + game.starter_kit + game.generator_kit
-            ) +
-            ": +" +
-            format_num(
-                Math.round(
-                    game.exp_add * game.global_multiplier * game.cap_boost
-                )
-            ) +
-            " EXP/click"
-        if (game.autods_toggle && game.autods_goal === 0)
-            document.getElementById("boost").innerText =
-                "EXP Boost\nTier " +
-                format_num(
-                    game.boost_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": +" +
-                format_num(
-                    Math.round(
-                        game.exp_add *
-                            game.global_multiplier *
-                            (game.cap_boost +
-                                (1 - game.cap_boost) * game.cap_mode * 2)
-                    )
-                ) +
-                " EXP/click"
-    }
-    if (game.battery_mode === 1) {
-        document.getElementById("fluct").innerText =
-            "EXP Fluctuation\nTier " +
-            format_num(
-                game.fluct_tier + game.starter_kit + game.generator_kit
-            ) +
-            ": +" +
-            format_num(
-                Math.round(
-                    game.exp_fluct *
-                        game.global_multiplier *
-                        game.exp_battery *
-                        game.cap_boost
-                )
-            ) +
-            " max extra EXP/click"
-        if (game.autods_toggle && game.autods_goal === 0)
-            document.getElementById("fluct").innerText =
-                "EXP Fluctuation\nTier " +
-                format_num(
-                    game.fluct_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": +" +
-                format_num(
-                    Math.round(
-                        game.exp_fluct *
-                            game.global_multiplier *
-                            game.exp_battery *
-                            (game.cap_boost +
-                                (1 - game.cap_boost) * game.cap_mode * 2)
-                    )
-                ) +
-                " max extra EXP/click"
-    } else {
-        document.getElementById("fluct").innerText =
-            "EXP Fluctuation\nTier " +
-            format_num(
-                game.fluct_tier + game.starter_kit + game.generator_kit
-            ) +
-            ": +" +
-            format_num(
-                Math.round(
-                    game.exp_fluct * game.global_multiplier * game.cap_boost
-                )
-            ) +
-            " max extra EXP/click"
-        if (game.autods_toggle && game.autods_goal === 0)
-            document.getElementById("fluct").innerText =
-                "EXP Fluctuation\nTier " +
-                format_num(
-                    game.fluct_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": +" +
-                format_num(
-                    Math.round(
-                        game.exp_fluct *
-                            game.global_multiplier *
-                            (game.cap_boost +
-                                (1 - game.cap_boost) * game.cap_mode * 2)
-                    )
-                ) +
-                " max extra EXP/click"
-    }
-    click_update()
     document.getElementById("oc_state").innerText =
         "Boosting " + format_num(game.exp_oc) + "x"
     document.getElementById("oc_button").style.display = "none"
@@ -1876,8 +864,15 @@ function discharge() {
             (game.exp_add + game.exp_fluct / 2) *
             game.global_multiplier *
             game.cps
-        if (game.battery_mode === 1) eps *= game.exp_battery
-        increment((game.stored_exp / game.tickspeed) * eps * game.cap_mode * 2)
+        if (game.battery_mode === 1 || game.perks[8]) eps *= game.exp_battery
+        if (!game.perks[9])
+            increment(
+                (game.stored_exp / game.tickspeed) * eps * game.cap_mode * 2
+            )
+        else
+            increment(
+                (game.stored_exp / game.tickspeed) * eps * game.cap_mode * 4
+            )
         game.stored_exp = 0
 
         if (!game.achievements[61] && game.oc_state === 2) get_achievement(61)
