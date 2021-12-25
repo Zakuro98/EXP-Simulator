@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.2.000",
+    version: "2.2.102",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -81,7 +81,7 @@ let game = {
     depth_power: 1,
 
     battery_tier: 0,
-    battery_level: 150,
+    battery_level: 90,
 
     epilepsy: true,
 
@@ -94,7 +94,7 @@ let game = {
     global_multiplier: 1,
     flux_boost: 1,
 
-    autods_toggle: false,
+    autods_toggle: 0,
     autods_goal: 30,
 
     color_mode: 0,
@@ -124,7 +124,7 @@ let game = {
     watts: 0,
     watt_boost: 1,
 
-    perks: new Array(8).fill(false),
+    perks: new Array(16).fill(false),
     hold_time: 0,
     generator_kit: 0,
     flux_increase: 1,
@@ -133,7 +133,7 @@ let game = {
     autopp_mode: 0,
     priority: new Array(39).fill(1),
 
-    achievements: new Array(70).fill(false),
+    achievements: new Array(77).fill(false),
     ach_power: 1,
     achiev_page: 0,
     no_automation: true,
@@ -143,6 +143,27 @@ let game = {
     halfway_notify: false,
     confirmation: true,
     amp_sec_prev: 0,
+
+    //v2.2.100 variables
+    autocp_toggle: false,
+    smartds_oc: false,
+
+    smartpr_toggle: false,
+    smartpr_time: 0,
+    smartpr_peak: 60,
+    smartpr_pp: 120,
+    smartpr_mode: 0,
+    smartpr_amp: 0,
+    smartpr_start: 0,
+
+    autorb_toggle: false,
+    autorb_goal: 1,
+    autorb_pending: false,
+
+    cancer_reboots: 0,
+
+    //v2.2.102 variables
+    beta: false,
 }
 
 //initialize maps
@@ -344,7 +365,7 @@ function format_num(num) {
                 output = lead_str3
                 order3 -= 1
                 if (order3 === 0) {
-                    output += "a"
+                    output += "A"
                 } else if (order3 > 0) {
                     let index = 0
                     for (
@@ -356,85 +377,85 @@ function format_num(num) {
                         if (i === 0) index += 1
                         switch (index) {
                             case 0:
-                                output += "a"
+                                output += "A"
                                 break
                             case 1:
-                                output += "b"
+                                output += "B"
                                 break
                             case 2:
-                                output += "c"
+                                output += "C"
                                 break
                             case 3:
-                                output += "d"
+                                output += "D"
                                 break
                             case 4:
-                                output += "e"
+                                output += "E"
                                 break
                             case 5:
-                                output += "f"
+                                output += "F"
                                 break
                             case 6:
-                                output += "g"
+                                output += "G"
                                 break
                             case 7:
-                                output += "h"
+                                output += "H"
                                 break
                             case 8:
-                                output += "i"
+                                output += "I"
                                 break
                             case 9:
-                                output += "j"
+                                output += "J"
                                 break
                             case 10:
-                                output += "k"
+                                output += "K"
                                 break
                             case 11:
-                                output += "l"
+                                output += "L"
                                 break
                             case 12:
-                                output += "m"
+                                output += "M"
                                 break
                             case 13:
-                                output += "n"
+                                output += "N"
                                 break
                             case 14:
-                                output += "o"
+                                output += "O"
                                 break
                             case 15:
-                                output += "p"
+                                output += "P"
                                 break
                             case 16:
-                                output += "q"
+                                output += "Q"
                                 break
                             case 17:
-                                output += "r"
+                                output += "R"
                                 break
                             case 18:
-                                output += "s"
+                                output += "S"
                                 break
                             case 19:
-                                output += "t"
+                                output += "T"
                                 break
                             case 20:
-                                output += "u"
+                                output += "U"
                                 break
                             case 21:
-                                output += "v"
+                                output += "V"
                                 break
                             case 22:
-                                output += "w"
+                                output += "W"
                                 break
                             case 23:
-                                output += "x"
+                                output += "X"
                                 break
                             case 24:
-                                output += "y"
+                                output += "Y"
                                 break
                             case 25:
-                                output += "z"
+                                output += "Z"
                                 break
                             case 26:
-                                output += "a"
+                                output += "A"
                                 break
                         }
                     }
@@ -706,6 +727,15 @@ function get_pp(lvl) {
     }
 }
 
+//get watts based on pp
+function get_watts(pp) {
+    if (pp < 200000) {
+        return 0
+    } else {
+        return Math.floor(((pp - 185000) / 15000) ** 0.85)
+    }
+}
+
 //getting level colors
 const colors = [
     "#0055ff",
@@ -866,7 +896,6 @@ class pp_upgrade_child extends pp_upgrade {
         1,
         function () {
             game.ml_boost = 2
-            click_update()
         }
     )
     //auto upgrade [2]
@@ -874,9 +903,7 @@ class pp_upgrade_child extends pp_upgrade {
         "Auto-Upgrading",
         "Unlocks automation for all upgrades",
         2,
-        function () {
-            upgrade_update()
-        }
+        function () {}
     )
     //auto prestige [3]
     let autoprestige = new pp_upgrade_child(
@@ -895,7 +922,6 @@ class pp_upgrade_child extends pp_upgrade {
         4,
         function () {
             game.ml_boost = 4
-            click_update()
         },
         ml1
     )
@@ -950,41 +976,18 @@ class pp_upgrade_child extends pp_upgrade {
         "+4 free tiers on every upgrade on the Upgrades tab",
         10,
         function () {
-            game.starter_kit = 4
+            game.starter_kit += 4
             game.exp_add += game.amp * 4
             game.cps += 8
             game.exp_fluct += game.amp * 4
             game.exp_fact += 4
-            document.getElementById("boost").innerText =
-                "EXP Boost\nTier " +
-                format_num(
-                    game.boost_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": +" +
-                format_num(game.exp_add * game.exp_fact) +
-                " EXP/click"
-            document.getElementById("auto").innerText =
-                "Autoclicker\nTier " +
-                format_num(
-                    game.auto_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": " +
-                format_num(game.cps) +
-                " clicks/s"
-            document.getElementById("fluct").innerText =
-                "EXP Fluctuation\nTier " +
-                format_num(game.fluct_tier) +
-                ": +" +
-                format_num(game.exp_fluct * game.exp_fact) +
-                " max extra EXP/click"
-            document.getElementById("fact").innerText =
-                "EXP Factor\nTier " +
-                format_num(game.fact_tier) +
-                ": " +
-                format_num(game.exp_fact) +
-                "x EXP/click"
-            click_update()
-            upgrade_update()
+            if (game.perks[12]) {
+                game.starter_kit += 4
+                game.exp_add += game.amp * 4
+                game.cps += 8
+                game.exp_fluct += game.amp * 4
+                game.exp_fact += 4
+            }
         },
         lim_break
     )
@@ -1009,7 +1012,6 @@ class pp_upgrade_child extends pp_upgrade {
         20,
         function () {
             game.ml_boost = 8
-            click_update()
         },
         ml2
     )
@@ -1077,65 +1079,27 @@ class pp_upgrade_child extends pp_upgrade {
         120,
         function () {
             game.ml_boost = 16
-            click_update()
         },
         ml3
     )
     //starter kit 2 [18]
     new pp_upgrade_child(
         "Starter Kit II",
-        "+8 free tiers on every upgrade on the Upgrades tab",
+        "+6 free tiers on every upgrade on the Upgrades tab",
         135,
         function () {
-            game.starter_kit = 12
-            game.exp_add += game.amp * 4
-            game.cps += 8
-            game.exp_fluct += game.amp * 4
-            game.exp_fact += 4
-            document.getElementById("boost").innerText =
-                "EXP Boost\nTier " +
-                format_num(
-                    game.boost_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": +" +
-                format_num(game.exp_add * game.exp_fact) +
-                " EXP/click"
-            document.getElementById("auto").innerText =
-                "Autoclicker\nTier " +
-                format_num(
-                    game.auto_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": " +
-                format_num(game.cps) +
-                " clicks/s"
-            document.getElementById("fluct").innerText =
-                "EXP Fluctuation\nTier " +
-                format_num(game.fluct_tier) +
-                ": +" +
-                format_num(game.exp_fluct * game.exp_fact) +
-                " max extra EXP/click"
-            document.getElementById("fact").innerText =
-                "EXP Factor\nTier " +
-                format_num(game.fact_tier) +
-                ": " +
-                format_num(game.exp_fact) +
-                "x EXP/click"
-            if (game.pp_bought[20])
-                document.getElementById("flux").innerText =
-                    "EXP Flux\nTier " +
-                    format_num(
-                        game.flux_tier + game.starter_kit + game.generator_kit
-                    ) +
-                    ": +" +
-                    format_eff(
-                        (game.flux_tier +
-                            game.starter_kit +
-                            game.generator_kit) *
-                            0.15
-                    ) +
-                    "x flux/min"
-            click_update()
-            upgrade_update()
+            game.starter_kit += 6
+            game.exp_add += game.amp * 6
+            game.cps += 12
+            game.exp_fluct += game.amp * 6
+            game.exp_fact += 6
+            if (game.perks[12]) {
+                game.starter_kit += 6
+                game.exp_add += game.amp * 6
+                game.cps += 12
+                game.exp_fluct += game.amp * 6
+                game.exp_fact += 6
+            }
         },
         oc
     )
@@ -1188,15 +1152,6 @@ class pp_upgrade_child extends pp_upgrade {
         840,
         function () {
             game.ml_boost = 16 + game.cps * 0.16
-            pp_upgrade.upgrades[24].desc =
-                "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: " +
-                format_eff(16 + game.cps * 0.16) +
-                "x)"
-            pp_map
-                .get(pp_upgrade.upgrades[24])
-                .querySelector(".pp_desc").innerText =
-                pp_upgrade.upgrades[24].desc
-            click_update()
         },
         ml4
     )
@@ -1233,133 +1188,29 @@ class pp_upgrade_child extends pp_upgrade {
                 .get(pp_upgrade.upgrades[27])
                 .querySelector(".pp_desc").innerText =
                 pp_upgrade.upgrades[27].desc
-            click_update()
         },
         battery
     )
     //starter kit 3 [28]
     new pp_upgrade_child(
         "Starter Kit III",
-        "+12 free tiers on every upgrade on the Upgrades tab",
+        "+8 free tiers on every upgrade on the Upgrades tab",
         1850,
         function () {
-            game.starter_kit = 12
-            game.exp_add += 4 * game.amp
-            game.cps += 8
-            game.exp_fluct += 4 * game.amp
-            game.exp_fact += 4
-            if (game.battery_mode === 1)
-                document.getElementById("boost").innerText =
-                    "EXP Boost\nTier " +
-                    format_num(
-                        game.boost_tier + game.starter_kit + game.generator_kit
-                    ) +
-                    ": +" +
-                    format_num(
-                        game.exp_add *
-                            game.exp_fact *
-                            game.exp_battery *
-                            game.exp_oc *
-                            game.exp_flux *
-                            game.pp_power *
-                            game.prestige_power
-                    ) +
-                    " EXP/click"
-            else
-                document.getElementById("boost").innerText =
-                    "EXP Boost\nTier " +
-                    format_num(
-                        game.boost_tier + game.starter_kit + game.generator_kit
-                    ) +
-                    ": +" +
-                    format_num(
-                        game.exp_add *
-                            game.exp_fact *
-                            game.exp_oc *
-                            game.exp_flux *
-                            game.pp_power *
-                            game.prestige_power
-                    ) +
-                    " EXP/click"
-            document.getElementById("auto").innerText =
-                "Autoclicker\nTier " +
-                format_num(
-                    game.auto_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": " +
-                format_num(game.cps) +
-                " clicks/s"
-            if (game.battery_mode === 1)
-                document.getElementById("fluct").innerText =
-                    "EXP Fluctuation\nTier " +
-                    format_num(game.fluct_tier) +
-                    ": +" +
-                    format_num(
-                        game.exp_fluct *
-                            game.exp_fact *
-                            game.exp_battery *
-                            game.exp_oc *
-                            game.exp_flux *
-                            game.pp_power *
-                            game.prestige_power
-                    ) +
-                    " max extra EXP/click"
-            else
-                document.getElementById("fluct").innerText =
-                    "EXP Fluctuation\nTier " +
-                    format_num(game.fluct_tier) +
-                    ": +" +
-                    format_num(
-                        game.exp_fluct *
-                            game.exp_fact *
-                            game.exp_oc *
-                            game.exp_flux *
-                            game.pp_power *
-                            game.prestige_power
-                    ) +
-                    " max extra EXP/click"
-            document.getElementById("fact").innerText =
-                "EXP Factor\nTier " +
-                format_num(game.fact_tier) +
-                ": " +
-                format_num(game.exp_fact) +
-                "x EXP/click"
-            document.getElementById("flux").innerText =
-                "EXP Flux\nTier " +
-                format_num(
-                    game.flux_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": +" +
-                format_eff(
-                    (game.flux_tier + game.starter_kit + game.generator_kit) *
-                        0.15
-                ) +
-                "x flux/min"
-            game.exp_battery += 4
-            if (game.battery_mode === 0)
-                document.getElementById("battery").innerText =
-                    "EXP Battery\nTier " +
-                    format_num(
-                        game.battery_tier +
-                            game.starter_kit +
-                            game.generator_kit
-                    ) +
-                    ": " +
-                    format_num(game.exp_battery) +
-                    "x manual EXP production"
-            else if (game.battery_mode === 1)
-                document.getElementById("battery").innerText =
-                    "EXP Battery\nTier " +
-                    format_num(
-                        game.battery_tier +
-                            game.starter_kit +
-                            game.generator_kit
-                    ) +
-                    ": " +
-                    format_num(game.exp_battery) +
-                    "x automated EXP production"
-            click_update()
-            upgrade_update()
+            game.starter_kit += 8
+            game.exp_add += 8 * game.amp
+            game.cps += 16
+            game.exp_fluct += 8 * game.amp
+            game.exp_fact += 8
+            game.exp_battery += 8
+            if (game.perks[12]) {
+                game.starter_kit += 8
+                game.exp_add += game.amp * 8
+                game.cps += 16
+                game.exp_fluct += game.amp * 8
+                game.exp_fact += 8
+                game.exp_battery += 8
+            }
         },
         battery
     )
@@ -1386,7 +1237,6 @@ class pp_upgrade_child extends pp_upgrade {
                 .get(pp_upgrade.upgrades[30])
                 .querySelector(".pp_desc").innerText =
                 pp_upgrade.upgrades[30].desc
-            click_update()
         },
         prst_power
     )
@@ -1408,6 +1258,14 @@ class pp_upgrade_child extends pp_upgrade {
         function () {
             document.getElementById("capacitor").style.display = "block"
             if (!game.achievements[49]) get_achievement(49)
+            if (game.perks[9]) {
+                document.getElementById("dis_auto").style.display = "block"
+                document.getElementById("dis_text").style.display = "block"
+                document.getElementById("dis_input").style.display = "block"
+            }
+            if (game.perks[11] && game.autocp_toggle) {
+                set_capacitance(1)
+            }
         },
         aaa
     )
@@ -1418,147 +1276,29 @@ class pp_upgrade_child extends pp_upgrade {
         20000,
         function () {
             game.flux_boost *= 5
-            document.getElementById("flux").innerText =
-                "EXP Flux\nTier " +
-                format_num(
-                    game.flux_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": " +
-                format_eff(game.exp_flux) +
-                "x EXP/click (+" +
-                format_eff(
-                    (game.flux_tier + game.starter_kit + game.generator_kit) *
-                        0.15 *
-                        game.flux_boost *
-                        game.flux_increase
-                ) +
-                "/min)"
         },
         capacitor
     )
     //starter kit 4 [34]
     new pp_upgrade_child(
         "Starter Kit IV",
-        "+20 free tiers on every upgrade on the Upgrades tab",
+        "+10 free tiers on every upgrade on the Upgrades tab",
         25000,
         function () {
-            game.starter_kit = 20
-            game.exp_add += 8 * game.amp
-            game.cps += 16
-            game.exp_fluct += 8 * game.amp
-            game.exp_fact += 8
-            if (game.battery_mode === 1)
-                document.getElementById("boost").innerText =
-                    "EXP Boost\nTier " +
-                    format_num(
-                        game.boost_tier + game.starter_kit + game.generator_kit
-                    ) +
-                    ": +" +
-                    format_num(
-                        game.exp_add *
-                            game.exp_fact *
-                            game.exp_battery *
-                            game.exp_oc *
-                            game.exp_flux *
-                            game.pp_power *
-                            game.prestige_power
-                    ) +
-                    " EXP/click"
-            else
-                document.getElementById("boost").innerText =
-                    "EXP Boost\nTier " +
-                    format_num(
-                        game.boost_tier + game.starter_kit + game.generator_kit
-                    ) +
-                    ": +" +
-                    format_num(
-                        game.exp_add *
-                            game.exp_fact *
-                            game.exp_oc *
-                            game.exp_flux *
-                            game.pp_power *
-                            game.prestige_power
-                    ) +
-                    " EXP/click"
-            document.getElementById("auto").innerText =
-                "Autoclicker\nTier " +
-                format_num(
-                    game.auto_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": " +
-                format_num(game.cps) +
-                " clicks/s"
-            if (game.battery_mode === 1)
-                document.getElementById("fluct").innerText =
-                    "EXP Fluctuation\nTier " +
-                    format_num(game.fluct_tier) +
-                    ": +" +
-                    format_num(
-                        game.exp_fluct *
-                            game.exp_fact *
-                            game.exp_battery *
-                            game.exp_oc *
-                            game.exp_flux *
-                            game.pp_power *
-                            game.prestige_power
-                    ) +
-                    " max extra EXP/click"
-            else
-                document.getElementById("fluct").innerText =
-                    "EXP Fluctuation\nTier " +
-                    format_num(game.fluct_tier) +
-                    ": +" +
-                    format_num(
-                        game.exp_fluct *
-                            game.exp_fact *
-                            game.exp_oc *
-                            game.exp_flux *
-                            game.pp_power *
-                            game.prestige_power
-                    ) +
-                    " max extra EXP/click"
-            document.getElementById("fact").innerText =
-                "EXP Factor\nTier " +
-                format_num(game.fact_tier) +
-                ": " +
-                format_num(game.exp_fact) +
-                "x EXP/click"
-            document.getElementById("flux").innerText =
-                "EXP Flux\nTier " +
-                format_num(
-                    game.flux_tier + game.starter_kit + game.generator_kit
-                ) +
-                ": +" +
-                format_eff(
-                    (game.flux_tier + game.starter_kit + game.generator_kit) *
-                        0.15
-                ) +
-                "x flux/min"
-            game.exp_battery += 8
-            if (game.battery_mode === 0)
-                document.getElementById("battery").innerText =
-                    "EXP Battery\nTier " +
-                    format_num(
-                        game.battery_tier +
-                            game.starter_kit +
-                            game.generator_kit
-                    ) +
-                    ": " +
-                    format_num(game.exp_battery) +
-                    "x manual EXP production"
-            else if (game.battery_mode === 1)
-                document.getElementById("battery").innerText =
-                    "EXP Battery\nTier " +
-                    format_num(
-                        game.battery_tier +
-                            game.starter_kit +
-                            game.generator_kit
-                    ) +
-                    ": " +
-                    format_num(game.exp_battery) +
-                    "x automated EXP production"
-            click_update()
-            upgrade_update()
+            game.starter_kit += 10
+            game.exp_add += 10 * game.amp
+            game.cps += 20
+            game.exp_fluct += 10 * game.amp
+            game.exp_fact += 10
+            game.exp_battery += 10
+            if (game.perks[12]) {
+                game.starter_kit += 10
+                game.exp_add += game.amp * 10
+                game.cps += 20
+                game.exp_fluct += game.amp * 10
+                game.exp_fact += 10
+                game.exp_battery += 10
+            }
         },
         capacitor
     )
@@ -1570,9 +1310,14 @@ class pp_upgrade_child extends pp_upgrade {
         function () {
             document.getElementById("cap_50").style.display = "inline"
             document.getElementById("cap_disc").style.display = "inline"
-            document.getElementById("dis_auto").style.display = "block"
-            document.getElementById("dis_text").style.display = "block"
-            document.getElementById("dis_input").style.display = "block"
+            if (!game.perks[9]) {
+                document.getElementById("dis_auto").style.display = "block"
+                document.getElementById("dis_text").style.display = "block"
+                document.getElementById("dis_input").style.display = "block"
+            }
+            if (game.perks[11] && game.autocp_toggle) {
+                set_capacitance(2)
+            }
         },
         capacitor
     )
@@ -1593,6 +1338,9 @@ class pp_upgrade_child extends pp_upgrade {
         45000,
         function () {
             document.getElementById("cap_75").style.display = "inline"
+            if (game.perks[11] && game.autocp_toggle) {
+                set_capacitance(3)
+            }
         },
         hv1
     )
@@ -1604,6 +1352,9 @@ class pp_upgrade_child extends pp_upgrade {
         function () {
             document.getElementById("cap_100").style.display = "inline"
             document.getElementById("dis_input").min = 0
+            if (game.perks[11] && game.autocp_toggle) {
+                set_capacitance(4)
+            }
         },
         hv2
     )
@@ -1691,13 +1442,13 @@ class generator_perk {
     //starter kit 5 [1]
     new generator_perk(
         "Starter Kit V",
-        "+12 extra free tiers for every upgrade on the Upgrades tab\n(Stacks with the first four Starter Kit Prestige upgrades)",
+        "+12 extra free tiers on every upgrade on the Upgrades tab\n(Stacks with the first four Starter Kit Prestige upgrades)",
         2
     )
     //technological gift 1 [2]
     new generator_perk(
         "Technological Gift I",
-        "You begin Reboots with 21 free PP",
+        "You begin Reboots with every PP upgrade up to Limit Break already purchased",
         3
     )
     //uninhibited flux [3]
@@ -1730,6 +1481,50 @@ class generator_perk {
         "Unlocks automation for Prestige upgrades",
         10
     )
+    //fusion [8]
+    new generator_perk(
+        "Fusion",
+        "The active/idle switch for EXP Battery is removed, and both modes are now in effect simultaneously",
+        12
+    )
+    //max capacity [9]
+    new generator_perk(
+        "Max Capacity",
+        "Discharge is 2x stronger\nDischarge automation is also now unlocked with the EXP Capacitor instead of High Voltage I",
+        16
+    )
+    //technological gift 2 [10]
+    new generator_perk(
+        "Technological Gift II",
+        "You begin Reboots with every PP upgrade up to EXP Overclocker already purchased",
+        20
+    )
+    //autocapacitance [11]
+    new generator_perk(
+        "Auto-Capacitance",
+        "Unlocks automated mode switching for Capacitor, automatically switching to the highest available mode\nAlso unlocks Smart Auto-Discharge, which automatically Discharges when best to do so",
+        24
+    )
+    //starter kit 6 [12]
+    new generator_perk(
+        "Starter Kit VI",
+        "All upgrades on the Upgrades tab have twice as many free tiers",
+        28
+    )
+    //energize [13]
+    new generator_perk(
+        "Energize",
+        "You gain more watts on Reboot the farther past 200,000 PP you go",
+        36
+    )
+    //smart auto-prestige [14]
+    new generator_perk(
+        "Smart Auto-Prestige",
+        "Unlocks a customizable Auto-Prestige setting that automatically switches between Peak and PP mode",
+        48
+    )
+    //auto-reboot [15]
+    new generator_perk("Auto-Reboot", "Unlocks automation for Reboot", 64)
 }
 //done initializing generator perks
 
@@ -1852,6 +1647,12 @@ class achievement {
         30,
         0
     )
+    new achievement(
+        "It's okay I lost track too",
+        "Get " + format_num(10 ** 42) + " all time EXP",
+        70,
+        0
+    )
     new achievement("Hot minute", "Play for 1 hour", 31, 0)
     new achievement("Time well spent", "Play for 6 hours", 32, 0)
     new achievement("Day in, day out", "Play for 24 hours", 33, 0)
@@ -1887,6 +1688,12 @@ class achievement {
         "Oh, the places you'll go",
         "Get " + format_num(10 ** 14) + " AMP",
         42,
+        1
+    )
+    new achievement(
+        "We're not in Kansas anymore",
+        "Get " + format_num(10 ** 16) + " AMP",
+        71,
         1
     )
     new achievement("The only RNG in the game", "Unlock EXP Fluctuation", 43, 1)
@@ -1936,7 +1743,10 @@ class achievement {
     new achievement("All is lost again", "Reboot 3 times", 57, 3)
     new achievement("Less than zero", "Reboot 5 times", 58, 3)
     new achievement("Groundhog day", "Reboot 10 times", 59, 3)
+    new achievement("Cycle of insanity", "Reboot 25 times", 72, 3)
+    new achievement("I've become so numb", "Reboot 50 times", 73, 3)
     new achievement("Picking up the pace", "Reboot in under 1 hour", 60, 3)
+    new achievement("GAS GAS GAS", "Reboot in under 10 minutes", 74, 3)
     new achievement(
         "#intentionalfeature",
         "Discharge the Capacitor while the Overclocker is active",
@@ -1973,6 +1783,18 @@ class achievement {
         "As we can see you can't",
         "Spend an entire Reboot with ??? notation",
         68,
+        5
+    )
+    new achievement(
+        "But for why though?",
+        "Respec when you already have all the PP upgrades",
+        75,
+        5
+    )
+    new achievement(
+        "Yes I love cancer",
+        "Reboot 10 times while using Cancer notation",
+        76,
         5
     )
     new achievement("You win 1 EXP", "Get every achievement", 69, 0)
