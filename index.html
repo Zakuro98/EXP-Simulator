@@ -173,6 +173,10 @@
                         </div>
                     </div>
 
+                    <p id="starter_kit" class="uptext">
+                        +0 free tiers from Starter Kit
+                    </p>
+
                     <div id="overclock">
                         <div class="oc_top">
                             <p id="oc_text">
@@ -227,6 +231,9 @@
                                     <button id="cap_100" class="button" onclick="set_capacitance(4)">
                                         100%
                                     </button>
+                                    <button id="cap_auto" class="button autoup" onclick="cp_toggle()">
+                                        OFF
+                                    </button>
                                     <p id="cap_disc" class="cap_text">
                                         (switching Discharges)
                                     </p>
@@ -257,11 +264,11 @@
                 <div class="prestige" id="prestige_page">
                     <div id="auto_config">
                         <p class="auto_header">
-                            Autoprestige Configuration
+                            Auto-Prestige Configuration
                         </p>
                         <div id="auto_mode">
                             <p class="goal_text">
-                                Autoprestige Mode:
+                                Auto-Prestige Mode:
                             </p>
                             <button id="level_mode" class="button mode_active" onclick="autopr_switch(0)">
                                 LEVEL
@@ -281,27 +288,72 @@
                         </div>
                         <div id="auto_level">
                             <p class="goal_text">
-                                Autoprestige Level:
+                                Auto-Prestige Level:
                             </p>
                             <input class="goal_input" id="level_input" type="number" value="60" min="60">
                         </div>
                         <div id="auto_amp">
                             <p class="goal_text">
-                                Autoprestige AMP:
+                                Auto-Prestige AMP:
                             </p>
                             <input class="goal_input" id="amp_input" type="number" value="1" min="1">
                         </div>
                         <div id="auto_pp">
                             <p class="goal_text">
-                                Autoprestige PP:
+                                Auto-Prestige PP:
                             </p>
                             <input class="goal_input" id="pp_input" type="number" value="1" min="1">
                         </div>
                         <div id="auto_time">
                             <p class="goal_text">
-                                Autoprestige Time (in seconds):
+                                Auto-Prestige Time (in seconds):
                             </p>
                             <input class="goal_input" id="time_input" type="number" value="0" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <div id="smart_config">
+                        <p class="auto_header">
+                            Smart Auto-Prestige Configuration
+                        </p>
+                        <div id="smart_enabled">
+                            <p class="goal_text">
+                                Smart Mode:
+                            </p>
+                            <button id="smart_toggle" class="button" onclick="smart_toggle()">
+                                DISABLED
+                            </button>
+                        </div>
+                        <p id="smart_time" class="goal_text">
+                            Current Mode Time: 0.00s
+                        </p>
+                        <div id="smart_peak">
+                            <p class="goal_text">
+                                Time to wait in Peak mode (in seconds):
+                            </p>
+                            <input class="goal_input" id="smart_peak_input" type="number" value="60" step="0.01" min="0">
+                        </div>
+                        <div id="smart_pp">
+                            <p class="goal_text">
+                                Time to wait in PP mode (in seconds):
+                            </p>
+                            <input class="goal_input" id="smart_pp_input" type="number" value="120" step="0.01" min="0">
+                        </div>
+                        <div id="smart_amp">
+                            <p class="goal_text">
+                                AMP Limit (0 for no limit):
+                            </p>
+                            <input class="goal_input" id="smart_amp_input" type="number" value="0" min="0">
+                        </div>
+                        <div id="smart_start">
+                            <p class="goal_text">
+                                Starting Mode:
+                            </p>
+                            <button id="smart_peak_mode" class="button mode_active" onclick="initial_switch(0)">
+                                PEAK
+                            </button>
+                            <button id="smart_pp_mode" class="button" onclick="initial_switch(1)">
+                                PP
+                            </button>
                         </div>
                     </div>
                     <div id="autopp_config">
@@ -371,7 +423,7 @@
                         </p>
                         <div id="reboot_block">
                             <div id="generator_requirements">
-                                <p class="reboot_text">
+                                <p class="perk_name">
                                     Generator requirements:
                                 </p>
                                 <p id="all_pp_req" class="reboot_text">
@@ -388,6 +440,35 @@
                                 <p id="watts_plus" class="reboot_text">
                                     +1 watt
                                 </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="autorb_block">
+                        <div id="autorb_config">
+                            <p class="perk_name">
+                                Auto-Reboot Configuration:
+                            </p>
+                            <div id="autorb_enabled">
+                                <p class="goal_text">
+                                    Automation:
+                                </p>
+                                <button id="autorb_toggle" class="button" onclick="rb_toggle()">
+                                    DISABLED
+                                </button>
+                            </div>
+                            <div id="auto_watts">
+                                <p class="goal_text">
+                                    Auto-Reboot Watts:
+                                </p>
+                                <input class="goal_input" id="watts_input" type="number" value="1" min="1">
+                            </div>
+                            <div id="pendingrb_enabled">
+                                <p class="goal_text">
+                                    Reboot for pending PP:
+                                </p>
+                                <button id="pendingrb_toggle" class="button" onclick="pendingrb_toggle()">
+                                    NO
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -618,7 +699,7 @@
 
                 <div id="achievements_page">
                     <p id="achievement_count" class="achievement_title">
-                        Achievements earned: 0 / 70
+                        Achievements earned: 0 / 77
                     </p>
                     <div class="page_switcher">
                         <button id="page_left1" class="button page_left" onclick='change_page("prev")'>
@@ -711,7 +792,7 @@
                             Achievement requirement here
                         </p>
                     </div>
-                    <div class="page_switcher">
+                    <div id="bottom_switcher" class="page_switcher">
                         <button id="page_left2" class="button page_left" onclick='change_page("prev")'>
                             PREV
                         </button>
@@ -793,7 +874,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.2.003<br>Made by Zakuro
+                    <br><br><br>EXP Simulator v2.2.104<br>Made by Zakuro
                 </p>
                 <a href="changelog.html" target="_blank" class="info link">
                     Changelog
