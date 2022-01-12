@@ -17,6 +17,188 @@ function color_update() {
     }
 }
 
+//updating level related stuff
+function level_update() {
+    if (game.level < game.pr_min || game.pp_bought[6]) {
+        if (game.epilepsy) {
+            document.getElementById("progress").style.width =
+                (100 * game.exp) / game.goal + "%"
+        } else {
+            let eps =
+                (game.exp_add + game.exp_fluct / 2) *
+                game.global_multiplier *
+                game.cap_boost *
+                game.cps
+            if (
+                (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                (game.autods_toggle === 2 &&
+                    game.cap_mode === 4 &&
+                    !game.smartds_oc)
+            )
+                eps =
+                    (game.exp_add + game.exp_fluct / 2) *
+                    game.global_multiplier *
+                    (game.cap_boost +
+                        (1 - game.cap_boost) * game.cap_mode * 2) *
+                    game.cps
+            if (game.battery_mode === 1 || game.perks[8])
+                eps *= game.exp_battery
+            if (eps / game.goal >= 2) {
+                document.getElementById("progress").style.width = 100 + "%"
+            } else {
+                document.getElementById("progress").style.width =
+                    (100 * game.exp) / game.goal + "%"
+            }
+        }
+    } else {
+        document.getElementById("progress").style.width = 100 + "%"
+        if (!game.pp_bought[6] && game.level >= game.pr_min) {
+            game.all_time_exp -=
+                game.total_exp - Math.ceil(get_exp(game.pr_min - 1))
+            game.prestige_exp -=
+                game.total_exp - Math.ceil(get_exp(game.pr_min - 1))
+            game.total_exp = Math.ceil(get_exp(game.pr_min - 1))
+            game.level = game.pr_min
+
+            game.exp = game.total_exp - Math.ceil(get_exp(game.level - 1))
+            game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level - 1))
+        }
+    }
+
+    if (game.pp_progress && (game.prestige >= 1 || game.reboot >= 1)) {
+        let goal2 = 0
+        if (game.pp_bought[6]) {
+            if (game.prestige < 21) {
+                if (game.level < 60) {
+                    document.getElementById("pp_progress").style.width =
+                        (100 * game.total_exp) / get_exp(59) + "%"
+                    goal2 = get_exp(59)
+                } else {
+                    if (game.level < game.highest_level + 1) {
+                        let goal =
+                            get_exp(
+                                Math.ceil(
+                                    20 *
+                                        (get_pp(game.highest_level) + 2) **
+                                            (1 / 2) +
+                                        40
+                                ) - 1
+                            ) - get_exp(59)
+                        let prog = game.total_exp - get_exp(59)
+                        document.getElementById("pp_progress").style.width =
+                            (100 * prog) / goal + "%"
+                        goal2 = goal
+                    } else {
+                        let goal =
+                            get_exp(
+                                Math.ceil(
+                                    20 * (get_pp(game.level) + 2) ** (1 / 2) +
+                                        40
+                                ) - 1
+                            ) -
+                            get_exp(
+                                Math.ceil(
+                                    20 * (get_pp(game.level) + 1) ** (1 / 2) +
+                                        40
+                                ) - 1
+                            )
+                        let prog =
+                            game.total_exp -
+                            get_exp(
+                                Math.ceil(
+                                    20 * (get_pp(game.level) + 1) ** (1 / 2) +
+                                        40
+                                ) - 1
+                            )
+                        document.getElementById("pp_progress").style.width =
+                            (100 * prog) / goal + "%"
+                        goal2 = goal
+                    }
+                }
+            } else {
+                if (game.level < game.highest_level + 1) {
+                    let goal = get_exp(
+                        Math.ceil(
+                            20 * (get_pp(game.highest_level) + 2) ** (1 / 2) +
+                                40
+                        ) - 1
+                    )
+                    let prog = game.total_exp
+                    document.getElementById("pp_progress").style.width =
+                        (100 * prog) / goal + "%"
+                    goal2 = goal
+                } else {
+                    let goal =
+                        get_exp(
+                            Math.ceil(
+                                20 * (get_pp(game.level) + 2) ** (1 / 2) + 40
+                            ) - 1
+                        ) -
+                        get_exp(
+                            Math.ceil(
+                                20 * (get_pp(game.level) + 1) ** (1 / 2) + 40
+                            ) - 1
+                        )
+                    let prog =
+                        game.total_exp -
+                        get_exp(
+                            Math.ceil(
+                                20 * (get_pp(game.level) + 1) ** (1 / 2) + 40
+                            ) - 1
+                        )
+                    document.getElementById("pp_progress").style.width =
+                        (100 * prog) / goal + "%"
+                    goal2 = goal
+                }
+            }
+        } else {
+            document.getElementById("pp_progress").style.width =
+                (100 * game.total_exp) / get_exp(59) + "%"
+            goal2 = get_exp(59)
+        }
+        if (!game.epilepsy) {
+            let eps =
+                (game.exp_add + game.exp_fluct / 2) *
+                game.global_multiplier *
+                game.cap_boost *
+                game.cps
+            if (
+                (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                (game.autods_toggle === 2 &&
+                    game.cap_mode === 4 &&
+                    !game.smartds_oc)
+            )
+                eps =
+                    (game.exp_add + game.exp_fluct / 2) *
+                    game.global_multiplier *
+                    (game.cap_boost +
+                        (1 - game.cap_boost) * game.cap_mode * 2) *
+                    game.cps
+            if (game.battery_mode === 1 || game.perks[8])
+                eps *= game.exp_battery
+            if (eps / goal2 >= 2) {
+                document.getElementById("pp_progress").style.width = "100%"
+            }
+        }
+    }
+
+    if (game.notation === 8) {
+        document.getElementById("progress").style.width = "100%"
+        document.getElementById("pp_progress").style.width = "100%"
+    }
+
+    color_update()
+    ampbutton_update()
+
+    document.getElementById("lvlnum").innerText = format_num(game.level)
+    if (game.level < 60 || game.pp_bought[6])
+        document.getElementById("exp").innerText =
+            format_num(game.exp) + " / " + format_num(game.goal) + " EXP"
+    else document.getElementById("exp").innerText = "Maxed!"
+    document.getElementById("total_exp").innerText =
+        format_num(game.total_exp) + " Total EXP"
+}
+
 //updating text on the exp button
 function click_update() {
     if (game.fluct_tier === 0 && game.starter_kit + game.generator_kit === 0) {
@@ -97,17 +279,10 @@ function ampbutton_update() {
         document.getElementById("amp").style.display = "block"
         document.getElementById("pp").style.display = "block"
     }
-    if (game.level >= game.pr_min) {
-        document.getElementById("amp_up").style.display = "inline"
-        document.getElementById("amp_up").innerText =
-            "+" +
-            format_num(
-                Math.floor(
-                    get_amp(game.level) * game.patience * game.watt_boost
-                )
-            ) +
-            " AMP"
-        if (game.prestige === 0 && game.reboot === 0)
+
+    if (game.challenge !== 4) {
+        if (game.level >= game.pr_min) {
+            document.getElementById("amp_up").style.display = "inline"
             document.getElementById("amp_up").innerText =
                 "+" +
                 format_num(
@@ -115,44 +290,89 @@ function ampbutton_update() {
                         get_amp(game.level) * game.patience * game.watt_boost
                     )
                 ) +
-                " AMP (EXP Multiplier)"
-        if (game.pp_bought[8])
+                " AMP"
+            if (game.prestige === 0 && game.reboot === 0)
+                document.getElementById("amp_up").innerText =
+                    "+" +
+                    format_num(
+                        Math.floor(
+                            get_amp(game.level) *
+                                game.patience *
+                                game.watt_boost
+                        )
+                    ) +
+                    " AMP (EXP Multiplier)"
+            if (game.pp_bought[8])
+                document.getElementById("amp_up").innerText =
+                    "+" +
+                    format_num(
+                        Math.floor(
+                            get_amp(game.level) *
+                                game.patience *
+                                game.watt_boost
+                        )
+                    ) +
+                    " AMP +" +
+                    format_eff(game.amp_eff) +
+                    " AMP/sec"
+            let pp_amount = 0
+            if (game.level > game.highest_level) {
+                if (game.prestige <= 21)
+                    pp_amount =
+                        get_pp(game.level) - get_pp(game.highest_level) + 1
+                else pp_amount = get_pp(game.level) - get_pp(game.highest_level)
+            } else {
+                if (game.prestige <= 21) pp_amount = 1
+                else pp_amount = 0
+            }
+            document.getElementById("pp_up").innerText =
+                "+" + format_num(pp_amount) + " PP"
+            if (pp_amount >= 1 || game.notation === 8) {
+                document.getElementById("pp_up").style.display = "inline"
+            } else {
+                document.getElementById("pp_up").style.display = "none"
+            }
+            document.getElementById("amp_button").innerText = "PRESTIGE!"
+            document.getElementById("amp_button").style.color = "white"
+        } else {
+            document.getElementById("amp_up").style.display = "none"
+            document.getElementById("pp_up").style.display = "none"
+            document.getElementById("amp_button").innerText =
+                "LVL " + format_num(game.pr_min)
+            document.getElementById("amp_button").style.color = get_color(
+                (Math.floor(game.pr_min / 60) + 5) % 12
+            )
+        }
+    } else {
+        if (game.level >= game.highest_level) {
+            let amp_amount = get_amp(game.level) - get_amp(game.highest_level)
+            document.getElementById("amp_up").style.display = "inline"
             document.getElementById("amp_up").innerText =
                 "+" +
-                format_num(
-                    Math.floor(
-                        get_amp(game.level) * game.patience * game.watt_boost
-                    )
-                ) +
-                " AMP +" +
-                format_eff(game.amp_eff) +
-                " AMP/sec"
-        let pp_amount = 0
-        if (game.level > game.highest_level) {
+                format_num(Math.floor(amp_amount * game.watt_boost)) +
+                " AMP"
+            let pp_amount = 0
             if (game.prestige <= 21)
                 pp_amount = get_pp(game.level) - get_pp(game.highest_level) + 1
             else pp_amount = get_pp(game.level) - get_pp(game.highest_level)
+            document.getElementById("pp_up").innerText =
+                "+" + format_num(pp_amount) + " PP"
+            if (pp_amount >= 1 || game.notation === 8) {
+                document.getElementById("pp_up").style.display = "inline"
+            } else {
+                document.getElementById("pp_up").style.display = "none"
+            }
+            document.getElementById("amp_button").innerText = "PRESTIGE!"
+            document.getElementById("amp_button").style.color = "white"
         } else {
-            if (game.prestige <= 21) pp_amount = 1
-            else pp_amount = 0
-        }
-        document.getElementById("pp_up").innerText =
-            "+" + format_num(pp_amount) + " PP"
-        if (pp_amount >= 1 || game.notation === 8) {
-            document.getElementById("pp_up").style.display = "inline"
-        } else {
+            document.getElementById("amp_up").style.display = "none"
             document.getElementById("pp_up").style.display = "none"
+            document.getElementById("amp_button").innerText =
+                "LVL " + format_num(game.highest_level)
+            document.getElementById("amp_button").style.color = get_color(
+                (Math.floor(game.highest_level / 60) + 5) % 12
+            )
         }
-        document.getElementById("amp_button").innerText = "PRESTIGE!"
-        document.getElementById("amp_button").style.color = "white"
-    } else {
-        document.getElementById("amp_up").style.display = "none"
-        document.getElementById("pp_up").style.display = "none"
-        document.getElementById("amp_button").innerText =
-            "LVL " + format_num(game.pr_min)
-        document.getElementById("amp_button").style.color = get_color(
-            (Math.floor(game.pr_min / 60) + 5) % 12
-        )
     }
 
     if (game.amp > 1) {
@@ -537,6 +757,527 @@ function upgrade_update() {
     }
 }
 
+//updating statistics page
+function stats_update() {
+    if (game.tab === 4) {
+        let cap_const = 2
+        if (game.perks[9]) cap_const = 4
+        let auto_plus = ""
+        let manual_plus = ""
+        if (
+            game.fluct_tier === 0 &&
+            game.starter_kit + game.generator_kit === 0
+        ) {
+            if (game.battery_mode === 1 || game.perks[8]) {
+                auto_plus =
+                    format_num(
+                        Math.round(
+                            game.exp_add *
+                                game.global_multiplier *
+                                game.exp_battery *
+                                game.cap_boost
+                        )
+                    ) + " EXP"
+                if (
+                    (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                    (game.autods_toggle === 2 &&
+                        game.cap_mode === 4 &&
+                        !game.smartds_oc)
+                )
+                    auto_plus =
+                        format_num(
+                            Math.round(
+                                game.exp_add *
+                                    game.global_multiplier *
+                                    game.exp_battery *
+                                    (game.cap_boost +
+                                        (1 - game.cap_boost) *
+                                            game.cap_mode *
+                                            cap_const)
+                            )
+                        ) + " EXP (Discharging)"
+            } else {
+                auto_plus =
+                    format_num(
+                        Math.round(
+                            game.exp_add *
+                                game.global_multiplier *
+                                game.cap_boost
+                        )
+                    ) + " EXP"
+                if (
+                    (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                    (game.autods_toggle === 2 &&
+                        game.cap_mode === 4 &&
+                        !game.smartds_oc)
+                )
+                    auto_plus =
+                        format_num(
+                            Math.round(
+                                game.exp_add *
+                                    game.global_multiplier *
+                                    (game.cap_boost +
+                                        (1 - game.cap_boost) *
+                                            game.cap_mode *
+                                            cap_const)
+                            )
+                        ) + " EXP (Discharging)"
+            }
+        } else if (
+            game.fluct_tier >= 1 ||
+            game.starter_kit + game.generator_kit >= 1
+        ) {
+            if (game.battery_mode === 1 || game.perks[8]) {
+                auto_plus =
+                    format_num(
+                        Math.round(
+                            game.exp_add *
+                                game.global_multiplier *
+                                game.exp_battery *
+                                game.cap_boost
+                        )
+                    ) +
+                    " - " +
+                    format_num(
+                        Math.round(
+                            (game.exp_add + game.exp_fluct) *
+                                game.global_multiplier *
+                                game.exp_battery *
+                                game.cap_boost
+                        )
+                    ) +
+                    " EXP"
+                if (
+                    (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                    (game.autods_toggle === 2 &&
+                        game.cap_mode === 4 &&
+                        !game.smartds_oc)
+                )
+                    auto_plus =
+                        format_num(
+                            Math.round(
+                                game.exp_add *
+                                    game.global_multiplier *
+                                    game.exp_battery *
+                                    (game.cap_boost +
+                                        (1 - game.cap_boost) *
+                                            game.cap_mode *
+                                            cap_const)
+                            )
+                        ) +
+                        " - " +
+                        format_num(
+                            Math.round(
+                                (game.exp_add + game.exp_fluct) *
+                                    game.global_multiplier *
+                                    game.exp_battery *
+                                    (game.cap_boost +
+                                        (1 - game.cap_boost) *
+                                            game.cap_mode *
+                                            cap_const)
+                            )
+                        ) +
+                        " EXP (Discharging)"
+            } else {
+                auto_plus =
+                    format_num(
+                        Math.round(
+                            game.exp_add *
+                                game.global_multiplier *
+                                game.cap_boost
+                        )
+                    ) +
+                    " - " +
+                    format_num(
+                        Math.round(
+                            (game.exp_add + game.exp_fluct) *
+                                game.global_multiplier *
+                                game.cap_boost
+                        )
+                    ) +
+                    " EXP"
+                if (
+                    (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                    (game.autods_toggle === 2 &&
+                        game.cap_mode === 4 &&
+                        !game.smartds_oc)
+                )
+                    auto_plus =
+                        format_num(
+                            Math.round(
+                                game.exp_add *
+                                    game.global_multiplier *
+                                    (game.cap_boost +
+                                        (1 - game.cap_boost) *
+                                            game.cap_mode *
+                                            cap_const)
+                            )
+                        ) +
+                        " - " +
+                        format_num(
+                            Math.round(
+                                (game.exp_add + game.exp_fluct) *
+                                    game.global_multiplier *
+                                    (game.cap_boost +
+                                        (1 - game.cap_boost) *
+                                            game.cap_mode *
+                                            cap_const)
+                            )
+                        ) +
+                        " EXP (Discharging)"
+            }
+        }
+        if (game.pp_bought[1]) {
+            if (
+                game.fluct_tier === 0 &&
+                game.starter_kit + game.generator_kit === 0
+            ) {
+                if (game.battery_mode === 0 || game.perks[8]) {
+                    manual_plus =
+                        format_num(
+                            Math.round(
+                                game.exp_add *
+                                    game.global_multiplier *
+                                    game.exp_battery *
+                                    game.ml_boost
+                            )
+                        ) + " EXP"
+                } else {
+                    manual_plus =
+                        format_num(
+                            Math.round(
+                                game.exp_add *
+                                    game.global_multiplier *
+                                    game.ml_boost
+                            )
+                        ) + " EXP"
+                }
+            } else if (
+                game.fluct_tier >= 1 ||
+                game.starter_kit + game.generator_kit >= 1
+            ) {
+                if (game.battery_mode === 0 || game.perks[8]) {
+                    manual_plus =
+                        format_num(
+                            Math.round(
+                                game.exp_add *
+                                    game.global_multiplier *
+                                    game.exp_battery *
+                                    game.ml_boost
+                            )
+                        ) +
+                        " - " +
+                        format_num(
+                            Math.round(
+                                (game.exp_add + game.exp_fluct) *
+                                    game.global_multiplier *
+                                    game.exp_battery *
+                                    game.ml_boost
+                            )
+                        ) +
+                        " EXP"
+                } else {
+                    manual_plus =
+                        format_num(
+                            Math.round(
+                                game.exp_add *
+                                    game.global_multiplier *
+                                    game.ml_boost
+                            )
+                        ) +
+                        " - " +
+                        format_num(
+                            Math.round(
+                                (game.exp_add + game.exp_fluct) *
+                                    game.global_multiplier *
+                                    game.ml_boost
+                            )
+                        ) +
+                        " EXP"
+                }
+            }
+        }
+
+        let exp_eff = ""
+        if (game.cps >= 10 || game.prestige >= 1 || game.reboot >= 1) {
+            if (game.battery_mode === 1 || game.perks[8]) {
+                exp_eff =
+                    format_eff(
+                        (game.exp_add + game.exp_fluct / 2) *
+                            game.global_multiplier *
+                            game.exp_battery *
+                            game.cap_boost *
+                            game.cps
+                    ) + " EXP/sec"
+                if (
+                    (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                    (game.autods_toggle === 2 &&
+                        game.cap_mode === 4 &&
+                        !game.smartds_oc)
+                )
+                    exp_eff =
+                        format_eff(
+                            (game.exp_add + game.exp_fluct / 2) *
+                                game.global_multiplier *
+                                game.exp_battery *
+                                (game.cap_boost +
+                                    (1 - game.cap_boost) *
+                                        game.cap_mode *
+                                        cap_const) *
+                                game.cps
+                        ) + " EXP/sec (Discharging)"
+            } else {
+                exp_eff =
+                    format_eff(
+                        (game.exp_add + game.exp_fluct / 2) *
+                            game.global_multiplier *
+                            game.cap_boost *
+                            game.cps
+                    ) + " EXP/sec"
+                if (
+                    (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                    (game.autods_toggle === 2 &&
+                        game.cap_mode === 4 &&
+                        !game.smartds_oc)
+                )
+                    exp_eff =
+                        format_eff(
+                            (game.exp_add + game.exp_fluct / 2) *
+                                game.global_multiplier *
+                                (game.cap_boost +
+                                    (1 - game.cap_boost) *
+                                        game.cap_mode *
+                                        cap_const) *
+                                game.cps
+                        ) + " EXP/sec (Discharging)"
+            }
+        }
+
+        let total_auto = ""
+        let total_manual = ""
+        if (game.amp > 1) {
+            if (game.battery_mode === 1 || game.perks[8]) {
+                total_auto =
+                    format_eff(
+                        game.amp *
+                            game.global_multiplier *
+                            game.exp_battery *
+                            game.cap_boost
+                    ) + "x"
+                if (
+                    (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                    (game.autods_toggle === 2 &&
+                        game.cap_mode === 4 &&
+                        !game.smartds_oc)
+                )
+                    total_auto =
+                        format_eff(
+                            game.amp *
+                                game.global_multiplier *
+                                game.exp_battery *
+                                (game.cap_boost +
+                                    (1 - game.cap_boost) *
+                                        game.cap_mode *
+                                        cap_const)
+                        ) + "x (Discharging)"
+                total_manual =
+                    format_eff(
+                        game.amp * game.global_multiplier * game.ml_boost
+                    ) + "x"
+            } else {
+                total_auto =
+                    format_eff(
+                        game.amp * game.global_multiplier * game.cap_boost
+                    ) + "x"
+                if (
+                    (game.autods_toggle === 1 && game.autods_goal === 0) ||
+                    (game.autods_toggle === 2 &&
+                        game.cap_mode === 4 &&
+                        !game.smartds_oc)
+                )
+                    total_auto =
+                        format_eff(
+                            game.amp *
+                                game.global_multiplier *
+                                (game.cap_boost +
+                                    (1 - game.cap_boost) *
+                                        game.cap_mode *
+                                        cap_const)
+                        ) + "x (Discharging)"
+                total_manual =
+                    format_eff(
+                        game.amp *
+                            game.global_multiplier *
+                            game.exp_battery *
+                            game.ml_boost
+                    ) + "x"
+            }
+        }
+
+        document.getElementById("current_level_stat").innerText =
+            "LVL " + format_num(game.level)
+        document.getElementById("highest_level_stat").innerText =
+            "LVL " + format_num(game.highest_level)
+        document.getElementById("highest_level_at_stat").innerText =
+            "LVL " + format_num(game.all_time_highest_level)
+        document.getElementById("current_exp_stat").innerText =
+            format_num(game.exp) + " / " + format_num(game.goal) + " EXP"
+        document.getElementById("total_exp_cp_stat").innerText =
+            format_num(game.total_exp) + " EXP"
+        document.getElementById("total_exp_cr_stat").innerText =
+            format_num(game.prestige_exp) + " EXP"
+        document.getElementById("total_exp_at_stat").innerText =
+            format_num(game.all_time_exp) + " EXP"
+        document.getElementById("exp_click_au_stat").innerText =
+            "\n" + auto_plus
+        document.getElementById("exp_click_mn_stat").innerText = manual_plus
+        document.getElementById("exp_multi_au_stat").innerText = total_auto
+        document.getElementById("exp_multi_mn_stat").innerText = total_manual
+        document.getElementById("autoclicking_stat").innerText =
+            "\n" + format_num(game.cps) + " clicks/s"
+        document.getElementById("auto_power_stat").innerText = exp_eff
+        document.getElementById("total_clicks_cp_stat").innerText =
+            "\n" + format_num(game.clicks)
+        document.getElementById("total_clicks_cr_stat").innerText = format_num(
+            game.prestige_clicks
+        )
+        document.getElementById("total_clicks_at_stat").innerText = format_num(
+            game.total_clicks
+        )
+        document.getElementById("times_prestiged_stat").innerText =
+            "\n" + format_num(game.prestige + game.banked_prestige)
+        if (game.perks[18] && game.banked_prestige > 0)
+            document.getElementById("times_prestiged_stat").innerText =
+                "\n" +
+                format_num(game.prestige + game.banked_prestige) +
+                " (+" +
+                format_num(game.banked_prestige) +
+                ")"
+        document.getElementById("amplification_stat").innerText =
+            format_num(game.amp) + " AMP"
+        document.getElementById("current_pp_stat").innerText =
+            format_num(game.pp) + " PP"
+        document.getElementById("total_pp_stat").innerText =
+            format_num(game.total_pp) + " PP"
+        document.getElementById("total_reboots_stat").innerText =
+            "\n" + format_num(game.reboot)
+        document.getElementById("generator_power_stat").innerText =
+            format_num(game.watts) + " watts"
+        if (game.watts === 1 && game.notation !== 8)
+            document.getElementById("generator_power_stat").innerText =
+                format_num(game.watts) + " watt"
+        document.getElementById("time_played_cp_stat").innerText =
+            "\n" + format_time(game.time)
+        document.getElementById("fastest_prestige_stat").innerText =
+            format_time(game.fastest_prestige)
+        document.getElementById("time_played_cr_stat").innerText = format_time(
+            game.prestige_time
+        )
+        document.getElementById("fastest_reboot_stat").innerText = format_time(
+            game.fastest_reboot
+        )
+        document.getElementById("time_played_at_stat").innerText = format_time(
+            game.all_time
+        )
+        if (game.prestige <= 0 && game.reboot <= 0) {
+            document.getElementById("total_exp_cp_name").innerText =
+                "Total EXP:"
+            document.getElementById("total_clicks_cp_name").innerText =
+                "\nTotal Clicks:"
+            document.getElementById("time_played_cp_name").innerText =
+                "\nTime Played:"
+            document.getElementById("total_exp_cr").style.display = "none"
+            document.getElementById("exp_multi_au").style.display = "none"
+            document.getElementById("total_clicks_cr").style.display = "none"
+            document.getElementById("times_prestiged").style.display = "none"
+            document.getElementById("amplification").style.display = "none"
+            document.getElementById("current_pp").style.display = "none"
+            document.getElementById("total_pp").style.display = "none"
+            document.getElementById("fastest_prestige").style.display = "none"
+            document.getElementById("time_played_cr").style.display = "none"
+        } else {
+            document.getElementById("total_exp_cp_name").innerText =
+                "Total EXP (Current Prestige):"
+            document.getElementById("total_clicks_cp_name").innerText =
+                "\nTotal Clicks (Current Prestige):"
+            document.getElementById("time_played_cp_name").innerText =
+                "\nTime Played (Current Prestige):"
+            document.getElementById("total_exp_cr").style.display = "flex"
+            document.getElementById("exp_multi_au").style.display = "flex"
+            document.getElementById("total_clicks_cr").style.display = "flex"
+            document.getElementById("times_prestiged").style.display = "flex"
+            document.getElementById("amplification").style.display = "flex"
+            document.getElementById("current_pp").style.display = "flex"
+            document.getElementById("total_pp").style.display = "flex"
+            document.getElementById("fastest_prestige").style.display = "flex"
+            document.getElementById("time_played_cr").style.display = "flex"
+        }
+
+        if (game.reboot <= 0) {
+            document.getElementById("highest_level_at").style.display = "none"
+            document.getElementById("total_exp_at").style.display = "none"
+            document.getElementById("total_clicks_at").style.display = "none"
+            document.getElementById("total_reboots").style.display = "none"
+            document.getElementById("generator_power").style.display = "none"
+            document.getElementById("time_played_at").style.display = "none"
+            document.getElementById("fastest_reboot").style.display = "none"
+
+            document.getElementById("highest_level_name").innerText =
+                "Highest Level:"
+            document.getElementById("total_exp_cr_name").innerText =
+                "Total EXP (All Time):"
+            document.getElementById("total_clicks_cr_name").innerText =
+                "Total Clicks (All Time):"
+            document.getElementById("time_played_cr_name").innerText =
+                "Time Played (All Time):"
+        } else {
+            document.getElementById("highest_level_at").style.display = "flex"
+            document.getElementById("total_exp_at").style.display = "flex"
+            document.getElementById("total_clicks_at").style.display = "flex"
+            document.getElementById("total_reboots").style.display = "flex"
+            document.getElementById("generator_power").style.display = "flex"
+            document.getElementById("time_played_at").style.display = "flex"
+            document.getElementById("fastest_reboot").style.display = "flex"
+
+            document.getElementById("highest_level_name").innerText =
+                "Highest Level (Current Reboot):"
+            document.getElementById("total_exp_cr_name").innerText =
+                "Total EXP (Current Reboot):"
+            document.getElementById("total_clicks_cr_name").innerText =
+                "Total Clicks (Current Reboot):"
+            document.getElementById("time_played_cr_name").innerText =
+                "Time Played (Current Reboot):"
+        }
+
+        if (game.pp_bought[1]) {
+            document.getElementById("exp_click_mn").style.display = "flex"
+            document.getElementById("exp_multi_mn").style.display = "flex"
+            document.getElementById("exp_click_au_name").innerText =
+                "\nAutomated EXP/click:"
+            document.getElementById("exp_multi_au_name").innerText =
+                "Total Automated EXP Multipler:"
+        } else {
+            document.getElementById("exp_click_mn").style.display = "none"
+            document.getElementById("exp_multi_mn").style.display = "none"
+            document.getElementById("exp_click_au_name").innerText =
+                "\nEXP/click:"
+            document.getElementById("exp_multi_au_name").innerText =
+                "Total EXP Multipler:"
+        }
+
+        if (game.cps >= 10 || game.prestige >= 1 || game.reboot >= 1) {
+            document.getElementById("auto_power").style.display = "flex"
+        } else {
+            document.getElementById("auto_power").style.display = "none"
+        }
+        if (game.cps > 0 || game.prestige >= 1 || game.reboot >= 1) {
+            document.getElementById("autoclicking").style.display = "flex"
+        } else {
+            document.getElementById("autoclicking").style.display = "none"
+        }
+    }
+}
+
 //updating availability of pp upgrades
 function pp_update() {
     for (const upgrade of pp_upgrade.upgrades) {
@@ -614,8 +1355,6 @@ function pp_update() {
         }
     }
 
-    watts_update()
-
     //hiding lvl / 60 display
     if (game.pp_bought[6]) {
         document.getElementById("lvlrequirement").style.display = "none"
@@ -653,6 +1392,23 @@ function watts_update() {
     if (game.reboot >= 1) {
         reboot_requirement = 5000 * game.reboot + 80000
         if (game.reboot >= 24) reboot_requirement = 200000
+        if (game.challenge !== 0) {
+            if (game.completions[game.challenge - 1] < 12) {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step *
+                        game.completions[game.challenge - 1] +
+                    (challenge.challenges[game.challenge - 1].step2 *
+                        (game.completions[game.challenge - 1] - 1) *
+                        game.completions[game.challenge - 1]) /
+                        2
+            } else {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step * 11 +
+                    challenge.challenges[game.challenge - 1].step2 * 110
+            }
+        }
         document.getElementById("spare_pp_req").style.display = "block"
         document.getElementById("reboot_button").innerText = "REBOOT!"
     } else {
@@ -672,6 +1428,28 @@ function watts_update() {
                     15000 * (get_watts(game.pp) + 1) ** (20 / 17) + 185000
                 )
             ) + " spare PP"
+    }
+
+    if (game.challenge !== 0) {
+        if (game.completions[game.challenge - 1] < 12) {
+            document.getElementById("spare_pp_req").innerText =
+                format_num(
+                    challenge.challenges[game.challenge - 1].goal +
+                        challenge.challenges[game.challenge - 1].step *
+                            game.completions[game.challenge - 1] +
+                        (challenge.challenges[game.challenge - 1].step2 *
+                            (game.completions[game.challenge - 1] - 1) *
+                            game.completions[game.challenge - 1]) /
+                            2
+                ) + " spare PP"
+        } else {
+            document.getElementById("spare_pp_req").innerText =
+                format_num(
+                    challenge.challenges[game.challenge - 1].goal +
+                        challenge.challenges[game.challenge - 1].step * 11 +
+                        challenge.challenges[game.challenge - 1].step2 * 110
+                ) + " spare PP"
+        }
     }
 
     if (all_pp_upgrades && game.pp >= reboot_requirement) {
@@ -727,13 +1505,99 @@ function watts_update() {
         }
     }
 
+    if (game.perks[7])
+        document.getElementById("autopp_config").style.display = "block"
+
     if (game.perks[8])
         document.getElementById("battery_mode").style.display = "none"
+
+    if (game.perks[11])
+        document.getElementById("cap_auto").style.display = "inline"
+
+    if (game.perks[15] && game.challenge === 0) {
+        document.getElementById("autorb_block").style.display = "block"
+    } else {
+        document.getElementById("autorb_block").style.display = "none"
+    }
+
+    if (game.perks[17] && game.tab === 3) {
+        document.getElementById("reboot_tabs").style.display = "flex"
+    }
 
     if (game.reboot >= 1) {
         document.getElementById("reboot_confirm").style.display = "flex"
     } else {
         document.getElementById("reboot_confirm").style.display = "none"
+    }
+
+    if (game.perks[17]) {
+        document.getElementById("challenge_confirm").style.display = "flex"
+    } else {
+        document.getElementById("challenge_confirm").style.display = "none"
+    }
+}
+
+//updating challenges page
+function challenge_update() {
+    document.getElementById("challenge_header").innerText =
+        "Entering a challenge will attempt to Reboot, and will reset without giving watts if you cannot\nTo complete a challenge you must Reboot with the required amount of spare PP\n\nTotal EXP boost from all challenges: " +
+        format_num(
+            game.ch_boost[0] *
+                game.ch_boost[1] *
+                game.ch_boost[2] *
+                game.ch_boost[3]
+        ) +
+        "x"
+
+    for (const chg of challenge.challenges) {
+        let element = challenge_map.get(chg)
+        let button = element.querySelector(".enter_button")
+        let goal = element.querySelector(".challenge_goal")
+        let complete = element.querySelector(".challenge_complete")
+
+        if (game.challenge === chg.id) {
+            button.className = "enter_button in_progress"
+            button.innerText = "IN PROGRESS"
+        } else {
+            button.className = "enter_button"
+            button.innerText = "ENTER CHALLENGE"
+        }
+
+        complete.innerText =
+            "Completions: " +
+            format_num(game.completions[chg.id - 1]) +
+            " / " +
+            format_num(12) +
+            "\nEXP boost from completions: " +
+            format_num(game.ch_boost[chg.id - 1]) +
+            "x"
+
+        if (game.completions[chg.id - 1] < 12) {
+            goal.innerText =
+                "Goal: " +
+                format_num(
+                    chg.goal +
+                        chg.step * game.completions[chg.id - 1] +
+                        (chg.step2 *
+                            (game.completions[chg.id - 1] - 1) *
+                            game.completions[chg.id - 1]) /
+                            2
+                ) +
+                " PP"
+        } else {
+            goal.innerText =
+                "Goal: " + format_num(chg.goal + chg.step * 11) + " PP"
+        }
+
+        if (chg.id === 1) {
+            element.style.display = "flex"
+        } else {
+            if (game.completions[chg.id - 2] >= 1) {
+                element.style.display = "flex"
+            } else {
+                element.style.display = "none"
+            }
+        }
     }
 }
 
@@ -805,9 +1669,76 @@ function achievements_update() {
                             ).innerText = "?????"
                         break
                     case 5:
-                        document.getElementById(
-                            "ach_reqr" + (i + 1)
-                        ).innerText = "?????"
+                        if (!game.hints) {
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerText = "?????"
+                        } else {
+                            switch (p) {
+                                case 85:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText =
+                                        "And with our combined powers we will make great progress"
+                                    break
+                                case 86:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText =
+                                        "Imagine if the game didn't play itself"
+                                    break
+                                case 87:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText =
+                                        "Maybe you should go do something in real life"
+                                    break
+                                case 88:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText =
+                                        "Ask nicely for this one first"
+                                    break
+                                case 89:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText = 'Do something "funny"'
+                                    break
+                                case 90:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText = "Be very lucky"
+                                    break
+                                case 91:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText = "Pay respects"
+                                    break
+                                case 92:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText =
+                                        "A lot of work if you're blind"
+                                    break
+                                case 93:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText = "Throw it all away"
+                                    break
+                                case 94:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText =
+                                        "Acquire appreciation for emoji"
+                                    break
+                                case 95:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerText =
+                                        "Excessively challenging if you're blind"
+                                    break
+                            }
+                        }
                         break
                 }
             }
@@ -900,7 +1831,9 @@ function description_update() {
         pp_upgrade.upgrades[24].desc
     pp_upgrade.upgrades[27].desc =
         "EXP production is boosted based on how many times you have Prestiged\n(Currently: " +
-        format_eff(1 + (game.prestige / 1000) ** (1 / 2)) +
+        format_eff(
+            1 + ((game.prestige + game.banked_prestige) / 1000) ** (1 / 2)
+        ) +
         "x)"
     pp_map.get(pp_upgrade.upgrades[27]).querySelector(".pp_desc").innerText =
         pp_upgrade.upgrades[27].desc
@@ -966,6 +1899,24 @@ function description_update() {
     perk_map
         .get(generator_perk.perks[13])
         .querySelector(".perk_desc").innerText = generator_perk.perks[13].desc
+    if (game.fastest_reboot > 600 * game.tickspeed) {
+        generator_perk.perks[16].desc =
+            "EXP production is boosted based on your fastest Reboot\n(Currently: " +
+            format_eff(1) +
+            "x)"
+    } else {
+        generator_perk.perks[16].desc =
+            "EXP production is boosted based on your fastest Reboot\n(Currently: " +
+            format_eff(
+                Math.log(game.fastest_reboot / (600 * game.tickspeed)) /
+                    Math.log(0.75) +
+                    1
+            ) +
+            "x)"
+    }
+    perk_map
+        .get(generator_perk.perks[16])
+        .querySelector(".perk_desc").innerText = generator_perk.perks[16].desc
 
     achievement.achievements[0].requirement = "Reach LVL " + format_num(2)
     achievement.achievements[1].requirement = "Reach LVL " + format_num(10)
@@ -980,85 +1931,148 @@ function description_update() {
     achievement.achievements[10].requirement = "Reach LVL " + format_num(3000)
     achievement.achievements[11].requirement = "Reach LVL " + format_num(6000)
     achievement.achievements[12].requirement = "Reach LVL " + format_num(12000)
-    achievement.achievements[14].requirement =
-        "Prestige " + format_num(10) + " times"
-    achievement.achievements[15].requirement =
-        "Prestige " + format_num(100) + " times"
+    achievement.achievements[13].requirement = "Reach LVL " + format_num(18000)
+    achievement.achievements[14].requirement = "Reach LVL " + format_num(24000)
     achievement.achievements[16].requirement =
-        "Prestige " + format_num(1000) + " times"
+        "Prestige " + format_num(10) + " times"
     achievement.achievements[17].requirement =
-        "Prestige " + format_num(10000) + " times"
+        "Prestige " + format_num(100) + " times"
     achievement.achievements[18].requirement =
-        "Prestige " + format_num(100000) + " times"
+        "Prestige " + format_num(1000) + " times"
     achievement.achievements[19].requirement =
-        "Get " + format_num(10 ** 6) + " all time EXP"
+        "Prestige " + format_num(10000) + " times"
     achievement.achievements[20].requirement =
-        "Get " + format_num(10 ** 9) + " all time EXP"
+        "Prestige " + format_num(100000) + " times"
     achievement.achievements[21].requirement =
-        "Get " + format_num(10 ** 12) + " all time EXP"
+        "Prestige " + format_num(1000000) + " times"
     achievement.achievements[22].requirement =
-        "Get " + format_num(10 ** 15) + " all time EXP"
+        "Get " + format_num(10 ** 6) + " all time EXP"
     achievement.achievements[23].requirement =
-        "Get " + format_num(10 ** 18) + " all time EXP"
+        "Get " + format_num(10 ** 9) + " all time EXP"
     achievement.achievements[24].requirement =
-        "Get " + format_num(10 ** 21) + " all time EXP"
+        "Get " + format_num(10 ** 12) + " all time EXP"
     achievement.achievements[25].requirement =
-        "Get " + format_num(10 ** 24) + " all time EXP"
+        "Get " + format_num(10 ** 15) + " all time EXP"
     achievement.achievements[26].requirement =
-        "Get " + format_num(10 ** 27) + " all time EXP"
+        "Get " + format_num(10 ** 18) + " all time EXP"
     achievement.achievements[27].requirement =
-        "Get " + format_num(10 ** 30) + " all time EXP"
+        "Get " + format_num(10 ** 21) + " all time EXP"
     achievement.achievements[28].requirement =
-        "Get " + format_num(10 ** 33) + " all time EXP"
+        "Get " + format_num(10 ** 24) + " all time EXP"
     achievement.achievements[29].requirement =
-        "Get " + format_num(10 ** 36) + " all time EXP"
+        "Get " + format_num(10 ** 27) + " all time EXP"
     achievement.achievements[30].requirement =
-        "Get " + format_num(10 ** 39) + " all time EXP"
+        "Get " + format_num(10 ** 30) + " all time EXP"
     achievement.achievements[31].requirement =
+        "Get " + format_num(10 ** 33) + " all time EXP"
+    achievement.achievements[32].requirement =
+        "Get " + format_num(10 ** 36) + " all time EXP"
+    achievement.achievements[33].requirement =
+        "Get " + format_num(10 ** 39) + " all time EXP"
+    achievement.achievements[34].requirement =
         "Get " + format_num(10 ** 42) + " all time EXP"
-    achievement.achievements[37].requirement = "Get " + format_num(100) + " AMP"
+    achievement.achievements[35].requirement =
+        "Get " + format_num(10 ** 45) + " all time EXP"
+    achievement.achievements[36].requirement =
+        "Get " + format_num(10 ** 48) + " all time EXP"
+    achievement.achievements[37].requirement =
+        "Get " + format_num(10 ** 51) + " all time EXP"
     achievement.achievements[38].requirement =
+        "Get " + format_num(10 ** 57) + " all time EXP"
+    achievement.achievements[44].requirement = "Get " + format_num(100) + " AMP"
+    achievement.achievements[45].requirement =
         "Get " + format_num(10000) + " AMP"
-    achievement.achievements[39].requirement =
+    achievement.achievements[46].requirement =
         "Get " + format_num(10 ** 6) + " AMP"
-    achievement.achievements[40].requirement =
+    achievement.achievements[47].requirement =
         "Get " + format_num(10 ** 8) + " AMP"
-    achievement.achievements[41].requirement =
+    achievement.achievements[48].requirement =
         "Get " + format_num(10 ** 10) + " AMP"
-    achievement.achievements[42].requirement =
+    achievement.achievements[49].requirement =
         "Get " + format_num(10 ** 12) + " AMP"
-    achievement.achievements[43].requirement =
+    achievement.achievements[50].requirement =
         "Get " + format_num(10 ** 14) + " AMP"
-    achievement.achievements[44].requirement =
+    achievement.achievements[51].requirement =
         "Get " + format_num(10 ** 16) + " AMP"
+    achievement.achievements[52].requirement =
+        "Get " + format_num(10 ** 18) + " AMP"
     achievement.achievements[53].requirement =
-        "Buy all " + format_num(40) + " Prestige upgrades"
-    achievement.achievements[54].requirement =
-        "Reach " + format_num(100) + "x EXP Flux boost"
-    achievement.achievements[55].requirement =
-        "Reach " + format_num(30) + " clicks/s on the Autoclicker"
-    achievement.achievements[56].requirement =
-        "Reach " + format_num(150) + " clicks/s on the Autoclicker"
-    achievement.achievements[57].requirement =
-        "Reach " + format_num(1000) + " clicks/s on the Autoclicker"
-    achievement.achievements[59].requirement =
-        "Reboot " + format_num(3) + " times"
-    achievement.achievements[60].requirement =
-        "Reboot " + format_num(5) + " times"
-    achievement.achievements[61].requirement =
-        "Reboot " + format_num(10) + " times"
+        "Get " + format_num(10 ** 20) + " AMP"
     achievement.achievements[62].requirement =
-        "Reboot " + format_num(25) + " times"
+        "Buy all " + format_num(40) + " Prestige upgrades"
     achievement.achievements[63].requirement =
-        "Reboot " + format_num(50) + " times"
+        "Reach " + format_num(100) + "x EXP Flux boost"
+    achievement.achievements[64].requirement =
+        "Reach " + format_num(30) + " clicks/s on the Autoclicker"
+    achievement.achievements[65].requirement =
+        "Reach " + format_num(150) + " clicks/s on the Autoclicker"
+    achievement.achievements[66].requirement =
+        "Reach " + format_num(1000) + " clicks/s on the Autoclicker"
+    achievement.achievements[68].requirement =
+        "Reboot " + format_num(3) + " times"
+    achievement.achievements[69].requirement =
+        "Reboot " + format_num(5) + " times"
+    achievement.achievements[70].requirement =
+        "Reboot " + format_num(10) + " times"
     achievement.achievements[71].requirement =
+        "Reboot " + format_num(25) + " times"
+    achievement.achievements[72].requirement =
+        "Reboot " + format_num(50) + " times"
+    achievement.achievements[73].requirement =
+        "Reboot " + format_num(100) + " times"
+    achievement.achievements[74].requirement =
+        "Reboot " + format_num(1000) + " times"
+    achievement.achievements[83].requirement =
+        "Complete a single challenge " + format_num(12) + " times"
+    achievement.achievements[84].requirement =
+        "Get " + format_num(27) + " total challenge completions"
+    achievement.achievements[90].requirement =
         "There is a " +
         format_num(1) +
         " in " +
         format_num(7777) +
         " chance every second you will get this achievement"
-    achievement.achievements[75].requirement =
+    achievement.achievements[94].requirement =
         "Reboot " + format_num(10) + " times while using Cancer notation"
+
+    challenge.challenges[1].desc =
+        "All upgrades require " + format_num(5) + "x as many levels"
+    challenge_map
+        .get(challenge.challenges[1])
+        .querySelector(".challenge_desc").innerText =
+        challenge.challenges[1].desc
+
+    switch (game.notation) {
+        case 0:
+            achievement.achievements[35].name =
+                "Why are you still using Long notation?"
+            break
+        case 1:
+            achievement.achievements[35].name =
+                "Why are you still using Standard notation?"
+            break
+        case 2:
+        case 3:
+            achievement.achievements[35].name = "45 digits is a lot"
+            break
+        case 4:
+            achievement.achievements[35].name =
+                "Why are you still using Condensed notation?"
+            break
+        case 5:
+            achievement.achievements[35].name = "45 digits is a lot"
+            break
+        case 6:
+            achievement.achievements[35].name =
+                "This achievement brought to you by the letter N"
+            break
+        case 7:
+            achievement.achievements[35].name = "Cancerously huge"
+            break
+        case 8:
+            achievement.achievements[35].name = "Can't even see how big this is"
+            break
+    }
 
     if (game.notation === 8) {
         pp_upgrade.upgrades[14].desc =
@@ -1077,7 +2091,7 @@ function description_update() {
             .get(pp_upgrade.upgrades[37])
             .querySelector(".pp_desc").innerText = pp_upgrade.upgrades[37].desc
         pp_upgrade.upgrades[38].desc =
-            "Unlocks ??? Capacitance mode, giving a ???x boost on Discharge"
+            "Unlocks ??? Capacitance mode, giving a ???x boost on Discharge\nAlso allows you to Discharge at ???"
         pp_map
             .get(pp_upgrade.upgrades[38])
             .querySelector(".pp_desc").innerText = pp_upgrade.upgrades[38].desc
@@ -1088,21 +2102,24 @@ function description_update() {
             .get(generator_perk.perks[0])
             .querySelector(".perk_desc").innerText =
             generator_perk.perks[0].desc
-        generator_perk.perks[6].desc = "All Upgrades require ??? fewer levels"
+        generator_perk.perks[18].desc =
+            "You permanently keep ??? of your Times Prestiged stat every Reboot"
         perk_map
-            .get(generator_perk.perks[6])
+            .get(generator_perk.perks[18])
             .querySelector(".perk_desc").innerText =
-            generator_perk.perks[6].desc
+            generator_perk.perks[18].desc
 
-        achievement.achievements[13].requirement = "Prestige ??? times"
-        achievement.achievements[32].requirement = "Play for ???"
-        achievement.achievements[33].requirement = "Play for ???"
-        achievement.achievements[34].requirement = "Play for ???"
-        achievement.achievements[35].requirement = "Play for ???"
-        achievement.achievements[36].requirement = "Play for ???"
-        achievement.achievements[64].requirement = "Reboot in under ???"
-        achievement.achievements[65].requirement = "Reboot in under ???"
-        achievement.achievements[68].requirement =
+        achievement.achievements[15].requirement = "Prestige ??? times"
+        achievement.achievements[39].requirement = "Play for ???"
+        achievement.achievements[40].requirement = "Play for ???"
+        achievement.achievements[41].requirement = "Play for ???"
+        achievement.achievements[42].requirement = "Play for ???"
+        achievement.achievements[43].requirement = "Play for ???"
+        achievement.achievements[75].requirement = "Reboot in under ???"
+        achievement.achievements[76].requirement = "Reboot in under ???"
+        achievement.achievements[77].requirement = "Reboot in under ???"
+        achievement.achievements[78].requirement = "Reboot in under ???"
+        achievement.achievements[87].requirement =
             "Do absolutely nothing for ???"
 
         if (game.perks[9]) {
@@ -1119,6 +2136,34 @@ function description_update() {
                 .get(pp_upgrade.upgrades[35])
                 .querySelector(".pp_desc").innerText =
                 pp_upgrade.upgrades[35].desc
+        }
+
+        if (game.perks[17]) {
+            generator_perk.perks[6].desc =
+                "All Upgrades require ??? fewer levels\n(Does not apply to challenges)"
+            perk_map
+                .get(generator_perk.perks[6])
+                .querySelector(".perk_desc").innerText =
+                generator_perk.perks[6].desc
+            generator_perk.perks[21].desc =
+                "All Upgrades require ??? fewer levels\n(Does not apply to challenges)"
+            perk_map
+                .get(generator_perk.perks[21])
+                .querySelector(".perk_desc").innerText =
+                generator_perk.perks[21].desc
+        } else {
+            generator_perk.perks[6].desc =
+                "All Upgrades require ??? fewer levels"
+            perk_map
+                .get(generator_perk.perks[6])
+                .querySelector(".perk_desc").innerText =
+                generator_perk.perks[6].desc
+            generator_perk.perks[21].desc =
+                "All Upgrades require ??? fewer levels"
+            perk_map
+                .get(generator_perk.perks[21])
+                .querySelector(".perk_desc").innerText =
+                generator_perk.perks[21].desc
         }
     } else {
         pp_upgrade.upgrades[14].desc =
@@ -1138,21 +2183,24 @@ function description_update() {
             .get(generator_perk.perks[0])
             .querySelector(".perk_desc").innerText =
             generator_perk.perks[0].desc
-        generator_perk.perks[6].desc = "All Upgrades require 25% fewer levels"
+        generator_perk.perks[18].desc =
+            "You permanently keep 25% of your Times Prestiged stat every Reboot"
         perk_map
-            .get(generator_perk.perks[6])
+            .get(generator_perk.perks[18])
             .querySelector(".perk_desc").innerText =
-            generator_perk.perks[6].desc
+            generator_perk.perks[18].desc
 
-        achievement.achievements[13].requirement = "Prestige 1 time"
-        achievement.achievements[32].requirement = "Play for 1 hour"
-        achievement.achievements[33].requirement = "Play for 6 hours"
-        achievement.achievements[34].requirement = "Play for 24 hours"
-        achievement.achievements[35].requirement = "Play for 72 hours"
-        achievement.achievements[36].requirement = "Play for 168 hours"
-        achievement.achievements[64].requirement = "Reboot in under 1 hour"
-        achievement.achievements[65].requirement = "Reboot in under 10 minutes"
-        achievement.achievements[68].requirement =
+        achievement.achievements[15].requirement = "Prestige 1 time"
+        achievement.achievements[39].requirement = "Play for 1 hour"
+        achievement.achievements[40].requirement = "Play for 6 hours"
+        achievement.achievements[41].requirement = "Play for 24 hours"
+        achievement.achievements[42].requirement = "Play for 72 hours"
+        achievement.achievements[43].requirement = "Play for 168 hours"
+        achievement.achievements[75].requirement = "Reboot in under 1 hour"
+        achievement.achievements[76].requirement = "Reboot in under 10 minutes"
+        achievement.achievements[77].requirement = "Reboot in under 1 minute"
+        achievement.achievements[78].requirement = "Reboot in under 1 second"
+        achievement.achievements[87].requirement =
             "Do absolutely nothing for 10 minutes"
 
         if (game.perks[9]) {
@@ -1169,7 +2217,7 @@ function description_update() {
                 .querySelector(".pp_desc").innerText =
                 pp_upgrade.upgrades[37].desc
             pp_upgrade.upgrades[38].desc =
-                "Unlocks 100% Capacitance mode, giving a 16x boost on Discharge"
+                "Unlocks 100% Capacitance mode, giving a 16x boost on Discharge\nAlso allows you to Discharge at 0 seconds"
             pp_map
                 .get(pp_upgrade.upgrades[38])
                 .querySelector(".pp_desc").innerText =
@@ -1188,12 +2236,68 @@ function description_update() {
                 .querySelector(".pp_desc").innerText =
                 pp_upgrade.upgrades[37].desc
             pp_upgrade.upgrades[38].desc =
-                "Unlocks 100% Capacitance mode, giving a 8x boost on Discharge"
+                "Unlocks 100% Capacitance mode, giving a 8x boost on Discharge\nAlso allows you to Discharge at 0 seconds"
             pp_map
                 .get(pp_upgrade.upgrades[38])
                 .querySelector(".pp_desc").innerText =
                 pp_upgrade.upgrades[38].desc
         }
+
+        if (game.perks[17]) {
+            generator_perk.perks[6].desc =
+                "All Upgrades require 25% fewer levels\n(Does not apply to challenges)"
+            perk_map
+                .get(generator_perk.perks[6])
+                .querySelector(".perk_desc").innerText =
+                generator_perk.perks[6].desc
+            generator_perk.perks[21].desc =
+                "All Upgrades require 50% fewer levels\n(Does not apply to challenges)"
+            perk_map
+                .get(generator_perk.perks[21])
+                .querySelector(".perk_desc").innerText =
+                generator_perk.perks[21].desc
+        } else {
+            generator_perk.perks[6].desc =
+                "All Upgrades require 25% fewer levels"
+            perk_map
+                .get(generator_perk.perks[6])
+                .querySelector(".perk_desc").innerText =
+                generator_perk.perks[6].desc
+            generator_perk.perks[21].desc =
+                "All Upgrades require 50% fewer levels"
+            perk_map
+                .get(generator_perk.perks[21])
+                .querySelector(".perk_desc").innerText =
+                generator_perk.perks[21].desc
+        }
+    }
+
+    if (game.perks[0]) {
+        pp_upgrade.upgrades[12].desc =
+            "Unlocks four additional modes for Auto-Prestige configuration"
+        pp_map
+            .get(pp_upgrade.upgrades[12])
+            .querySelector(".pp_desc").innerText = pp_upgrade.upgrades[12].desc
+    } else {
+        pp_upgrade.upgrades[12].desc =
+            "Unlocks three additional modes for Auto-Prestige configuration"
+        pp_map
+            .get(pp_upgrade.upgrades[12])
+            .querySelector(".pp_desc").innerText = pp_upgrade.upgrades[12].desc
+    }
+
+    if (game.perks[8]) {
+        pp_upgrade.upgrades[25].desc =
+            "Unlocks an upgrade that gives an additional multiplier to EXP"
+        pp_map
+            .get(pp_upgrade.upgrades[25])
+            .querySelector(".pp_desc").innerText = pp_upgrade.upgrades[25].desc
+    } else {
+        pp_upgrade.upgrades[25].desc =
+            "Unlocks an upgrade that gives an additional multiplier to EXP with active and idle modes"
+        pp_map
+            .get(pp_upgrade.upgrades[25])
+            .querySelector(".pp_desc").innerText = pp_upgrade.upgrades[25].desc
     }
 
     if (game.perks[9]) {
@@ -1287,6 +2391,45 @@ function description_update() {
             .querySelector(".perk_desc").innerText =
             generator_perk.perks[1].desc
     }
+
+    if (game.perks[17]) {
+        generator_perk.perks[2].desc =
+            "You begin Reboots with every PP upgrade up to Limit Break already purchased\n(Does not apply to challenges)"
+        perk_map
+            .get(generator_perk.perks[2])
+            .querySelector(".perk_desc").innerText =
+            generator_perk.perks[2].desc
+        generator_perk.perks[10].desc =
+            "You begin Reboots with every PP upgrade up to EXP Overclocker already purchased\n(Does not apply to challenges)"
+        perk_map
+            .get(generator_perk.perks[10])
+            .querySelector(".perk_desc").innerText =
+            generator_perk.perks[10].desc
+        generator_perk.perks[15].desc =
+            "Unlocks automation for Reboot\n(Does not apply to challenges)"
+        perk_map
+            .get(generator_perk.perks[15])
+            .querySelector(".perk_desc").innerText =
+            generator_perk.perks[15].desc
+    } else {
+        generator_perk.perks[2].desc =
+            "You begin Reboots with every PP upgrade up to Limit Break already purchased"
+        perk_map
+            .get(generator_perk.perks[2])
+            .querySelector(".perk_desc").innerText =
+            generator_perk.perks[2].desc
+        generator_perk.perks[10].desc =
+            "You begin Reboots with every PP upgrade up to EXP Overclocker already purchased"
+        perk_map
+            .get(generator_perk.perks[10])
+            .querySelector(".perk_desc").innerText =
+            generator_perk.perks[10].desc
+        generator_perk.perks[15].desc = "Unlocks automation for Reboot"
+        perk_map
+            .get(generator_perk.perks[15])
+            .querySelector(".perk_desc").innerText =
+            generator_perk.perks[15].desc
+    }
 }
 
 //make all gui match the loaded save data
@@ -1294,7 +2437,9 @@ function regenerate_ui() {
     color_update()
     ampbutton_update()
     pp_update()
+    challenge_update()
     goto_tab(game.tab)
+    goto_subtab(game.subtab)
     switch (game.notation) {
         case 0:
             document.getElementById("notation_button").innerText = "LONG"
@@ -1341,7 +2486,7 @@ function regenerate_ui() {
             document.getElementById("hidden_button").innerText = "HIDE BOUGHT"
             break
     }
-    if (game.pp_progress) {
+    if (game.pp_progress && (game.prestige >= 1 || game.reboot >= 1)) {
         document.getElementById("pp_bar_button").innerText = "ENABLED"
         document.getElementById("pp_back").style.display = "block"
     } else {
@@ -1380,6 +2525,16 @@ function regenerate_ui() {
         document.getElementById("confirm_button").innerText = "ENABLED"
     } else {
         document.getElementById("confirm_button").innerText = "DISABLED"
+    }
+    if (game.challenge_confirmation) {
+        document.getElementById("ch_confirm_button").innerText = "ENABLED"
+    } else {
+        document.getElementById("ch_confirm_button").innerText = "DISABLED"
+    }
+    if (game.hints) {
+        document.getElementById("hints_button").innerText = "ENABLED"
+    } else {
+        document.getElementById("hints_button").innerText = "DISABLED"
     }
 
     if (game.pp_bought[39] == true) {
@@ -1455,7 +2610,7 @@ function regenerate_ui() {
         document.getElementById("amp_auto").style.display = "none"
     }
 
-    if (game.pp_bought[14]) {
+    if (game.pp_bought[14] && game.challenge !== 1) {
         document.getElementById("overclock").style.display = "block"
         switch (game.oc_state) {
             case 0:
@@ -1483,7 +2638,8 @@ function regenerate_ui() {
         }
 
         if (game.pp_bought[16]) {
-            document.getElementById("oc_auto").style.display = "inline"
+            if (!game.perks[20])
+                document.getElementById("oc_auto").style.display = "inline"
         } else {
             document.getElementById("oc_auto").style.display = "none"
         }
@@ -1491,7 +2647,7 @@ function regenerate_ui() {
         document.getElementById("overclock").style.display = "none"
     }
 
-    if (game.pp_bought[32]) {
+    if (game.pp_bought[32] && game.challenge !== 1) {
         document.getElementById("capacitor").style.display = "block"
         set_capacitance(game.cap_mode)
         if (game.perks[9]) {
@@ -1504,7 +2660,7 @@ function regenerate_ui() {
         document.getElementById("capacitor").style.display = "none"
     }
 
-    if (game.pp_bought[35]) {
+    if (game.pp_bought[35] && game.challenge !== 1) {
         document.getElementById("cap_50").style.display = "inline"
         document.getElementById("cap_disc").style.display = "inline"
         if (!game.perks[9]) {
@@ -1518,13 +2674,13 @@ function regenerate_ui() {
         document.getElementById("cap_disc").style.display = "none"
     }
 
-    if (game.pp_bought[37]) {
+    if (game.pp_bought[37] && game.challenge !== 1) {
         document.getElementById("cap_75").style.display = "inline"
     } else {
         document.getElementById("cap_75").style.display = "none"
     }
 
-    if (game.pp_bought[38]) {
+    if (game.pp_bought[38] && game.challenge !== 1) {
         document.getElementById("cap_100").style.display = "inline"
         document.getElementById("dis_input").min = 0
     } else {
@@ -1564,7 +2720,9 @@ function regenerate_ui() {
     }
 
     if (game.perks[15]) {
-        document.getElementById("autorb_block").style.display = "block"
+        if (game.challenge === 0)
+            document.getElementById("autorb_block").style.display = "block"
+        else document.getElementById("autorb_block").style.display = "none"
         if (!game.confirmation) {
             rb_toggle()
             rb_toggle()
@@ -1584,4 +2742,6 @@ function regenerate_ui() {
     document.getElementById("time_input").value = game.autopr_goal[3]
 
     document.getElementById("hue_input").value = game.custom_hue
+
+    document.getElementById("refresh_input").value = game.refresh_rate
 }
