@@ -34,6 +34,7 @@ function notation() {
     }
     increment(0)
     watts_update()
+    challenge_update()
     if (game.oc_state === 2)
         document.getElementById("oc_state").innerText =
             "Boosting " + format_num(game.exp_oc) + "x"
@@ -165,6 +166,28 @@ function confirmation() {
     }
 }
 
+//toggling challenge confirmation
+function challenge_confirmation() {
+    if (game.challenge_confirmation) {
+        game.challenge_confirmation = false
+        document.getElementById("ch_confirm_button").innerText = "DISABLED"
+    } else {
+        game.challenge_confirmation = true
+        document.getElementById("ch_confirm_button").innerText = "ENABLED"
+    }
+}
+
+//toggling hidden achievement hints
+function hints() {
+    if (game.hints) {
+        game.hints = false
+        document.getElementById("hints_button").innerText = "DISABLED"
+    } else {
+        game.hints = true
+        document.getElementById("hints_button").innerText = "ENABLED"
+    }
+}
+
 //tab switching
 function goto_tab(id) {
     if (id !== 5 && game.tab === 5) {
@@ -179,9 +202,12 @@ function goto_tab(id) {
     document.getElementById("upgrades_page").style.display = "none"
     document.getElementById("prestige_page").style.display = "none"
     document.getElementById("reboot_page").style.display = "none"
+    document.getElementById("challenges_page").style.display = "none"
     document.getElementById("statistics_page").style.display = "none"
     document.getElementById("achievements_page").style.display = "none"
     document.getElementById("settings_page").style.display = "none"
+
+    document.getElementById("reboot_tabs").style.display = "none"
 
     switch (id) {
         case 1:
@@ -191,7 +217,13 @@ function goto_tab(id) {
             document.getElementById("prestige_page").style.display = "block"
             break
         case 3:
-            document.getElementById("reboot_page").style.display = "block"
+            if (game.subtab === 0)
+                document.getElementById("reboot_page").style.display = "block"
+            if (game.subtab === 1)
+                document.getElementById("challenges_page").style.display =
+                    "block"
+            if (game.perks[17])
+                document.getElementById("reboot_tabs").style.display = "flex"
             break
         case 4:
             document.getElementById("statistics_page").style.display = "flex"
@@ -203,6 +235,26 @@ function goto_tab(id) {
         case 6:
             document.getElementById("settings_page").style.display = "flex"
             break
+    }
+}
+
+//subtab switching
+function goto_subtab(id) {
+    if (game.tab === 3) {
+        game.subtab = id
+
+        document.getElementById("reboot_page").style.display = "none"
+        document.getElementById("challenges_page").style.display = "none"
+
+        switch (id) {
+            case 0:
+                document.getElementById("reboot_page").style.display = "block"
+                break
+            case 1:
+                document.getElementById("challenges_page").style.display =
+                    "block"
+                break
+        }
     }
 }
 
