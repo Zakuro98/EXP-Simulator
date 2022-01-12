@@ -408,6 +408,15 @@
                     </div>
                 </div>
 
+                <div id="reboot_tabs" class="menu">
+                    <button id="generator_tab" class="button" onclick="goto_subtab(0)">
+                        GENERATOR
+                    </button>
+                    <button id="challenges_tab" class="button" onclick="goto_subtab(1)">
+                        CHALLENGES
+                    </button>
+                </div>
+
                 <div id="reboot_page">
                     <div id="generator">
                         <div id="watts_block">
@@ -476,6 +485,21 @@
                     <p id="gen_perks_text">
                         GENERATOR PERKS
                     </p>
+                </div>
+
+                <div id="challenges_page">
+                    <p id="challenge_header">
+                        Entering a challenge will attempt to Reboot, and will reset without giving watts if you cannot
+                        <br>To complete a challenge you must Reboot with the required amount of spare PP
+                        <br><br>
+                        Total EXP boost from all challenges: 1.00x
+                    </p>
+
+                    <div id="exit_center">
+                        <button id="exit_button" class="button" onclick="exit_challenge()">
+                            EXIT CHALLENGE
+                        </button>
+                    </div>
                 </div>
 
                 <div class="statistics" id="statistics_page">
@@ -834,6 +858,30 @@
                             RESET HOTKEYS
                         </button>
                     </div>
+                    <div class="option" id="reboot_confirm">
+                        <p id="confirm_text" class="option_text">
+                            Reboot Confirmation
+                        </p>
+                        <button id="confirm_button" class="option_button small" onclick="confirmation()">
+                            ENABLED
+                        </button>
+                    </div>
+                    <div class="option" id="challenge_confirm">
+                        <p id="ch_confirm_text" class="option_text">
+                            Challenge Confirmation
+                        </p>
+                        <button id="ch_confirm_button" class="option_button small" onclick="challenge_confirmation()">
+                            ENABLED
+                        </button>
+                    </div>
+                    <div class="option">
+                        <p id="hints_text" class="option_text">
+                            Hidden Achievement Hints
+                        </p>
+                        <button id="hints_button" class="option_button small" onclick="hints()">
+                            DISABLED
+                        </button>
+                    </div>
                     <div class="option">
                         <p id="epilepsy_text" class="option_text">
                             Photosensitivity Mode
@@ -854,13 +902,16 @@
                         </p>
                         <input class="goal_input" id="hue_input" type="number" value="0" min="0" max="359">
                     </div>
-                    <div class="option" id="reboot_confirm">
-                        <p id="confirm_text" class="option_text">
-                            Reboot Confirmation
+                    <div class="option">
+                        <p id="refresh_text" class="option_text">
+                            Visual Update Rate
                         </p>
-                        <button id="confirm_button" class="option_button small" onclick="confirmation()">
-                            ENABLED
-                        </button>
+                        <div>
+                            <input class="goal_input" id="refresh_input" type="number" value="30" min="2" max="30">
+                            <p id="hertz_text" class="option_text">
+                                Hz
+                            </p>
+                        </div>
                     </div>
                     <button id="wipe_button" class="option wipe_button" onclick="wipe()">
                         DELETE SAVE
@@ -874,7 +925,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.2.104<br>Made by Zakuro
+                    <br><br><br>EXP Simulator v2.2.200<br>Made by Zakuro
                 </p>
                 <a href="changelog.html" target="_blank" class="info link">
                     Changelog
