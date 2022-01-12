@@ -24,6 +24,10 @@ function increment(num) {
                 get_achievement(11)
             if (!game.achievements[12] && game.level >= 12000)
                 get_achievement(12)
+            if (!game.achievements[77] && game.level >= 18000)
+                get_achievement(77)
+            if (!game.achievements[95] && game.level >= 24000)
+                get_achievement(95)
 
             if (game.level >= 5 && !game.hold_notify) {
                 new notify("Protip: you can hold the EXP button", "#ffc400")
@@ -64,189 +68,20 @@ function increment(num) {
             get_achievement(30)
         if (!game.achievements[70] && game.all_time_exp >= 10 ** 42)
             get_achievement(70)
+        if (!game.achievements[79] && game.all_time_exp >= 10 ** 45)
+            get_achievement(79)
+        if (!game.achievements[80] && game.all_time_exp >= 10 ** 48)
+            get_achievement(80)
+        if (!game.achievements[93] && game.all_time_exp >= 10 ** 51)
+            get_achievement(93)
+        if (!game.achievements[96] && game.all_time_exp >= 10 ** 57)
+            get_achievement(96)
 
         game.exp = game.total_exp - Math.ceil(get_exp(game.level - 1))
         game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level - 1))
-
-        if (game.epilepsy) {
-            document.getElementById("progress").style.width =
-                (100 * game.exp) / game.goal + "%"
-        } else {
-            let eps =
-                (game.exp_add + game.exp_fluct / 2) *
-                game.global_multiplier *
-                game.cap_boost *
-                game.cps
-            if (
-                (game.autods_toggle === 1 && game.autods_goal === 0) ||
-                (game.autods_toggle === 2 &&
-                    game.cap_mode === 4 &&
-                    !game.smartds_oc)
-            )
-                eps =
-                    (game.exp_add + game.exp_fluct / 2) *
-                    game.global_multiplier *
-                    (game.cap_boost +
-                        (1 - game.cap_boost) * game.cap_mode * 2) *
-                    game.cps
-            if (game.battery_mode === 1 || game.perks[8])
-                eps *= game.exp_battery
-            if (eps / game.goal >= 2) {
-                document.getElementById("progress").style.width = 100 + "%"
-            } else {
-                document.getElementById("progress").style.width =
-                    (100 * game.exp) / game.goal + "%"
-            }
-        }
-    } else {
-        document.getElementById("progress").style.width = 100 + "%"
-        if (!game.pp_bought[6] && game.level >= game.pr_min) {
-            game.all_time_exp -=
-                game.total_exp - Math.ceil(get_exp(game.pr_min - 1))
-            game.prestige_exp -=
-                game.total_exp - Math.ceil(get_exp(game.pr_min - 1))
-            game.total_exp = Math.ceil(get_exp(game.pr_min - 1))
-            game.level = game.pr_min
-
-            game.exp = game.total_exp - Math.ceil(get_exp(game.level - 1))
-            game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level - 1))
-        }
-    }
-
-    if (game.pp_progress && game.prestige >= 1) {
-        let goal2 = 0
-        if (game.pp_bought[6]) {
-            if (game.prestige < 21) {
-                if (game.level < 60) {
-                    document.getElementById("pp_progress").style.width =
-                        (100 * game.total_exp) / get_exp(59) + "%"
-                    goal2 = get_exp(59)
-                } else {
-                    if (game.level < game.highest_level + 1) {
-                        let goal =
-                            get_exp(
-                                Math.ceil(
-                                    20 *
-                                        (get_pp(game.highest_level) + 2) **
-                                            (1 / 2) +
-                                        40
-                                ) - 1
-                            ) - get_exp(59)
-                        let prog = game.total_exp - get_exp(59)
-                        document.getElementById("pp_progress").style.width =
-                            (100 * prog) / goal + "%"
-                        goal2 = goal
-                    } else {
-                        let goal =
-                            get_exp(
-                                Math.ceil(
-                                    20 * (get_pp(game.level) + 2) ** (1 / 2) +
-                                        40
-                                ) - 1
-                            ) -
-                            get_exp(
-                                Math.ceil(
-                                    20 * (get_pp(game.level) + 1) ** (1 / 2) +
-                                        40
-                                ) - 1
-                            )
-                        let prog =
-                            game.total_exp -
-                            get_exp(
-                                Math.ceil(
-                                    20 * (get_pp(game.level) + 1) ** (1 / 2) +
-                                        40
-                                ) - 1
-                            )
-                        document.getElementById("pp_progress").style.width =
-                            (100 * prog) / goal + "%"
-                        goal2 = goal
-                    }
-                }
-            } else {
-                if (game.level < game.highest_level + 1) {
-                    let goal = get_exp(
-                        Math.ceil(
-                            20 * (get_pp(game.highest_level) + 2) ** (1 / 2) +
-                                40
-                        ) - 1
-                    )
-                    let prog = game.total_exp
-                    document.getElementById("pp_progress").style.width =
-                        (100 * prog) / goal + "%"
-                    goal2 = goal
-                } else {
-                    let goal =
-                        get_exp(
-                            Math.ceil(
-                                20 * (get_pp(game.level) + 2) ** (1 / 2) + 40
-                            ) - 1
-                        ) -
-                        get_exp(
-                            Math.ceil(
-                                20 * (get_pp(game.level) + 1) ** (1 / 2) + 40
-                            ) - 1
-                        )
-                    let prog =
-                        game.total_exp -
-                        get_exp(
-                            Math.ceil(
-                                20 * (get_pp(game.level) + 1) ** (1 / 2) + 40
-                            ) - 1
-                        )
-                    document.getElementById("pp_progress").style.width =
-                        (100 * prog) / goal + "%"
-                    goal2 = goal
-                }
-            }
-        } else {
-            document.getElementById("pp_progress").style.width =
-                (100 * game.total_exp) / get_exp(59) + "%"
-            goal2 = get_exp(59)
-        }
-        if (!game.epilepsy) {
-            let eps =
-                (game.exp_add + game.exp_fluct / 2) *
-                game.global_multiplier *
-                game.cap_boost *
-                game.cps
-            if (
-                (game.autods_toggle === 1 && game.autods_goal === 0) ||
-                (game.autods_toggle === 2 &&
-                    game.cap_mode === 4 &&
-                    !game.smartds_oc)
-            )
-                eps =
-                    (game.exp_add + game.exp_fluct / 2) *
-                    game.global_multiplier *
-                    (game.cap_boost +
-                        (1 - game.cap_boost) * game.cap_mode * 2) *
-                    game.cps
-            if (game.battery_mode === 1 || game.perks[8])
-                eps *= game.exp_battery
-            if (eps / goal2 >= 2) {
-                document.getElementById("pp_progress").style.width = "100%"
-            }
-        }
-    }
-
-    if (game.notation === 8) {
-        document.getElementById("progress").style.width = "100%"
-        document.getElementById("pp_progress").style.width = "100%"
     }
 
     if (num > 0) game.afk_time = 0
-
-    color_update()
-    ampbutton_update()
-
-    document.getElementById("lvlnum").innerText = format_num(game.level)
-    if (game.level < 60 || game.pp_bought[6])
-        document.getElementById("exp").innerText =
-            format_num(game.exp) + " / " + format_num(game.goal) + " EXP"
-    else document.getElementById("exp").innerText = "Maxed!"
-    document.getElementById("total_exp").innerText =
-        format_num(game.total_exp) + " Total EXP"
 }
 
 //generate random extra exp for fluctuation
@@ -315,33 +150,22 @@ function upgrade(id, max) {
                     if (game.level >= game.boost_level) {
                         game.boost_tier += 1
                         game.boost_level = game.boost_tier * 2 + 2
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.boost_level = Math.round(
                                 game.boost_level * 0.75
                             )
+                        if (game.perks[21] && game.challenge === 0)
+                            game.boost_level = Math.round(
+                                game.boost_level * 0.5
+                            )
+                        if (game.challenge === 2)
+                            game.boost_level = Math.round(game.boost_level * 5)
                         game.exp_add =
                             (game.boost_tier +
                                 game.starter_kit +
                                 game.generator_kit +
                                 1) *
                             game.amp
-                    }
-                    if (game.level < game.boost_level) {
-                        document.getElementById("boost_button").innerText =
-                            "LVL " + format_num(game.boost_level)
-                        if (game.boost_level < 60) {
-                            document.getElementById(
-                                "boost_button"
-                            ).style.color = get_color(
-                                Math.floor(game.boost_level / 10)
-                            )
-                        } else {
-                            document.getElementById(
-                                "boost_button"
-                            ).style.color = get_color(
-                                (Math.floor(game.boost_level / 60) + 5) % 12
-                            )
-                        }
                     }
                 }
                 break
@@ -352,8 +176,12 @@ function upgrade(id, max) {
                         game.auto_tier += 1
                         if (game.auto_tier === 0) game.auto_tier = 3
                         else game.auto_level = game.auto_tier * 5
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.auto_level = Math.round(game.auto_level * 0.75)
+                        if (game.perks[21] && game.challenge === 0)
+                            game.auto_level = Math.round(game.auto_level * 0.5)
+                        if (game.challenge === 2)
+                            game.auto_level = Math.round(game.auto_level * 5)
                         game.cps =
                             2 *
                             (game.auto_tier +
@@ -377,19 +205,6 @@ function upgrade(id, max) {
                             game.ml_boost = 16 + game.cps * 0.16
                         }
                     }
-                    if (game.level < game.auto_level) {
-                        document.getElementById("auto_button").innerText =
-                            "LVL " + format_num(game.auto_level)
-                        if (game.auto_level < 60) {
-                            document.getElementById("auto_button").style.color =
-                                get_color(Math.floor(game.auto_level / 10))
-                        } else {
-                            document.getElementById("auto_button").style.color =
-                                get_color(
-                                    (Math.floor(game.auto_level / 60) + 5) % 12
-                                )
-                        }
-                    }
                 }
                 break
             case 2:
@@ -401,10 +216,16 @@ function upgrade(id, max) {
                     if (game.level >= game.fluct_level) {
                         game.fluct_tier += 1
                         game.fluct_level = game.fluct_tier * 3 + 6
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.fluct_level = Math.round(
                                 game.fluct_level * 0.75
                             )
+                        if (game.perks[21] && game.challenge === 0)
+                            game.fluct_level = Math.round(
+                                game.fluct_level * 0.5
+                            )
+                        if (game.challenge === 2)
+                            game.fluct_level = Math.round(game.fluct_level * 5)
                         if (!game.pp_bought[15])
                             game.exp_fluct =
                                 (game.fluct_tier +
@@ -418,23 +239,6 @@ function upgrade(id, max) {
                                     game.generator_kit) *
                                 game.amp *
                                 2
-                    }
-                    if (game.level < game.fluct_level) {
-                        document.getElementById("fluct_button").innerText =
-                            "LVL " + format_num(game.fluct_level)
-                        if (game.fluct_level < 60) {
-                            document.getElementById(
-                                "fluct_button"
-                            ).style.color = get_color(
-                                Math.floor(game.fluct_level / 10)
-                            )
-                        } else {
-                            document.getElementById(
-                                "fluct_button"
-                            ).style.color = get_color(
-                                (Math.floor(game.fluct_level / 60) + 5) % 12
-                            )
-                        }
                     }
                 }
                 break
@@ -450,26 +254,17 @@ function upgrade(id, max) {
                         else if (game.fact_tier <= 4)
                             game.fact_level = game.fact_tier * 30
                         else game.fact_level = game.fact_tier * 60 - 120
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.fact_level = Math.round(game.fact_level * 0.75)
+                        if (game.perks[21] && game.challenge === 0)
+                            game.fact_level = Math.round(game.fact_level * 0.5)
+                        if (game.challenge === 2)
+                            game.fact_level = Math.round(game.fact_level * 5)
                         game.exp_fact =
                             game.fact_tier +
                             game.starter_kit +
                             game.generator_kit +
                             1
-                    }
-                    if (game.level < game.fact_level) {
-                        document.getElementById("fact_button").innerText =
-                            "LVL " + format_num(game.fact_level)
-                        if (game.fact_level < 60) {
-                            document.getElementById("fact_button").style.color =
-                                get_color(Math.floor(game.fact_level / 10))
-                        } else {
-                            document.getElementById("fact_button").style.color =
-                                get_color(
-                                    (Math.floor(game.fact_level / 60) + 5) % 12
-                                )
-                        }
                     }
                 }
                 break
@@ -482,21 +277,12 @@ function upgrade(id, max) {
                     if (game.level >= game.flux_level) {
                         game.flux_tier += 1
                         game.flux_level = game.flux_tier * 75 + 75
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.flux_level = Math.round(game.flux_level * 0.75)
-                    }
-                    if (game.level < game.flux_level) {
-                        document.getElementById("flux_button").innerText =
-                            "LVL " + format_num(game.flux_level)
-                        if (game.flux_level < 60) {
-                            document.getElementById("flux_button").style.color =
-                                get_color(Math.floor(game.flux_level / 10))
-                        } else {
-                            document.getElementById("flux_button").style.color =
-                                get_color(
-                                    (Math.floor(game.flux_level / 60) + 5) % 12
-                                )
-                        }
+                        if (game.perks[21] && game.challenge === 0)
+                            game.flux_level = Math.round(game.flux_level * 0.5)
+                        if (game.challenge === 2)
+                            game.flux_level = Math.round(game.flux_level * 5)
                     }
                 }
                 break
@@ -509,9 +295,17 @@ function upgrade(id, max) {
                     if (game.level >= game.battery_level) {
                         game.battery_tier += 1
                         game.battery_level = game.battery_tier * 90 + 90
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.battery_level = Math.round(
                                 game.battery_level * 0.75
+                            )
+                        if (game.perks[21] && game.challenge === 0)
+                            game.battery_level = Math.round(
+                                game.battery_level * 0.5
+                            )
+                        if (game.challenge === 2)
+                            game.battery_level = Math.round(
+                                game.battery_level * 5
                             )
                         if (!game.pp_bought[31])
                             game.exp_battery =
@@ -534,23 +328,6 @@ function upgrade(id, max) {
                                     1) *
                                 9
                     }
-                    if (game.level < game.battery_level) {
-                        document.getElementById("battery_button").innerText =
-                            "LVL " + format_num(game.battery_level)
-                        if (game.battery_level < 60) {
-                            document.getElementById(
-                                "battery_button"
-                            ).style.color = get_color(
-                                Math.floor(game.battery_level / 10)
-                            )
-                        } else {
-                            document.getElementById(
-                                "battery_button"
-                            ).style.color = get_color(
-                                (Math.floor(game.battery_level / 60) + 5) % 12
-                            )
-                        }
-                    }
                 }
                 break
         }
@@ -563,10 +340,16 @@ function upgrade(id, max) {
                     while (game.level >= game.boost_level) {
                         game.boost_tier += 1
                         game.boost_level = game.boost_tier * 2 + 2
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.boost_level = Math.round(
                                 game.boost_level * 0.75
                             )
+                        if (game.perks[21] && game.challenge === 0)
+                            game.boost_level = Math.round(
+                                game.boost_level * 0.5
+                            )
+                        if (game.challenge === 2)
+                            game.boost_level = Math.round(game.boost_level * 5)
                     }
                     game.exp_add =
                         (game.boost_tier +
@@ -574,23 +357,6 @@ function upgrade(id, max) {
                             game.generator_kit +
                             1) *
                         game.amp
-                    if (game.level < game.boost_level) {
-                        document.getElementById("boost_button").innerText =
-                            "LVL " + format_num(game.boost_level)
-                        if (game.boost_level < 60) {
-                            document.getElementById(
-                                "boost_button"
-                            ).style.color = get_color(
-                                Math.floor(game.boost_level / 10)
-                            )
-                        } else {
-                            document.getElementById(
-                                "boost_button"
-                            ).style.color = get_color(
-                                (Math.floor(game.boost_level / 60) + 5) % 12
-                            )
-                        }
-                    }
                 }
                 break
             case 1:
@@ -600,8 +366,12 @@ function upgrade(id, max) {
                         game.auto_tier += 1
                         if (game.auto_tier === 0) game.auto_tier = 3
                         else game.auto_level = game.auto_tier * 5
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.auto_level = Math.round(game.auto_level * 0.75)
+                        if (game.perks[21] && game.challenge === 0)
+                            game.auto_level = Math.round(game.auto_level * 0.5)
+                        if (game.challenge === 2)
+                            game.auto_level = Math.round(game.auto_level * 5)
                     }
                     game.cps =
                         2 *
@@ -623,19 +393,6 @@ function upgrade(id, max) {
                     if (game.pp_bought[24]) {
                         game.ml_boost = 16 + game.cps * 0.16
                     }
-                    if (game.level < game.auto_level) {
-                        document.getElementById("auto_button").innerText =
-                            "LVL " + format_num(game.auto_level)
-                        if (game.auto_level < 60) {
-                            document.getElementById("auto_button").style.color =
-                                get_color(Math.floor(game.auto_level / 10))
-                        } else {
-                            document.getElementById("auto_button").style.color =
-                                get_color(
-                                    (Math.floor(game.auto_level / 60) + 5) % 12
-                                )
-                        }
-                    }
                 }
                 break
             case 2:
@@ -647,10 +404,16 @@ function upgrade(id, max) {
                     while (game.level >= game.fluct_level) {
                         game.fluct_tier += 1
                         game.fluct_level = game.fluct_tier * 3 + 6
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.fluct_level = Math.round(
                                 game.fluct_level * 0.75
                             )
+                        if (game.perks[21] && game.challenge === 0)
+                            game.fluct_level = Math.round(
+                                game.fluct_level * 0.5
+                            )
+                        if (game.challenge === 2)
+                            game.fluct_level = Math.round(game.fluct_level * 5)
                     }
                     if (!game.pp_bought[15])
                         game.exp_fluct =
@@ -665,23 +428,6 @@ function upgrade(id, max) {
                                 game.generator_kit) *
                             game.amp *
                             2
-                    if (game.level < game.fluct_level) {
-                        document.getElementById("fluct_button").innerText =
-                            "LVL " + format_num(game.fluct_level)
-                        if (game.fluct_level < 60) {
-                            document.getElementById(
-                                "fluct_button"
-                            ).style.color = get_color(
-                                Math.floor(game.fluct_level / 10)
-                            )
-                        } else {
-                            document.getElementById(
-                                "fluct_button"
-                            ).style.color = get_color(
-                                (Math.floor(game.fluct_level / 60) + 5) % 12
-                            )
-                        }
-                    }
                 }
                 break
             case 3:
@@ -696,27 +442,18 @@ function upgrade(id, max) {
                         else if (game.fact_tier <= 4)
                             game.fact_level = game.fact_tier * 30
                         else game.fact_level = game.fact_tier * 60 - 120
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.fact_level = Math.round(game.fact_level * 0.75)
+                        if (game.perks[21] && game.challenge === 0)
+                            game.fact_level = Math.round(game.fact_level * 0.5)
+                        if (game.challenge === 2)
+                            game.fact_level = Math.round(game.fact_level * 5)
                     }
                     game.exp_fact =
                         game.fact_tier +
                         game.starter_kit +
                         game.generator_kit +
                         1
-                    if (game.level < game.fact_level) {
-                        document.getElementById("fact_button").innerText =
-                            "LVL " + format_num(game.fact_level)
-                        if (game.fact_level < 60) {
-                            document.getElementById("fact_button").style.color =
-                                get_color(Math.floor(game.fact_level / 10))
-                        } else {
-                            document.getElementById("fact_button").style.color =
-                                get_color(
-                                    (Math.floor(game.fact_level / 60) + 5) % 12
-                                )
-                        }
-                    }
                 }
                 break
             case 4:
@@ -728,21 +465,12 @@ function upgrade(id, max) {
                     while (game.level >= game.flux_level) {
                         game.flux_tier += 1
                         game.flux_level = game.flux_tier * 75 + 75
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.flux_level = Math.round(game.flux_level * 0.75)
-                    }
-                    if (game.level < game.flux_level) {
-                        document.getElementById("flux_button").innerText =
-                            "LVL " + format_num(game.flux_level)
-                        if (game.flux_level < 60) {
-                            document.getElementById("flux_button").style.color =
-                                get_color(Math.floor(game.flux_level / 10))
-                        } else {
-                            document.getElementById("flux_button").style.color =
-                                get_color(
-                                    (Math.floor(game.flux_level / 60) + 5) % 12
-                                )
-                        }
+                        if (game.perks[21] && game.challenge === 0)
+                            game.flux_level = Math.round(game.flux_level * 0.5)
+                        if (game.challenge === 2)
+                            game.flux_level = Math.round(game.flux_level * 5)
                     }
                 }
                 break
@@ -755,9 +483,17 @@ function upgrade(id, max) {
                     while (game.level >= game.battery_level) {
                         game.battery_tier += 1
                         game.battery_level = game.battery_tier * 90 + 90
-                        if (game.perks[6])
+                        if (game.perks[6] && game.challenge === 0)
                             game.battery_level = Math.round(
                                 game.battery_level * 0.75
+                            )
+                        if (game.perks[21] && game.challenge === 0)
+                            game.battery_level = Math.round(
+                                game.battery_level * 0.5
+                            )
+                        if (game.challenge === 2)
+                            game.battery_level = Math.round(
+                                game.battery_level * 5
                             )
                     }
                     if (!game.pp_bought[31])
@@ -780,23 +516,6 @@ function upgrade(id, max) {
                                 game.generator_kit +
                                 1) *
                             9
-                    if (game.level < game.battery_level) {
-                        document.getElementById("battery_button").innerText =
-                            "LVL " + format_num(game.battery_level)
-                        if (game.battery_level < 60) {
-                            document.getElementById(
-                                "battery_button"
-                            ).style.color = get_color(
-                                Math.floor(game.battery_level / 10)
-                            )
-                        } else {
-                            document.getElementById(
-                                "battery_button"
-                            ).style.color = get_color(
-                                (Math.floor(game.battery_level / 60) + 5) % 12
-                            )
-                        }
-                    }
                 }
                 break
         }
@@ -805,52 +524,61 @@ function upgrade(id, max) {
 
 //overclocker activation
 function oc_activate() {
-    game.oc_state = 2
-    game.exp_oc = 3
-    if (game.pp_bought[19]) game.exp_oc = 4
-    if (game.pp_bought[23]) game.exp_oc = 5
-    document.getElementById("oc_state").innerText =
-        "Boosting " + format_num(game.exp_oc) + "x"
-    document.getElementById("oc_button").style.display = "none"
-    document.getElementById("oc_timer").style.display = "block"
-    document.getElementById("oc_progress").style.background = "#ff7f00"
-    game.afk_time = 0
+    if (game.challenge !== 1) {
+        game.oc_state = 2
+        game.exp_oc = 3
+        if (game.pp_bought[19]) game.exp_oc = 4
+        if (game.pp_bought[23]) game.exp_oc = 5
+        document.getElementById("oc_state").innerText =
+            "Boosting " + format_num(game.exp_oc) + "x"
+        document.getElementById("oc_button").style.display = "none"
+        document.getElementById("oc_timer").style.display = "block"
+        document.getElementById("oc_progress").style.background = "#ff7f00"
+        game.afk_time = 0
+    }
 }
 
 //capacitance switching
 function set_capacitance(mode) {
-    if (game.cap_mode !== 0) game.prev_mode = game.cap_mode
-    if (mode > game.prev_mode) {
-        game.cap_mode = game.prev_mode
-        discharge()
-    }
+    if (game.challenge !== 1) {
+        if (game.cap_mode !== 0) game.prev_mode = game.cap_mode
+        if (mode > game.prev_mode) {
+            game.cap_mode = game.prev_mode
+            discharge()
+        }
 
-    game.cap_mode = mode
+        game.cap_mode = mode
 
-    document.getElementById("cap_off").className = "button"
-    document.getElementById("cap_25").className = "button"
-    document.getElementById("cap_50").className = "button"
-    document.getElementById("cap_75").className = "button"
-    document.getElementById("cap_100").className = "button"
+        document.getElementById("cap_off").className = "button"
+        document.getElementById("cap_25").className = "button"
+        document.getElementById("cap_50").className = "button"
+        document.getElementById("cap_75").className = "button"
+        document.getElementById("cap_100").className = "button"
 
-    game.cap_boost = 1 - 0.25 * mode
+        game.cap_boost = 1 - 0.25 * mode
 
-    switch (mode) {
-        case 0:
-            document.getElementById("cap_off").className = "button mode_active"
-            break
-        case 1:
-            document.getElementById("cap_25").className = "button mode_active"
-            break
-        case 2:
-            document.getElementById("cap_50").className = "button mode_active"
-            break
-        case 3:
-            document.getElementById("cap_75").className = "button mode_active"
-            break
-        case 4:
-            document.getElementById("cap_100").className = "button mode_active"
-            break
+        switch (mode) {
+            case 0:
+                document.getElementById("cap_off").className =
+                    "button mode_active"
+                break
+            case 1:
+                document.getElementById("cap_25").className =
+                    "button mode_active"
+                break
+            case 2:
+                document.getElementById("cap_50").className =
+                    "button mode_active"
+                break
+            case 3:
+                document.getElementById("cap_75").className =
+                    "button mode_active"
+                break
+            case 4:
+                document.getElementById("cap_100").className =
+                    "button mode_active"
+                break
+        }
     }
 }
 
@@ -858,6 +586,7 @@ function set_capacitance(mode) {
 function discharge() {
     if (
         game.cap_mode >= 1 &&
+        game.challenge !== 1 &&
         (game.stored_exp >= game.tickspeed || game.pp_bought[38])
     ) {
         let eps =
@@ -879,4 +608,91 @@ function discharge() {
 
         game.afk_time = 0
     }
+}
+
+//entering a challenge
+function enter_challenge(id) {
+    if (game.challenge === 0) {
+        let all_pp_upgrades = true
+        for (const upgrade4 of pp_upgrade.upgrades) {
+            if (upgrade4.id < 39 && !game.pp_bought[upgrade4.id])
+                all_pp_upgrades = false
+        }
+
+        let reboot_requirement = 0
+        if (game.reboot >= 1) reboot_requirement = 5000 * game.reboot + 80000
+        if (game.reboot >= 24) reboot_requirement = 200000
+
+        let roman = "undefined"
+        switch (id) {
+            case 1:
+                roman = "I"
+                break
+            case 2:
+                roman = "II"
+                break
+            case 3:
+                roman = "III"
+                break
+            case 4:
+                roman = "IV"
+                break
+            case 5:
+                roman = "V"
+                break
+            case 6:
+                roman = "VI"
+                break
+            case 7:
+                roman = "VII"
+                break
+            case 8:
+                roman = "VIII"
+                break
+            case 9:
+                roman = "IX"
+                break
+        }
+
+        let confirmed = false
+        if (!game.challenge_confirmation) {
+            confirmed = true
+        } else {
+            if (
+                confirm(
+                    "You are entering Challenge " +
+                        roman +
+                        "\nYou must reset to enter a challenge, you will still gain watts if you were able to\nAre you sure you want to enter the challenge?"
+                )
+            ) {
+                confirmed = true
+            } else {
+                confirmed = false
+            }
+        }
+        if (confirmed) {
+            game.challenge = id
+            challenge_update()
+            entering = true
+
+            if (all_pp_upgrades && game.pp >= reboot_requirement) {
+                reboot()
+            } else {
+                empty_reboot()
+                watts_update()
+            }
+
+            entering = false
+        }
+    } else if (game.challenge !== id) {
+        alert("You cannot enter a challenge if you are already in one!")
+    }
+}
+
+//exiting a challenge
+function exit_challenge() {
+    game.challenge = 0
+    challenge_update()
+    empty_reboot()
+    watts_update()
 }
