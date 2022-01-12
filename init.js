@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.2.102",
+    version: "2.2.200",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -124,7 +124,7 @@ let game = {
     watts: 0,
     watt_boost: 1,
 
-    perks: new Array(16).fill(false),
+    perks: new Array(22).fill(false),
     hold_time: 0,
     generator_kit: 0,
     flux_increase: 1,
@@ -133,7 +133,7 @@ let game = {
     autopp_mode: 0,
     priority: new Array(39).fill(1),
 
-    achievements: new Array(77).fill(false),
+    achievements: new Array(97).fill(false),
     ach_power: 1,
     achiev_page: 0,
     no_automation: true,
@@ -164,16 +164,32 @@ let game = {
 
     //v2.2.102 variables
     beta: false,
+
+    //v2.2.200 variables
+    speed_power: 1,
+    banked_prestige: 0,
+
+    subtab: 0,
+    challenge: 0,
+    challenge_confirmation: true,
+    completions: new Array(9).fill(0),
+    ch_boost: new Array(9).fill(1),
+
+    hints: false,
+    refresh_rate: 30,
 }
 
 //initialize maps
 const pp_map = new Map()
 const perk_map = new Map()
 const notif_map = new Map()
+const challenge_map = new Map()
 
 //initialize autoclick prevention
 let click_time = undefined
 let focus_time = undefined
+
+let entering = false
 
 //initialize pp upgrade priorities
 for (let i = 0; i < 39; i++) {
@@ -182,6 +198,11 @@ for (let i = 0; i < 39; i++) {
 
 //number formatting
 function format_num(num) {
+    let negative = false
+    if (num < 0) {
+        negative = true
+        num *= -1
+    }
     let output = num.toString()
     if (num >= 1000) {
         let digits = output.length
@@ -575,7 +596,10 @@ function format_num(num) {
         }
     }
     if (num === Infinity) {
-        output = "Infinity"
+        output = "∞"
+    }
+    if (negative) {
+        output = "-" + output
     }
     if (game.notation === 8) {
         output = "???"
@@ -652,19 +676,184 @@ function get_level(xp) {
     const m = (32 / 27) * (7800 + l) ** 9 + j - k
     const n = (3 * (m - j + k) ** (32 / 33)) / 2 ** (67 / 33)
     const o = ((27 * n) / 32) ** (1 / 12)
+    const p = (32 / 27) * (4800 + o) ** 12 + m - n
+    const q =
+        (2 ** (5 / 6) * 3 ** (5 / 26) * (p - m + n) ** (77 / 78)) /
+        7 ** (14 / 13)
+    const r = ((27 * q) / 32) ** (1 / 14)
+    const s = (32 / 27) * (7200 + r) ** 14 + p - q
+    const t =
+        (7 ** (18 / 17) * 2 ** (10 / 119) * (s - p + q) ** (117 / 119)) /
+        3 ** (258 / 119)
+    const u = ((27 * t) / 32) ** (1 / 18)
 
-    if (xp < a) {
-        return Math.floor(((27 * xp) / 32) ** (1 / 3) - 1)
-    } else if (xp < d) {
-        return Math.floor(((27 * (xp + b - a)) / 32) ** (1 / 5) + 60 - c)
-    } else if (xp < g) {
-        return Math.floor(((27 * (xp + e - d)) / 32) ** (2 / 13) + 300 - f)
-    } else if (xp < j) {
-        return Math.floor(((27 * (xp + h - g)) / 32) ** (1 / 8) + 1320 - i)
-    } else if (xp < m) {
-        return Math.floor(((27 * (xp + k - j)) / 32) ** (1 / 9) + 4200 - l)
+    if (game.challenge !== 3) {
+        if (xp < a) {
+            return Math.floor(((27 * xp) / 32) ** (1 / 3) - 1)
+        } else if (xp < d) {
+            return Math.floor(((27 * (xp + b - a)) / 32) ** (1 / 5) + 60 - c)
+        } else if (xp < g) {
+            return Math.floor(((27 * (xp + e - d)) / 32) ** (2 / 13) + 300 - f)
+        } else if (xp < j) {
+            return Math.floor(((27 * (xp + h - g)) / 32) ** (1 / 8) + 1320 - i)
+        } else if (xp < m) {
+            return Math.floor(((27 * (xp + k - j)) / 32) ** (1 / 9) + 4200 - l)
+        } else if (xp < p) {
+            return Math.floor(
+                ((27 * (xp + n - m)) / 32) ** (1 / 12) + 12000 - o
+            )
+        } else if (xp < s) {
+            return Math.floor(
+                ((27 * (xp + q - p)) / 32) ** (1 / 14) + 16800 - r
+            )
+        } else {
+            return Math.floor(
+                ((27 * (xp + t - s)) / 32) ** (1 / 18) + 24000 - u
+            )
+        }
     } else {
-        return Math.floor(((27 * (xp + n - m)) / 32) ** (1 / 12) + 12000 - o)
+        let precision = 10 ** 14
+        if (xp < a * 60) {
+            let guess = 60
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        ((32 / 27) * (guess + 1) ** 2 * (4 * guess + 1)) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        } else if (xp < d * 300) {
+            let guess = 300
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        ((32 / 27) *
+                            (guess - 60 + c) ** 4 *
+                            (6 * guess - 60 + c) +
+                            a -
+                            b) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        } else if (xp < g * 1320) {
+            let guess = 1320
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        ((32 / 27) *
+                            (guess - 300 + f) ** 5.5 *
+                            (7.5 * guess - 300 + f) +
+                            d -
+                            e) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        } else if (xp < j * 4200) {
+            let guess = 4200
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        ((32 / 27) *
+                            (guess - 1320 + i) ** 7 *
+                            (9 * guess - 1320 + i) +
+                            g -
+                            h) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        } else if (xp < m * 12000) {
+            let guess = 12000
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        ((32 / 27) *
+                            (guess - 4200 + l) ** 8 *
+                            (10 * guess - 4200 + l) +
+                            j -
+                            k) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        } else if (xp < p * 16800) {
+            let guess = 16800
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        ((32 / 27) *
+                            (guess - 12000 + o) ** 11 *
+                            (13 * guess - 12000 + o) +
+                            m -
+                            n) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        } else if (xp < s * 24000) {
+            let guess = 24000
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        ((32 / 27) *
+                            (guess - 16800 + r) ** 13 *
+                            (15 * guess - 16800 + r) +
+                            p -
+                            q) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        } else {
+            let guess = 1000000
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        ((32 / 27) *
+                            (guess - 24000 + u) ** 17 *
+                            (18 * guess - 24000 + u) +
+                            s -
+                            t) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        }
     }
 }
 
@@ -689,24 +878,40 @@ function get_exp(lvl) {
     const m = (32 / 27) * (7800 + l) ** 9 + j - k
     const n = (3 * (m - j + k) ** (32 / 33)) / 2 ** (67 / 33)
     const o = ((27 * n) / 32) ** (1 / 12)
+    const p = (32 / 27) * (4800 + o) ** 12 + m - n
+    const q =
+        (2 ** (5 / 6) * 3 ** (5 / 26) * (p - m + n) ** (77 / 78)) /
+        7 ** (14 / 13)
+    const r = ((27 * q) / 32) ** (1 / 14)
+    const s = (32 / 27) * (7200 + r) ** 14 + p - q
+    const t =
+        (7 ** (18 / 17) * 2 ** (10 / 119) * (s - p + q) ** (117 / 119)) /
+        3 ** (258 / 119)
+    const u = ((27 * t) / 32) ** (1 / 18)
 
-    if (lvl === 0) {
-        return lvl
-    } else {
+    let output = 0
+    if (lvl !== 0) {
         if (lvl < 60) {
-            return (32 / 27) * (lvl + 2) ** 3
+            output = (32 / 27) * (lvl + 2) ** 3
         } else if (lvl < 300) {
-            return (32 / 27) * (lvl - 59 + c) ** 5 + a - b
+            output = (32 / 27) * (lvl - 59 + c) ** 5 + a - b
         } else if (lvl < 1320) {
-            return (32 / 27) * (lvl - 299 + f) ** 6.5 + d - e
+            output = (32 / 27) * (lvl - 299 + f) ** 6.5 + d - e
         } else if (lvl < 4200) {
-            return (32 / 27) * (lvl - 1319 + i) ** 8 + g - h
+            output = (32 / 27) * (lvl - 1319 + i) ** 8 + g - h
         } else if (lvl < 12000) {
-            return (32 / 27) * (lvl - 4199 + l) ** 9 + j - k
+            output = (32 / 27) * (lvl - 4199 + l) ** 9 + j - k
+        } else if (lvl < 16800) {
+            output = (32 / 27) * (lvl - 11999 + o) ** 12 + m - n
+        } else if (lvl < 24000) {
+            output = (32 / 27) * (lvl - 16799 + r) ** 14 + p - q
         } else {
-            return (32 / 27) * (lvl - 11999 + o) ** 12 + m - n
+            output = (32 / 27) * (lvl - 23999 + u) ** 18 + s - t
         }
+
+        if (game.challenge === 3) output *= lvl + 1
     }
+    return output
 }
 
 //get amp based on level
@@ -965,9 +1170,7 @@ class pp_upgrade_child extends pp_upgrade {
         "AMP Efficiency",
         "The Prestige button will now display AMP gained per second",
         7,
-        function () {
-            ampbutton_update()
-        },
+        function () {},
         lim_break
     )
     //starter kit 1 [9]
@@ -1047,7 +1250,8 @@ class pp_upgrade_child extends pp_upgrade {
         "Unlocks the EXP Overclocker, which boosts EXP 3x for 45 seconds",
         50,
         function () {
-            document.getElementById("overclock").style.display = "block"
+            if (game.challenge !== 1)
+                document.getElementById("overclock").style.display = "block"
             if (!game.achievements[46]) get_achievement(46)
         },
         lim_break
@@ -1068,7 +1272,8 @@ class pp_upgrade_child extends pp_upgrade {
         "Unlocks an automator that will automatically activate EXP Overclock when its cooldown is over",
         100,
         function () {
-            document.getElementById("oc_auto").style.display = "inline"
+            if (game.challenge !== 1 && !game.perks[20])
+                document.getElementById("oc_auto").style.display = "inline"
         },
         oc
     )
@@ -1114,7 +1319,7 @@ class pp_upgrade_child extends pp_upgrade {
     //exp flux [20]
     let flux = new pp_upgrade_child(
         "EXP Flux",
-        "Unlocks an upgrade that generates a boost to EXP production, increasing over time",
+        "Unlocks an upgrade that generates a boost to EXP production, increasing over time\n(Caps at 20x)",
         200,
         function () {
             if (!game.achievements[47]) get_achievement(47)
@@ -1256,16 +1461,18 @@ class pp_upgrade_child extends pp_upgrade {
         "Unlocks the EXP Capacitor, which takes some of your EXP production and stores it\nStored EXP can later be discharged at a 2x boost",
         15000,
         function () {
-            document.getElementById("capacitor").style.display = "block"
+            if (game.challenge !== 1) {
+                document.getElementById("capacitor").style.display = "block"
+                if (game.perks[9]) {
+                    document.getElementById("dis_auto").style.display = "block"
+                    document.getElementById("dis_text").style.display = "block"
+                    document.getElementById("dis_input").style.display = "block"
+                }
+                if (game.perks[11] && game.autocp_toggle) {
+                    set_capacitance(1)
+                }
+            }
             if (!game.achievements[49]) get_achievement(49)
-            if (game.perks[9]) {
-                document.getElementById("dis_auto").style.display = "block"
-                document.getElementById("dis_text").style.display = "block"
-                document.getElementById("dis_input").style.display = "block"
-            }
-            if (game.perks[11] && game.autocp_toggle) {
-                set_capacitance(1)
-            }
         },
         aaa
     )
@@ -1308,15 +1515,17 @@ class pp_upgrade_child extends pp_upgrade {
         "Unlocks 50% Capacitance mode, which gives a 4x boost on Discharge\nAlso unlocks automation for Discharge",
         30000,
         function () {
-            document.getElementById("cap_50").style.display = "inline"
-            document.getElementById("cap_disc").style.display = "inline"
-            if (!game.perks[9]) {
-                document.getElementById("dis_auto").style.display = "block"
-                document.getElementById("dis_text").style.display = "block"
-                document.getElementById("dis_input").style.display = "block"
-            }
-            if (game.perks[11] && game.autocp_toggle) {
-                set_capacitance(2)
+            if (game.challenge !== 1) {
+                document.getElementById("cap_50").style.display = "inline"
+                document.getElementById("cap_disc").style.display = "inline"
+                if (!game.perks[9]) {
+                    document.getElementById("dis_auto").style.display = "block"
+                    document.getElementById("dis_text").style.display = "block"
+                    document.getElementById("dis_input").style.display = "block"
+                }
+                if (game.perks[11] && game.autocp_toggle) {
+                    set_capacitance(2)
+                }
             }
         },
         capacitor
@@ -1337,9 +1546,11 @@ class pp_upgrade_child extends pp_upgrade {
         "Unlocks 75% Capacitance mode, giving a 6x boost on Discharge",
         45000,
         function () {
-            document.getElementById("cap_75").style.display = "inline"
-            if (game.perks[11] && game.autocp_toggle) {
-                set_capacitance(3)
+            if (game.challenge !== 1) {
+                document.getElementById("cap_75").style.display = "inline"
+                if (game.perks[11] && game.autocp_toggle) {
+                    set_capacitance(3)
+                }
             }
         },
         hv1
@@ -1347,13 +1558,15 @@ class pp_upgrade_child extends pp_upgrade {
     //high voltage 3 [38]
     new pp_upgrade_child(
         "High Voltage III",
-        "Unlocks 100% Capacitance mode, giving a 8x boost on Discharge\nAlso unlocks continuous Discharge (put in 0 for auto-discharge amount)",
+        "Unlocks 100% Capacitance mode, giving a 8x boost on Discharge\nAlso allows you to Discharge at 0 seconds",
         60000,
         function () {
-            document.getElementById("cap_100").style.display = "inline"
-            document.getElementById("dis_input").min = 0
-            if (game.perks[11] && game.autocp_toggle) {
-                set_capacitance(4)
+            if (game.challenge !== 1) {
+                document.getElementById("cap_100").style.display = "inline"
+                document.getElementById("dis_input").min = 0
+                if (game.perks[11] && game.autocp_toggle) {
+                    set_capacitance(4)
+                }
             }
         },
         hv2
@@ -1460,7 +1673,7 @@ class generator_perk {
     //multi-prestige [4]
     new generator_perk(
         "Multi-Prestige",
-        "You gain 1 extra prestige stat for every 200 levels gained\nPatience will also boost prestige stat by up to 30x",
+        "You gain 1 extra Times Prestiged stat for every 200 levels when you Prestige\nPatience will also boost Times Prestiged stat by up to 30x",
         5
     )
     //ultracharge [5]
@@ -1469,10 +1682,10 @@ class generator_perk {
         "EXP Overclocker cooldown time is halved a second time\n(stacks with Supercharge)",
         6
     )
-    //exp discount [6]
+    //exp discount 1 [6]
     new generator_perk(
-        "EXP Discount",
-        "All Upgrades require 25% fewer levels",
+        "EXP Discount I",
+        "All upgrades require 25% fewer levels",
         8
     )
     //auto-prestige upgrading [7]
@@ -1525,6 +1738,38 @@ class generator_perk {
     )
     //auto-reboot [15]
     new generator_perk("Auto-Reboot", "Unlocks automation for Reboot", 64)
+    //speed power [16]
+    new generator_perk(
+        "Speed Power",
+        "EXP production is boosted based on your fastest Reboot",
+        96
+    )
+    //challenges [17]
+    new generator_perk("Challenges", "Unlocks Challenges", 144)
+    //reboot residue [18]
+    new generator_perk(
+        "Reboot Residue",
+        "You permanently keep 25% of your Times Prestiged stat every Reboot",
+        432
+    )
+    //overachievements [19]
+    new generator_perk(
+        "Overachievements",
+        "The Enter Reboot boost based on achievements now works multiplicatively instead of additively",
+        864
+    )
+    //infinicharge [20]
+    new generator_perk(
+        "Infinicharge",
+        "The cooldown on EXP Overclocker is removed entirely, making Overclocker always active",
+        1728
+    )
+    //exp discount 2 [21]
+    new generator_perk(
+        "EXP Discount II",
+        "All upgrades require 50% fewer levels",
+        4096
+    )
 }
 //done initializing generator perks
 
@@ -1564,6 +1809,13 @@ class achievement {
     new achievement("Overexperienced", "Reach LVL 3,000", 10, 0)
     new achievement("Blood, sweat, and EXP", "Reach LVL 6,000", 11, 0)
     new achievement("Event horizon", "Reach LVL 12,000", 12, 0)
+    new achievement(
+        "And this is to go even further beyond",
+        "Reach LVL 18,000",
+        77,
+        0
+    )
+    new achievement("You're still here?", "Reach LVL 24,000", 95, 0)
     new achievement("Square one", "Prestige 1 time", 13, 1)
     new achievement("See you in another life", "Prestige 10 times", 14, 1)
     new achievement("Nowhere to go but up", "Prestige 100 times", 15, 1)
@@ -1573,6 +1825,12 @@ class achievement {
         "You've been busy haven't you?",
         "Prestige 100,000 times",
         18,
+        1
+    )
+    new achievement(
+        "And the reward for misplaced effort goes to... you",
+        "Prestige 1 million times",
+        78,
         1
     )
     new achievement(
@@ -1606,7 +1864,7 @@ class achievement {
         0
     )
     new achievement(
-        "So big it breaks long notation",
+        "So big it breaks Long notation",
         "Get " + format_num(10 ** 21) + " all time EXP",
         24,
         0
@@ -1653,6 +1911,30 @@ class achievement {
         70,
         0
     )
+    new achievement(
+        "45 digits is a lot",
+        "Get " + format_num(10 ** 45) + " all time EXP",
+        79,
+        0
+    )
+    new achievement(
+        "Hungolomghnonoloughongous",
+        "Get " + format_num(10 ** 48) + " all time EXP",
+        80,
+        0
+    )
+    new achievement(
+        "Big numbers for a big boy",
+        "Get " + format_num(10 ** 51) + " all time EXP",
+        93,
+        0
+    )
+    new achievement(
+        "Honestly quite sizeable",
+        "Get " + format_num(10 ** 57) + " all time EXP",
+        96,
+        0
+    )
     new achievement("Hot minute", "Play for 1 hour", 31, 0)
     new achievement("Time well spent", "Play for 6 hours", 32, 0)
     new achievement("Day in, day out", "Play for 24 hours", 33, 0)
@@ -1696,9 +1978,21 @@ class achievement {
         71,
         1
     )
+    new achievement(
+        "Started from the bottom now we here",
+        "Get " + format_num(10 ** 18) + " AMP",
+        81,
+        1
+    )
+    new achievement(
+        "Nigh unstoppable",
+        "Get " + format_num(10 ** 20) + " AMP",
+        94,
+        1
+    )
     new achievement("The only RNG in the game", "Unlock EXP Fluctuation", 43, 1)
     new achievement("Now we're getting somewhere", "Unlock EXP Factor", 44, 1)
-    new achievement("The sky's the limit", "Get limit break", 45, 2)
+    new achievement("The sky's the limit", "Get Limit Break", 45, 2)
     new achievement("But can it run Crysis?", "Unlock EXP Overclocker", 46, 2)
     new achievement("The EXP flows within you", "Unlock EXP Flux", 47, 2)
     new achievement("I've got the power", "Unlock EXP Battery", 48, 2)
@@ -1745,8 +2039,53 @@ class achievement {
     new achievement("Groundhog day", "Reboot 10 times", 59, 3)
     new achievement("Cycle of insanity", "Reboot 25 times", 72, 3)
     new achievement("I've become so numb", "Reboot 50 times", 73, 3)
+    new achievement("Progress from lost progress", "Reboot 100 times", 82, 3)
+    new achievement(
+        "Try turning it off and on again",
+        "Reboot 1,000 times",
+        83,
+        3
+    )
     new achievement("Picking up the pace", "Reboot in under 1 hour", 60, 3)
     new achievement("GAS GAS GAS", "Reboot in under 10 minutes", 74, 3)
+    new achievement("Escape velocity", "Reboot in under 1 minute", 84, 3)
+    new achievement("At the speed of light", "Reboot in under 1 second", 85, 3)
+    new achievement(
+        "Did you miss them?",
+        "Complete Challenge I for the first time",
+        86,
+        3
+    )
+    new achievement(
+        "That's some serious markup",
+        "Complete Challenge II for the first time",
+        87,
+        3
+    )
+    new achievement(
+        "When the levels are not so easy",
+        "Complete Challenge III for the first time",
+        88,
+        3
+    )
+    new achievement(
+        "Oops! All pushing",
+        "Complete Challenge IV for the first time",
+        89,
+        3
+    )
+    new achievement(
+        "Ace of one trade",
+        "Complete a single challenge 12 times",
+        90,
+        3
+    )
+    new achievement(
+        "Well that wasn't so hard",
+        "Get 27 total challenge completions",
+        91,
+        3
+    )
     new achievement(
         "#intentionalfeature",
         "Discharge the Capacitor while the Overclocker is active",
@@ -1797,6 +2136,12 @@ class achievement {
         76,
         5
     )
+    new achievement(
+        "Stuck between no eyes and a hard place",
+        "Complete a challenge while using ??? notation",
+        92,
+        5
+    )
     new achievement("You win 1 EXP", "Get every achievement", 69, 0)
 }
 //done initializing achievements
@@ -1829,3 +2174,112 @@ class notify {
         notif_map.set(this, notification)
     }
 }
+
+//challenges class
+class challenge {
+    static challenges = []
+
+    name
+    desc
+    goal
+    step
+    step2
+
+    //challenge constructor
+    constructor(name, desc, goal, step, step2) {
+        this.name = name
+        this.desc = desc
+        this.goal = goal
+        this.id = challenge.challenges.length + 1
+        this.step = step
+        this.step2 = step2
+
+        challenge.challenges.push(this)
+
+        //challenge name
+        let challenge_name = document.createElement("P")
+        challenge_name.innerText = this.name
+        challenge_name.className = "challenge_name"
+
+        //challenge description
+        let challenge_desc = document.createElement("P")
+        challenge_desc.innerText = this.desc
+        challenge_desc.className = "challenge_desc"
+
+        //challenge goal
+        let challenge_goal = document.createElement("P")
+        challenge_goal.innerText = "Goal: " + format_num(this.goal) + " PP"
+        challenge_goal.className = "challenge_goal"
+
+        //challenge_completions
+        let challenge_complete = document.createElement("P")
+        challenge_complete.innerText =
+            "Completions: " +
+            format_num(0) +
+            " / " +
+            format_num(12) +
+            "\nEXP boost from completions: " +
+            format_eff(1) +
+            "x"
+        challenge_complete.className = "challenge_complete"
+
+        //enter challenge button
+        let enter_button = document.createElement("BUTTON")
+        enter_button.innerText = "ENTER CHALLENGE"
+        enter_button.className = "enter_button"
+        enter_button.addEventListener("click", () => {
+            enter_challenge(this.id)
+        })
+
+        //all text div
+        let challenge_text = document.createElement("DIV")
+        challenge_text.className = "challenge_text"
+        challenge_text.appendChild(challenge_name)
+        challenge_text.appendChild(challenge_desc)
+        challenge_text.appendChild(challenge_goal)
+        challenge_text.appendChild(challenge_complete)
+
+        //entire challenge div
+        let challenge_block = document.createElement("DIV")
+        challenge_block.className = "challenge_block"
+        challenge_block.appendChild(challenge_text)
+        challenge_block.appendChild(enter_button)
+
+        //attatching challenge to challenges page
+        challenge_map.set(this, challenge_block)
+        document.getElementById("challenges_page").appendChild(challenge_block)
+    }
+}
+
+//initializing challenges
+{
+    new challenge(
+        "Challenge I",
+        "EXP Overclocker and EXP Capacitor are disabled",
+        225000,
+        65000,
+        5000
+    )
+    new challenge(
+        "Challenge II",
+        "All upgrades require " + format_num(5) + "x as many levels",
+        280000,
+        95000,
+        5000
+    )
+    new challenge(
+        "Challenge III",
+        "Levels require more EXP the more levels you have",
+        340000,
+        80000,
+        5000
+    )
+    new challenge(
+        "Challenge IV",
+        "You must surpass your highest level to gain more AMP, and Patience does not apply",
+        585000,
+        120000,
+        -5000
+    )
+}
+//done initializing challenges
