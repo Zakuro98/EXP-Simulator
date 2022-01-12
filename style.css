@@ -34,6 +34,20 @@ main {
     width: 100%;
 }
 
+#reboot_tabs {
+    display: none;
+    margin-top: 1em;
+}
+
+#generator_tab {
+    display: inline;
+}
+
+#challenges_tab {
+    display: inline;
+    margin-left: 0.285em;
+}
+
 .tab {
     background-color: #410a4a;
     color: white;
@@ -540,6 +554,17 @@ main {
     width: 2.8em;
 }
 
+#refresh_input {
+    display: inline;
+    font-size: 0.8em;
+    width: 2em;
+}
+
+#hertz_text {
+    margin-top: 0.25em;
+    display: inline;
+}
+
 .option_button {
     background-color: #410a4a;
     color: white;
@@ -695,7 +720,6 @@ main {
     font-family: var(--font_small);
     font-weight: normal;
     flex: 0 0 6.4em;
-    cursor: pointer;
 }
 
 .pp_hidden {
@@ -714,6 +738,7 @@ main {
     background-color: #520066;
     color: #d000ff;
     border: 1px solid #d000ff;
+    cursor: pointer;
 }
 
 .pp_unlocked:hover {
@@ -982,7 +1007,6 @@ main {
     margin-bottom: 0.18em;
     font-family: var(--font_small);
     font-weight: normal;
-    cursor: pointer;
 }
 
 .no_reboot_power {
@@ -996,6 +1020,7 @@ main {
     color: #ffff00;
     text-shadow: 0em 0em 0.2em #ffff00;
     border: 1px solid #ffff00;
+    cursor: pointer;
 }
 
 .reboot_power:hover {
@@ -1124,6 +1149,102 @@ main {
 .complete_text {
     color: black;
     font-weight: bold;
+}
+
+#challenges_page {
+    display: none;
+    margin-top: 1.142em;
+}
+
+#challenge_header {
+    color: white;
+    font-size: 1em;
+    text-align: center;
+    margin-bottom: 1.142em;
+}
+
+.challenge_block {
+    display: flex;
+    margin-bottom: 0.4em;
+    background-color: #44194d;
+    padding: 0.4em;
+    border: 2px solid #ff2929;
+}
+
+.challenge_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.challenge_name {
+    color: #ff2929;
+    text-shadow: 0em 0em 0.2em #ff0000;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.challenge_desc {
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.challenge_goal {
+    color: #d000ff;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.challenge_complete {
+    color: white;
+    margin-top: 0.285em;
+    margin-bottom: 0em;
+    font-size: 0.75em;
+}
+
+.enter_button {
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-family: var(--font_small);
+    font-weight: normal;
+    flex: 0 0 6.4em;
+    background-color: #330404;
+    color: #ff2929;
+    text-shadow: 0em 0em 0.2em #ff0000;
+    border: 1px solid #ff2929;
+    cursor: pointer;
+}
+
+.enter_button:hover {
+    background-color: #590909;
+    color: white;
+    text-shadow: 0em 0em 0.2em white;
+}
+
+.in_progress {
+    background-color: #ff2929;
+    color: black;
+    border: 1px solid #ff2929;
+    cursor: default;
+}
+
+.in_progress:hover {
+    background-color: #ff2929;
+    color: black;
+    border: 1px solid #ff2929;
+    text-shadow: 0em 0em 0.2em #ff0000;
+    cursor: default;
+}
+
+#exit_center {
+    display: flex;
+    justify-content: center;
+}
+
+#exit_button {
+    display: block;
+    margin-top: 0.0714em;
+    margin-bottom: 1em;
 }
 
 #achievements_page {
