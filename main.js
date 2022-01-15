@@ -788,7 +788,7 @@ function tick() {
             "\n\n\nEXP Simulator v?.?.???\nMade by Zakuro"
     } else {
         document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.2.200\nMade by Zakuro"
+            "\n\n\nEXP Simulator v2.2.201\nMade by Zakuro"
     }
 
     //calculating total multiplier
@@ -807,19 +807,6 @@ function tick() {
         game.ch_boost[3]
 }
 
-//calculating amp/sec
-function amp_tick() {
-    if (game.time > 0)
-        game.amp_eff =
-            (Math.floor(get_amp(game.level) * game.patience * game.watt_boost) *
-                game.tickspeed) /
-            game.time
-    else
-        game.amp_eff =
-            Math.floor(get_amp(game.level) * game.patience * game.watt_boost) *
-            game.tickspeed
-}
-
 //hold exp key handling
 function hold_tick() {
     game.hold_time++
@@ -834,6 +821,13 @@ document.getElementById("click").addEventListener("mousedown", function () {
     game.mouse_held = true
 })
 document.addEventListener("mouseup", function () {
+    game.mouse_held = false
+    game.mouse_time = 0
+})
+document.getElementById("click").addEventListener("touchstart", function () {
+    game.mouse_held = true
+})
+document.addEventListener("touchend", function () {
     game.mouse_held = false
     game.mouse_time = 0
 })
@@ -944,7 +938,7 @@ function pre_save() {
 function save() {
     pre_save()
     game.beta = false
-    game.version = "2.2.200"
+    game.version = "2.2.201"
     localStorage.setItem("exp_simulator_save", JSON.stringify(game))
 }
 
@@ -1012,7 +1006,7 @@ function load(savegame) {
         }
         //v2.1.405
         game = savegame
-        game.version = "2.2.200"
+        game.version = "2.2.201"
         if (game.tab > 2) game.tab += 2
         game.reboot = 0
         game.watts = 0
@@ -1148,15 +1142,20 @@ function load(savegame) {
             game.pp_hide = false
         }
     } else {
-        if (minor > 200) {
+        if (minor > 201) {
             alert(
                 "You cannot load saves from game versions that do not exist\nIf you think you are recieving this alert in error, reload and try again"
             )
             return
         }
-        //v2.2.200
+        //v2.2.201
         game = savegame
-        game.version = "2.2.200"
+        game.version = "2.2.201"
+        //v2.2.200
+        if (minor < 201) {
+            game.amp_eff = new Array(5).fill(-1)
+            game.watts_eff = new Array(5).fill(-1)
+        }
         //v2.2.102
         if (minor < 200) {
             let old_perks = game.perks
@@ -1491,11 +1490,6 @@ function refresh() {
 }
 
 refresh()
-
-//setting up the amp/sec calculation loop
-let amp_tick_loop = window.setInterval(function () {
-    amp_tick()
-}, 100)
 
 goto_tab(0)
 
