@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.2.200",
+    version: "2.2.201",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -59,7 +59,7 @@ let game = {
     pp_hide: 0,
 
     //v2.1.100 variables
-    amp_eff: 0,
+    amp_eff: new Array(5).fill(-1),
     autopr_mode: 0,
     exp_oc: 1,
     oc_state: 0,
@@ -177,6 +177,9 @@ let game = {
 
     hints: false,
     refresh_rate: 30,
+
+    //v2.2.201 variables
+    watts_eff: new Array(5).fill(-1),
 }
 
 //initialize maps
@@ -1168,7 +1171,7 @@ class pp_upgrade_child extends pp_upgrade {
     //amp efficiency [8]
     new pp_upgrade_child(
         "AMP Efficiency",
-        "The Prestige button will now display AMP gained per second",
+        "The Auto-Prestige panel will now display average AMP gained per second",
         7,
         function () {},
         lim_break
@@ -1737,7 +1740,11 @@ class generator_perk {
         48
     )
     //auto-reboot [15]
-    new generator_perk("Auto-Reboot", "Unlocks automation for Reboot", 64)
+    new generator_perk(
+        "Auto-Reboot",
+        "Unlocks automation for Reboot\nAlso has an average watts/sec display",
+        64
+    )
     //speed power [16]
     new generator_perk(
         "Speed Power",
