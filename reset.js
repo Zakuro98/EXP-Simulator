@@ -88,6 +88,16 @@ function prestige() {
             document.getElementById("pp").innerText =
                 format_num(game.pp) + " PP"
 
+            for (let i = 4; i > 0; i--) {
+                game.amp_eff[i] = game.amp_eff[i - 1]
+            }
+            game.amp_eff[0] =
+                (get_amp(game.level) *
+                    game.patience *
+                    game.watt_boost *
+                    game.tickspeed) /
+                game.time
+
             if (
                 !game.achievements[13] &&
                 game.prestige + game.banked_prestige >= 1
@@ -268,6 +278,15 @@ function prestige() {
                 format_num(game.amp) + " AMP"
             document.getElementById("pp").innerText =
                 format_num(game.pp) + " PP"
+
+            for (let i = 4; i > 0; i--) {
+                game.amp_eff[i] = game.amp_eff[i - 1]
+            }
+            game.amp_eff[0] =
+                ((get_amp(game.level) - get_amp(game.highest_level)) *
+                    game.watt_boost *
+                    game.tickspeed) /
+                game.time
 
             if (
                 !game.achievements[13] &&
@@ -561,7 +580,9 @@ function reboot() {
             if (game.challenge !== 0 && !entering) {
                 let ch = game.challenge - 1
                 if (game.completions[ch] < 12) game.completions[ch]++
-                else if (!game.achievements[90]) get_achievement(90)
+
+                if (game.completions[ch] === 12 && !game.achievements[90])
+                    get_achievement(90)
 
                 switch (ch) {
                     case 0:
@@ -647,6 +668,14 @@ function reboot() {
             if (game.highest_level > game.all_time_highest_level) {
                 game.all_time_highest_level = game.highest_level
             }
+
+            for (let i = 4; i > 0; i--) {
+                game.watts_eff[i] = game.watts_eff[i - 1]
+            }
+            game.watts_eff[0] =
+                (get_watts(game.pp) * game.tickspeed) / game.prestige_time
+
+            game.amp_eff = new Array(5).fill(-1)
 
             if (!game.achievements[56] && game.reboot >= 1) get_achievement(56)
             if (!game.achievements[57] && game.reboot >= 3) get_achievement(57)
@@ -804,6 +833,8 @@ function empty_reboot() {
     if (game.highest_level > game.all_time_highest_level) {
         game.all_time_highest_level = game.highest_level
     }
+
+    game.amp_eff = new Array(5).fill(-1)
 
     game.amp = game.watt_boost
     game.pp = 0
