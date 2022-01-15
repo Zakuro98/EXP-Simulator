@@ -4,6 +4,8 @@
     --font_small: Abel;
     --font_large: "Josefin Sans";
     --font_size: 28px;
+    --enter_color: white;
+    --enter_shadow: white;
 }
 
 body {
@@ -184,6 +186,8 @@ main {
     border: 1px solid white;
     margin-top: 0.857em;
     cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
 }
 
 #click:hover {
@@ -831,6 +835,10 @@ main {
     margin-top: 0.1em;
 }
 
+#amp_eff {
+    margin-top: 0.1em;
+}
+
 #smart_config {
     display: none;
     margin-bottom: 2.4em;
@@ -1081,6 +1089,10 @@ main {
     display: inline;
 }
 
+#watts_eff {
+    margin-top: 0.1em;
+}
+
 .generator_perk {
     display: flex;
     margin-bottom: 0.4em;
@@ -1217,8 +1229,8 @@ main {
 
 .enter_button:hover {
     background-color: #590909;
-    color: white;
-    text-shadow: 0em 0em 0.2em white;
+    color: var(--enter_color);
+    text-shadow: 0em 0em 0.2em var(--enter_shadow);
 }
 
 .in_progress {
