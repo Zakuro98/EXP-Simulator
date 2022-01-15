@@ -302,19 +302,6 @@ function ampbutton_update() {
                         )
                     ) +
                     " AMP (EXP Multiplier)"
-            if (game.pp_bought[8])
-                document.getElementById("amp_up").innerText =
-                    "+" +
-                    format_num(
-                        Math.floor(
-                            get_amp(game.level) *
-                                game.patience *
-                                game.watt_boost
-                        )
-                    ) +
-                    " AMP +" +
-                    format_eff(game.amp_eff) +
-                    " AMP/sec"
             let pp_amount = 0
             if (game.level > game.highest_level) {
                 if (game.prestige <= 21)
@@ -1346,6 +1333,28 @@ function pp_update() {
         }
     }
 
+    //amp efficiency
+    if (game.pp_bought[8]) {
+        document.getElementById("amp_eff").style.display = "block"
+        let amp_sec = 0
+        let entries = 0
+        for (let i = 0; i < 5; i++) {
+            if (game.amp_eff[i] !== -1) {
+                entries++
+                amp_sec += game.amp_eff[i]
+            }
+        }
+        if (entries !== 0) {
+            amp_sec /= entries
+            document.getElementById("amp_eff").innerText =
+                "AMP Efficiency: +" + format_eff(amp_sec) + " AMP/sec"
+        } else
+            document.getElementById("amp_eff").innerText =
+                "AMP Efficiency: undefined"
+    } else {
+        document.getElementById("amp_eff").style.display = "none"
+    }
+
     //spare power
     if (game.pp_bought[22]) {
         if (game.pp !== 0) {
@@ -1516,6 +1525,33 @@ function watts_update() {
 
     if (game.perks[15] && game.challenge === 0) {
         document.getElementById("autorb_block").style.display = "block"
+        let watts_sec = 0
+        let entries = 0
+        for (let i = 0; i < 5; i++) {
+            if (game.watts_eff[i] !== -1) {
+                entries++
+                watts_sec += game.watts_eff[i]
+            }
+        }
+        if (entries !== 0) {
+            watts_sec /= entries
+            if (watts_sec < 1 / 3600) {
+                document.getElementById("watts_eff").innerText =
+                    "Watt Efficiency: +" +
+                    format_eff(watts_sec * 3600) +
+                    " watts/hour"
+            } else if (watts_sec < 1 / 60) {
+                document.getElementById("watts_eff").innerText =
+                    "Watt Efficiency: +" +
+                    format_eff(watts_sec * 60) +
+                    " watts/min"
+            } else {
+                document.getElementById("watts_eff").innerText =
+                    "Watt Efficiency: +" + format_eff(watts_sec) + " watts/sec"
+            }
+        } else
+            document.getElementById("watts_eff").innerText =
+                "Watt Efficiency: undefined"
     } else {
         document.getElementById("autorb_block").style.display = "none"
     }
@@ -2406,7 +2442,7 @@ function description_update() {
             .querySelector(".perk_desc").innerText =
             generator_perk.perks[10].desc
         generator_perk.perks[15].desc =
-            "Unlocks automation for Reboot\n(Does not apply to challenges)"
+            "Unlocks automation for Reboot\nAlso has an average watts/sec display\n(Does not apply to challenges)"
         perk_map
             .get(generator_perk.perks[15])
             .querySelector(".perk_desc").innerText =
@@ -2500,6 +2536,8 @@ function regenerate_ui() {
             "white"
         )
         document.documentElement.style.setProperty("--button_color", "black")
+        document.documentElement.style.setProperty("--enter_color", "white")
+        document.documentElement.style.setProperty("--enter_shadow", "white")
     } else {
         document.getElementById("epilepsy_button").innerText = "ENABLED"
         document.documentElement.style.setProperty(
@@ -2507,6 +2545,8 @@ function regenerate_ui() {
             "#780e74"
         )
         document.documentElement.style.setProperty("--button_color", "white")
+        document.documentElement.style.setProperty("--enter_color", "#ff2929")
+        document.documentElement.style.setProperty("--enter_shadow", "#ff0000")
     }
     switch (game.color_mode) {
         case 0:
@@ -2652,8 +2692,13 @@ function regenerate_ui() {
         set_capacitance(game.cap_mode)
         if (game.perks[9]) {
             document.getElementById("dis_auto").style.display = "block"
-            document.getElementById("dis_text").style.display = "block"
-            document.getElementById("dis_input").style.display = "block"
+            if (game.autods_toggle !== 2) {
+                document.getElementById("dis_text").style.display = "block"
+                document.getElementById("dis_input").style.display = "block"
+            } else {
+                document.getElementById("dis_text").style.display = "none"
+                document.getElementById("dis_input").style.display = "none"
+            }
             document.getElementById("dis_input").value = game.autods_goal
         }
     } else {
@@ -2665,8 +2710,13 @@ function regenerate_ui() {
         document.getElementById("cap_disc").style.display = "inline"
         if (!game.perks[9]) {
             document.getElementById("dis_auto").style.display = "block"
-            document.getElementById("dis_text").style.display = "block"
-            document.getElementById("dis_input").style.display = "block"
+            if (game.autods_toggle !== 2) {
+                document.getElementById("dis_text").style.display = "block"
+                document.getElementById("dis_input").style.display = "block"
+            } else {
+                document.getElementById("dis_text").style.display = "none"
+                document.getElementById("dis_input").style.display = "none"
+            }
             document.getElementById("dis_input").value = game.autods_goal
         }
     } else {
