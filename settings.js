@@ -120,6 +120,8 @@ function epilepsy() {
             "#780e74"
         )
         document.documentElement.style.setProperty("--button_color", "white")
+        document.documentElement.style.setProperty("--enter_color", "#ff2929")
+        document.documentElement.style.setProperty("--enter_shadow", "#ff0000")
     } else {
         game.epilepsy = true
         document.getElementById("epilepsy_button").innerText = "DISABLED"
@@ -128,6 +130,8 @@ function epilepsy() {
             "white"
         )
         document.documentElement.style.setProperty("--button_color", "black")
+        document.documentElement.style.setProperty("--enter_color", "white")
+        document.documentElement.style.setProperty("--enter_shadow", "white")
     }
 }
 
