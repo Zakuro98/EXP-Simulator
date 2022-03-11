@@ -50,6 +50,11 @@ main {
     margin-left: 0.285em;
 }
 
+#reactor_tab {
+    display: none;
+    margin-left: 0.285em;
+}
+
 .tab {
     background-color: #410a4a;
     color: white;
@@ -979,6 +984,12 @@ main {
     display: none;
 }
 
+#hydrogen_plus {
+    display: none;
+    color: #ffaef6;
+    text-shadow: 0em 0em 0.1em #ff00e1, 0em 0em 0.2em #ff00e1;
+}
+
 .no_power {
     color: #aaaaaa;
 }
@@ -1007,6 +1018,8 @@ main {
 
 #reboot_panel {
     flex-grow: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 #reboot_button {
@@ -1015,6 +1028,7 @@ main {
     margin-bottom: 0.18em;
     font-family: var(--font_small);
     font-weight: normal;
+    align-self: flex-end;
 }
 
 .no_reboot_power {
@@ -1134,7 +1148,7 @@ main {
     font-size: 1em;
     font-family: var(--font_small);
     font-weight: normal;
-    flex: 0 0 4.8em;
+    flex: 0 0 6em;
 }
 
 .incomplete {
@@ -1173,6 +1187,13 @@ main {
     font-size: 1em;
     text-align: center;
     margin-bottom: 1.142em;
+}
+
+#challenge_footer {
+    color: white;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 2em;
 }
 
 .challenge_block {
@@ -1257,6 +1278,184 @@ main {
     display: block;
     margin-top: 0.0714em;
     margin-bottom: 1em;
+}
+
+.helium_text {
+    display: block;
+    font-size: 1em;
+    color: white;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#helium_block {
+    display: flex;
+    justify-content: center;
+}
+
+#helium_text {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.428em;
+}
+
+#helium {
+    display: inline;
+    align-self: flex-end;
+    font-size: 2em;
+    font-weight: bold;
+    margin-top: 0.68em;
+    margin-bottom: -0.15em;
+    margin-left: 0.214em;
+    color: #ffd04f;
+    text-shadow: 0em 0em 0.1em #ff7600, 0em 0em 0.25em #e00700, 0em 0em 0.4em #e00700;
+}
+
+#helium_boost {
+    margin-top: 0.1em;
+}
+
+#helium_rate {
+    margin-top: 0.5em;
+}
+
+.hydrogen_block {
+    display: flex;
+    justify-content: center;
+}
+
+#hydrogen_block1 {
+    display: none;
+}
+
+.hydrogen_text {
+    display: inline;
+    font-size: 1em;
+    color: white;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    align-self: flex-end;
+    margin-left: 0.285em;
+}
+
+.hydrogen {
+    display: inline;
+    align-self: flex-end;
+    font-size: 1.5em;
+    margin-top: 0.25em;
+    margin-bottom: -0.1em;
+    margin-left: 0.214em;
+    color: #ffaef6;
+    text-shadow: 0em 0em 0.1em #ff00e1, 0em 0em 0.2em #ff00e1;
+}
+
+#hydrogen2 {
+    margin-top: 0.5em;
+}
+
+#reactor_text {
+    color: #4db2ff;
+    text-shadow: 0em 0em 0.2em #0091ff;
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0.285em;
+}
+
+.reactor_core {
+    display: flex;
+    margin-bottom: 0.4em;
+    background-color: #44194d;
+    border: 2px solid #0091ff;
+    padding: 0.4em;
+}
+
+#power_supply {
+    margin-top: 2em;
+}
+
+#core0 {
+    margin-bottom: 2em;
+}
+
+.core_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.core_id {
+    color: #4db2ff;
+    text-shadow: 0em 0em 0.2em #0091ff;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.core_power {
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.core_button {
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-family: var(--font_small);
+    font-weight: normal;
+    flex-grow: 0;
+}
+
+.core_locked {
+    background-color: black;
+    color: #ff00e1;
+    border: 1px solid #ffaef6;
+    box-shadow: 0em 0em 0.5em #ff00e1 inset;
+}
+
+.core_unlocked {
+    background-color: #400038;
+    color: #ffaef6;
+    text-shadow: 0em 0em 0.1em #ff00e1, 0em 0em 0.2em #ff00e1;
+    border: 1px solid #ffaef6;
+    box-shadow: 0em 0em 0.5em #ff00e1 inset;
+    cursor: pointer;
+}
+
+.core_unlocked:hover {
+    background-color: #800071;
+    color: #ffaef6;
+    text-shadow: 0em 0em 0.1em #ff00e1, 0em 0em 0.2em #ff00e1;
+    border: 1px solid #ffaef6;
+    box-shadow: 0em 0em 0.5em #ff00e1 inset;
+}
+
+.core_unlocked:active {
+    background-color: #ff00e1;
+    color: black;
+    border: 1px solid #ff00e1;
+}
+
+#max_buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+    margin-bottom: 0.571em;
+}
+
+.reactor_button {
+    color: #4db2ff;
+    text-shadow: 0em 0em 0.2em #0091ff;
+    border: 1px solid #0091ff;
+    display: inline;
+}
+
+#reactor_max_all {
+    margin-left: 0.285em;
+}
+
+.reactor_button:active {
+    background-color: #0091ff;
+    color: black;
 }
 
 #achievements_page {
