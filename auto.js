@@ -109,8 +109,13 @@ function ds_toggle() {
         case 0:
             document.getElementById("dis_auto").innerText = "OFF"
             document.getElementById("dis_auto").style.color = "#ff0000"
-            document.getElementById("dis_text").style.display = "block"
-            document.getElementById("dis_input").style.display = "block"
+            if (
+                (game.pp_bought[32] && game.perks[9]) ||
+                (game.pp_bought[35] && !game.perks[9])
+            ) {
+                document.getElementById("dis_text").style.display = "block"
+                document.getElementById("dis_input").style.display = "block"
+            }
             break
         case 1:
             document.getElementById("dis_auto").innerText = "ON"
