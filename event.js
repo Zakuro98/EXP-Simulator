@@ -4,10 +4,33 @@ function increment(num) {
         game.total_exp += num
         game.prestige_exp += num
         game.all_time_exp += num
+
+        let prev_level = game.level
+
         if (game.total_exp <= 10) {
             game.level = 1
         } else {
             game.level = get_level(game.total_exp)
+
+            if (game.perks[27]) {
+                if (
+                    game.level > prev_level &&
+                    game.level > game.highest_level
+                ) {
+                    if (prev_level > game.highest_level) {
+                        game.pp += get_pp(game.level) - get_pp(prev_level)
+                        game.total_pp += get_pp(game.level) - get_pp(prev_level)
+                    } else {
+                        game.pp +=
+                            get_pp(game.level) - get_pp(game.highest_level)
+                        game.total_pp +=
+                            get_pp(game.level) - get_pp(game.highest_level)
+                    }
+
+                    if (game.challenge !== 9) game.highest_level = game.level
+                }
+            }
+
             if (!game.achievements[0] && game.level >= 2) get_achievement(0)
             if (!game.achievements[1] && game.level >= 10) get_achievement(1)
             if (!game.achievements[2] && game.level >= 30) get_achievement(2)
@@ -28,6 +51,14 @@ function increment(num) {
                 get_achievement(77)
             if (!game.achievements[95] && game.level >= 24000)
                 get_achievement(95)
+            if (!game.achievements[97] && game.level >= 30000)
+                get_achievement(97)
+            if (!game.achievements[98] && game.level >= 40000)
+                get_achievement(98)
+            if (!game.achievements[115] && game.level >= 50000)
+                get_achievement(115)
+            if (!game.achievements[116] && game.level >= 60000)
+                get_achievement(116)
 
             if (game.level >= 5 && !game.hold_notify) {
                 new notify("Protip: you can hold the EXP button", "#ffc400")
@@ -76,6 +107,16 @@ function increment(num) {
             get_achievement(93)
         if (!game.achievements[96] && game.all_time_exp >= 10 ** 57)
             get_achievement(96)
+        if (!game.achievements[99] && game.all_time_exp >= 10 ** 63)
+            get_achievement(99)
+        if (!game.achievements[100] && game.all_time_exp >= 10 ** 75)
+            get_achievement(100)
+        if (!game.achievements[101] && game.all_time_exp >= 10 ** 87)
+            get_achievement(101)
+        if (!game.achievements[102] && game.all_time_exp >= 10 ** 99)
+            get_achievement(102)
+        if (!game.achievements[118] && game.all_time_exp >= 10 ** 111)
+            get_achievement(118)
 
         game.exp = game.total_exp - Math.ceil(get_exp(game.level - 1))
         game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level - 1))
@@ -158,7 +199,7 @@ function upgrade(id, max) {
                             game.boost_level = Math.round(
                                 game.boost_level * 0.5
                             )
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.boost_level = Math.round(game.boost_level * 5)
                         game.exp_add =
                             (game.boost_tier +
@@ -180,7 +221,7 @@ function upgrade(id, max) {
                             game.auto_level = Math.round(game.auto_level * 0.75)
                         if (game.perks[21] && game.challenge === 0)
                             game.auto_level = Math.round(game.auto_level * 0.5)
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.auto_level = Math.round(game.auto_level * 5)
                         game.cps =
                             2 *
@@ -193,15 +234,15 @@ function upgrade(id, max) {
                             get_achievement(54)
                         if (!game.achievements[55] && game.cps >= 1000)
                             get_achievement(55)
-                        pp_upgrade.upgrades[24].desc =
-                            "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: " +
-                            format_eff(16 + game.cps * 0.16) +
-                            "x)"
-                        pp_map
-                            .get(pp_upgrade.upgrades[24])
-                            .querySelector(".pp_desc").innerText =
-                            pp_upgrade.upgrades[24].desc
-                        if (game.pp_bought[24]) {
+                        if (game.pp_bought[24] && game.challenge !== 7) {
+                            pp_upgrade.upgrades[24].desc =
+                                "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: " +
+                                format_eff(16 + game.cps * 0.16) +
+                                "x)"
+                            pp_map
+                                .get(pp_upgrade.upgrades[24])
+                                .querySelector(".pp_desc").innerText =
+                                pp_upgrade.upgrades[24].desc
                             game.ml_boost = 16 + game.cps * 0.16
                         }
                     }
@@ -211,7 +252,8 @@ function upgrade(id, max) {
                 //exp fluctuation
                 if (
                     (game.fluct_level < game.pr_min || game.pp_bought[6]) &&
-                    game.pp_bought[0]
+                    game.pp_bought[0] &&
+                    game.challenge !== 7
                 ) {
                     if (game.level >= game.fluct_level) {
                         game.fluct_tier += 1
@@ -224,7 +266,7 @@ function upgrade(id, max) {
                             game.fluct_level = Math.round(
                                 game.fluct_level * 0.5
                             )
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.fluct_level = Math.round(game.fluct_level * 5)
                         if (!game.pp_bought[15])
                             game.exp_fluct =
@@ -246,7 +288,8 @@ function upgrade(id, max) {
                 //exp factor
                 if (
                     (game.fact_level < game.pr_min || game.pp_bought[6]) &&
-                    game.pp_bought[5]
+                    game.pp_bought[5] &&
+                    game.challenge !== 7
                 ) {
                     if (game.level >= game.fact_level) {
                         game.fact_tier += 1
@@ -258,7 +301,7 @@ function upgrade(id, max) {
                             game.fact_level = Math.round(game.fact_level * 0.75)
                         if (game.perks[21] && game.challenge === 0)
                             game.fact_level = Math.round(game.fact_level * 0.5)
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.fact_level = Math.round(game.fact_level * 5)
                         game.exp_fact =
                             game.fact_tier +
@@ -272,7 +315,8 @@ function upgrade(id, max) {
                 //exp flux
                 if (
                     (game.flux_level < game.pr_min || game.pp_bought[6]) &&
-                    game.pp_bought[20]
+                    game.pp_bought[20] &&
+                    game.challenge !== 7
                 ) {
                     if (game.level >= game.flux_level) {
                         game.flux_tier += 1
@@ -281,7 +325,7 @@ function upgrade(id, max) {
                             game.flux_level = Math.round(game.flux_level * 0.75)
                         if (game.perks[21] && game.challenge === 0)
                             game.flux_level = Math.round(game.flux_level * 0.5)
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.flux_level = Math.round(game.flux_level * 5)
                     }
                 }
@@ -290,7 +334,8 @@ function upgrade(id, max) {
                 //exp battery
                 if (
                     (game.battery_level < game.pr_min || game.pp_bought[6]) &&
-                    game.pp_bought[25]
+                    game.pp_bought[25] &&
+                    game.challenge !== 7
                 ) {
                     if (game.level >= game.battery_level) {
                         game.battery_tier += 1
@@ -303,7 +348,7 @@ function upgrade(id, max) {
                             game.battery_level = Math.round(
                                 game.battery_level * 0.5
                             )
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.battery_level = Math.round(
                                 game.battery_level * 5
                             )
@@ -348,7 +393,7 @@ function upgrade(id, max) {
                             game.boost_level = Math.round(
                                 game.boost_level * 0.5
                             )
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.boost_level = Math.round(game.boost_level * 5)
                     }
                     game.exp_add =
@@ -370,7 +415,7 @@ function upgrade(id, max) {
                             game.auto_level = Math.round(game.auto_level * 0.75)
                         if (game.perks[21] && game.challenge === 0)
                             game.auto_level = Math.round(game.auto_level * 0.5)
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.auto_level = Math.round(game.auto_level * 5)
                     }
                     game.cps =
@@ -382,15 +427,15 @@ function upgrade(id, max) {
                         get_achievement(54)
                     if (!game.achievements[55] && game.cps >= 1000)
                         get_achievement(55)
-                    pp_upgrade.upgrades[24].desc =
-                        "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: " +
-                        format_eff(16 + game.cps * 0.16) +
-                        "x)"
-                    pp_map
-                        .get(pp_upgrade.upgrades[24])
-                        .querySelector(".pp_desc").innerText =
-                        pp_upgrade.upgrades[24].desc
-                    if (game.pp_bought[24]) {
+                    if (game.pp_bought[24] && game.challenge !== 7) {
+                        pp_upgrade.upgrades[24].desc =
+                            "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: " +
+                            format_eff(16 + game.cps * 0.16) +
+                            "x)"
+                        pp_map
+                            .get(pp_upgrade.upgrades[24])
+                            .querySelector(".pp_desc").innerText =
+                            pp_upgrade.upgrades[24].desc
                         game.ml_boost = 16 + game.cps * 0.16
                     }
                 }
@@ -399,7 +444,8 @@ function upgrade(id, max) {
                 //exp fluctuation
                 if (
                     (game.fluct_level < game.pr_min || game.pp_bought[6]) &&
-                    game.pp_bought[0]
+                    game.pp_bought[0] &&
+                    game.challenge !== 7
                 ) {
                     while (game.level >= game.fluct_level) {
                         game.fluct_tier += 1
@@ -412,7 +458,7 @@ function upgrade(id, max) {
                             game.fluct_level = Math.round(
                                 game.fluct_level * 0.5
                             )
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.fluct_level = Math.round(game.fluct_level * 5)
                     }
                     if (!game.pp_bought[15])
@@ -434,7 +480,8 @@ function upgrade(id, max) {
                 //exp factor
                 if (
                     (game.fact_level < game.pr_min || game.pp_bought[6]) &&
-                    game.pp_bought[5]
+                    game.pp_bought[5] &&
+                    game.challenge !== 7
                 ) {
                     while (game.level >= game.fact_level) {
                         game.fact_tier += 1
@@ -446,7 +493,7 @@ function upgrade(id, max) {
                             game.fact_level = Math.round(game.fact_level * 0.75)
                         if (game.perks[21] && game.challenge === 0)
                             game.fact_level = Math.round(game.fact_level * 0.5)
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.fact_level = Math.round(game.fact_level * 5)
                     }
                     game.exp_fact =
@@ -460,7 +507,8 @@ function upgrade(id, max) {
                 //exp flux
                 if (
                     (game.flux_level < game.pr_min || game.pp_bought[6]) &&
-                    game.pp_bought[20]
+                    game.pp_bought[20] &&
+                    game.challenge !== 7
                 ) {
                     while (game.level >= game.flux_level) {
                         game.flux_tier += 1
@@ -469,7 +517,7 @@ function upgrade(id, max) {
                             game.flux_level = Math.round(game.flux_level * 0.75)
                         if (game.perks[21] && game.challenge === 0)
                             game.flux_level = Math.round(game.flux_level * 0.5)
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.flux_level = Math.round(game.flux_level * 5)
                     }
                 }
@@ -478,7 +526,8 @@ function upgrade(id, max) {
                 //exp battery
                 if (
                     (game.battery_level < game.pr_min || game.pp_bought[6]) &&
-                    game.pp_bought[25]
+                    game.pp_bought[25] &&
+                    game.challenge !== 7
                 ) {
                     while (game.level >= game.battery_level) {
                         game.battery_tier += 1
@@ -491,7 +540,7 @@ function upgrade(id, max) {
                             game.battery_level = Math.round(
                                 game.battery_level * 0.5
                             )
-                        if (game.challenge === 2)
+                        if (game.challenge === 2 || game.challenge === 9)
                             game.battery_level = Math.round(
                                 game.battery_level * 5
                             )
@@ -524,7 +573,7 @@ function upgrade(id, max) {
 
 //overclocker activation
 function oc_activate() {
-    if (game.challenge !== 1) {
+    if (game.challenge !== 1 && game.challenge !== 9) {
         game.oc_state = 2
         game.exp_oc = 3
         if (game.pp_bought[19]) game.exp_oc = 4
@@ -540,7 +589,7 @@ function oc_activate() {
 
 //capacitance switching
 function set_capacitance(mode) {
-    if (game.challenge !== 1) {
+    if (game.challenge !== 1 && game.challenge !== 9) {
         if (game.cap_mode !== 0) game.prev_mode = game.cap_mode
         if (mode > game.prev_mode) {
             game.cap_mode = game.prev_mode
@@ -587,6 +636,8 @@ function discharge() {
     if (
         game.cap_mode >= 1 &&
         game.challenge !== 1 &&
+        game.challenge !== 7 &&
+        game.challenge !== 9 &&
         (game.stored_exp >= game.tickspeed || game.pp_bought[38])
     ) {
         let eps =
@@ -683,6 +734,41 @@ function enter_challenge(id) {
             }
 
             entering = false
+
+            game.global_multiplier =
+                game.exp_fact *
+                game.exp_oc *
+                game.exp_flux *
+                game.pp_power *
+                game.prestige_power *
+                game.depth_power *
+                game.ach_power *
+                game.speed_power *
+                game.ch_boost[0] *
+                game.ch_boost[1] *
+                game.ch_boost[2] *
+                game.ch_boost[3] *
+                game.ch_boost[4] *
+                game.ch_boost[5] *
+                game.ch_boost[6] *
+                game.ch_boost[7] *
+                game.ch_boost[8] *
+                reduction *
+                game.helium_boost
+
+            if (game.challenge === 7) {
+                game.global_multiplier =
+                    game.ch_boost[0] *
+                    game.ch_boost[1] *
+                    game.ch_boost[2] *
+                    game.ch_boost[3] *
+                    game.ch_boost[4] *
+                    game.ch_boost[5] *
+                    game.ch_boost[6] *
+                    game.ch_boost[7] *
+                    game.ch_boost[8] *
+                    game.helium_boost
+            }
         }
     } else if (game.challenge !== id) {
         alert("You cannot enter a challenge if you are already in one!")
