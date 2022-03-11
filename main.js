@@ -1,5 +1,3 @@
-let reduction = 1
-
 //game operations run every tick
 function tick() {
     //calculating total multiplier
