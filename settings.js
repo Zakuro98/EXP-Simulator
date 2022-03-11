@@ -35,6 +35,7 @@ function notation() {
     increment(0)
     watts_update()
     challenge_update()
+    reactor_update()
     if (game.oc_state === 2)
         document.getElementById("oc_state").innerText =
             "Boosting " + format_num(game.exp_oc) + "x"
@@ -207,6 +208,7 @@ function goto_tab(id) {
     document.getElementById("prestige_page").style.display = "none"
     document.getElementById("reboot_page").style.display = "none"
     document.getElementById("challenges_page").style.display = "none"
+    document.getElementById("reactor_page").style.display = "none"
     document.getElementById("statistics_page").style.display = "none"
     document.getElementById("achievements_page").style.display = "none"
     document.getElementById("settings_page").style.display = "none"
@@ -226,6 +228,8 @@ function goto_tab(id) {
             if (game.subtab === 1)
                 document.getElementById("challenges_page").style.display =
                     "block"
+            if (game.subtab === 2)
+                document.getElementById("reactor_page").style.display = "block"
             if (game.perks[17])
                 document.getElementById("reboot_tabs").style.display = "flex"
             break
@@ -249,6 +253,7 @@ function goto_subtab(id) {
 
         document.getElementById("reboot_page").style.display = "none"
         document.getElementById("challenges_page").style.display = "none"
+        document.getElementById("reactor_page").style.display = "none"
 
         switch (id) {
             case 0:
@@ -257,6 +262,9 @@ function goto_subtab(id) {
             case 1:
                 document.getElementById("challenges_page").style.display =
                     "block"
+                break
+            case 2:
+                document.getElementById("reactor_page").style.display = "block"
                 break
         }
     }
@@ -298,4 +306,55 @@ function change_page(dir) {
         "Page " + (game.achiev_page + 1)
     document.getElementById("page_text2").innerText =
         "Page " + (game.achiev_page + 1)
+}
+
+//toggling buy one/buy max
+function max_toggle() {
+    if (game.buy_max) {
+        game.buy_max = false
+        document.getElementById("reactor_buy_max").innerText = "BUY ONE"
+        document.getElementById("reactor_buy_max").style.color = "#4db2ff"
+        document.getElementById("reactor_buy_max").style.textShadow =
+            "0em 0em 0.2em #0091ff"
+    } else {
+        game.buy_max = true
+        document.getElementById("reactor_buy_max").innerText = "BUY MAX"
+        document.getElementById("reactor_buy_max").style.color = "#ffffff"
+        document.getElementById("reactor_buy_max").style.textShadow =
+            "0em 0em 0.2em #ffffff"
+    }
+}
+
+//buy max cores
+function max_all() {
+    let efficiency = new Array(8).fill(Infinity)
+    let selection = 0
+    for (let i = 0; i < 8; i++) {
+        efficiency[i] =
+            game.core_price[i] /
+            ((game.core_level[i] + 1) / game.core_level[i] - 1)
+        if (
+            efficiency[i] < efficiency[selection] &&
+            game.hydrogen >= game.core_price[i]
+        )
+            selection = i
+    }
+    while (game.hydrogen >= game.core_price[selection]) {
+        game.hydrogen -= game.core_price[selection]
+        game.core_level[selection]++
+        game.core_price[selection] += core.cores[selection].base_price / 4
+
+        selection = 0
+
+        for (let i = 0; i < 8; i++) {
+            efficiency[i] =
+                game.core_price[i] /
+                ((game.core_level[i] + 1) / game.core_level[i] - 1)
+            if (
+                efficiency[i] < efficiency[selection] &&
+                game.hydrogen >= game.core_price[i]
+            )
+                selection = i
+        }
+    }
 }
