@@ -418,6 +418,9 @@
                     <button id="challenges_tab" class="button" onclick="goto_subtab(1)">
                         CHALLENGES
                     </button>
+                    <button id="reactor_tab" class="button" onclick="goto_subtab(2)">
+                        REACTOR
+                    </button>
                 </div>
 
                 <div id="reboot_page">
@@ -433,6 +436,16 @@
                         <p id="gen_boost" class="watts_text">
                             producing 1x AMP gain
                         </p>
+
+                        <div id="hydrogen_block1" class="hydrogen_block">
+                            <p id="hydrogen1" class="hydrogen">
+                                0.00
+                            </p>
+                            <p id="hydrogen_text1" class="hydrogen_text">
+                                g hydrogen
+                            </p>
+                        </div>
+
                         <div id="reboot_block">
                             <div id="generator_requirements">
                                 <p class="perk_name">
@@ -449,9 +462,14 @@
                                 <button id="reboot_button" class="no_reboot_power" onclick="reboot()">
                                     ACTIVATE!
                                 </button>
-                                <p id="watts_plus" class="reboot_text">
-                                    +1 watt
-                                </p>
+                                <div>
+                                    <p id="watts_plus" class="reboot_text">
+                                        +1 watt
+                                    </p>
+                                    <p id="hydrogen_plus" class="reboot_text">
+                                        +1.00 g hydrogen
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -504,6 +522,69 @@
                     <div id="exit_center">
                         <button id="exit_button" class="button" onclick="exit_challenge()">
                             EXIT CHALLENGE
+                        </button>
+                    </div>
+                    <div id="challenge_panel"></div>
+                    <p id="challenge_footer">
+                        Getting all 108 challenge completions currently only unlocks an achievement, but there will be something soon...
+                    </p>
+                </div>
+
+                <div id="reactor_page">
+                    <div id="helium_block">
+                        <p id="helium" class="helium">
+                            0.00
+                        </p>
+                        <p id="helium_text" class="helium_text">
+                            mg helium
+                        </p>
+                    </div>
+                    <p id="helium_boost" class="helium_text">
+                        creating 1.00x EXP production
+                    </p>
+                    <p id="helium_rate" class="helium_text">
+                        +0.00 mg helium/sec
+                    </p>
+
+                    <div id="hydrogen_block2" class="hydrogen_block">
+                        <p id="hydrogen2" class="hydrogen">
+                            0.00
+                        </p>
+                        <p id="hydrogen_text2" class="hydrogen_text">
+                            g hydrogen
+                        </p>
+                    </div>
+
+                    <div id="core_page">
+                        <p id="reactor_text">
+                            NUCLEAR REACTOR CORES
+                        </p>
+                        <div id="max_buttons">
+                            <button id="reactor_buy_max" class="button reactor_button" onclick="max_toggle()">
+                                BUY ONE
+                            </button>
+                            <button id="reactor_max_all" class="button reactor_button" onclick="max_all()">
+                                MAX ALL
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="power_supply" class="reactor_core">
+                        <div class="core_text">
+                            <p class="core_id">
+                                Deuterium Power
+                            </p>
+                            <p id="supply_gain" class="core_power">
+                                1x hydrogen gains
+                            </p>
+                        </div>
+                        <button id="supply_button" class="core_button core_locked" onclick="
+                            if (game.hydrogen >= game.supply_price) {
+                                game.hydrogen -= game.supply_price
+                                game.supply_level++
+                                game.supply_price *= 5
+                            }">
+                            -16.0 g hydrogen
                         </button>
                     </div>
                 </div>
@@ -931,7 +1012,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.2.201<br>Made by Zakuro
+                    <br><br><br>EXP Simulator v2.2.300<br>Made by Zakuro
                 </p>
                 <a href="changelog.html" target="_blank" class="info link">
                     Changelog
