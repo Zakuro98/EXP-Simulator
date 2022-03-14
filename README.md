@@ -1,4 +1,4 @@
 # EXP-Simulator
 an incremental about leveling up
 
-current version 2.2.300
+current version 2.2.301
