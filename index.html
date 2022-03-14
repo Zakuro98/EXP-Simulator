@@ -43,7 +43,7 @@
                         <button id="click" onclick="player_increment()">
                             +1 EXP
                         </button>
-                        <div class="amp_area">
+                        <div id="amp_area" class="amp_area">
                             <button id="amp_button" class="button" onclick="prestige()">
                                 PRESTIGE!
                             </button>
@@ -57,6 +57,20 @@
                                 +1 PP
                             </p>
                         </div>
+                        <div id="reboot_area" class="reboot_area">
+                            <button id="watt_button" class="button no_reboot_power" onclick="reboot()">
+                                REBOOT!
+                            </button>
+                            <button id="watt_auto" class="button autoup" onclick="rb_toggle()">
+                                OFF
+                            </button>
+                            <p id="watts_up" class="uptext">
+                                +1 watt
+                            </p>
+                            <p id="hydrogen_up" class="uptext">
+                                +0.01 g hydrogen
+                            </p>
+                        </div>
                     </div>
                     <div class="resources">
                         <p id="total_exp">
@@ -67,6 +81,12 @@
                         </p>
                         <p id="pp">
                             0 PP
+                        </p>
+                        <p id="watts2">
+                            0 watts
+                        </p>
+                        <p id="hydrogen3">
+                            0.00 g hydrogen
                         </p>
                     </div>
                 </div>
@@ -261,11 +281,94 @@
                     </div>
                 </div>
 
+                <div id="prestige_tabs" class="menu">
+                    <button id="p_upgrades_tab" class="button" onclick="goto_subtab(0)">
+                        UPGRADES
+                    </button>
+                    <button id="config_tab" class="button" onclick="goto_subtab(1)">
+                        CONFIG
+                    </button>
+                </div>
+
                 <div class="prestige" id="prestige_page">
+                    <div id="amp_block">
+                        <p id="amp2" class="amp2">
+                            1
+                        </p>
+                        <p id="amp_text" class="amp_text">
+                            AMP
+                        </p>
+                    </div>
+                    <p id="amp_boost" class="amp_text">
+                        creating 1.00x EXP production
+                    </p>
+
+                    <div id="pp_block">
+                        <p id="pp2" class="pp">
+                            0
+                        </p>
+                        <p id="pp_text2" class="pp_text2">
+                            PP
+                        </p>
+                    </div>
+
+                    <div id="prestige_block">
+                        <button id="prestige_button" onclick="prestige()">
+                            PRESTIGE!
+                        </button>
+                        <div id="prestige_details">
+                            <p id="amp_up2" class="prestige_text">
+                                +1 AMP
+                            </p>
+                            <p id="pp_up2" class="prestige_text">
+                                +1 PP
+                            </p>
+                            <p id="pp_next" class="prestige_text">
+                                (Next PP at LVL 69)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p_upgrades" id="p_upgrades_page">
+                    <div id="pp_options">
+                        <div class="option" id="hidden">
+                            <p id="hidden_text" class="option_text">
+                                PP Upgrades
+                            </p>
+                            <button id="hidden_button" class="option_button small" onclick="pp_hidden()">
+                                SHOW ALL
+                            </button>
+                        </div>
+                        <div class="option" id="pp_bar">
+                            <p id="pp_bar_text" class="option_text">
+                                PP Progress Bar
+                            </p>
+                            <button id="pp_bar_button" class="option_button small" onclick="pp_bar()">
+                                DISABLED
+                            </button>
+                        </div>
+                        <div class="option" id="respec">
+                            <button id="respec_button" onclick="respec()">
+                                RESPEC!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p_config" id="p_config_page">
                     <div id="auto_config">
                         <p class="auto_header">
                             Auto-Prestige Configuration
                         </p>
+                        <div id="auto_enabled">
+                            <p class="goal_text">
+                                Automation:
+                            </p>
+                            <button id="auto_toggle" class="button" onclick="pr_toggle()">
+                                DISABLED
+                            </button>
+                        </div>
                         <div id="auto_mode">
                             <p class="goal_text">
                                 Auto-Prestige Mode:
@@ -383,29 +486,6 @@
                             </button>
                             <button id="strict_mode" class="button" onclick="pp_switch(2)">
                                 STRICT
-                            </button>
-                        </div>
-                    </div>
-                    <div id="pp_options">
-                        <div class="option" id="hidden">
-                            <p id="hidden_text" class="option_text">
-                                PP Upgrades
-                            </p>
-                            <button id="hidden_button" class="option_button small" onclick="pp_hidden()">
-                                SHOW ALL
-                            </button>
-                        </div>
-                        <div class="option" id="pp_bar">
-                            <p id="pp_bar_text" class="option_text">
-                                PP Progress Bar
-                            </p>
-                            <button id="pp_bar_button" class="option_button small" onclick="pp_bar()">
-                                DISABLED
-                            </button>
-                        </div>
-                        <div class="option" id="respec">
-                            <button id="respec_button" onclick="respec()">
-                                RESPEC!
                             </button>
                         </div>
                     </div>
@@ -934,6 +1014,14 @@
                             LONG
                         </button>
                     </div>
+                    <div class="option">
+                        <p id="switchpoint_text" class="option_text">
+                            Switchpoint
+                        </p>
+                        <button id="switchpoint_button" class="option_button small" onclick="switchpoint()">
+                            MILLION
+                        </button>
+                    </div>
                     <div class="option" id="hotkeys">
                         <p id="hotkeys_text" class="option_text">
                             Hotkeys
@@ -959,6 +1047,14 @@
                         </p>
                         <button id="ch_confirm_button" class="option_button small" onclick="challenge_confirmation()">
                             ENABLED
+                        </button>
+                    </div>
+                    <div class="option" id="priority_layer">
+                        <p id="layer_text" class="option_text">
+                            Priority Reset Layer
+                        </p>
+                        <button id="layer_button" class="option_button small" onclick="priority_layer()">
+                            PRESTIGE
                         </button>
                     </div>
                     <div class="option">
@@ -1012,7 +1108,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.2.300<br>Made by Zakuro
+                    <br><br><br>EXP Simulator v2.2.301<br>Made by Zakuro
                 </p>
                 <a href="changelog.html" target="_blank" class="info link">
                     Changelog
@@ -1036,4 +1132,3 @@
         <script src="main.js" charset="utf-8" type="text/javascript"></script>
     </body>
 </html>
-
