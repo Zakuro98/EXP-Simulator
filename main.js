@@ -1031,7 +1031,7 @@ function tick() {
             "\n\n\nEXP Simulator v?.?.???\nMade by Zakuro"
     } else {
         document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.2.300\nMade by Zakuro"
+            "\n\n\nEXP Simulator v2.2.301\nMade by Zakuro"
     }
 }
 
@@ -1166,7 +1166,7 @@ function pre_save() {
 function save() {
     pre_save()
     game.beta = false
-    game.version = "2.2.300"
+    game.version = "2.2.301"
     localStorage.setItem("exp_simulator_save", JSON.stringify(game))
 }
 
@@ -1234,7 +1234,7 @@ function load(savegame) {
         }
         //v2.1.405
         game = savegame
-        game.version = "2.2.300"
+        game.version = "2.2.301"
         if (game.tab > 2) game.tab += 2
         game.reboot = 0
         game.watts = 0
@@ -1287,7 +1287,8 @@ function load(savegame) {
         game.speed_power = 1
         game.banked_prestige = 0
         game.true_banked_prestige = 0
-        game.subtab = 0
+        game.subtab[0] = 0
+        game.subtab[1] = 0
         game.challenge = 0
         game.completions = new Array(9).fill(0)
         game.ch_boost = new Array(9).fill(1)
@@ -1306,6 +1307,8 @@ function load(savegame) {
         game.supply_level = 0
         game.supply_price = 16
         game.true_banked_prestige = game.banked_prestige
+        game.priority_layer = 1
+        game.switchpoint = 0
         //v2.1.403
         if (minor < 405) {
             game.hold_time = 0
@@ -1383,15 +1386,21 @@ function load(savegame) {
             game.pp_hide = false
         }
     } else {
-        if (minor > 300) {
+        if (minor > 301) {
             alert(
                 "You cannot load saves from game versions that do not exist\nIf you think you are recieving this alert in error, reload and try again"
             )
             return
         }
-        //v2.2.300
+        //v2.2.301
         game = savegame
-        game.version = "2.2.300"
+        game.version = "2.2.301"
+        //v2.2.300
+        if (minor < 301) {
+            game.subtab = [0, 0]
+            game.priority_layer = 1
+            game.switchpoint = 0
+        }
         //v2.2.201
         if (minor < 300) {
             let old_perks = game.perks
@@ -1433,7 +1442,7 @@ function load(savegame) {
             }
             game.speed_power = 1
             game.banked_prestige = 0
-            game.subtab = 0
+            game.subtab[1] = 0
             game.challenge = 0
             game.completions = new Array(9).fill(0)
             game.ch_boost = new Array(9).fill(1)
@@ -1524,7 +1533,8 @@ function wipe() {
         game.watts = 0
         game.watt_boost = 1
         game.perks = new Array(8).fill(false)
-        game.subtab = 0
+        game.subtab[0] = 0
+        game.subtab[1] = 0
 
         game.challenge = 0
         game.completions = new Array(9).fill(0)
@@ -1722,42 +1732,56 @@ new configurable_hotkey(
     "Toggle auto-Prestige",
     "Shift+KeyP",
     pr_toggle,
-    () => game.pp_bought[3]
+    () => game.pp_bought[3] || game.reboot > 0
 )
 new configurable_hotkey("Reboot", "KeyR", reboot, () => !game.confirmation)
+new configurable_hotkey(
+    "Toggle auto-Reboot",
+    "Shift+KeyR",
+    rb_toggle,
+    () => game.perks[15]
+)
 new configurable_hotkey(
     "Activate Overclocker",
     "KeyO",
     oc_activate,
-    () => game.pp_bought[14]
+    () => game.pp_bought[14] || game.reboot > 0
 )
 new configurable_hotkey(
     "Toggle auto-Overclock",
     "Shift+KeyO",
     oc_toggle,
-    () => game.pp_bought[16]
+    () => game.pp_bought[16] || game.reboot > 0
 )
 new configurable_hotkey(
     "Discharge Capacitor",
     "KeyD",
     discharge,
-    () => game.pp_bought[32]
+    () => game.pp_bought[32] || game.reboot > 0
 )
 new configurable_hotkey(
     "Toggle auto-Discharge",
     "Shift+KeyD",
     ds_toggle,
-    () => game.pp_bought[35]
+    () => game.pp_bought[35] || game.reboot > 0
 )
 new configurable_hotkey(
     "Toggle all automation",
     "KeyA",
     toggle_all_automation,
-    () => game.pp_bought[2]
+    () => game.pp_bought[2] || game.reboot > 0
 )
-new configurable_hotkey("Buy all upgrades", "KeyM", ev => {
-    for (let i = 0; i < 6; i++) {
-        upgrade(i, true)
+new configurable_hotkey(
+    "Exit Challenge",
+    "KeyE",
+    exit_challenge,
+    () => game.perks[17]
+)
+new configurable_hotkey("Buy all upgrades (on upgrades tab)", "KeyM", ev => {
+    if (game.tab === 1) {
+        for (let i = 0; i < 6; i++) {
+            upgrade(i, true)
+        }
     }
 })
 
@@ -1773,7 +1797,7 @@ function refresh() {
     description_update()
     upgrade_update()
     color_update()
-    ampbutton_update()
+    reset_button_update()
     click_update()
     pp_update()
     watts_update()
