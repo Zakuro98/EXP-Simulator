@@ -777,8 +777,10 @@ function enter_challenge(id) {
 
 //exiting a challenge
 function exit_challenge() {
-    game.challenge = 0
-    challenge_update()
-    empty_reboot()
-    watts_update()
+    if (game.challenge !== 0) {
+        game.challenge = 0
+        challenge_update()
+        empty_reboot()
+        watts_update()
+    }
 }
