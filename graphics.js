@@ -206,8 +206,22 @@ function level_update() {
         document.getElementById("exp").innerText =
             format_num(game.exp) + " / " + format_num(game.goal) + " EXP"
     else document.getElementById("exp").innerText = "Maxed!"
-    document.getElementById("total_exp").innerText =
-        format_num(game.total_exp) + " Total EXP"
+
+    if (game.priority_layer === 2) {
+        document.getElementById("total_exp").innerText =
+            format_num(game.prestige_exp) + " Total EXP"
+    } else if (game.priority_layer === 1) {
+        document.getElementById("total_exp").innerText =
+            format_num(game.total_exp) + " Total EXP"
+    } else {
+        if (game.reboot >= 1) {
+            document.getElementById("total_exp").innerText =
+                format_num(game.prestige_exp) + " Total EXP"
+        } else {
+            document.getElementById("total_exp").innerText =
+                format_num(game.total_exp) + " Total EXP"
+        }
+    }
 }
 
 //updating text on the exp button
@@ -285,29 +299,29 @@ function click_update() {
 }
 
 //updating text on the prestige button
-function ampbutton_update() {
-    if (game.level >= game.pr_min || game.amp > 1) {
-        document.getElementById("amp_up").style.display = "inline"
-        document.getElementById("pp_up").style.display = "inline"
-        document.getElementById("amp_button").style.display = "inline"
-        document.getElementById("amp").innerText = format_num(game.amp) + " AMP"
-        document.getElementById("pp").innerText = format_num(game.pp) + " PP"
-        document.getElementById("amp").style.display = "block"
-        document.getElementById("pp").style.display = "block"
-    }
+function reset_button_update() {
+    if (game.priority_layer === 1) {
+        document.getElementById("amp_area").style.display = "block"
 
-    if (game.challenge !== 4 && game.challenge !== 9) {
-        if (game.level >= game.pr_min) {
+        if (game.level >= game.pr_min || game.amp > 1) {
             document.getElementById("amp_up").style.display = "inline"
-            document.getElementById("amp_up").innerText =
-                "+" +
-                format_num(
-                    Math.floor(
-                        get_amp(game.level) * game.patience * game.watt_boost
-                    )
-                ) +
-                " AMP"
-            if (game.prestige === 0 && game.reboot === 0)
+            document.getElementById("pp_up").style.display = "inline"
+            document.getElementById("amp_button").style.display = "inline"
+            document.getElementById("amp").innerText =
+                format_num(game.amp) + " AMP"
+            document.getElementById("pp").innerText =
+                format_num(game.pp) + " PP"
+            document.getElementById("amp").style.display = "block"
+            document.getElementById("pp").style.display = "block"
+        } else {
+            document.getElementById("amp_button").style.display = "none"
+            document.getElementById("amp").style.display = "none"
+            document.getElementById("pp").style.display = "none"
+        }
+
+        if (game.challenge !== 4 && game.challenge !== 9) {
+            if (game.level >= game.pr_min) {
+                document.getElementById("amp_up").style.display = "inline"
                 document.getElementById("amp_up").innerText =
                     "+" +
                     format_num(
@@ -317,83 +331,190 @@ function ampbutton_update() {
                                 game.watt_boost
                         )
                     ) +
-                    " AMP (EXP Multiplier)"
-            let pp_amount = 0
-            if (game.level > game.highest_level) {
+                    " AMP"
+                let pp_amount = 0
+                if (game.level > game.highest_level) {
+                    if (game.prestige <= 21)
+                        pp_amount =
+                            get_pp(game.level) - get_pp(game.highest_level) + 1
+                    else
+                        pp_amount =
+                            get_pp(game.level) - get_pp(game.highest_level)
+                } else {
+                    if (game.prestige <= 21) pp_amount = 1
+                    else pp_amount = 0
+                }
+                document.getElementById("pp_up").innerText =
+                    "+" + format_num(pp_amount) + " PP"
+                if (
+                    (pp_amount >= 1 || game.notation === 8) &&
+                    !game.perks[27]
+                ) {
+                    document.getElementById("pp_up").style.display = "inline"
+                } else {
+                    document.getElementById("pp_up").style.display = "none"
+                }
+                document.getElementById("amp_button").innerText = "PRESTIGE!"
+                document.getElementById("amp_button").style.color = "white"
+            } else {
+                document.getElementById("amp_up").style.display = "none"
+                document.getElementById("pp_up").style.display = "none"
+                document.getElementById("amp_button").innerText =
+                    "LVL " + format_num(game.pr_min)
+                document.getElementById("amp_button").style.color = get_color(
+                    (Math.floor(game.pr_min / 60) + 5) % 12
+                )
+            }
+        } else {
+            if (game.level >= game.highest_level) {
+                let amp_amount =
+                    get_amp(game.level) - get_amp(game.highest_level)
+                document.getElementById("amp_up").style.display = "inline"
+                document.getElementById("amp_up").innerText =
+                    "+" +
+                    format_num(Math.floor(amp_amount * game.watt_boost)) +
+                    " AMP"
+                let pp_amount = 0
                 if (game.prestige <= 21)
                     pp_amount =
                         get_pp(game.level) - get_pp(game.highest_level) + 1
                 else pp_amount = get_pp(game.level) - get_pp(game.highest_level)
+                document.getElementById("pp_up").innerText =
+                    "+" + format_num(pp_amount) + " PP"
+                if (
+                    (pp_amount >= 1 || game.notation === 8) &&
+                    !game.perks[27]
+                ) {
+                    document.getElementById("pp_up").style.display = "inline"
+                } else {
+                    document.getElementById("pp_up").style.display = "none"
+                }
+                document.getElementById("amp_button").innerText = "PRESTIGE!"
+                document.getElementById("amp_button").style.color = "white"
             } else {
-                if (game.prestige <= 21) pp_amount = 1
-                else pp_amount = 0
-            }
-            document.getElementById("pp_up").innerText =
-                "+" + format_num(pp_amount) + " PP"
-            if ((pp_amount >= 1 || game.notation === 8) && !game.perks[27]) {
-                document.getElementById("pp_up").style.display = "inline"
-            } else {
+                document.getElementById("amp_up").style.display = "none"
                 document.getElementById("pp_up").style.display = "none"
+                document.getElementById("amp_button").innerText =
+                    "LVL " + format_num(game.highest_level)
+
+                if (game.highest_level < 12000) {
+                    document.getElementById("amp_button").style.color =
+                        get_color(
+                            (Math.floor(game.highest_level / 60) + 5) % 12
+                        )
+                } else if (game.highest_level < 60000) {
+                    document.getElementById("amp_button").style.color =
+                        get_color(
+                            (Math.floor(game.highest_level / 300) - 3) % 12
+                        )
+                } else {
+                    document.getElementById("amp_button").style.color =
+                        get_color(
+                            (Math.floor(game.highest_level / 1200) + 3) % 12
+                        )
+                }
             }
-            document.getElementById("amp_button").innerText = "PRESTIGE!"
-            document.getElementById("amp_button").style.color = "white"
-        } else {
-            document.getElementById("amp_up").style.display = "none"
-            document.getElementById("pp_up").style.display = "none"
-            document.getElementById("amp_button").innerText =
-                "LVL " + format_num(game.pr_min)
-            document.getElementById("amp_button").style.color = get_color(
-                (Math.floor(game.pr_min / 60) + 5) % 12
-            )
         }
     } else {
-        if (game.level >= game.highest_level) {
-            let amp_amount = get_amp(game.level) - get_amp(game.highest_level)
-            document.getElementById("amp_up").style.display = "inline"
-            document.getElementById("amp_up").innerText =
-                "+" +
-                format_num(Math.floor(amp_amount * game.watt_boost)) +
-                " AMP"
-            let pp_amount = 0
-            if (game.prestige <= 21)
-                pp_amount = get_pp(game.level) - get_pp(game.highest_level) + 1
-            else pp_amount = get_pp(game.level) - get_pp(game.highest_level)
-            document.getElementById("pp_up").innerText =
-                "+" + format_num(pp_amount) + " PP"
-            if ((pp_amount >= 1 || game.notation === 8) && !game.perks[27]) {
-                document.getElementById("pp_up").style.display = "inline"
-            } else {
-                document.getElementById("pp_up").style.display = "none"
-            }
-            document.getElementById("amp_button").innerText = "PRESTIGE!"
-            document.getElementById("amp_button").style.color = "white"
-        } else {
-            document.getElementById("amp_up").style.display = "none"
-            document.getElementById("pp_up").style.display = "none"
-            document.getElementById("amp_button").innerText =
-                "LVL " + format_num(game.highest_level)
-
-            if (game.highest_level < 12000) {
-                document.getElementById("amp_button").style.color = get_color(
-                    (Math.floor(game.highest_level / 60) + 5) % 12
-                )
-            } else if (game.highest_level < 60000) {
-                document.getElementById("amp_button").style.color = get_color(
-                    (Math.floor(game.highest_level / 300) - 3) % 12
-                )
-            } else {
-                document.getElementById("amp_button").style.color = get_color(
-                    (Math.floor(game.highest_level / 1200) + 3) % 12
-                )
-            }
-        }
-    }
-
-    if (game.amp > 1) {
-        document.getElementById("prestige").style.display = "inline"
-    } else {
+        document.getElementById("amp_area").style.display = "none"
         document.getElementById("amp").style.display = "none"
         document.getElementById("pp").style.display = "none"
+    }
+
+    if (game.priority_layer === 2) {
+        document.getElementById("reboot_area").style.display = "block"
+        document.getElementById("watts2").style.display = "block"
+        if (game.watts === 1)
+            document.getElementById("watts2").innerText =
+                format_num(game.watts) + " watt"
+        else
+            document.getElementById("watts2").innerText =
+                format_num(game.watts) + " watts"
+        if (game.watts >= 98304)
+            document.getElementById("hydrogen3").style.display = "block"
+        else document.getElementById("hydrogen3").style.display = "none"
+        document.getElementById("hydrogen3").innerText =
+            format_eff(game.hydrogen) + " g hydrogen"
+
+        let all_pp_upgrades = true
+        for (const upgrade2 of pp_upgrade.upgrades) {
+            if (upgrade2.id < 39 && !game.pp_bought[upgrade2.id])
+                all_pp_upgrades = false
+        }
+
+        let reboot_requirement = 0
+        if (game.reboot >= 1) reboot_requirement = 5000 * game.reboot + 80000
+        if (game.reboot >= 24) reboot_requirement = 200000
+
+        if (game.challenge !== 0 && !entering) {
+            if (game.completions[game.challenge - 1] < 12) {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step *
+                        game.completions[game.challenge - 1] +
+                    (challenge.challenges[game.challenge - 1].step2 *
+                        (game.completions[game.challenge - 1] - 1) *
+                        game.completions[game.challenge - 1]) /
+                        2
+            } else {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step * 11 +
+                    challenge.challenges[game.challenge - 1].step2 * 55
+            }
+        }
+
+        if (all_pp_upgrades && game.pp >= reboot_requirement) {
+            document.getElementById("watt_button").className =
+                "button reboot_power"
+            document.getElementById("watts_up").style.display = "inline"
+            if (!game.perks[13]) {
+                if (game.notation !== 8)
+                    document.getElementById("watts_up").innerText =
+                        "+" + format_num(1) + " watt"
+                else
+                    document.getElementById("watts_up").innerText =
+                        "+" + format_num(1) + " watts"
+            } else {
+                if (get_watts(game.pp) === 1 && game.notation !== 8)
+                    document.getElementById("watts_up").innerText =
+                        "+" + format_num(get_watts(game.pp)) + " watt"
+                else
+                    document.getElementById("watts_up").innerText =
+                        "+" + format_num(get_watts(game.pp)) + " watts"
+                if (game.perks[22]) {
+                    document.getElementById("hydrogen_up").style.display =
+                        "inline"
+                    document.getElementById("hydrogen_up").innerText =
+                        "+" +
+                        format_eff(
+                            (get_watts(game.pp) / 100) * 2 ** game.supply_level
+                        ) +
+                        " g hydrogen"
+                    if (game.perks[25])
+                        document.getElementById("hydrogen_up").innerText =
+                            "+" +
+                            format_eff(
+                                (get_watts(game.pp) / 100) *
+                                    2.5 ** game.supply_level
+                            ) +
+                            " g hydrogen"
+                }
+            }
+        } else {
+            document.getElementById("watt_button").className =
+                "button no_reboot_power"
+            document.getElementById("watts_up").style.display = "none"
+            document.getElementById("hydrogen_up").style.display = "none"
+        }
+    } else {
+        document.getElementById("reboot_area").style.display = "none"
+        document.getElementById("watts2").style.display = "none"
+        document.getElementById("hydrogen3").style.display = "none"
+    }
+
+    if (game.prestige >= 1 || game.reboot >= 1) {
+        document.getElementById("prestige").style.display = "inline"
     }
 }
 
@@ -1360,6 +1481,138 @@ function stats_update() {
 
 //updating availability of pp upgrades
 function pp_update() {
+    //prestige panel
+    document.getElementById("amp2").innerText = format_num(game.amp)
+    document.getElementById("amp_boost").innerText =
+        "creating " + format_num(game.amp) + "x EXP production"
+    document.getElementById("pp2").innerText = format_num(game.pp)
+
+    if (game.challenge !== 4 && game.challenge !== 9) {
+        if (game.level >= game.pr_min) {
+            document.getElementById("amp_up2").innerText =
+                "+" +
+                format_num(
+                    Math.floor(
+                        get_amp(game.level) * game.patience * game.watt_boost
+                    )
+                ) +
+                " AMP"
+            let pp_amount = 0
+            if (game.level > game.highest_level) {
+                if (game.prestige <= 21)
+                    pp_amount =
+                        get_pp(game.level) - get_pp(game.highest_level) + 1
+                else pp_amount = get_pp(game.level) - get_pp(game.highest_level)
+            } else {
+                if (game.prestige <= 21) pp_amount = 1
+                else pp_amount = 0
+            }
+            document.getElementById("pp_up2").innerText =
+                "+" + format_num(pp_amount) + " PP"
+            document.getElementById("prestige_button").innerText = "PRESTIGE!"
+            document.getElementById("prestige_button").style.color = "white"
+        } else {
+            document.getElementById("amp_up2").innerText =
+                "+" + format_num(0) + " AMP"
+            document.getElementById("pp_up2").innerText =
+                "+" + format_num(0) + " PP"
+            document.getElementById("prestige_button").innerText =
+                "LVL " + format_num(game.pr_min)
+            document.getElementById("prestige_button").style.color = get_color(
+                (Math.floor(game.pr_min / 60) + 5) % 12
+            )
+        }
+    } else {
+        if (game.level >= game.highest_level) {
+            let amp_amount = get_amp(game.level) - get_amp(game.highest_level)
+            document.getElementById("amp_up2").innerText =
+                "+" +
+                format_num(Math.floor(amp_amount * game.watt_boost)) +
+                " AMP"
+            let pp_amount = 0
+            if (game.prestige <= 21)
+                pp_amount = get_pp(game.level) - get_pp(game.highest_level) + 1
+            else pp_amount = get_pp(game.level) - get_pp(game.highest_level)
+            document.getElementById("pp_up2").innerText =
+                "+" + format_num(pp_amount) + " PP"
+            document.getElementById("prestige_button").innerText = "PRESTIGE!"
+            document.getElementById("prestige_button").style.color = "white"
+        } else {
+            document.getElementById("amp_up2").innerText =
+                "+" + format_num(0) + " AMP"
+            document.getElementById("pp_up2").innerText =
+                "+" + format_num(0) + " PP"
+            document.getElementById("prestige_button").innerText =
+                "LVL " + format_num(game.highest_level)
+
+            if (game.highest_level < 12000) {
+                document.getElementById("prestige_button").style.color =
+                    get_color((Math.floor(game.highest_level / 60) + 5) % 12)
+            } else if (game.highest_level < 60000) {
+                document.getElementById("prestige_button").style.color =
+                    get_color((Math.floor(game.highest_level / 300) - 3) % 12)
+            } else {
+                document.getElementById("prestige_button").style.color =
+                    get_color((Math.floor(game.highest_level / 1200) + 3) % 12)
+            }
+        }
+    }
+
+    if (!game.perks[27]) {
+        document.getElementById("amp_up2").style.marginTop = "0em"
+        document.getElementById("pp_up2").style.display = "inline"
+
+        if (game.pp_bought[6]) {
+            if (game.highest_level < 500) {
+                document.getElementById("pp_next").style.display = "inline"
+                if (game.level < game.highest_level) {
+                    let current_pp = ((game.highest_level - 40) / 20) ** 2 - 1
+                    if (current_pp % 1 === 0) {
+                        current_pp++
+                    } else {
+                        current_pp = Math.ceil(current_pp)
+                    }
+                    document.getElementById("pp_next").innerText =
+                        "(Next PP at LVL " +
+                        format_num(
+                            Math.ceil((current_pp + 1) ** 0.5 * 20 + 40)
+                        ) +
+                        ")"
+                } else {
+                    let current_pp = ((game.level - 40) / 20) ** 2 - 1
+                    if (current_pp % 1 === 0) {
+                        current_pp++
+                    } else {
+                        current_pp = Math.ceil(current_pp)
+                    }
+                    document.getElementById("pp_next").innerText =
+                        "(Next PP at LVL " +
+                        format_num(
+                            Math.ceil((current_pp + 1) ** 0.5 * 20 + 40)
+                        ) +
+                        ")"
+                }
+            } else {
+                if (game.level < game.highest_level) {
+                    document.getElementById("pp_next").style.display = "inline"
+                    document.getElementById("pp_next").innerText =
+                        "(Next PP at LVL " +
+                        format_num(game.highest_level + 1) +
+                        ")"
+                } else {
+                    document.getElementById("pp_next").style.display = "none"
+                }
+            }
+        } else {
+            document.getElementById("pp_next").style.display = "none"
+        }
+    } else {
+        document.getElementById("amp_up2").style.marginTop = "0.5em"
+        document.getElementById("pp_up2").style.display = "none"
+        document.getElementById("pp_next").style.display = "none"
+    }
+
+    //pp upgrade handling
     for (const upgrade of pp_upgrade.upgrades) {
         let element = pp_map.get(upgrade)
         let button = element.querySelector(".pp_button")
@@ -1462,6 +1715,13 @@ function pp_update() {
         document.getElementById("lvlrequirement").style.display = "none"
     } else {
         document.getElementById("lvlrequirement").style.display = "inline"
+    }
+
+    //show priority layer setting
+    if (game.prestige >= 1 || game.reboot >= 1) {
+        document.getElementById("priority_layer").style.display = "flex"
+    } else {
+        document.getElementById("priority_layer").style.display = "none"
     }
 }
 
@@ -1643,6 +1903,7 @@ function watts_update() {
 
     if (game.perks[15] && game.challenge === 0) {
         document.getElementById("autorb_block").style.display = "block"
+        document.getElementById("watt_auto").style.display = "inline"
         let watts_sec = 0
         let entries = 0
         for (let i = 0; i < 5; i++) {
@@ -1672,6 +1933,7 @@ function watts_update() {
                 "Watt Efficiency: undefined"
     } else {
         document.getElementById("autorb_block").style.display = "none"
+        document.getElementById("watt_auto").style.display = "none"
     }
 
     if (game.perks[17] && game.tab === 3) {
@@ -2885,12 +3147,16 @@ function description_update() {
 //make all gui match the loaded save data
 function regenerate_ui() {
     color_update()
-    ampbutton_update()
+    reset_button_update()
     pp_update()
     challenge_update()
     reactor_update()
     goto_tab(game.tab)
-    goto_subtab(game.subtab)
+    if (game.tab === 2) {
+        goto_subtab(game.subtab[0])
+    } else if (game.tab === 3) {
+        goto_subtab(game.subtab[1])
+    }
     switch (game.notation) {
         case 0:
             document.getElementById("notation_button").innerText = "LONG"
@@ -2918,6 +3184,14 @@ function regenerate_ui() {
             break
         case 8:
             document.getElementById("notation_button").innerText = "???"
+            break
+    }
+    switch (game.switchpoint) {
+        case 0:
+            document.getElementById("switchpoint_button").innerText = "MILLION"
+            break
+        case 1:
+            document.getElementById("switchpoint_button").innerText = "BILLION"
             break
     }
     if (game.hotkeys) {
@@ -2986,6 +3260,17 @@ function regenerate_ui() {
     } else {
         document.getElementById("ch_confirm_button").innerText = "DISABLED"
     }
+    switch (game.priority_layer) {
+        case 0:
+            document.getElementById("layer_button").innerText = "NONE"
+            break
+        case 1:
+            document.getElementById("layer_button").innerText = "PRESTIGE"
+            break
+        case 2:
+            document.getElementById("layer_button").innerText = "REBOOT"
+            break
+    }
     if (game.hints) {
         document.getElementById("hints_button").innerText = "ENABLED"
     } else {
@@ -3051,8 +3336,9 @@ function regenerate_ui() {
 
     if (game.pp_bought[3]) {
         document.getElementById("amp_auto").style.display = "inline"
+        document.getElementById("auto_config").style.display = "block"
         if (game.pp_bought[6]) {
-            document.getElementById("auto_config").style.display = "block"
+            document.getElementById("auto_level").style.display = "block"
             if (game.pp_bought[12]) {
                 document.getElementById("auto_mode").style.display = "block"
                 if (game.perks[0])
@@ -3064,10 +3350,11 @@ function regenerate_ui() {
                 document.getElementById("auto_mode").style.display = "none"
             }
         } else {
-            document.getElementById("auto_config").style.display = "none"
+            document.getElementById("auto_level").style.display = "none"
         }
     } else {
         document.getElementById("amp_auto").style.display = "none"
+        document.getElementById("auto_config").style.display = "none"
     }
 
     if (
