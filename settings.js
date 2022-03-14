@@ -59,6 +59,20 @@ function notation() {
         pp_upgrade.upgrades[30].desc
 }
 
+//switchpoint toggle
+function switchpoint() {
+    game.switchpoint += 1
+    if (game.switchpoint >= 2) game.switchpoint = 0
+    switch (game.switchpoint) {
+        case 0:
+            document.getElementById("switchpoint_button").innerText = "MILLION"
+            break
+        case 1:
+            document.getElementById("switchpoint_button").innerText = "BILLION"
+            break
+    }
+}
+
 //hotkeys toggle
 function hotkeys() {
     if (game.hotkeys) {
@@ -167,6 +181,8 @@ function confirmation() {
         game.autorb_toggle = false
         document.getElementById("autorb_toggle").innerText = "DISABLED"
         document.getElementById("autorb_toggle").style.color = "#ff0000"
+        document.getElementById("watt_auto").innerText = "OFF"
+        document.getElementById("watt_auto").style.color = "#ff0000"
         document.getElementById("confirm_button").innerText = "ENABLED"
     }
 }
@@ -179,6 +195,27 @@ function challenge_confirmation() {
     } else {
         game.challenge_confirmation = true
         document.getElementById("ch_confirm_button").innerText = "ENABLED"
+    }
+}
+
+//priority reset layer switching
+function priority_layer() {
+    game.priority_layer += 1
+    if (game.reboot >= 1) {
+        if (game.priority_layer >= 3) game.priority_layer = 0
+    } else {
+        if (game.priority_layer >= 2) game.priority_layer = 0
+    }
+    switch (game.priority_layer) {
+        case 0:
+            document.getElementById("layer_button").innerText = "NONE"
+            break
+        case 1:
+            document.getElementById("layer_button").innerText = "PRESTIGE"
+            break
+        case 2:
+            document.getElementById("layer_button").innerText = "REBOOT"
+            break
     }
 }
 
@@ -206,6 +243,8 @@ function goto_tab(id) {
 
     document.getElementById("upgrades_page").style.display = "none"
     document.getElementById("prestige_page").style.display = "none"
+    document.getElementById("p_upgrades_page").style.display = "none"
+    document.getElementById("p_config_page").style.display = "none"
     document.getElementById("reboot_page").style.display = "none"
     document.getElementById("challenges_page").style.display = "none"
     document.getElementById("reactor_page").style.display = "none"
@@ -213,6 +252,7 @@ function goto_tab(id) {
     document.getElementById("achievements_page").style.display = "none"
     document.getElementById("settings_page").style.display = "none"
 
+    document.getElementById("prestige_tabs").style.display = "none"
     document.getElementById("reboot_tabs").style.display = "none"
 
     switch (id) {
@@ -221,14 +261,21 @@ function goto_tab(id) {
             break
         case 2:
             document.getElementById("prestige_page").style.display = "block"
+            if (game.subtab[0] === 0)
+                document.getElementById("p_upgrades_page").style.display =
+                    "block"
+            if (game.subtab[0] === 1)
+                document.getElementById("p_config_page").style.display = "block"
+            if (game.pp_bought[3])
+                document.getElementById("prestige_tabs").style.display = "flex"
             break
         case 3:
-            if (game.subtab === 0)
+            if (game.subtab[1] === 0)
                 document.getElementById("reboot_page").style.display = "block"
-            if (game.subtab === 1)
+            if (game.subtab[1] === 1)
                 document.getElementById("challenges_page").style.display =
                     "block"
-            if (game.subtab === 2)
+            if (game.subtab[1] === 2)
                 document.getElementById("reactor_page").style.display = "block"
             if (game.perks[17])
                 document.getElementById("reboot_tabs").style.display = "flex"
@@ -248,8 +295,23 @@ function goto_tab(id) {
 
 //subtab switching
 function goto_subtab(id) {
-    if (game.tab === 3) {
-        game.subtab = id
+    if (game.tab === 2) {
+        game.subtab[0] = id
+
+        document.getElementById("p_upgrades_page").style.display = "none"
+        document.getElementById("p_config_page").style.display = "none"
+
+        switch (id) {
+            case 0:
+                document.getElementById("p_upgrades_page").style.display =
+                    "block"
+                break
+            case 1:
+                document.getElementById("p_config_page").style.display = "block"
+                break
+        }
+    } else if (game.tab === 3) {
+        game.subtab[1] = id
 
         document.getElementById("reboot_page").style.display = "none"
         document.getElementById("challenges_page").style.display = "none"
