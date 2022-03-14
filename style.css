@@ -36,6 +36,21 @@ main {
     width: 100%;
 }
 
+#prestige_tabs {
+    display: none;
+    margin-top: 1em;
+}
+
+#p_upgrades_tab {
+    display: inline;
+    margin-left: 0.285em;
+}
+
+#config_tab {
+    display: inline;
+    margin-left: 0.285em;
+}
+
 #reboot_tabs {
     display: none;
     margin-top: 1em;
@@ -140,6 +155,37 @@ main {
     display: none;
 }
 
+#amp_up {
+    margin-top: 0.35em;
+}
+
+#pp_up {
+    color: #d000ff;
+    margin-top: 0.35em;
+}
+
+.reboot_area {
+    display: block;
+    margin-top: 0.3em;
+}
+
+#watt_button {
+    margin-top: 0em;
+    display: inline;
+}
+
+#watts_up {
+    color: #ffff00;
+    text-shadow: 0em 0em 0.2em #ffff00;
+    margin-top: 0.35em;
+}
+
+#hydrogen_up {
+    color: #ffaef6;
+    text-shadow: 0em 0em 0.1em #ff00e1, 0em 0em 0.2em #ff00e1;
+    margin-top: 0.35em;
+}
+
 .lvlbar {
     display: flex;
     align-items: flex-end;
@@ -224,6 +270,22 @@ main {
 
 #pp {
     color: #d000ff;
+    margin-top: 0.1em;
+    margin-bottom: 0em;
+    display: none;
+}
+
+#watts2 {
+    color: #ffff00;
+    text-shadow: 0em 0em 0.2em #ffff00;
+    margin-top: 0.1em;
+    margin-bottom: 0em;
+    display: block;
+}
+
+#hydrogen3 {
+    color: #ffaef6;
+    text-shadow: 0em 0em 0.1em #ff00e1, 0em 0em 0.2em #ff00e1;
     margin-top: 0.1em;
     margin-bottom: 0em;
     display: none;
@@ -628,6 +690,7 @@ main {
     font-family: var(--font_small);
     font-weight: normal;
     border: 1px solid white;
+    cursor: pointer;
 }
 
 #respec_button:hover {
@@ -654,6 +717,7 @@ main {
     margin-top: 0.6em;
     margin-bottom: 0em;
     display: inline;
+    cursor: pointer;
 }
 
 .wipe_button:hover {
@@ -671,9 +735,135 @@ main {
     text-align: center;
 }
 
+.amp_text {
+    display: block;
+    font-size: 1em;
+    color: white;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#amp_block {
+    display: flex;
+    justify-content: center;
+}
+
+#amp_text {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.285em;
+}
+
+#amp2 {
+    display: inline;
+    align-self: flex-end;
+    font-size: 1.75em;
+    font-weight: bold;
+    margin-top: 0em;
+    margin-bottom: -0.1em;
+    margin-left: 0.214em;
+    color: white;
+}
+
+#amp_boost {
+    margin-top: 0.1em;
+}
+
+.pp_text2 {
+    display: block;
+    font-size: 1em;
+    color: #d000ff;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#pp_block {
+    display: flex;
+    justify-content: center;
+}
+
+#pp_text2 {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.285em;
+}
+
+#pp2 {
+    display: inline;
+    align-self: flex-end;
+    font-size: 1.75em;
+    font-weight: bold;
+    margin-top: 0.25em;
+    margin-bottom: -0.1em;
+    margin-left: 0.214em;
+    color: #d000ff;
+}
+
 .prestige {
     display: none;
-    margin-top: 1.2em;
+    margin-top: 1.142em;
+    margin-bottom: 1.28em;
+}
+
+#prestige_block {
+    display: flex;
+    background-color: #44194d;
+    margin-top: 1.285em;
+    margin-bottom: 2.4em;
+    padding: 0.4em;
+}
+
+#prestige_details {
+    flex-grow: 1;
+    margin-left: 0.5em;
+}
+
+.prestige_text {
+    display: block;
+    font-size: 1em;
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#amp_up2 {
+    margin-top: 0em;
+}
+
+#pp_up2 {
+    color: #d000ff;
+}
+
+#pp_next {
+    color: white;
+    display: none;
+}
+
+#prestige_button {
+    background-color: #410a4a;
+    color: white;
+    border: 1px solid white;
+    padding: 0.285em 0.571em;
+    font-size: 1.2em;
+    margin-bottom: 0.05em;
+    font-family: var(--font_small);
+    font-weight: normal;
+    flex-grow: 0;
+    cursor: pointer;
+}
+
+#prestige_button:hover {
+    background-color: #5d0d61;
+    color: white;
+    border: 1px solid white;
+}
+
+#prestige_button:active {
+    background-color: var(--button_background);
+    color: var(--button_color);
+    border: 1px solid white;
 }
 
 .pp_upgrade {
@@ -795,6 +985,15 @@ main {
     display: inline;
 }
 
+#auto_enabled {
+    margin-top: 0.1em;
+}
+
+#auto_toggle {
+    display: inline;
+    color: #ff0000;
+}
+
 #auto_mode {
     display: none;
     margin-top: 0.1em;
@@ -821,7 +1020,7 @@ main {
 }
 
 #auto_level {
-    display: block;
+    display: none;
     margin-top: 0.1em;
 }
 
@@ -924,15 +1123,6 @@ main {
     display: inline;
 }
 
-#amp_up {
-    margin-top: 0.35em;
-}
-
-#pp_up {
-    color: #d000ff;
-    margin-top: 0.35em;
-}
-
 #reboot_page {
     display: none;
     margin-top: 1.142em;
@@ -1032,6 +1222,19 @@ main {
 }
 
 .no_reboot_power {
+    background-color: #410a4a;
+    color: #aaaaaa;
+    border: 1px solid #aaaaaa;
+    cursor: default;
+}
+
+.no_reboot_power:hover {
+    background-color: #410a4a;
+    color: #aaaaaa;
+    border: 1px solid #aaaaaa;
+}
+
+.no_reboot_power:active {
     background-color: #410a4a;
     color: #aaaaaa;
     border: 1px solid #aaaaaa;
