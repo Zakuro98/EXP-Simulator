@@ -392,9 +392,17 @@ function max_all() {
     let efficiency = new Array(8).fill(Infinity)
     let selection = 0
     for (let i = 0; i < 8; i++) {
-        efficiency[i] =
-            game.core_price[i] /
-            ((game.core_level[i] + 1) / game.core_level[i] - 1)
+        if (i === 0) {
+            efficiency[i] =
+                game.core_price[i] /
+                Math.log((game.core_level[i] + 1) / game.core_level[i] - 1)
+        } else {
+            efficiency[i] =
+                game.core_price[i] /
+                Math.log(
+                    (game.core_level[i] + 2) / (game.core_level[i] + 1) - 1
+                )
+        }
         if (
             efficiency[i] < efficiency[selection] &&
             game.hydrogen >= game.core_price[i]
@@ -409,9 +417,17 @@ function max_all() {
         selection = 0
 
         for (let i = 0; i < 8; i++) {
-            efficiency[i] =
-                game.core_price[i] /
-                ((game.core_level[i] + 1) / game.core_level[i] - 1)
+            if (i === 0) {
+                efficiency[i] =
+                    game.core_price[i] /
+                    Math.log((game.core_level[i] + 1) / game.core_level[i] - 1)
+            } else {
+                efficiency[i] =
+                    game.core_price[i] /
+                    Math.log(
+                        (game.core_level[i] + 2) / (game.core_level[i] + 1) - 1
+                    )
+            }
             if (
                 efficiency[i] < efficiency[selection] &&
                 game.hydrogen >= game.core_price[i]
