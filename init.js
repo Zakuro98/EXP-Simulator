@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.2.300",
+    version: "2.2.301",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -169,7 +169,7 @@ let game = {
     speed_power: 1,
     banked_prestige: 0,
 
-    subtab: 0,
+    subtab: [0, 0],
     challenge: 0,
     challenge_confirmation: true,
     completions: new Array(9).fill(0),
@@ -193,6 +193,10 @@ let game = {
     supply_price: 16,
 
     true_banked_prestige: 0,
+
+    //v2.2.301 variables
+    priority_layer: 1,
+    switchpoint: 0,
 }
 
 //initialize maps
@@ -217,6 +221,15 @@ for (let i = 0; i < 39; i++) {
 //number formatting
 function format_num(num) {
     let negative = false
+    let cutoff = 1000000
+    switch (game.switchpoint) {
+        case 0:
+            cutoff = 1000000
+            break
+        case 1:
+            cutoff = 1000000000
+            break
+    }
     if (num < 0) {
         negative = true
         num *= -1
@@ -230,7 +243,7 @@ function format_num(num) {
             }
         }
     }
-    if (num >= 1000000) {
+    if (num >= cutoff) {
         switch (game.notation) {
             case 1:
                 const single_array = [
@@ -1176,7 +1189,7 @@ class pp_upgrade {
 
         //attatching upgrade to prestige page
         pp_map.set(this, pp_block)
-        document.getElementById("prestige_page").appendChild(pp_block)
+        document.getElementById("p_upgrades_page").appendChild(pp_block)
     }
 
     //whether or not the upgrade can be bought
@@ -1234,6 +1247,7 @@ class pp_upgrade_child extends pp_upgrade {
         "Unlocks automation for Prestige",
         3,
         function () {
+            document.getElementById("auto_config").style.display = "block"
             document.getElementById("amp_auto").style.display = "inline"
         },
         autoupgrade
@@ -1264,7 +1278,7 @@ class pp_upgrade_child extends pp_upgrade {
         "Breaks the limits, allowing you to go beyond LVL 60\nAlso allows Auto-Prestige configuration\n(Heads up! PP gain past LVL 60 is based on highest level instead)",
         5,
         function () {
-            document.getElementById("auto_config").style.display = "block"
+            document.getElementById("auto_level").style.display = "block"
             if (!game.achievements[45]) get_achievement(45)
         },
         autoprestige
