@@ -77,10 +77,14 @@ function pr_toggle() {
         game.autopr_toggle = true
         document.getElementById("amp_auto").innerText = "ON"
         document.getElementById("amp_auto").style.color = "#00ff00"
+        document.getElementById("auto_toggle").innerText = "ENABLED"
+        document.getElementById("auto_toggle").style.color = "#00ff00"
     } else {
         game.autopr_toggle = false
         document.getElementById("amp_auto").innerText = "OFF"
         document.getElementById("amp_auto").style.color = "#ff0000"
+        document.getElementById("auto_toggle").innerText = "DISABLED"
+        document.getElementById("auto_toggle").style.color = "#ff0000"
     }
 }
 
@@ -165,10 +169,14 @@ function rb_toggle() {
     if (!game.confirmation) {
         if (!game.autorb_toggle) {
             game.autorb_toggle = true
+            document.getElementById("watt_auto").innerText = "ON"
+            document.getElementById("watt_auto").style.color = "#00ff00"
             document.getElementById("autorb_toggle").innerText = "ENABLED"
             document.getElementById("autorb_toggle").style.color = "#00ff00"
         } else {
             game.autorb_toggle = false
+            document.getElementById("watt_auto").innerText = "OFF"
+            document.getElementById("watt_auto").style.color = "#ff0000"
             document.getElementById("autorb_toggle").innerText = "DISABLED"
             document.getElementById("autorb_toggle").style.color = "#ff0000"
         }
