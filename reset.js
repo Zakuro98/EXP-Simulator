@@ -1,25 +1,27 @@
 //function for handling resets of any kind
 //prestige, reboot, save wiping, etc
 function reset() {
-    document.getElementById("boost").style.display = "none"
-    document.getElementById("boost_button").style.display = "none"
-    document.getElementById("boost_auto").style.display = "none"
-    document.getElementById("auto").style.display = "none"
-    document.getElementById("auto_button").style.display = "none"
-    document.getElementById("auto_auto").style.display = "none"
-    document.getElementById("fluct").style.display = "none"
-    document.getElementById("fluct_button").style.display = "none"
-    document.getElementById("fluct_auto").style.display = "none"
-    document.getElementById("fact").style.display = "none"
-    document.getElementById("fact_button").style.display = "none"
-    document.getElementById("fact_auto").style.display = "none"
-    document.getElementById("flux").style.display = "none"
-    document.getElementById("flux_button").style.display = "none"
-    document.getElementById("flux_auto").style.display = "none"
-    document.getElementById("battery").style.display = "none"
-    document.getElementById("battery_button").style.display = "none"
-    document.getElementById("battery_mode").style.display = "none"
-    document.getElementById("battery_auto").style.display = "none"
+    if (!game.pp_bought[0] || game.challenge === 7) {
+        document.getElementById("fluct").style.display = "none"
+        document.getElementById("fluct_button").style.display = "none"
+        document.getElementById("fluct_auto").style.display = "none"
+    }
+    if (!game.pp_bought[5] || game.challenge === 7) {
+        document.getElementById("fact").style.display = "none"
+        document.getElementById("fact_button").style.display = "none"
+        document.getElementById("fact_auto").style.display = "none"
+    }
+    if (!game.pp_bought[20] || game.challenge === 7) {
+        document.getElementById("flux").style.display = "none"
+        document.getElementById("flux_button").style.display = "none"
+        document.getElementById("flux_auto").style.display = "none"
+    }
+    if (!game.pp_bought[25] || game.challenge === 7) {
+        document.getElementById("battery").style.display = "none"
+        document.getElementById("battery_button").style.display = "none"
+        document.getElementById("battery_mode").style.display = "none"
+        document.getElementById("battery_auto").style.display = "none"
+    }
 
     game.total_exp = 0
     game.exp_add = 1
@@ -577,47 +579,45 @@ function reboot() {
 
     if (!game.confirmation) confirmed = true
     else {
+        let message = ""
         if (game.reboot < 1) {
-            if (
-                confirm(
-                    "Are you sure you want to activate the Generator?\nThis will reset ALL progress up to this point!\nHowever, you will gain 1 watt"
-                )
-            ) {
-                confirmed = true
-            }
+            message =
+                "Are you sure you want to activate the Generator?\nThis will reset ALL progress up to this point!\nHowever, you will gain 1 watt"
         } else {
             if (!game.perks[13]) {
-                if (
-                    confirm(
-                        "Are you sure you want to Reboot?\nYou will gain 1 watt"
-                    )
-                ) {
-                    confirmed = true
-                }
+                message =
+                    "Are you sure you want to Reboot?\nYou will gain 1 watt"
             } else {
                 if (get_watts(game.pp) === 1 && game.notation !== 8) {
-                    if (
-                        confirm(
-                            "Are you sure you want to Reboot?\nYou will gain " +
-                                format_num(get_watts(game.pp)) +
-                                " watt"
-                        )
-                    ) {
-                        confirmed = true
-                    }
+                    message =
+                        "Are you sure you want to Reboot?\nYou will gain " +
+                        format_num(get_watts(game.pp)) +
+                        " watt"
                 } else {
-                    if (
-                        confirm(
-                            "Are you sure you want to Reboot?\nYou will gain " +
-                                format_num(get_watts(game.pp)) +
-                                " watts"
-                        )
-                    ) {
-                        confirmed = true
-                    }
+                    message =
+                        "Are you sure you want to Reboot?\nYou will gain " +
+                        format_num(get_watts(game.pp)) +
+                        " watts"
                 }
             }
+
+            if (game.perks[25])
+                message +=
+                    " and " +
+                    format_eff(
+                        (get_watts(game.pp) / 100) * 2.5 ** game.supply_level
+                    ) +
+                    " g hydrogen"
+            else if (game.perks[22])
+                message +=
+                    " and " +
+                    format_eff(
+                        (get_watts(game.pp) / 100) * 2 ** game.supply_level
+                    ) +
+                    " g hydrogen"
         }
+
+        if (confirm(message)) confirmed = true
     }
 
     if (all_pp_upgrades && game.pp >= reboot_requirement) {
@@ -899,13 +899,23 @@ function reboot() {
 
             document.getElementById("boost_auto").style.display = "none"
             document.getElementById("auto_auto").style.display = "none"
+            document.getElementById("fluct").style.display = "none"
+            document.getElementById("fluct_button").style.display = "none"
             document.getElementById("fluct_auto").style.display = "none"
+            document.getElementById("fact").style.display = "none"
+            document.getElementById("fact_button").style.display = "none"
             document.getElementById("fact_auto").style.display = "none"
+            document.getElementById("flux").style.display = "none"
+            document.getElementById("flux_button").style.display = "none"
             document.getElementById("flux_auto").style.display = "none"
+            document.getElementById("battery").style.display = "none"
+            document.getElementById("battery_button").style.display = "none"
+            document.getElementById("battery_mode").style.display = "none"
             document.getElementById("battery_auto").style.display = "none"
 
             document.getElementById("amp_auto").style.display = "none"
             document.getElementById("auto_config").style.display = "none"
+            document.getElementById("auto_level").style.display = "none"
             document.getElementById("auto_mode").style.display = "none"
 
             document.getElementById("overclock").style.display = "none"
@@ -1019,9 +1029,18 @@ function empty_reboot() {
 
     document.getElementById("boost_auto").style.display = "none"
     document.getElementById("auto_auto").style.display = "none"
+    document.getElementById("fluct").style.display = "none"
+    document.getElementById("fluct_button").style.display = "none"
     document.getElementById("fluct_auto").style.display = "none"
+    document.getElementById("fact").style.display = "none"
+    document.getElementById("fact_button").style.display = "none"
     document.getElementById("fact_auto").style.display = "none"
+    document.getElementById("flux").style.display = "none"
+    document.getElementById("flux_button").style.display = "none"
     document.getElementById("flux_auto").style.display = "none"
+    document.getElementById("battery").style.display = "none"
+    document.getElementById("battery_button").style.display = "none"
+    document.getElementById("battery_mode").style.display = "none"
     document.getElementById("battery_auto").style.display = "none"
 
     document.getElementById("amp_auto").style.display = "none"
