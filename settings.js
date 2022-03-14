@@ -395,13 +395,15 @@ function max_all() {
         if (i === 0) {
             efficiency[i] =
                 game.core_price[i] /
-                Math.log((game.core_level[i] + 1) / game.core_level[i] - 1)
+                    (game.core_level[i] + 1) /
+                    game.core_level[i] -
+                1
         } else {
             efficiency[i] =
                 game.core_price[i] /
-                Math.log(
-                    (game.core_level[i] + 2) / (game.core_level[i] + 1) - 1
-                )
+                    (game.core_level[i] + 2) /
+                    (game.core_level[i] + 1) -
+                1
         }
         if (
             efficiency[i] < efficiency[selection] &&
@@ -420,13 +422,15 @@ function max_all() {
             if (i === 0) {
                 efficiency[i] =
                     game.core_price[i] /
-                    Math.log((game.core_level[i] + 1) / game.core_level[i] - 1)
+                        (game.core_level[i] + 1) /
+                        game.core_level[i] -
+                    1
             } else {
                 efficiency[i] =
                     game.core_price[i] /
-                    Math.log(
-                        (game.core_level[i] + 2) / (game.core_level[i] + 1) - 1
-                    )
+                        (game.core_level[i] + 2) /
+                        (game.core_level[i] + 1) -
+                    1
             }
             if (
                 efficiency[i] < efficiency[selection] &&
