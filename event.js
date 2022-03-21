@@ -583,7 +583,6 @@ function oc_activate() {
         document.getElementById("oc_button").style.display = "none"
         document.getElementById("oc_timer").style.display = "block"
         document.getElementById("oc_progress").style.background = "#ff7f00"
-        game.afk_time = 0
     }
 }
 
@@ -656,8 +655,6 @@ function discharge() {
         game.stored_exp = 0
 
         if (!game.achievements[61] && game.oc_state === 2) get_achievement(61)
-
-        game.afk_time = 0
     }
 }
 
