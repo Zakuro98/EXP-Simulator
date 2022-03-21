@@ -893,6 +893,8 @@ function reboot() {
 
             game.smartpr_time = 0
 
+            if (!game.perks[2]) game.subtab[0] = 0
+
             document.getElementById("click").innerText =
                 "+" + format_num(game.amp) + " EXP"
 
@@ -1022,6 +1024,8 @@ function empty_reboot() {
     } else game.generator_kit = 0
 
     game.smartpr_time = 0
+
+    if (!game.perks[2]) game.subtab[0] = 0
 
     document.getElementById("click").innerText =
         "+" + format_num(game.amp) + " EXP"
