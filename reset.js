@@ -52,7 +52,6 @@ function reset() {
     game.battery_level = 90
 
     game.time = 0
-    game.afk_time = 0
 
     color_update()
 
