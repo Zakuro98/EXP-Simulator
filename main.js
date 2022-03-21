@@ -75,8 +75,6 @@ function tick() {
 
     //amp conversion
     if (game.perks[26] && game.challenge !== 9) {
-        let old_amp = game.amp
-
         if (game.challenge === 4) {
             if (game.level >= game.highest_level) {
                 if (!game.perks[27])
@@ -160,10 +158,6 @@ function tick() {
                 if (!game.achievements[117] && game.amp >= 10 ** 28)
                     get_achievement(117)
             }
-        }
-
-        if (game.amp !== old_amp) {
-            game.afk_time = 0
         }
     }
 
@@ -692,7 +686,6 @@ function tick() {
 
         if (game.stored_exp <= 300 * game.tickspeed) {
             game.stored_exp += 1 - game.cap_boost
-            if (game.cap_mode > 0) game.afk_time = 0
         }
 
         if (
@@ -983,7 +976,7 @@ function tick() {
     }
     if (game.autopr_toggle) game.no_automation = false
     if (game.smartpr_toggle) game.no_automation = false
-    if (game.autooc_toggle) game.no_automation = false
+    if (game.autooc_toggle && !game.perks[20]) game.no_automation = false
     if (game.autods_toggle >= 1) game.no_automation = false
     if (game.autopp_toggle) game.no_automation = false
     if (game.autocp_toggle) game.no_automation = false
@@ -1031,7 +1024,7 @@ function tick() {
             "\n\n\nEXP Simulator v?.?.???\nMade by Zakuro"
     } else {
         document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.2.302\nMade by Zakuro"
+            "\n\n\nEXP Simulator v2.2.303\nMade by Zakuro"
     }
 }
 
@@ -1126,17 +1119,6 @@ document.getElementById("slot1").addEventListener("click", function () {
     if (!game.achievements[64] && game.achiev_page === 11) {
         get_achievement(64)
     }
-})
-
-//resetting timer for afk simulator
-document.addEventListener("click", function () {
-    game.afk_time = 0
-})
-document.addEventListener("wheel", function () {
-    game.afk_time = 0
-})
-document.addEventListener("mousemove", function () {
-    game.afk_time = 0
 })
 
 //prevent enter abuse
