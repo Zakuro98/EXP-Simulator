@@ -2254,7 +2254,7 @@ function achievements_update() {
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerText =
-                                        "Maybe you should go do something in real life"
+                                        "Maybe you should take a break from making progress for a bit"
                                     break
                                 case 110:
                                     document.getElementById(
@@ -2784,8 +2784,7 @@ function description_update() {
         achievement.achievements[87].requirement = "Reboot in under ???"
         achievement.achievements[88].requirement = "Reboot in under ???"
         achievement.achievements[89].requirement = "Reboot in under ???"
-        achievement.achievements[109].requirement =
-            "Do absolutely nothing for ???"
+        achievement.achievements[109].requirement = "Gain no EXP for ???"
 
         if (game.perks[9]) {
             pp_upgrade.upgrades[35].desc =
@@ -2865,8 +2864,7 @@ function description_update() {
         achievement.achievements[87].requirement = "Reboot in under 10 minutes"
         achievement.achievements[88].requirement = "Reboot in under 1 minute"
         achievement.achievements[89].requirement = "Reboot in under 1 second"
-        achievement.achievements[109].requirement =
-            "Do absolutely nothing for 10 minutes"
+        achievement.achievements[109].requirement = "Gain no EXP for 10 minutes"
 
         if (game.perks[9]) {
             pp_upgrade.upgrades[35].desc =
