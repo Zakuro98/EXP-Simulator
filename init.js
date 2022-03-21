@@ -2415,8 +2415,8 @@ class achievement {
         5
     )
     new achievement(
-        "AFK Simulator",
-        "Do absolutely nothing for 10 minutes",
+        "A whole lot of nothing",
+        "Gain no EXP for 10 minutes",
         63,
         5
     )
