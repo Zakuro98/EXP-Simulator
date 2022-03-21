@@ -153,6 +153,7 @@ main {
 #amp_button {
     margin-top: 0em;
     display: none;
+    width: 5.96em;
 }
 
 #amp_up {
@@ -677,7 +678,7 @@ main {
     color: white;
 }
 
-#respec{
+#respec {
     flex-grow: 0;
     flex-basis: 33.3%;
 }
@@ -852,6 +853,7 @@ main {
     font-weight: normal;
     flex-grow: 0;
     cursor: pointer;
+    width: 5.96em;
 }
 
 #prestige_button:hover {
@@ -1202,7 +1204,7 @@ main {
     border: 2px solid #ffff00;
 }
 
-#generator_requirements{
+#generator_requirements {
     flex-grow: 1;
 }
 
@@ -1512,7 +1514,8 @@ main {
     margin-bottom: -0.15em;
     margin-left: 0.214em;
     color: #ffd04f;
-    text-shadow: 0em 0em 0.1em #ff7600, 0em 0em 0.25em #e00700, 0em 0em 0.4em #e00700;
+    text-shadow: 0em 0em 0.1em #ff7600, 0em 0em 0.25em #e00700,
+        0em 0em 0.4em #e00700;
 }
 
 #helium_boost {
