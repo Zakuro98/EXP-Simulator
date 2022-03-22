@@ -1377,6 +1377,8 @@ function load(savegame) {
         //v2.2.301
         game = savegame
         game.version = "2.2.301"
+        game.amp_eff = new Array(5).fill(-1)
+        game.watts_eff = new Array(5).fill(-1)
         //v2.2.300
         if (minor < 301) {
             game.subtab = [0, 0]
@@ -1397,8 +1399,6 @@ function load(savegame) {
             }
             game.completions[8] = 0
             game.ch_boost[8] = 1
-            game.amp_eff = new Array(5).fill(-1)
-            game.watts_eff = new Array(5).fill(-1)
             game.hydrogen = 0
             game.helium = 0
             game.helium_boost = 1
