@@ -232,6 +232,19 @@ function initial_switch(mode) {
     }
 }
 
+//reactor automation toggle
+function hy_toggle() {
+    if (!game.autohy_toggle) {
+        game.autohy_toggle = true
+        document.getElementById("autohy_toggle").innerText = "ENABLED"
+        document.getElementById("autohy_toggle").style.color = "#00ff00"
+    } else {
+        game.autohy_toggle = false
+        document.getElementById("autohy_toggle").innerText = "DISABLED"
+        document.getElementById("autohy_toggle").style.color = "#ff0000"
+    }
+}
+
 //battery mode toggle
 function battery_toggle() {
     if (game.battery_mode === 0) {
@@ -306,6 +319,30 @@ function pp_switch(mode) {
         case 2:
             document.getElementById("strict_mode").className =
                 "button mode_active"
+            break
+    }
+}
+
+//switching autoreboot modes
+function autorb_switch(mode) {
+    game.autorb_mode = mode
+
+    document.getElementById("auto_watts").style.display = "none"
+    document.getElementById("auto_time2").style.display = "none"
+
+    document.getElementById("watts_mode").className = "button"
+    document.getElementById("time_mode2").className = "button"
+
+    switch (mode) {
+        case 0:
+            document.getElementById("watts_mode").className =
+                "button mode_active"
+            document.getElementById("auto_watts").style.display = "block"
+            break
+        case 1:
+            document.getElementById("time_mode2").className =
+                "button mode_active"
+            document.getElementById("auto_time2").style.display = "block"
             break
     }
 }
