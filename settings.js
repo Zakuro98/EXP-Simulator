@@ -198,10 +198,21 @@ function challenge_confirmation() {
     }
 }
 
+//toggling quantize confirmation
+function quantum_confirmation() {
+    if (game.quantum_confirmation) {
+        game.quantum_confirmation = false
+        document.getElementById("qu_confirm_button").innerText = "DISABLED"
+    } else {
+        game.quantum_confirmation = true
+        document.getElementById("qu_confirm_button").innerText = "ENABLED"
+    }
+}
+
 //priority reset layer switching
 function priority_layer() {
     game.priority_layer += 1
-    if (game.reboot >= 1) {
+    if (game.reboot >= 1 || game.quantum >= 1) {
         if (game.priority_layer >= 3) game.priority_layer = 0
     } else {
         if (game.priority_layer >= 2) game.priority_layer = 0
@@ -232,7 +243,7 @@ function hints() {
 
 //tab switching
 function goto_tab(id) {
-    if (id !== 5 && game.tab === 5) {
+    if (id !== 5 && game.tab === 6) {
         document.getElementById("achievements").style.color = "#ffffff"
         for (let i = 0; i < achievement.achievements.length; i++) {
             achievement.achievements[i].new = false
@@ -248,6 +259,7 @@ function goto_tab(id) {
     document.getElementById("reboot_page").style.display = "none"
     document.getElementById("challenges_page").style.display = "none"
     document.getElementById("reactor_page").style.display = "none"
+    document.getElementById("prism_page").style.display = "none"
     document.getElementById("statistics_page").style.display = "none"
     document.getElementById("achievements_page").style.display = "none"
     document.getElementById("settings_page").style.display = "none"
@@ -281,13 +293,16 @@ function goto_tab(id) {
                 document.getElementById("reboot_tabs").style.display = "flex"
             break
         case 4:
-            document.getElementById("statistics_page").style.display = "flex"
+            document.getElementById("prism_page").style.display = "block"
             break
         case 5:
+            document.getElementById("statistics_page").style.display = "flex"
+            break
+        case 6:
             document.getElementById("achievements_page").style.display = "block"
             document.getElementById("achievements").style.color = "#ffffff"
             break
-        case 6:
+        case 7:
             document.getElementById("settings_page").style.display = "flex"
             break
     }
@@ -409,6 +424,54 @@ function max_all() {
     }
     while (game.hydrogen >= game.core_price[selection]) {
         game.hydrogen -= game.core_price[selection]
+        game.core_level[selection]++
+        game.core_price[selection] += core.cores[selection].base_price / 4
+
+        selection = 0
+
+        for (let i = 0; i < 8; i++) {
+            if (i === 0) {
+                efficiency[i] =
+                    game.core_price[i] /
+                    ((game.core_level[i] + 1) / game.core_level[i] - 1)
+            } else {
+                efficiency[i] =
+                    game.core_price[i] /
+                    ((game.core_level[i] + 2) / (game.core_level[i] + 1) - 1)
+            }
+            if (
+                efficiency[i] < efficiency[selection] &&
+                game.hydrogen >= game.core_price[i]
+            )
+                selection = i
+        }
+    }
+}
+
+//buy max cores with half money
+function max_half() {
+    let efficiency = new Array(8).fill(Infinity)
+    let selection = 0
+    let budget = game.hydrogen / 2
+    for (let i = 0; i < 8; i++) {
+        if (i === 0) {
+            efficiency[i] =
+                game.core_price[i] /
+                ((game.core_level[i] + 1) / game.core_level[i] - 1)
+        } else {
+            efficiency[i] =
+                game.core_price[i] /
+                ((game.core_level[i] + 2) / (game.core_level[i] + 1) - 1)
+        }
+        if (
+            efficiency[i] < efficiency[selection] &&
+            game.hydrogen >= game.core_price[i]
+        )
+            selection = i
+    }
+    while (budget >= game.core_price[selection]) {
+        game.hydrogen -= game.core_price[selection]
+        budget -= game.core_price[selection]
         game.core_level[selection]++
         game.core_price[selection] += core.cores[selection].base_price / 4
 
