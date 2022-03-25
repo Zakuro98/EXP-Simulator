@@ -6,6 +6,9 @@
     --font_size: 28px;
     --enter_color: white;
     --enter_shadow: white;
+    --photon_color: #ff8080;
+    --photon_color2: #ff0000;
+    --photon_color3: #400000;
 }
 
 body {
@@ -34,6 +37,64 @@ main {
     display: flex;
     justify-content: center;
     width: 100%;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex: 0;
+    margin-top: 0.857em;
+}
+
+@media (min-width: 1024px) {
+    .short {
+        flex-direction: row;
+    }
+
+    .short_row {
+        margin-top: 0.857em;
+    }
+}
+
+@media (max-width: 1023px) {
+    .short {
+        flex-direction: column;
+    }
+
+    .short_row {
+        margin-top: 0.285em;
+    }
+}
+
+.tab {
+    background-color: #410a4a;
+    color: white;
+    padding: 0.15em 0.25em;
+    font-size: 1em;
+    font-family: var(--font_small);
+    font-weight: bold;
+    border: 2px solid white;
+    margin-top: 0em;
+    margin-left: 0.285em;
+    margin-right: 0em;
+    cursor: pointer;
+}
+
+#upgrades {
+    margin-left: 0em;
+}
+
+#prestige {
+    display: none;
+}
+
+#reboot {
+    display: none;
+}
+
+#quantum {
+    display: none;
 }
 
 #prestige_tabs {
@@ -68,31 +129,6 @@ main {
 #reactor_tab {
     display: none;
     margin-left: 0.285em;
-}
-
-.tab {
-    background-color: #410a4a;
-    color: white;
-    padding: 0.15em 0.25em;
-    font-size: 1em;
-    font-family: var(--font_small);
-    font-weight: bold;
-    border: 2px solid white;
-    margin-top: 0.857em;
-    margin-left: 0.285em;
-    cursor: pointer;
-}
-
-#upgrades {
-    margin-left: 0em;
-}
-
-#prestige {
-    display: none;
-}
-
-#reboot {
-    display: none;
 }
 
 .tab:hover {
@@ -678,7 +714,7 @@ main {
     color: white;
 }
 
-#respec {
+#respec{
     flex-grow: 0;
     flex-basis: 33.3%;
 }
@@ -1204,7 +1240,7 @@ main {
     border: 2px solid #ffff00;
 }
 
-#generator_requirements {
+#generator_requirements{
     flex-grow: 1;
 }
 
@@ -1289,8 +1325,26 @@ main {
     margin-top: 0.15em;
 }
 
+#autorb_mode {
+    display: none;
+    margin-top: 0.1em;
+}
+
+#watts_mode {
+    display: inline;
+}
+
+#time_mode2 {
+    display: inline;
+}
+
 #auto_watts {
     display: block;
+    margin-top: 0.1em;
+}
+
+#auto_time2 {
+    display: none;
     margin-top: 0.1em;
 }
 
@@ -1309,7 +1363,7 @@ main {
 }
 
 #watts_eff {
-    margin-top: 0.1em;
+    margin-top: 0.25em;
 }
 
 .generator_perk {
@@ -1514,8 +1568,7 @@ main {
     margin-bottom: -0.15em;
     margin-left: 0.214em;
     color: #ffd04f;
-    text-shadow: 0em 0em 0.1em #ff7600, 0em 0em 0.25em #e00700,
-        0em 0em 0.4em #e00700;
+    text-shadow: 0em 0em 0.1em #ff7600, 0em 0em 0.25em #e00700, 0em 0em 0.4em #e00700;
 }
 
 #helium_boost {
@@ -1659,9 +1712,310 @@ main {
     margin-left: 0.285em;
 }
 
+#reactor_max_half {
+    margin-left: 0.285em;
+}
+
 .reactor_button:active {
     background-color: #0091ff;
     color: black;
+}
+
+#autohy_block {
+    display: none;
+    background-color: #44194d;
+    margin-top: 2em;
+    margin-bottom: 0em;
+    padding: 0.4em;
+    border: 2px solid #0091ff;
+}
+
+#autohy_enabled {
+    display: block;
+    margin-top: 0.15em;
+}
+
+#autohy_toggle {
+    display: inline;
+    color: #ff0000;
+}
+
+.photons_text {
+    display: block;
+    font-size: 1em;
+    color: white;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#photons_block {
+    display: flex;
+    justify-content: center;
+}
+
+#photons_text {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.428em;
+}
+
+#photons {
+    display: inline;
+    align-self: flex-end;
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-top: 0.68em;
+    margin-bottom: -0.18em;
+    margin-left: 0.214em;
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+}
+
+#quantize_block {
+    display: flex;
+    background-color: #44194d;
+    margin-top: 1.285em;
+    margin-bottom: 1em;
+    padding: 0.4em;
+    border: 2px solid var(--photon_color)
+}
+
+#quantize_details {
+    flex-grow: 1;
+    margin-left: 0.5em;
+}
+
+.quantize_text {
+    display: block;
+    font-size: 1em;
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#quantize_req {
+    margin-top: 0em;
+}
+
+#photons_up {
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+}
+
+#quantize_footer {
+    color: white;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 1em;
+}
+
+#quantize_button {
+    padding: 0.285em 0.571em;
+    font-size: 1.2em;
+    margin-bottom: 0.05em;
+    font-family: var(--font_small);
+    flex-grow: 0;
+}
+
+.unlit {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    cursor: default;
+    font-weight: normal;
+}
+
+.unlit:hover {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+.unlit:active {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+.lit {
+    background-color: black;
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+    border: 1px solid white;
+    box-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2), 0em 0em 0.1em var(--photon_color) inset, 0em 0em 0.3em var(--photon_color) inset, 0em 0em 0.8em var(--photon_color2) inset, 0em 0em 1.2em var(--photon_color2) inset;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.lit:hover {
+    background-color: var(--photon_color3);
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+    border: 1px solid white;
+    box-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2), 0em 0em 0.1em var(--photon_color) inset, 0em 0em 0.5em var(--photon_color) inset, 0em 0em 1em var(--photon_color2) inset, 0em 0em 1.4em var(--photon_color2) inset;
+}
+
+.lit:active {
+    background-color: var(--photon_color);
+    color: black;
+    font-weight: bold;
+    border: 1px solid var(--photon_color);
+    box-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+}
+
+.superlit {
+    background-color: var(--photon_color);
+    color: black;
+    font-weight: bold;
+    border: 1px solid var(--photon_color);
+    box-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+}
+
+#prism_block {
+    display: flex;
+}
+
+#prism {
+    width: 12em;
+    height: 12em;
+    margin-top: 0.2em;
+    flex-grow: 0;
+    display: block;
+    align-self: center;
+}
+
+#prism_level {
+    flex: 1;
+    align-self: center;
+    text-align: right;
+    margin-right: 1em;
+}
+
+#prism_lvl_text {
+    font-size: 1.25em;
+    display: inline;
+}
+
+#prism_lvl_num {
+    font-size: 2em;
+    display: inline;
+    margin-left: 0.05em;
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+}
+
+#prism_boost {
+    flex: 1;
+    font-size: 1.25em;
+    margin-left: 1em;
+    align-self: center;
+}
+
+#small_prism_block {
+    text-align: center;
+    font-size: 1.25em;
+    margin-bottom: 0.5em;
+}
+
+@media (min-width: 1100px) {
+    #prism_level {
+        display: block;
+    }
+
+    #prism_boost {
+        display: block;
+    }
+
+    #small_prism_block {
+        display: none;
+    }
+
+    #prism_block {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 1099px) {
+    #prism_level {
+        display: none;
+    }
+
+    #prism_boost {
+        display: none;
+    }
+
+    #small_prism_block {
+        display: block;
+    }
+
+    #prism_block {
+        flex-direction: column;
+    }
+}
+
+.prism_lit {
+    filter: drop-shadow(0 0 0.05em var(--photon_color)) drop-shadow(0 0 0.1em var(--photon_color)) drop-shadow(0 0 0.15em var(--photon_color2));
+}
+
+#prism_upgrade {
+    text-align: center;
+}
+
+#prism_button_center {
+    display: flex;
+    flex-direction: column;
+}
+
+#prism_button {
+    padding: 0.3em 0.5em;
+    font-family: var(--font_small);
+    font-size: 0.857em;
+    font-weight: normal;
+    margin-top: 0.428em;
+    margin-bottom: 0.7em;
+    align-self: center;
+}
+
+#quantum_upgrades_text {
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0.285em;
+}
+
+.qu_upgrade {
+    display: flex;
+    margin-bottom: 0.4em;
+    background-color: #44194d;
+    padding: 0.4em;
+    border: 2px solid var(--photon_color)
+}
+
+.qu_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.qu_name {
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.qu_desc {
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.qu_button {
+    padding: 0.285em 0.428em;
+    font-size: 1em;
+    font-family: var(--font_small);
+    flex: 0 0 8.3em;
 }
 
 #achievements_page {
