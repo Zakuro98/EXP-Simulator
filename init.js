@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.2.301",
+    version: "2.3.000",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -125,7 +125,6 @@ let game = {
     watt_boost: 1,
 
     perks: new Array(28).fill(false),
-    hold_time: 0,
     generator_kit: 0,
     flux_increase: 1,
 
@@ -133,7 +132,7 @@ let game = {
     autopp_mode: 0,
     priority: new Array(39).fill(1),
 
-    achievements: new Array(120).fill(false),
+    achievements: new Array(137).fill(false),
     ach_power: 1,
     achiev_page: 0,
     no_automation: true,
@@ -157,7 +156,7 @@ let game = {
     smartpr_start: 0,
 
     autorb_toggle: false,
-    autorb_goal: 1,
+    autorb_goal: [1, 0.8],
     autorb_pending: false,
 
     cancer_reboots: 0,
@@ -197,6 +196,29 @@ let game = {
     //v2.2.301 variables
     priority_layer: 1,
     switchpoint: 0,
+
+    //v2.3.000 variables
+    quantum: 0,
+    reboot_exp: 0,
+    reboot_time: 0,
+    fastest_quantize: 10 ** 21,
+    reboot_highest_level: 1,
+    reboot_clicks: 0,
+
+    photons: 0,
+    prism_level: 0,
+    prism_boost: 1,
+    qu_bought: new Array(8).fill(false),
+
+    autorb_mode: 0,
+    autohy_toggle: false,
+    autohy_portion: 0.5,
+    autohy_importance: 1,
+    budget: 0,
+    prev_completions: 0,
+    superspeed_power: 1,
+
+    quantum_confirmation: true,
 }
 
 //initialize maps
@@ -205,6 +227,7 @@ const perk_map = new Map()
 const notif_map = new Map()
 const challenge_map = new Map()
 const reactor_map = new Map()
+const quantum_map = new Map()
 
 //initialize autoclick prevention
 let click_time = undefined
@@ -212,6 +235,7 @@ let focus_time = undefined
 
 let entering = false
 let reduction = 1
+let prism_angle = Math.PI / 10
 
 //initialize pp upgrade priorities
 for (let i = 0; i < 39; i++) {
@@ -730,6 +754,11 @@ function get_level(xp) {
         (2 ** (245 / 116) * (ab - y + z) ** (115 / 116)) /
         (3 ** (3 / 116) * 5 ** (30 / 29))
     const ad = ((27 * ac) / 32) ** (1 / 30)
+    const ae = (32 / 27) * (90000 + ad) ** 30 + ab - ac
+    const af =
+        (5 ** (36 / 35) * (ae - ab + ac) ** (174 / 175)) /
+        (2 * 3 ** (183 / 175))
+    const ag = ((27 * af) / 32) ** (1 / 36)
 
     if (game.challenge !== 3 && game.challenge !== 9) {
         if (xp < a) {
@@ -762,9 +791,13 @@ function get_level(xp) {
             return Math.floor(
                 ((27 * (xp + z - y)) / 32) ** (1 / 24) + 42000 - aa
             )
-        } else {
+        } else if (xp < ae) {
             return Math.floor(
                 ((27 * (xp + ac - ab)) / 32) ** (1 / 30) + 60000 - ad
+            )
+        } else {
+            return Math.floor(
+                ((27 * (xp + af - ae)) / 32) ** (1 / 36) + 150000 - ag
             )
         }
     } else {
@@ -945,8 +978,8 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else {
-            let guess = 1000000
+        } else if (xp < ae * 150000) {
+            let guess = 150000
             let iterations = 0
             while (
                 Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
@@ -959,6 +992,24 @@ function get_level(xp) {
                             (31 * guess - 60000 + ad) +
                             ab -
                             ac) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        } else {
+            let guess = 1000000
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        ((32 / 27) *
+                            (guess - 150000 + ag) ** 35 *
+                            (37 * guess - 60000 + ag) +
+                            ae -
+                            af) +
                     guess
                 iterations++
             }
@@ -1013,6 +1064,11 @@ function get_exp(lvl) {
         (2 ** (245 / 116) * (ab - y + z) ** (115 / 116)) /
         (3 ** (3 / 116) * 5 ** (30 / 29))
     const ad = ((27 * ac) / 32) ** (1 / 30)
+    const ae = (32 / 27) * (90000 + ad) ** 30 + ab - ac
+    const af =
+        (5 ** (36 / 35) * (ae - ab + ac) ** (174 / 175)) /
+        (2 * 3 ** (183 / 175))
+    const ag = ((27 * af) / 32) ** (1 / 36)
 
     let output = 0
     if (lvl !== 0) {
@@ -1036,8 +1092,10 @@ function get_exp(lvl) {
             output = (32 / 27) * (lvl - 31999 + x) ** 21 + v - w
         } else if (lvl < 60000) {
             output = (32 / 27) * (lvl - 41999 + aa) ** 24 + y - z
-        } else {
+        } else if (lvl < 150000) {
             output = (32 / 27) * (lvl - 59999 + ad) ** 30 + ab - ac
+        } else {
+            output = (32 / 27) * (lvl - 149999 + ag) ** 36 + ae - af
         }
 
         if (game.challenge === 3 || game.challenge === 9) output *= lvl + 1
@@ -1903,7 +1961,7 @@ class generator_perk {
     )
     //speed power [16]
     new generator_perk(
-        "Speed Power",
+        "Speed Power I",
         "EXP production is boosted based on your fastest Reboot",
         96
     )
@@ -2029,6 +2087,9 @@ class achievement {
         116,
         0
     )
+    new achievement("To hell and back again", "Reach LVL 80,000", 130, 0)
+    new achievement("The big one-oh-oh-oh-oh-oh", "Reach LVL 100,000", 131, 0)
+    new achievement("The grandmaster of level ups", "Reach LVL 150,000", 135, 0)
     new achievement("Square one", "Prestige 1 time", 13, 1)
     new achievement("See you in another life", "Prestige 10 times", 14, 1)
     new achievement("Nowhere to go but up", "Prestige 100 times", 15, 1)
@@ -2178,6 +2239,18 @@ class achievement {
         118,
         0
     )
+    new achievement(
+        "*notices your EXP*",
+        "Get " + format_num(10 ** 123) + " all time EXP",
+        132,
+        0
+    )
+    new achievement(
+        "EXP singularity",
+        "Get " + format_num(10 ** 138) + " all time EXP",
+        134,
+        0
+    )
     new achievement("Hot minute", "Play for 1 hour", 31, 0)
     new achievement("Time well spent", "Play for 6 hours", 32, 0)
     new achievement("Day in, day out", "Play for 24 hours", 33, 0)
@@ -2243,6 +2316,12 @@ class achievement {
         "Where no man has gone before",
         "Get " + format_num(10 ** 28) + " AMP",
         117,
+        1
+    )
+    new achievement(
+        "To the end of space and time",
+        "Get " + format_num(10 ** 32) + " AMP",
+        133,
         1
     )
     new achievement("The only RNG in the game", "Unlock EXP Fluctuation", 43, 1)
@@ -2401,6 +2480,42 @@ class achievement {
         "Make " + format_num(10 ** 30) + " mg helium/sec",
         107,
         3
+    )
+    new achievement("Tesseract one", "Quantize 1 time", 120, 4)
+    new achievement(
+        "Now you're thinking with photons!",
+        "Quantize 3 times",
+        121,
+        4
+    )
+    new achievement("Your life, in particles", "Quantize 5 times", 122, 4)
+    new achievement(
+        "Luckily they banished him to an island",
+        "Quantize 10 times",
+        123,
+        4
+    )
+    new achievement(
+        "Haha what if we turned everything you've ever done into light",
+        "Quantize 25 times",
+        124,
+        4
+    )
+    new achievement("All hail the Prism", "Reach Prism LVL 1", 126, 4)
+    new achievement("Let its light inside you", "Reach Prism LVL 10", 127, 4)
+    new achievement("Dazzling brilliance", "Reach Prism LVL 30", 125, 4)
+    new achievement("With great haste", "Quantize in under 1 hour", 128, 4)
+    new achievement(
+        "Look at the sparks fly",
+        "Quantize in under 5 minutes",
+        129,
+        4
+    )
+    new achievement(
+        "Fastest reset in the west",
+        "Quantize in under 1 minute",
+        136,
+        4
     )
     new achievement(
         "#intentionalfeature",
@@ -2727,3 +2842,132 @@ new core(528)
 new core(2080)
 new core(8256)
 //done initializing cores
+
+//quantum upgrade class
+class quantum_upgrade {
+    static upgrades = []
+
+    name
+    desc
+    price
+    func
+
+    //quantum constructor
+    constructor(name, desc, price, func) {
+        this.name = name
+        this.desc = desc
+        this.price = price
+        this.id = quantum_upgrade.upgrades.length
+        game.qu_bought[this.id] = false
+        this.on_purchase = func
+
+        quantum_upgrade.upgrades.push(this)
+
+        //upgrade name
+        let qu_name = document.createElement("P")
+        qu_name.innerText = this.name
+        qu_name.className = "qu_name"
+
+        //upgrade description
+        let qu_desc = document.createElement("P")
+        qu_desc.innerText = this.desc
+        qu_desc.className = "qu_desc"
+
+        //upgrade purchase button
+        let qu_button = document.createElement("BUTTON")
+        qu_button.innerText = "-" + this.price + " photons"
+        qu_button.className = "qu_button unlit"
+        qu_button.addEventListener("click", () => {
+            if (
+                game.photons >= this.price &&
+                game.qu_bought[this.id] === false
+            ) {
+                game.photons -= this.price
+                game.qu_bought[this.id] = true
+                this.on_purchase()
+                prism_update()
+                if (game.photons === 1 && game.notation !== 8)
+                    document.getElementById("photons_text").innerText = "photon"
+                else
+                    document.getElementById("photons_text").innerText =
+                        "photons"
+            }
+        })
+
+        //all text div
+        let qu_text = document.createElement("DIV")
+        qu_text.className = "qu_text"
+        qu_text.appendChild(qu_name)
+        qu_text.appendChild(qu_desc)
+
+        //entire upgrade div
+        let qu_block = document.createElement("DIV")
+        qu_block.className = "qu_upgrade"
+        qu_block.appendChild(qu_text)
+        qu_block.appendChild(qu_button)
+
+        //attatching upgrade to prism page
+        quantum_map.set(this, qu_block)
+        document.getElementById("prism_page").appendChild(qu_block)
+    }
+}
+
+//initializing quantum upgrades
+//beta decay [0]
+new quantum_upgrade(
+    "Beta Decay",
+    "Helium production is boosted based on unspent hydrogen",
+    5,
+    function () {}
+)
+//advanced auto-reboot [1]
+new quantum_upgrade(
+    "Advanced Auto-Reboot",
+    "Unlocks Time mode for Auto-Reboot",
+    100,
+    function () {}
+)
+//ease of compeltion [2]
+new quantum_upgrade(
+    "Ease of Completion",
+    "You can do multiple completions per Challenge attempt, and completions are given automatically",
+    1600,
+    function () {}
+)
+//speed power 2 [3]
+new quantum_upgrade(
+    "Speed Power II",
+    "EXP production is boosted based on your fastest Quantum Iteration",
+    28000,
+    function () {}
+)
+//auto-reactor [4]
+new quantum_upgrade(
+    "Auto-Reactor",
+    "Unlocks automation for Reactor core upgrades",
+    640000,
+    function () {}
+)
+//quantum privilege [5]
+new quantum_upgrade(
+    "Quantum Privilege",
+    "Quantize no longer resets Challenge completions",
+    7.68 * 10 ** 7,
+    function () {}
+)
+//helium avalanche [6]
+new quantum_upgrade(
+    "Helium Avalanche",
+    "The Snowball Effect perk becomes stronger",
+    4.8 * 10 ** 10,
+    function () {}
+)
+//gravity well [7]
+/*new quantum_upgrade(
+    "Gravity Well",
+    "Unlock coming soon...",
+    4.32 * 10 ** 13,
+    function () {}
+)
+*/
+//done initializing quantum upgrades
