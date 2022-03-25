@@ -3,6 +3,7 @@ function increment(num) {
     if (game.level < game.pr_min || game.pp_bought[6]) {
         game.total_exp += num
         game.prestige_exp += num
+        game.reboot_exp += num
         game.all_time_exp += num
 
         let prev_level = game.level
@@ -59,6 +60,12 @@ function increment(num) {
                 get_achievement(115)
             if (!game.achievements[116] && game.level >= 60000)
                 get_achievement(116)
+            if (!game.achievements[130] && game.level >= 80000)
+                get_achievement(130)
+            if (!game.achievements[131] && game.level >= 100000)
+                get_achievement(131)
+            if (!game.achievements[135] && game.level >= 150000)
+                get_achievement(135)
 
             if (game.level >= 5 && !game.hold_notify) {
                 new notify("Protip: you can hold the EXP button", "#ffc400")
@@ -117,6 +124,10 @@ function increment(num) {
             get_achievement(102)
         if (!game.achievements[118] && game.all_time_exp >= 10 ** 111)
             get_achievement(118)
+        if (!game.achievements[132] && game.all_time_exp >= 10 ** 123)
+            get_achievement(132)
+        if (!game.achievements[134] && game.all_time_exp >= 10 ** 138)
+            get_achievement(134)
 
         game.exp = game.total_exp - Math.ceil(get_exp(game.level - 1))
         game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level - 1))
@@ -161,6 +172,7 @@ function player_increment() {
             )
         game.clicks += 1
         game.prestige_clicks += 1
+        game.reboot_clicks += 1
         game.total_clicks += 1
         click_time = Date.now()
     }
@@ -668,8 +680,9 @@ function enter_challenge(id) {
         }
 
         let reboot_requirement = 0
-        if (game.reboot >= 1) reboot_requirement = 5000 * game.reboot + 80000
-        if (game.reboot >= 24) reboot_requirement = 200000
+        if (game.reboot >= 1 || game.quantum >= 1)
+            reboot_requirement = 5000 * game.reboot + 80000
+        if (game.reboot >= 24 || game.quantum >= 1) reboot_requirement = 200000
 
         let roman = "undefined"
         switch (id) {
@@ -720,6 +733,8 @@ function enter_challenge(id) {
         }
         if (confirmed) {
             game.challenge = id
+            if (game.qu_bought[2])
+                game.prev_completions = game.completions[game.challenge - 1]
             challenge_update()
             entering = true
 
@@ -779,5 +794,21 @@ function exit_challenge() {
         challenge_update()
         empty_reboot()
         watts_update()
+    }
+}
+
+//upgrading the prism
+function upgrade_prism() {
+    if (game.photons >= Math.round(5 * 2.8 ** game.prism_level)) {
+        game.photons -= Math.round(5 * 2.8 ** game.prism_level)
+        game.prism_level++
+        game.prism_boost = game.prism_level * (game.prism_level + 4)
+
+        if (!game.achievements[126] && game.prism_level >= 1)
+            get_achievement(126)
+        if (!game.achievements[127] && game.prism_level >= 10)
+            get_achievement(127)
+        if (!game.achievements[125] && game.prism_level >= 30)
+            get_achievement(125)
     }
 }
