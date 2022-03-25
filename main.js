@@ -1617,6 +1617,8 @@ function load(savegame) {
         for (let i = 0; i <= 119; i++) {
             game.achievements[i] = old_achievements[i]
         }
+        let reboot_watts = game.autorb_goal
+        game.autorb_goal = [reboot_watts, 0.8]
         //v2.2.300
         if (minor < 301) {
             game.subtab = [0, 0]
