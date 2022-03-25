@@ -162,6 +162,8 @@ function prestige() {
                 get_achievement(103)
             if (!game.achievements[117] && game.amp >= 10 ** 28)
                 get_achievement(117)
+            if (!game.achievements[133] && game.amp >= 10 ** 32)
+                get_achievement(133)
 
             if (game.time < game.fastest_prestige)
                 game.fastest_prestige = game.time
@@ -251,27 +253,39 @@ function prestige() {
                 case 1:
                     if (game.challenge !== 3 && game.challenge !== 9) {
                         game.total_exp = 4855
+                        game.prestige_exp += 4855
+                        game.reboot_exp += 4855
                         game.all_time_exp += 4855
                     } else {
                         game.total_exp = 72825
+                        game.prestige_exp += 72825
+                        game.reboot_exp += 72825
                         game.all_time_exp += 72825
                     }
                     break
                 case 2:
                     if (game.challenge !== 3 && game.challenge !== 9) {
                         game.total_exp = 35308
+                        game.prestige_exp += 35308
+                        game.reboot_exp += 35308
                         game.all_time_exp += 35308
                     } else {
                         game.total_exp = 1059240
+                        game.prestige_exp += 1059240
+                        game.reboot_exp += 1059240
                         game.all_time_exp += 1059240
                     }
                     break
                 case 3:
                     if (game.challenge !== 3 && game.challenge !== 9) {
                         game.total_exp = 269015
+                        game.prestige_exp += 269105
+                        game.reboot_exp += 269015
                         game.all_time_exp += 269015
                     } else {
                         game.total_exp = 16140872
+                        game.prestige_exp += 16140872
+                        game.reboot_exp += 16140872
                         game.all_time_exp += 16140872
                     }
                     break
@@ -374,6 +388,8 @@ function prestige() {
                 get_achievement(103)
             if (!game.achievements[117] && game.amp >= 10 ** 28)
                 get_achievement(117)
+            if (!game.achievements[133] && game.amp >= 10 ** 32)
+                get_achievement(133)
 
             if (game.time < game.fastest_prestige)
                 game.fastest_prestige = game.time
@@ -463,27 +479,39 @@ function prestige() {
                 case 1:
                     if (game.challenge !== 3 && game.challenge !== 9) {
                         game.total_exp = 4855
+                        game.prestige_exp += 4855
+                        game.reboot_exp += 4855
                         game.all_time_exp += 4855
                     } else {
                         game.total_exp = 72825
+                        game.prestige_exp += 72825
+                        game.reboot_exp += 72825
                         game.all_time_exp += 72825
                     }
                     break
                 case 2:
                     if (game.challenge !== 3 && game.challenge !== 9) {
                         game.total_exp = 35308
+                        game.prestige_exp += 35308
+                        game.reboot_exp += 35308
                         game.all_time_exp += 35308
                     } else {
                         game.total_exp = 1059240
+                        game.prestige_exp += 1059240
+                        game.reboot_exp += 1059240
                         game.all_time_exp += 1059240
                     }
                     break
                 case 3:
                     if (game.challenge !== 3 && game.challenge !== 9) {
                         game.total_exp = 269015
+                        game.prestige_exp += 269015
+                        game.reboot_exp += 269015
                         game.all_time_exp += 269015
                     } else {
                         game.total_exp = 16140872
+                        game.prestige_exp += 16140872
+                        game.reboot_exp += 16140872
                         game.all_time_exp += 16140872
                     }
                     break
@@ -555,24 +583,45 @@ function reboot() {
     }
 
     let reboot_requirement = 0
-    if (game.reboot >= 1) reboot_requirement = 5000 * game.reboot + 80000
-    if (game.reboot >= 24) reboot_requirement = 200000
+    if (game.reboot >= 1 || game.quantum >= 1)
+        reboot_requirement = 5000 * game.reboot + 80000
+    if (game.reboot >= 24 || game.quantum >= 1) reboot_requirement = 200000
 
-    if (game.challenge !== 0 && !entering) {
-        if (game.completions[game.challenge - 1] < 12) {
-            reboot_requirement =
-                challenge.challenges[game.challenge - 1].goal +
-                challenge.challenges[game.challenge - 1].step *
-                    game.completions[game.challenge - 1] +
-                (challenge.challenges[game.challenge - 1].step2 *
-                    (game.completions[game.challenge - 1] - 1) *
-                    game.completions[game.challenge - 1]) /
-                    2
-        } else {
-            reboot_requirement =
-                challenge.challenges[game.challenge - 1].goal +
-                challenge.challenges[game.challenge - 1].step * 11 +
-                challenge.challenges[game.challenge - 1].step2 * 55
+    if (game.qu_bought[2]) {
+        if (game.challenge !== 0 && !entering) {
+            if (game.prev_completions < 12) {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step *
+                        game.prev_completions +
+                    (challenge.challenges[game.challenge - 1].step2 *
+                        (game.prev_completions - 1) *
+                        game.prev_completions) /
+                        2
+            } else {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step * 11 +
+                    challenge.challenges[game.challenge - 1].step2 * 55
+            }
+        }
+    } else {
+        if (game.challenge !== 0 && !entering) {
+            if (game.completions[game.challenge - 1] < 12) {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step *
+                        game.completions[game.challenge - 1] +
+                    (challenge.challenges[game.challenge - 1].step2 *
+                        (game.completions[game.challenge - 1] - 1) *
+                        game.completions[game.challenge - 1]) /
+                        2
+            } else {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step * 11 +
+                    challenge.challenges[game.challenge - 1].step2 * 55
+            }
         }
     }
 
@@ -587,31 +636,38 @@ function reboot() {
                 message =
                     "Are you sure you want to Reboot?\nYou will gain 1 watt"
             } else {
-                if (get_watts(game.pp) === 1 && game.notation !== 8) {
+                if (
+                    get_watts(game.pp) * game.prism_boost === 1 &&
+                    game.notation !== 8
+                ) {
                     message =
                         "Are you sure you want to Reboot?\nYou will gain " +
-                        format_num(get_watts(game.pp)) +
+                        format_num(get_watts(game.pp) * game.prism_boost) +
                         " watt"
                 } else {
                     message =
                         "Are you sure you want to Reboot?\nYou will gain " +
-                        format_num(get_watts(game.pp)) +
+                        format_num(get_watts(game.pp) * game.prism_boost) +
                         " watts"
                 }
             }
 
-            if (game.perks[25])
+            if (game.perks[25] && game.watts >= 98304)
                 message +=
                     " and " +
                     format_eff(
-                        (get_watts(game.pp) / 100) * 2.5 ** game.supply_level
+                        (get_watts(game.pp) / 100) *
+                            2.5 ** game.supply_level *
+                            game.prism_boost
                     ) +
                     " g hydrogen"
-            else if (game.perks[22])
+            else if (game.perks[22] && game.watts >= 98304)
                 message +=
                     " and " +
                     format_eff(
-                        (get_watts(game.pp) / 100) * 2 ** game.supply_level
+                        (get_watts(game.pp) / 100) *
+                            2 ** game.supply_level *
+                            game.prism_boost
                     ) +
                     " g hydrogen"
         }
@@ -623,145 +679,165 @@ function reboot() {
         if (confirmed) {
             reset()
 
+            let in_challenge = false
             if (game.challenge !== 0 && !entering) {
-                let ch = game.challenge - 1
-                if (game.completions[ch] < 12) game.completions[ch]++
+                if (!game.qu_bought[2]) {
+                    let ch = game.challenge - 1
+                    if (game.completions[ch] < 12) game.completions[ch]++
 
-                if (game.completions[ch] === 12 && !game.achievements[90])
-                    get_achievement(90)
+                    if (game.completions[ch] === 12 && !game.achievements[90])
+                        get_achievement(90)
 
-                switch (ch) {
-                    case 0:
-                        if (!game.achievements[86]) get_achievement(86)
-                        break
-                    case 1:
-                        if (!game.achievements[87]) get_achievement(87)
-                        break
-                    case 2:
-                        if (!game.achievements[88]) get_achievement(88)
-                        break
-                    case 3:
-                        if (!game.achievements[89]) get_achievement(89)
-                        break
-                    case 4:
-                        if (!game.achievements[108]) get_achievement(108)
-                        break
-                    case 5:
-                        if (!game.achievements[109]) get_achievement(109)
-                        break
-                    case 6:
-                        if (!game.achievements[110]) get_achievement(110)
-                        break
-                    case 7:
-                        if (!game.achievements[111]) get_achievement(111)
-                        break
-                    case 8:
-                        if (!game.achievements[112]) get_achievement(112)
-                        break
+                    switch (ch) {
+                        case 0:
+                            if (!game.achievements[86]) get_achievement(86)
+                            break
+                        case 1:
+                            if (!game.achievements[87]) get_achievement(87)
+                            break
+                        case 2:
+                            if (!game.achievements[88]) get_achievement(88)
+                            break
+                        case 3:
+                            if (!game.achievements[89]) get_achievement(89)
+                            break
+                        case 4:
+                            if (!game.achievements[108]) get_achievement(108)
+                            break
+                        case 5:
+                            if (!game.achievements[109]) get_achievement(109)
+                            break
+                        case 6:
+                            if (!game.achievements[110]) get_achievement(110)
+                            break
+                        case 7:
+                            if (!game.achievements[111]) get_achievement(111)
+                            break
+                        case 8:
+                            if (!game.achievements[112]) get_achievement(112)
+                            break
+                    }
+
+                    if (
+                        !game.achievements[91] &&
+                        game.completions[0] +
+                            game.completions[1] +
+                            game.completions[2] +
+                            game.completions[3] +
+                            game.completions[4] +
+                            game.completions[5] +
+                            game.completions[6] +
+                            game.completions[7] +
+                            game.completions[8] >=
+                            27
+                    )
+                        get_achievement(91)
+
+                    if (
+                        !game.achievements[113] &&
+                        game.completions[0] +
+                            game.completions[1] +
+                            game.completions[2] +
+                            game.completions[3] +
+                            game.completions[4] +
+                            game.completions[5] +
+                            game.completions[6] +
+                            game.completions[7] +
+                            game.completions[8] >=
+                            54
+                    )
+                        get_achievement(113)
+
+                    if (
+                        !game.achievements[114] &&
+                        game.completions[0] +
+                            game.completions[1] +
+                            game.completions[2] +
+                            game.completions[3] +
+                            game.completions[4] +
+                            game.completions[5] +
+                            game.completions[6] +
+                            game.completions[7] +
+                            game.completions[8] >=
+                            108
+                    )
+                        get_achievement(114)
+
+                    if (!game.achievements[92] && game.blind)
+                        get_achievement(92)
+
+                    switch (game.completions[ch]) {
+                        case 0:
+                            game.ch_boost[ch] = 1
+                            break
+                        case 1:
+                            game.ch_boost[ch] = 4
+                            break
+                        case 2:
+                            game.ch_boost[ch] = 8
+                            break
+                        case 3:
+                            game.ch_boost[ch] = 12
+                            break
+                        case 4:
+                            game.ch_boost[ch] = 16
+                            break
+                        case 5:
+                            game.ch_boost[ch] = 20
+                            break
+                        case 6:
+                            game.ch_boost[ch] = 24
+                            break
+                        case 7:
+                            game.ch_boost[ch] = 28
+                            break
+                        case 8:
+                            game.ch_boost[ch] = 32
+                            break
+                        case 9:
+                            game.ch_boost[ch] = 36
+                            break
+                        case 10:
+                            game.ch_boost[ch] = 40
+                            break
+                        case 11:
+                            game.ch_boost[ch] = 44
+                            break
+                        case 12:
+                            game.ch_boost[ch] = 48
+                            break
+                    }
                 }
 
-                if (
-                    !game.achievements[91] &&
-                    game.completions[0] +
-                        game.completions[1] +
-                        game.completions[2] +
-                        game.completions[3] +
-                        game.completions[4] +
-                        game.completions[5] +
-                        game.completions[6] +
-                        game.completions[7] +
-                        game.completions[8] >=
-                        27
-                )
-                    get_achievement(91)
-
-                if (
-                    !game.achievements[113] &&
-                    game.completions[0] +
-                        game.completions[1] +
-                        game.completions[2] +
-                        game.completions[3] +
-                        game.completions[4] +
-                        game.completions[5] +
-                        game.completions[6] +
-                        game.completions[7] +
-                        game.completions[8] >=
-                        54
-                )
-                    get_achievement(113)
-
-                if (
-                    !game.achievements[114] &&
-                    game.completions[0] +
-                        game.completions[1] +
-                        game.completions[2] +
-                        game.completions[3] +
-                        game.completions[4] +
-                        game.completions[5] +
-                        game.completions[6] +
-                        game.completions[7] +
-                        game.completions[8] >=
-                        108
-                )
-                    get_achievement(114)
-
-                if (!game.achievements[92] && game.blind) get_achievement(92)
-
-                switch (game.completions[ch]) {
-                    case 0:
-                        game.ch_boost[ch] = 1
-                        break
-                    case 1:
-                        game.ch_boost[ch] = 4
-                        break
-                    case 2:
-                        game.ch_boost[ch] = 8
-                        break
-                    case 3:
-                        game.ch_boost[ch] = 12
-                        break
-                    case 4:
-                        game.ch_boost[ch] = 16
-                        break
-                    case 5:
-                        game.ch_boost[ch] = 20
-                        break
-                    case 6:
-                        game.ch_boost[ch] = 24
-                        break
-                    case 7:
-                        game.ch_boost[ch] = 28
-                        break
-                    case 8:
-                        game.ch_boost[ch] = 32
-                        break
-                    case 9:
-                        game.ch_boost[ch] = 36
-                        break
-                    case 10:
-                        game.ch_boost[ch] = 40
-                        break
-                    case 11:
-                        game.ch_boost[ch] = 44
-                        break
-                    case 12:
-                        game.ch_boost[ch] = 48
-                        break
-                }
                 game.challenge = 0
+                in_challenge = true
             }
 
             game.reboot += 1
-            if (!game.perks[13]) game.watts += 1
+            if (!game.perks[13]) game.watts += game.prism_boost
             else {
-                game.watts += get_watts(game.pp)
-                if (game.perks[22]) {
+                game.watts += get_watts(game.pp) * game.prism_boost
+                if (game.perks[22] && game.watts >= 98304) {
                     game.hydrogen +=
-                        (get_watts(game.pp) / 100) * 2 ** game.supply_level
-                    if (game.perks[25])
+                        (get_watts(game.pp) / 100) *
+                        2 ** game.supply_level *
+                        game.prism_boost
+                    game.budget +=
+                        (get_watts(game.pp) / 100) *
+                        2 ** game.supply_level *
+                        game.prism_boost *
+                        (1 - game.autohy_portion)
+                    if (game.perks[25]) {
                         game.hydrogen +=
                             (get_watts(game.pp) / 100) *
-                            2.5 ** game.supply_level
+                            2.5 ** game.supply_level *
+                            game.prism_boost
+                        game.budget +=
+                            (get_watts(game.pp) / 100) *
+                            2.5 ** game.supply_level *
+                            game.prism_boost *
+                            (1 - game.autohy_portion)
+                    }
                 }
             }
             if (game.watts < 96)
@@ -771,15 +847,21 @@ function reboot() {
                 game.watt_boost =
                     ((game.watts + 4755) * (game.watts + 4756)) / 2 - 11611677
 
-            if (game.highest_level > game.all_time_highest_level) {
-                game.all_time_highest_level = game.highest_level
+            if (game.highest_level > game.reboot_highest_level) {
+                game.reboot_highest_level = game.highest_level
+            }
+            if (game.level > game.reboot_highest_level) {
+                game.reboot_highest_level = game.level
             }
 
-            for (let i = 4; i > 0; i--) {
-                game.watts_eff[i] = game.watts_eff[i - 1]
+            if (!in_challenge) {
+                for (let i = 4; i > 0; i--) {
+                    game.watts_eff[i] = game.watts_eff[i - 1]
+                }
+                game.watts_eff[0] =
+                    (get_watts(game.pp) * game.prism_boost * game.tickspeed) /
+                    game.prestige_time
             }
-            game.watts_eff[0] =
-                (get_watts(game.pp) * game.tickspeed) / game.prestige_time
 
             game.amp_eff = new Array(5).fill(-1)
 
@@ -963,8 +1045,11 @@ function reboot() {
 function empty_reboot() {
     reset()
 
-    if (game.highest_level > game.all_time_highest_level) {
-        game.all_time_highest_level = game.highest_level
+    if (game.highest_level > game.reboot_highest_level) {
+        game.reboot_highest_level = game.highest_level
+    }
+    if (game.level > game.reboot_highest_level) {
+        game.reboot_highest_level = game.level
     }
 
     game.amp_eff = new Array(5).fill(-1)
@@ -1084,6 +1169,124 @@ function empty_reboot() {
         for (let i = 0; i < 7; i++) {
             game.pp_bought[i] = true
             pp_upgrade.upgrades[i].on_purchase()
+        }
+    }
+}
+
+//quantum reset code
+function quantize() {
+    let total_completions =
+        game.completions[0] +
+        game.completions[1] +
+        game.completions[2] +
+        game.completions[3] +
+        game.completions[4] +
+        game.completions[5] +
+        game.completions[6] +
+        game.completions[7] +
+        game.completions[8]
+
+    let highest_level = game.reboot_highest_level
+    if (game.level > game.reboot_highest_level) highest_level = game.level
+
+    if (total_completions >= 108 && highest_level >= 65536) {
+        let confirmed = false
+        if (!game.quantum_confirmation) confirmed = true
+        else {
+            let message = ""
+            let amount = Math.floor(
+                1000000 ** ((highest_level - 65536) / 32768)
+            )
+            if (game.quantum < 1) {
+                message =
+                    "Are you sure you want to Quantize? This will reset ALL progress up to this point except for Perks and give you "
+            } else {
+                message = "Are you sure you want to Quantize? You will gain "
+            }
+            if (amount === 1 && game.notation !== 8) {
+                message += format_num(amount) + " photon"
+            } else {
+                message += format_num(amount) + " photons"
+            }
+
+            if (confirm(message)) confirmed = true
+        }
+
+        if (confirmed) {
+            game.quantum++
+            game.photons += Math.floor(
+                1000000 ** ((highest_level - 65536) / 32768)
+            )
+
+            if (!game.achievements[120] && game.quantum >= 1)
+                get_achievement(120)
+            if (!game.achievements[121] && game.quantum >= 3)
+                get_achievement(121)
+            if (!game.achievements[122] && game.quantum >= 5)
+                get_achievement(122)
+            if (!game.achievements[123] && game.quantum >= 10)
+                get_achievement(123)
+            if (!game.achievements[124] && game.quantum >= 25)
+                get_achievement(124)
+
+            game.watts = 0
+            game.watt_boost = 1
+
+            game.challenge = 0
+            if (!game.qu_bought[5]) {
+                for (let i = 0; i < 9; i++) {
+                    game.completions[i] = 0
+                    game.ch_boost[i] = 1
+                }
+            }
+
+            game.hydrogen = 0
+            game.budget = 0
+            game.core_level = [0, 0, 0, 0, 0, 0, 0, 0]
+            game.core_price = [1, 3, 10, 36, 136, 528, 2080, 8256]
+            game.supply_level = 0
+            game.supply_price = 16
+            game.autohy_spent = 0
+
+            if (game.reboot_time < game.fastest_quantize)
+                game.fastest_quantize = game.reboot_time
+
+            if (
+                !game.achievements[128] &&
+                game.fastest_quantize <= game.tickspeed * 3600
+            )
+                get_achievement(128)
+            if (
+                !game.achievements[129] &&
+                game.fastest_quantize <= game.tickspeed * 300
+            )
+                get_achievement(129)
+            if (
+                !game.achievements[136] &&
+                game.fastest_quantize <= game.tickspeed * 60
+            )
+                get_achievement(136)
+
+            if (game.reboot_highest_level > game.all_time_highest_level)
+                game.all_time_highest_level = game.reboot_highest_level
+
+            if (game.highest_level > game.all_time_highest_level) {
+                game.all_time_highest_level = game.highest_level
+            }
+
+            if (game.level > game.all_time_highest_level) {
+                game.all_time_highest_level = game.level
+            }
+
+            empty_reboot()
+
+            game.reboot = 0
+            game.true_banked_prestige = 0
+            game.reboot_exp = 0
+            game.reboot_time = 0
+            game.highest_level = 1
+            game.reboot_highest_level = 1
+            game.reboot_clicks = 0
         }
     }
 }
