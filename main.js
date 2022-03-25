@@ -1804,7 +1804,7 @@ function wipe() {
         game.generator_kit = 0
         game.flux_increase = 1
         game.priority = new Array(39).fill(1)
-        game.priority_layer = 0
+        game.priority_layer = 1
 
         game.achievements = new Array(137).fill(false)
         game.ach_power = 1
