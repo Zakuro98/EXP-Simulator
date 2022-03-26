@@ -928,7 +928,7 @@ function tick() {
                 }
                 break
             case 1:
-                if (game.prestige_time >= game.autorb_goal[1]) {
+                if (game.prestige_time >= game.autorb_goal[1] * game.tickspeed) {
                     reboot()
                 }
                 break
