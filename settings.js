@@ -424,8 +424,19 @@ function max_all() {
     }
     while (game.hydrogen >= game.core_price[selection]) {
         game.hydrogen -= game.core_price[selection]
+        game.budget -= game.core_price[selection]
+        if (game.budget < 0) game.budget = 0
         game.core_level[selection]++
-        game.core_price[selection] += core.cores[selection].base_price / 4
+        if (game.core_level[selection] > Math.floor(1000000 / 2 ** selection)) {
+            game.core_price[selection] +=
+                (core.cores[selection].base_price *
+                    (game.core_level[selection] -
+                        Math.floor(1000000 / 2 ** selection)) **
+                        2) /
+                4
+        } else {
+            game.core_price[selection] += core.cores[selection].base_price / 4
+        }
 
         selection = 0
 
@@ -471,9 +482,19 @@ function max_half() {
     }
     while (budget >= game.core_price[selection]) {
         game.hydrogen -= game.core_price[selection]
-        budget -= game.core_price[selection]
+        game.budget -= game.core_price[selection]
+        if (game.budget < 0) game.budget = 0
         game.core_level[selection]++
-        game.core_price[selection] += core.cores[selection].base_price / 4
+        if (game.core_level[selection] > Math.floor(1000000 / 2 ** selection)) {
+            game.core_price[selection] +=
+                (core.cores[selection].base_price *
+                    (game.core_level[selection] -
+                        Math.floor(1000000 / 2 ** selection)) **
+                        2) /
+                4
+        } else {
+            game.core_price[selection] += core.cores[selection].base_price / 4
+        }
 
         selection = 0
 
