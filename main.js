@@ -1018,8 +1018,20 @@ function tick() {
                 game.hydrogen -= game.core_price[selection]
                 game.budget -= game.core_price[selection]
                 game.core_level[selection]++
-                game.core_price[selection] +=
-                    core.cores[selection].base_price / 4
+                if (
+                    game.core_level[selection] >
+                    Math.floor(1000000 / 2 ** selection)
+                ) {
+                    game.core_price[selection] +=
+                        (core.cores[selection].base_price *
+                            (game.core_level[selection] -
+                                Math.floor(1000000 / 2 ** selection)) **
+                                2) /
+                        4
+                } else {
+                    game.core_price[selection] +=
+                        core.cores[selection].base_price / 4
+                }
 
                 selection = 0
 
@@ -1225,7 +1237,7 @@ function tick() {
             "\n\n\nEXP Simulator v?.?.???\nMade by Zakuro"
     } else {
         document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.3.000\nMade by Zakuro"
+            "\n\n\nEXP Simulator v2.3.001\nMade by Zakuro"
     }
 }
 
