@@ -2795,8 +2795,22 @@ class core {
             if (!game.buy_max) {
                 if (game.hydrogen >= game.core_price[this.id]) {
                     game.hydrogen -= game.core_price[this.id]
+                    game.budget -= game.core_price[this.id]
+                    if (game.budget < 0) game.budget = 0
                     game.core_level[this.id]++
-                    game.core_price[this.id] += this.base_price / 4
+                    if (
+                        game.core_level[this.id] >
+                        Math.floor(1000000 / 2 ** this.id)
+                    ) {
+                        game.core_price[this.id] +=
+                            (this.base_price *
+                                (game.core_level[this.id] -
+                                    Math.floor(1000000 / 2 ** this.id)) **
+                                    3) /
+                            4
+                    } else {
+                        game.core_price[this.id] += this.base_price / 4
+                    }
 
                     if (!game.achievements[106] && this.id === 7)
                         get_achievement(106)
@@ -2804,8 +2818,22 @@ class core {
             } else {
                 while (game.hydrogen >= game.core_price[this.id]) {
                     game.hydrogen -= game.core_price[this.id]
+                    game.budget -= game.core_price[this.id]
+                    if (game.budget < 0) game.budget = 0
                     game.core_level[this.id]++
-                    game.core_price[this.id] += this.base_price / 4
+                    if (
+                        game.core_level[this.id] >
+                        Math.floor(1000000 / 2 ** this.id)
+                    ) {
+                        game.core_price[this.id] +=
+                            (this.base_price *
+                                (game.core_level[this.id] -
+                                    Math.floor(1000000 / 2 ** this.id)) **
+                                    2) /
+                            4
+                    } else {
+                        game.core_price[this.id] += this.base_price / 4
+                    }
 
                     if (!game.achievements[106] && this.id === 7)
                         get_achievement(106)
