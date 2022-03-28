@@ -482,6 +482,7 @@ function max_half() {
     }
     while (budget >= game.core_price[selection]) {
         game.hydrogen -= game.core_price[selection]
+        budget -= game.core_price[selection]
         game.budget -= game.core_price[selection]
         if (game.budget < 0) game.budget = 0
         game.core_level[selection]++
