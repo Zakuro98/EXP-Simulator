@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.3.000",
+    version: "2.3.002",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -219,6 +219,9 @@ let game = {
     superspeed_power: 1,
 
     quantum_confirmation: true,
+
+    //v2.3.002 variables
+    question: true,
 }
 
 //initialize maps
@@ -656,7 +659,12 @@ function format_num(num) {
     if (negative) {
         output = "-" + output
     }
-    if (game.notation === 8) {
+    if (
+        game.notation === 8 ||
+        (game.question &&
+            new Date().getUTCDate() === 1 &&
+            new Date().getUTCMonth() === 3)
+    ) {
         output = "???"
     }
     return output
@@ -664,7 +672,12 @@ function format_num(num) {
 
 //special amp/sec formatting
 function format_eff(num) {
-    if (game.notation === 8) {
+    if (
+        game.notation === 8 ||
+        (game.question &&
+            new Date().getUTCDate() === 1 &&
+            new Date().getUTCMonth() === 3)
+    ) {
         return "???"
     } else {
         if (num >= 100) {
@@ -704,7 +717,13 @@ function format_time(input) {
             (Math.floor(time) % 60)
     }
 
-    if (game.notation === 8) output = "???"
+    if (
+        game.notation === 8 ||
+        (game.question &&
+            new Date().getUTCDate() === 1 &&
+            new Date().getUTCMonth() === 3)
+    )
+        output = "???"
     return output
 }
 
@@ -1162,7 +1181,13 @@ function get_color(num) {
             break
     }
 
-    if (game.notation === 8) color = colors[0]
+    if (
+        game.notation === 8 ||
+        (game.question &&
+            new Date().getUTCDate() === 1 &&
+            new Date().getUTCMonth() === 3)
+    )
+        color = colors[0]
     return color
 }
 
