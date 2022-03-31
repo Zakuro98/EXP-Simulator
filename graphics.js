@@ -201,7 +201,12 @@ function level_update() {
         }
     }
 
-    if (game.notation === 8) {
+    if (
+        game.notation === 8 ||
+        (game.question &&
+            new Date().getUTCDate() === 1 &&
+            new Date().getUTCMonth() === 3)
+    ) {
         document.getElementById("progress").style.width = "100%"
         document.getElementById("pp_progress").style.width = "100%"
     }
@@ -352,7 +357,11 @@ function reset_button_update() {
                 document.getElementById("pp_up").innerText =
                     "+" + format_num(pp_amount) + " PP"
                 if (
-                    (pp_amount >= 1 || game.notation === 8) &&
+                    (pp_amount >= 1 ||
+                        game.notation === 8 ||
+                        (game.question &&
+                            new Date().getUTCDate() === 1 &&
+                            new Date().getUTCMonth() === 3)) &&
                     !game.perks[27]
                 ) {
                     document.getElementById("pp_up").style.display = "inline"
@@ -387,7 +396,11 @@ function reset_button_update() {
                 document.getElementById("pp_up").innerText =
                     "+" + format_num(pp_amount) + " PP"
                 if (
-                    (pp_amount >= 1 || game.notation === 8) &&
+                    (pp_amount >= 1 ||
+                        game.notation === 8 ||
+                        (game.question &&
+                            new Date().getUTCDate() === 1 &&
+                            new Date().getUTCMonth() === 3)) &&
                     !game.perks[27]
                 ) {
                     document.getElementById("pp_up").style.display = "inline"
@@ -3216,7 +3229,12 @@ function description_update() {
             break
     }
 
-    if (game.notation === 8) {
+    if (
+        game.notation === 8 ||
+        (game.question &&
+            new Date().getUTCDate() === 1 &&
+            new Date().getUTCMonth() === 3)
+    ) {
         pp_upgrade.upgrades[14].desc =
             "Unlocks the EXP Overclocker, which boosts EXP ???x for ???"
         pp_map
@@ -4016,6 +4034,12 @@ function regenerate_ui() {
             game.autohy_importance
     } else {
         document.getElementById("autohy_block").style.display = "none"
+    }
+
+    if (game.question) {
+        document.getElementById("question_button").innerText = "ENABLED"
+    } else {
+        document.getElementById("question_button").innerText = "DISABLED"
     }
 
     document.getElementById("level_input").value = game.autopr_goal[0]
