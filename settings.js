@@ -1,6 +1,11 @@
 //notation switching
 function notation() {
-    game.notation += 1
+    if (
+        new Date().getUTCDate() !== 1 ||
+        new Date().getUTCMonth() !== 3 ||
+        !game.question
+    )
+        game.notation += 1
     if (game.notation >= 9) game.notation = 0
     pp_update()
     switch (game.notation) {
@@ -206,6 +211,17 @@ function quantum_confirmation() {
     } else {
         game.quantum_confirmation = true
         document.getElementById("qu_confirm_button").innerText = "ENABLED"
+    }
+}
+
+//??? toggle
+function question() {
+    if (game.question) {
+        game.question = false
+        document.getElementById("question_button").innerText = "DISABLED"
+    } else {
+        game.question = true
+        document.getElementById("question_button").innerText = "ENABLED"
     }
 }
 
