@@ -1450,7 +1450,7 @@ function load(savegame) {
         }
         //v2.1.405
         game = savegame
-        game.version = "2.3.000"
+        game.version = "2.3.002"
         if (game.tab > 2) game.tab += 2
         if (game.tab > 3) game.tab += 1
         game.reboot = 0
@@ -1624,7 +1624,7 @@ function load(savegame) {
     } else if (major < 3) {
         //v2.2.301
         game = savegame
-        game.version = "2.3.000"
+        game.version = "2.3.002"
         game.amp_eff = new Array(5).fill(-1)
         game.watts_eff = new Array(5).fill(-1)
         game.quantum = 0
@@ -1746,7 +1746,7 @@ function load(savegame) {
         }
         //v2.3.002
         game = savegame
-        game.version = "2.3.000"
+        game.version = "2.3.002"
         //v2.3.000
         if (game.minor < 2) {
             game.question = true
