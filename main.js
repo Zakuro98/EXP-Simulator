@@ -673,7 +673,12 @@ function tick() {
                 }
                 break
         }
-        if (game.notation === 8) {
+        if (
+            game.notation === 8 ||
+            (game.question &&
+                new Date().getUTCDate() === 1 &&
+                new Date().getUTCMonth() === 3)
+        ) {
             document.getElementById("oc_progress").style.width = "100%"
         }
 
@@ -740,7 +745,13 @@ function tick() {
             stored = "Stored EXP: 5:00 of EXP (MAX)"
         let if_discharge =
             "If Discharged: +" + format_num(0) + " EXP (Not Active)"
-        if (game.cap_mode >= 1 || game.notation === 8) {
+        if (
+            game.cap_mode >= 1 ||
+            game.notation === 8 ||
+            (game.question &&
+                new Date().getUTCDate() === 1 &&
+                new Date().getUTCMonth() === 3)
+        ) {
             if (!game.perks[9])
                 if_discharge =
                     "If Discharged: +" +
@@ -1232,12 +1243,22 @@ function tick() {
     }
 
     //???
-    if (game.notation === 8) {
+    if (
+        game.question &&
+        new Date().getUTCDate() === 1 &&
+        new Date().getUTCMonth() === 3
+    ) {
+        document.getElementById("version").innerText =
+            "\n\n\nEXP Simulator v?.?.???\nMade by ???"
+
+        game.notation = 8
+        notation()
+    } else if (game.notation === 8) {
         document.getElementById("version").innerText =
             "\n\n\nEXP Simulator v?.?.???\nMade by Zakuro"
     } else {
         document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.3.001\nMade by Zakuro"
+            "\n\n\nEXP Simulator v2.3.002\nMade by Zakuro"
     }
 }
 
@@ -1523,6 +1544,7 @@ function load(savegame) {
         game.autohy_importance = 1
         game.budget = 0
         game.superspeed_power = 1
+        game.question = true
         //v2.1.403
         if (minor < 405) {
             game.hold_time = 0
@@ -1631,6 +1653,7 @@ function load(savegame) {
         }
         let reboot_watts = game.autorb_goal
         game.autorb_goal = [reboot_watts, 0.8]
+        game.question = true
         //v2.2.300
         if (minor < 301) {
             game.subtab = [0, 0]
@@ -1715,14 +1738,19 @@ function load(savegame) {
             game.cancer_reboots = 0
         }
     } else {
-        if (minor > 0) {
+        if (minor > 2) {
             alert(
                 "You cannot load saves from game versions that do not exist\nIf you think you are recieving this alert in error, reload and try again"
             )
             return
         }
+        //v2.3.002
         game = savegame
         game.version = "2.3.000"
+        //v2.3.000
+        if (game.minor < 2) {
+            game.question = true
+        }
     }
     regenerate_ui()
 
@@ -2081,6 +2109,10 @@ function refresh() {
     challenge_update()
     reactor_update()
     prism_update()
+
+    if (new Date().getUTCDate() === 1 && new Date().getUTCMonth() === 3)
+        document.getElementById("question").style.display = "flex"
+    else document.getElementById("question").style.display = "none"
 
     window.setTimeout(refresh, 250 / game.refresh_rate)
 }
