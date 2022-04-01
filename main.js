@@ -1748,7 +1748,7 @@ function load(savegame) {
         game = savegame
         game.version = "2.3.002"
         //v2.3.000
-        if (game.minor < 2) {
+        if (minor < 2) {
             game.question = true
         }
     }
