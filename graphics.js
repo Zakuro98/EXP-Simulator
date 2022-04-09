@@ -3199,33 +3199,33 @@ function description_update() {
 
     switch (game.notation) {
         case 0:
-            achievement.achievements[41].name =
+            achievement.achievements[42].name =
                 "Why are you still using Long notation?"
             break
         case 1:
-            achievement.achievements[41].name =
+            achievement.achievements[42].name =
                 "Why are you still using Standard notation?"
             break
         case 2:
         case 3:
-            achievement.achievements[41].name = "45 digits is a lot"
+            achievement.achievements[42].name = "45 digits is a lot"
             break
         case 4:
-            achievement.achievements[41].name =
+            achievement.achievements[42].name =
                 "Why are you still using Condensed notation?"
             break
         case 5:
-            achievement.achievements[41].name = "45 digits is a lot"
+            achievement.achievements[42].name = "45 digits is a lot"
             break
         case 6:
-            achievement.achievements[41].name =
+            achievement.achievements[42].name =
                 "This achievement brought to you by the letter N"
             break
         case 7:
-            achievement.achievements[41].name = "Cancerously huge"
+            achievement.achievements[42].name = "Cancerously huge"
             break
         case 8:
-            achievement.achievements[41].name = "Can't even see how big this is"
+            achievement.achievements[42].name = "Can't even see how big this is"
             break
     }
 
