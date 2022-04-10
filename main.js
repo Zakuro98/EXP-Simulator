@@ -1415,12 +1415,6 @@ function import_save() {
 function load(savegame) {
     if (savegame === null) return
 
-    //beta reject check
-    if (savegame.beta) {
-        alert("Beta saves cannot be imported into the live game")
-        return
-    }
-
     //version compatibility checks
 
     //v2.0.000, v2.0.100, v2.0.200
