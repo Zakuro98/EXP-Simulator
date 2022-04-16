@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.3.002",
+    version: "2.3.100",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -132,7 +132,7 @@ let game = {
     autopp_mode: 0,
     priority: new Array(39).fill(1),
 
-    achievements: new Array(137).fill(false),
+    achievements: new Array(149).fill(false),
     ach_power: 1,
     achiev_page: 0,
     no_automation: true,
@@ -168,7 +168,7 @@ let game = {
     speed_power: 1,
     banked_prestige: 0,
 
-    subtab: [0, 0],
+    subtab: [0, 0, 0],
     challenge: 0,
     challenge_confirmation: true,
     completions: new Array(9).fill(0),
@@ -222,6 +222,26 @@ let game = {
 
     //v2.3.002 variables
     question: true,
+
+    //v2.3.100 variables
+    dark_matter: 1,
+    dark_matter_boost: 1,
+    growth_interval: 60,
+    growth_factor: 1,
+    growth_time: 0,
+    growth_price: [10 ** 15, 10 ** 13],
+    dk_bought: new Array(8).fill(false),
+
+    infusion: 1,
+    ch_helium_boost: new Array(9).fill(1),
+
+    autorb_push: 60,
+    autoqu_toggle: false,
+    autoqu_mode: 0,
+    autoqu_goal: [1, 60],
+
+    //v2.3.103 variables
+    omega_base: 10,
 }
 
 //initialize maps
@@ -430,6 +450,35 @@ function format_num(num) {
                 output = "e" + exponent3.toFixed(3)
                 break
             case 6:
+                const alphabet = [
+                    "A",
+                    "B",
+                    "C",
+                    "D",
+                    "E",
+                    "F",
+                    "G",
+                    "H",
+                    "I",
+                    "J",
+                    "K",
+                    "L",
+                    "M",
+                    "N",
+                    "O",
+                    "P",
+                    "Q",
+                    "R",
+                    "S",
+                    "T",
+                    "U",
+                    "V",
+                    "W",
+                    "X",
+                    "Y",
+                    "Z",
+                    "A",
+                ]
                 let order3 = Math.floor(Math.log10(num) / 3) - 1
                 let lead3 = num / 10 ** (3 * order3 + 3)
                 let lead_str3 = ""
@@ -454,93 +503,40 @@ function format_num(num) {
                     ) {
                         index = (Math.floor(order3 / 26 ** i) - 1) % 26
                         if (i === 0) index += 1
-                        switch (index) {
-                            case 0:
-                                output += "A"
-                                break
-                            case 1:
-                                output += "B"
-                                break
-                            case 2:
-                                output += "C"
-                                break
-                            case 3:
-                                output += "D"
-                                break
-                            case 4:
-                                output += "E"
-                                break
-                            case 5:
-                                output += "F"
-                                break
-                            case 6:
-                                output += "G"
-                                break
-                            case 7:
-                                output += "H"
-                                break
-                            case 8:
-                                output += "I"
-                                break
-                            case 9:
-                                output += "J"
-                                break
-                            case 10:
-                                output += "K"
-                                break
-                            case 11:
-                                output += "L"
-                                break
-                            case 12:
-                                output += "M"
-                                break
-                            case 13:
-                                output += "N"
-                                break
-                            case 14:
-                                output += "O"
-                                break
-                            case 15:
-                                output += "P"
-                                break
-                            case 16:
-                                output += "Q"
-                                break
-                            case 17:
-                                output += "R"
-                                break
-                            case 18:
-                                output += "S"
-                                break
-                            case 19:
-                                output += "T"
-                                break
-                            case 20:
-                                output += "U"
-                                break
-                            case 21:
-                                output += "V"
-                                break
-                            case 22:
-                                output += "W"
-                                break
-                            case 23:
-                                output += "X"
-                                break
-                            case 24:
-                                output += "Y"
-                                break
-                            case 25:
-                                output += "Z"
-                                break
-                            case 26:
-                                output += "A"
-                                break
-                        }
+                        output += alphabet[index]
                     }
                 }
                 break
             case 7:
+                const cancer_alphabet = [
+                    "😠",
+                    "🎂",
+                    "🎄",
+                    "💀",
+                    "🍆",
+                    "🐱",
+                    "🌈",
+                    "💯",
+                    "🍦",
+                    "🎃",
+                    "💋",
+                    "😂",
+                    "🌙",
+                    "⛔",
+                    "🐙",
+                    "💩",
+                    "❓",
+                    "☢",
+                    "🙈",
+                    "👍",
+                    "☂",
+                    "✌",
+                    "⚠",
+                    "❌",
+                    "😋",
+                    "⚡",
+                    "😠",
+                ]
                 let order4 = Math.floor(Math.log10(num) / 3) - 1
                 let lead4 = num / 10 ** (3 * order4 + 3)
                 let lead_str4 = ""
@@ -565,95 +561,241 @@ function format_num(num) {
                     ) {
                         index2 = (Math.floor(order4 / 26 ** i) - 1) % 26
                         if (i === 0) index2 += 1
-                        switch (index2) {
-                            case 0:
-                                output += "😠"
-                                break
-                            case 1:
-                                output += "🎂"
-                                break
-                            case 2:
-                                output += "🎄"
-                                break
-                            case 3:
-                                output += "💀"
-                                break
-                            case 4:
-                                output += "🍆"
-                                break
-                            case 5:
-                                output += "🐱"
-                                break
-                            case 6:
-                                output += "🌈"
-                                break
-                            case 7:
-                                output += "💯"
-                                break
-                            case 8:
-                                output += "🍦"
-                                break
-                            case 9:
-                                output += "🎃"
-                                break
-                            case 10:
-                                output += "💋"
-                                break
-                            case 11:
-                                output += "😂"
-                                break
-                            case 12:
-                                output += "🌙"
-                                break
-                            case 13:
-                                output += "⛔"
-                                break
-                            case 14:
-                                output += "🐙"
-                                break
-                            case 15:
-                                output += "💩"
-                                break
-                            case 16:
-                                output += "❓"
-                                break
-                            case 17:
-                                output += "☢"
-                                break
-                            case 18:
-                                output += "🙈"
-                                break
-                            case 19:
-                                output += "👍"
-                                break
-                            case 20:
-                                output += "☂"
-                                break
-                            case 21:
-                                output += "✌"
-                                break
-                            case 22:
-                                output += "⚠"
-                                break
-                            case 23:
-                                output += "❌"
-                                break
-                            case 24:
-                                output += "😋"
-                                break
-                            case 25:
-                                output += "⚡"
-                                break
-                            case 26:
-                                output += "😠"
-                                break
-                        }
+                        output += cancer_alphabet[index2]
                     }
                 }
                 break
+            case 9:
+                let exponent4 =
+                    Math.log(num) / Math.log(1.7976931348622053 * 10 ** 308)
+                output = exponent4.toFixed(3) + "∞"
+                break
         }
     }
-    if (num === Infinity) {
+    if (game.notation === 10) {
+        output = format_omega(Math.floor(num))
+    }
+    if (game.notation === 11) {
+        output = ""
+
+        const fraction_array = [
+            "",
+            "·",
+            ":",
+            "∴",
+            "∷",
+            "⁙",
+            "S",
+            "S·",
+            "S:",
+            "S∴",
+            "S∷",
+            "S⁙",
+        ]
+        const one_array = [
+            "",
+            "I",
+            "II",
+            "III",
+            "IV",
+            "V",
+            "VI",
+            "VII",
+            "VIII",
+            "IX",
+        ]
+        const ten_array = [
+            "",
+            "X",
+            "XX",
+            "XXX",
+            "XL",
+            "L",
+            "LX",
+            "LXX",
+            "LXXX",
+            "XC",
+        ]
+        const hundred_array = [
+            "",
+            "C",
+            "CC",
+            "CCC",
+            "CD",
+            "D",
+            "DC",
+            "DCC",
+            "DCCC",
+            "CM",
+        ]
+        const thousand_array = ["", "M", "MM", "MMM"]
+
+        if (num >= 4000000) {
+            output += "["
+
+            if (num / 1000000 >= 100) {
+                output += hundred_array[Math.floor(num / 100000000) % 10]
+            }
+            if (num / 1000000 >= 10) {
+                output += ten_array[Math.floor(num / 10000000) % 10]
+            }
+            output += one_array[Math.floor(num / 1000000) % 10]
+
+            output += "] "
+        }
+
+        if (num >= 1000) {
+            if (
+                num > 4000 &&
+                !(Math.floor(num / 1000) % 1000 === 0 && num > 1000000)
+            ) {
+                output += "("
+
+                if (num / 1000 >= 1000 && num < 4000000) {
+                    output += thousand_array[Math.floor(num / 1000000) % 10]
+                }
+                if (num / 1000 >= 100) {
+                    output += hundred_array[Math.floor(num / 100000) % 10]
+                }
+                if (num / 1000 >= 10) {
+                    output += ten_array[Math.floor(num / 10000) % 10]
+                }
+                output += one_array[Math.floor(num / 1000) % 10]
+
+                output += ") "
+            } else {
+                output += thousand_array[Math.floor(num / 1000) % 10]
+            }
+        }
+
+        if (num >= 100) {
+            output += hundred_array[Math.floor(num / 100) % 10]
+        }
+        if (num >= 10) {
+            output += ten_array[Math.floor(num / 10) % 10]
+        }
+        output += one_array[num % 10]
+
+        if (num >= cutoff) {
+            output = ""
+
+            let exponent = Math.floor(Math.log10(num))
+            let mantissa = num / 10 ** exponent
+
+            output += one_array[Math.floor(mantissa)]
+            output += fraction_array[Math.floor(mantissa * 12) % 12]
+
+            output += "↑"
+
+            if (exponent >= 100) {
+                output += hundred_array[Math.floor(exponent / 100) % 10]
+            }
+            if (exponent >= 10) {
+                output += ten_array[Math.floor(exponent / 10) % 10]
+            }
+            output += one_array[exponent % 10]
+        }
+
+        if (output === "") output = "0"
+    }
+    if (game.notation === 12) {
+        const char_array = [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "x",
+            "y",
+            "z",
+            "+",
+            "/",
+        ]
+        output = ""
+        switch (game.switchpoint) {
+            case 0:
+                cutoff = 64 ** 6
+                break
+            case 1:
+                cutoff = 64 ** 9
+                break
+        }
+
+        let exponent = Math.floor(Math.log(num) / Math.log(64))
+
+        if (num >= cutoff) {
+            output =
+                char_array[Math.floor(num / 64 ** exponent)] +
+                "." +
+                char_array[Math.floor(num / 64 ** (exponent - 1)) % 64] +
+                char_array[Math.floor(num / 64 ** (exponent - 2)) % 64] +
+                char_array[Math.floor(num / 64 ** (exponent - 3)) % 64] +
+                "^"
+            if (exponent >= 64) output += char_array[Math.floor(exponent / 64)]
+            output += char_array[exponent % 64]
+        } else {
+            for (let i = exponent; i >= 0; i--) {
+                output += char_array[Math.floor(num / 64 ** i) % 64]
+            }
+        }
+
+        if (output === "") output = "0"
+    }
+    if (num >= 1.7976931348622053 * 10 ** 308 && game.notation !== 9) {
         output = "∞"
     }
     if (negative) {
@@ -670,7 +812,204 @@ function format_num(num) {
     return output
 }
 
-//special amp/sec formatting
+//special omega formatting
+function format_omega(num) {
+    let output = ""
+    let terms = 0
+
+    let cutoff = 1000000
+    switch (game.switchpoint) {
+        case 0:
+            cutoff = 1000000
+            break
+        case 1:
+            cutoff = 1000000000
+            break
+    }
+
+    let base = Math.round(game.omega_base)
+    if (base < 2) base = 2
+
+    let base_exponent = Math.floor(
+        parseFloat(parseFloat(Math.log(num) / Math.log(base)).toPrecision(12))
+    )
+    let exponent = base_exponent
+
+    if (base === 2) {
+        while (terms <= 3 && exponent >= -5) {
+            let num2 = Math.floor(num / base ** exponent) % base
+            if (num2 !== 0) {
+                if (terms < 3) {
+                    let output2 = num2.toString()
+                    if (exponent === 0) {
+                        output += output2
+                        if (num % 1 !== 0) output += "+"
+                    } else {
+                        if (exponent >= 1) {
+                            if (Math.floor(exponent / 8) === 1) {
+                                output += "ε<sub>1</sub>"
+                            } else if (Math.floor(exponent / 8) > 1) {
+                                output +=
+                                    "ε<sub>1</sub><sup>" +
+                                    format_omega(Math.floor(exponent / 8)) +
+                                    "</sup>"
+                            }
+                            if (Math.floor(exponent / 2) % 4 === 1) {
+                                output += "ε<sub>0</sub>"
+                            } else if (Math.floor(exponent / 2) % 4 > 1) {
+                                output +=
+                                    "ε<sub>0</sub><sup>" +
+                                    format_omega(Math.floor(exponent / 2) % 4) +
+                                    "</sup>"
+                            }
+                            if (exponent % 2 === 1) {
+                                output += "ω"
+                            }
+                        } else if (exponent <= -1) {
+                            if (Math.floor(-exponent / 2) === 1) {
+                                output += "ε<sub>0</sub><sup>-1</sup>"
+                            } else if (Math.floor(-exponent / 2) > 1) {
+                                output +=
+                                    "ε<sub>0</sub><sup>-" +
+                                    format_omega(Math.floor(-exponent / 2)) +
+                                    "</sup>"
+                            }
+                            if (-exponent % 2 === 1) {
+                                output += "ω<sup>-1</sup>"
+                            }
+                        }
+                        if (num2 !== 1) output += output2
+                        if (num % base ** exponent !== 0 && exponent >= -4)
+                            output += "+"
+                    }
+                } else {
+                    output += "..."
+                }
+                terms++
+            }
+            exponent--
+        }
+    } else if (base === 3) {
+        while (terms <= 3 && exponent >= -5) {
+            let num2 = Math.floor(num / base ** exponent) % base
+            if (num2 !== 0) {
+                if (terms < 3) {
+                    let output2 = num2.toString()
+                    if (exponent === 0) {
+                        output += output2
+                        if (num % 1 !== 0) output += "+"
+                    } else {
+                        if (exponent >= 1) {
+                            if (Math.floor(exponent / 27) === 1) {
+                                output += "ε<sub>0</sub>"
+                            } else if (Math.floor(exponent / 27) > 1) {
+                                output +=
+                                    "ε<sub>0</sub><sup>" +
+                                    format_omega(Math.floor(exponent / 27)) +
+                                    "</sup>"
+                            }
+                            if (exponent % 27 === 1) {
+                                output += "ω"
+                            } else if (exponent % 27 > 1) {
+                                output +=
+                                    "ω<sup>" +
+                                    format_omega(exponent % 27) +
+                                    "</sup>"
+                            }
+                        } else if (exponent <= -1 && exponent >= -3) {
+                            output +=
+                                "ω<sup>-" + format_omega(-exponent) + "</sup>"
+                        } else if (exponent <= -4) {
+                            output +=
+                                "ω<sup>-(" + format_omega(-exponent) + ")</sup>"
+                        }
+                        if (num2 !== 1) output += output2
+                        if (num % base ** exponent !== 0 && exponent >= -4)
+                            output += "+"
+                    }
+                } else {
+                    output += "..."
+                }
+                terms++
+            }
+            exponent--
+        }
+    } else if (base >= 4) {
+        while (terms <= 3 && exponent >= -5) {
+            let num2 = Math.floor(num / base ** exponent) % base
+            if (num2 !== 0) {
+                if (terms < 3) {
+                    let output2 = num2.toString()
+                    if (num2 >= 1000) {
+                        let digits = output2.length
+                        for (let i = digits - 3; i > 0; i -= 3) {
+                            output2 =
+                                output2.substr(0, i) + "," + output2.substr(i)
+                        }
+                    }
+                    if (num2 >= cutoff) {
+                        let exponent2 = Math.floor(Math.log10(num2))
+                        let mantissa = num2 / 10 ** exponent2
+                        output2 = mantissa.toFixed(3) + "e" + exponent2
+                    }
+                    if (exponent === 0) {
+                        output += output2
+                        if (num % 1 !== 0) output += "+"
+                    } else {
+                        if (exponent === 1) {
+                            output += "ω"
+                        } else if (exponent > 1) {
+                            output +=
+                                "ω<sup>" + format_omega(exponent) + "</sup>"
+                        } else if (exponent <= -1 && exponent >= -base) {
+                            output +=
+                                "ω<sup>-" + format_omega(-exponent) + "</sup>"
+                        } else if (exponent <= -base - 1) {
+                            output +=
+                                "ω<sup>-(" + format_omega(-exponent) + ")</sup>"
+                        }
+                        if (num2 !== 1) output += output2
+                        if (num % base ** exponent !== 0 && exponent >= -4)
+                            output += "+"
+                    }
+                } else {
+                    output += "..."
+                }
+                terms++
+            }
+            exponent--
+        }
+    }
+
+    if (output === "") output = "0"
+    return output
+}
+
+//special level formatting
+function format_lvl(num) {
+    let output = num.toString()
+    if (num >= 1000) {
+        let digits = output.length
+        if (num < 10 ** 21) {
+            for (let i = digits - 3; i > 0; i -= 3) {
+                output = output.substr(0, i) + "," + output.substr(i)
+            }
+        }
+    }
+
+    if (
+        game.notation === 8 ||
+        (game.question &&
+            new Date().getUTCDate() === 1 &&
+            new Date().getUTCMonth() === 3)
+    ) {
+        output = "???"
+    }
+
+    return output
+}
+
+//special decimal formatting
 function format_eff(num) {
     if (
         game.notation === 8 ||
@@ -679,13 +1018,134 @@ function format_eff(num) {
             new Date().getUTCMonth() === 3)
     ) {
         return "???"
+    } else if (game.notation === 10) {
+        return format_omega(num)
+    } else if (game.notation === 11) {
+        if (num >= 100) {
+            return format_num(Math.round(num))
+        } else {
+            const fraction_array = [
+                "",
+                "·",
+                ":",
+                "∴",
+                "∷",
+                "⁙",
+                "S",
+                "S·",
+                "S:",
+                "S∴",
+                "S∷",
+                "S⁙",
+            ]
+            let output = format_num(Math.floor(num))
+            if (Math.floor(num) === 0 && Math.floor(num * 12) === 0)
+                output = "0"
+            output += fraction_array[Math.floor(num * 12) % 12]
+
+            return output
+        }
+    } else if (game.notation === 12) {
+        if (num >= 64 ** 2) {
+            return format_num(Math.round(num))
+        } else {
+            const char_array = [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "6",
+                "7",
+                "8",
+                "9",
+                "A",
+                "B",
+                "C",
+                "D",
+                "E",
+                "F",
+                "G",
+                "H",
+                "I",
+                "J",
+                "K",
+                "L",
+                "M",
+                "N",
+                "O",
+                "P",
+                "Q",
+                "R",
+                "S",
+                "T",
+                "U",
+                "V",
+                "W",
+                "X",
+                "Y",
+                "Z",
+                "a",
+                "b",
+                "c",
+                "d",
+                "e",
+                "f",
+                "g",
+                "h",
+                "i",
+                "j",
+                "k",
+                "l",
+                "m",
+                "n",
+                "o",
+                "p",
+                "q",
+                "r",
+                "s",
+                "t",
+                "u",
+                "v",
+                "w",
+                "x",
+                "y",
+                "z",
+                "+",
+                "/",
+            ]
+            output = ""
+
+            let exponent = Math.floor(Math.log(num) / Math.log(64))
+
+            for (let i = exponent; i >= 0; i--) {
+                output += char_array[Math.floor(num / 64 ** i) % 64]
+            }
+
+            if (output === "") output = "0"
+            output += "."
+
+            output += char_array[Math.floor(num * 64) % 64]
+
+            if (num < 64) {
+                output += char_array[Math.floor(num * 64 ** 2) % 64]
+            }
+            if (num < 1) {
+                output += char_array[Math.floor(num * 64 ** 3) % 64]
+            }
+
+            return output
+        }
     } else {
         if (num >= 100) {
             return format_num(Math.round(num))
         } else if (num >= 10) {
             return num.toFixed(1)
-        } else {
+        } else if (num >= 1) {
             return num.toFixed(2)
+        } else {
+            return num.toFixed(3)
         }
     }
 }
@@ -696,6 +1156,8 @@ function format_time(input) {
     let output = undefined
     if (time >= 10 ** 20 / game.tickspeed) {
         output = "a very long time"
+    } else if (time < 1) {
+        output = time.toFixed(3) + "s"
     } else if (time < 10) {
         output = time.toFixed(2) + "s"
     } else if (time < 60) {
@@ -750,7 +1212,7 @@ function get_level(xp) {
     const o = ((27 * n) / 32) ** (1 / 12)
     const p = (32 / 27) * (4800 + o) ** 12 + m - n
     const q =
-        (2 ** (5 / 6) * 3 ** (5 / 26) * (p - m + n) ** (77 / 78)) /
+        (2 ** (5 / 6) * 3 ** (27 / 26) * (p - m + n) ** (77 / 78)) /
         7 ** (14 / 13)
     const r = ((27 * q) / 32) ** (1 / 14)
     const s = (32 / 27) * (7200 + r) ** 14 + p - q
@@ -778,6 +1240,10 @@ function get_level(xp) {
         (5 ** (36 / 35) * (ae - ab + ac) ** (174 / 175)) /
         (2 * 3 ** (183 / 175))
     const ag = ((27 * af) / 32) ** (1 / 36)
+    const ah = (32 / 27) * (170000 + ag) ** 36 + ae - af
+    const ai = 1.6974910196784041 * 10 ** 189
+    const aj = 0.0004031069968415499
+    const ak = 760779.9379686277
 
     if (game.challenge !== 3 && game.challenge !== 9) {
         if (xp < a) {
@@ -814,10 +1280,12 @@ function get_level(xp) {
             return Math.floor(
                 ((27 * (xp + ac - ab)) / 32) ** (1 / 30) + 60000 - ad
             )
-        } else {
+        } else if (xp < ah) {
             return Math.floor(
                 ((27 * (xp + af - ae)) / 32) ** (1 / 36) + 150000 - ag
             )
+        } else {
+            return Math.floor(Math.log(xp - ai) / aj - ak)
         }
     } else {
         let precision = 10 ** 14
@@ -1015,8 +1483,8 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else {
-            let guess = 1000000
+        } else if (xp < ah * 320000) {
+            let guess = 320000
             let iterations = 0
             while (
                 Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
@@ -1033,6 +1501,24 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
+        } else if (xp < get_exp(965813)) {
+            let guess = 965813
+            let iterations = 0
+            while (
+                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                iterations < 1000
+            ) {
+                guess =
+                    (xp - get_exp(guess - 1)) /
+                        (ai +
+                            (aj * (guess - 1) + 1) *
+                                Math.E ** (aj * (guess + ak))) +
+                    guess
+                iterations++
+            }
+            return Math.floor(guess)
+        } else if (xp >= get_exp(965813)) {
+            return 965813
         }
     }
 }
@@ -1060,7 +1546,7 @@ function get_exp(lvl) {
     const o = ((27 * n) / 32) ** (1 / 12)
     const p = (32 / 27) * (4800 + o) ** 12 + m - n
     const q =
-        (2 ** (5 / 6) * 3 ** (5 / 26) * (p - m + n) ** (77 / 78)) /
+        (2 ** (5 / 6) * 3 ** (27 / 26) * (p - m + n) ** (77 / 78)) /
         7 ** (14 / 13)
     const r = ((27 * q) / 32) ** (1 / 14)
     const s = (32 / 27) * (7200 + r) ** 14 + p - q
@@ -1088,6 +1574,10 @@ function get_exp(lvl) {
         (5 ** (36 / 35) * (ae - ab + ac) ** (174 / 175)) /
         (2 * 3 ** (183 / 175))
     const ag = ((27 * af) / 32) ** (1 / 36)
+    const ah = (32 / 27) * (170000 + ag) ** 36 + ae - af
+    const ai = 1.6974910196784041 * 10 ** 189
+    const aj = 0.0004031069968415499
+    const ak = 760779.9379686277
 
     let output = 0
     if (lvl !== 0) {
@@ -1113,8 +1603,10 @@ function get_exp(lvl) {
             output = (32 / 27) * (lvl - 41999 + aa) ** 24 + y - z
         } else if (lvl < 150000) {
             output = (32 / 27) * (lvl - 59999 + ad) ** 30 + ab - ac
-        } else {
+        } else if (lvl < 320000) {
             output = (32 / 27) * (lvl - 149999 + ag) ** 36 + ae - af
+        } else {
+            output = ai + Math.E ** (aj * (lvl + ak + 1))
         }
 
         if (game.challenge === 3 || game.challenge === 9) output *= lvl + 1
@@ -1213,17 +1705,17 @@ class pp_upgrade {
 
         //upgrade name
         let pp_name = document.createElement("P")
-        pp_name.innerText = this.name
+        pp_name.innerHTML = this.name
         pp_name.className = "pp_name"
 
         //upgrade description
         let pp_desc = document.createElement("P")
-        pp_desc.innerText = this.desc
+        pp_desc.innerHTML = this.desc
         pp_desc.className = "pp_desc"
 
         //upgrade purchase button
         let pp_button = document.createElement("BUTTON")
-        pp_button.innerText = "-" + this.price + " PP"
+        pp_button.innerHTML = "-" + this.price + " PP"
         pp_button.className = "pp_button pp_locked"
         pp_button.addEventListener("click", () => {
             if (
@@ -1235,7 +1727,7 @@ class pp_upgrade {
                 game.pp_bought[this.id] = true
                 this.on_purchase()
                 pp_update()
-                document.getElementById("pp").innerText =
+                document.getElementById("pp").innerHTML =
                     format_num(game.pp) + " PP"
             }
         })
@@ -1244,7 +1736,7 @@ class pp_upgrade {
         let pp_priority = document.createElement("DIV")
         pp_priority.className = "pp_priority"
         let priority_text = document.createElement("P")
-        priority_text.innerText = "Priority:"
+        priority_text.innerHTML = "Priority:"
         priority_text.className = "priority_text"
         priority_text.style.display = "inline"
         let priority_input = document.createElement("INPUT")
@@ -1358,7 +1850,7 @@ class pp_upgrade_child extends pp_upgrade {
     //limit break [6]
     let lim_break = new pp_upgrade_child(
         "Limit Break",
-        "Breaks the limits, allowing you to go beyond LVL 60\nAlso allows Auto-Prestige configuration\n(Heads up! PP gain past LVL 60 is based on highest level instead)",
+        "Breaks the limits, allowing you to go beyond LVL 60<br>Also allows Auto-Prestige configuration<br>(Heads up! PP gain past LVL 60 is based on highest level instead)",
         5,
         function () {
             document.getElementById("auto_level").style.display = "block"
@@ -1543,7 +2035,7 @@ class pp_upgrade_child extends pp_upgrade {
     //exp flux [20]
     let flux = new pp_upgrade_child(
         "EXP Flux",
-        "Unlocks an upgrade that generates a boost to EXP production, increasing over time\n(Caps at 20x)",
+        "Unlocks an upgrade that generates a boost to EXP production, increasing over time<br>(Caps at 20x)",
         200,
         function () {
             if (!game.achievements[47]) get_achievement(47)
@@ -1577,7 +2069,7 @@ class pp_upgrade_child extends pp_upgrade {
     //manual labor 5 [24]
     new pp_upgrade_child(
         "Manual Labor V",
-        "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: 16x)",
+        "Unautomated clicks are boosted a further +32% for every Autoclicker tier<br>(Currently: 16x)",
         840,
         function () {
             if (game.challenge !== 7) game.ml_boost = 16 + game.cps * 0.16
@@ -1611,12 +2103,12 @@ class pp_upgrade_child extends pp_upgrade {
             if (game.challenge !== 7)
                 game.prestige_power = 1 + (game.prestige / 1000) ** (1 / 2)
             pp_upgrade.upgrades[27].desc =
-                "EXP production is boosted based on how many times you have Prestiged\n(Currently: " +
+                "EXP production is boosted based on how many times you have Prestiged<br>(Currently: " +
                 format_eff(game.prestige_power) +
                 "x)"
             pp_map
                 .get(pp_upgrade.upgrades[27])
-                .querySelector(".pp_desc").innerText =
+                .querySelector(".pp_desc").innerHTML =
                 pp_upgrade.upgrades[27].desc
         },
         battery
@@ -1661,12 +2153,12 @@ class pp_upgrade_child extends pp_upgrade {
             if (game.challenge !== 7)
                 game.depth_power = 1 + game.highest_level / 400
             pp_upgrade.upgrades[30].desc =
-                "EXP production is boosted based on your highest level\n(Currently: " +
+                "EXP production is boosted based on your highest level<br>(Currently: " +
                 format_eff(game.depth_power) +
                 "x)"
             pp_map
                 .get(pp_upgrade.upgrades[30])
-                .querySelector(".pp_desc").innerText =
+                .querySelector(".pp_desc").innerHTML =
                 pp_upgrade.upgrades[30].desc
         },
         prst_power
@@ -1684,7 +2176,7 @@ class pp_upgrade_child extends pp_upgrade {
     //exp capacitor [32]
     let capacitor = new pp_upgrade_child(
         "EXP Capacitor",
-        "Unlocks the EXP Capacitor, which takes some of your EXP production and stores it\nStored EXP can later be discharged at a 2x boost",
+        "Unlocks the EXP Capacitor, which takes some of your EXP production and stores it<br>Stored EXP can later be discharged at a 2x boost",
         15000,
         function () {
             if (
@@ -1742,7 +2234,7 @@ class pp_upgrade_child extends pp_upgrade {
     //high voltage 1 [35]
     let hv1 = new pp_upgrade_child(
         "High Voltage I",
-        "Unlocks 50% Capacitance mode, which gives a 4x boost on Discharge\nAlso unlocks automation for Discharge",
+        "Unlocks 50% Capacitance mode, which gives a 4x boost on Discharge<br>Also unlocks automation for Discharge",
         30000,
         function () {
             if (
@@ -1796,7 +2288,7 @@ class pp_upgrade_child extends pp_upgrade {
     //high voltage 3 [38]
     new pp_upgrade_child(
         "High Voltage III",
-        "Unlocks 100% Capacitance mode, giving a 8x boost on Discharge\nAlso allows you to Discharge at 0 seconds",
+        "Unlocks 100% Capacitance mode, giving a 8x boost on Discharge<br>Also allows you to Discharge at 0 seconds",
         60000,
         function () {
             if (
@@ -1845,12 +2337,12 @@ class generator_perk {
 
         //perk name
         let perk_name = document.createElement("P")
-        perk_name.innerText = this.name
+        perk_name.innerHTML = this.name
         perk_name.className = "perk_name"
 
         //perk description
         let perk_desc = document.createElement("P")
-        perk_desc.innerText = this.desc
+        perk_desc.innerHTML = this.desc
         perk_desc.className = "perk_desc"
 
         //perk completion box
@@ -1860,11 +2352,11 @@ class generator_perk {
         //perk requirement
         let perk_requirement = document.createElement("P")
         if (this.requirement === 1)
-            perk_requirement.innerText =
-                "Requires\n" + this.requirement + " watt"
+            perk_requirement.innerHTML =
+                "Requires<br>" + this.requirement + " watt"
         else
-            perk_requirement.innerText =
-                "Requires\n" + this.requirement + " watts"
+            perk_requirement.innerHTML =
+                "Requires<br>" + this.requirement + " watts"
         perk_requirement.className = "perk_requirement incomplete_text"
         perk_complete.appendChild(perk_requirement)
 
@@ -1891,13 +2383,13 @@ class generator_perk {
     //achievement power [0]
     new generator_perk(
         "Enter Reboot",
-        "EXP production is boosted +5% for every achievement completed\nAlso unlocks Peak mode for Advanced auto-Prestige, automatically prestiging at peak AMP/sec",
+        "EXP production is boosted +5% for every achievement completed<br>Also unlocks Peak mode for Advanced auto-Prestige, automatically prestiging at peak AMP/sec",
         1
     )
     //starter kit 5 [1]
     new generator_perk(
         "Starter Kit V",
-        "+12 extra free tiers on every upgrade on the Upgrades tab\n(Stacks with the first four Starter Kit Prestige upgrades)",
+        "+12 extra free tiers on every upgrade on the Upgrades tab<br>(Stacks with the first four Starter Kit Prestige upgrades)",
         2
     )
     //technological gift 1 [2]
@@ -1909,19 +2401,19 @@ class generator_perk {
     //uninhibited flux [3]
     new generator_perk(
         "Uninhibited Flux",
-        "EXP Flux permanently increases 5x faster and has a 5x higher cap\n(stacks with Magnified Flux if you have it, making it uncapped)",
+        "EXP Flux permanently increases 5x faster and has a 5x higher cap<br>(stacks with Magnified Flux if you have it, making it uncapped)",
         4
     )
     //multi-prestige [4]
     new generator_perk(
         "Multi-Prestige",
-        "You gain 1 extra Times Prestiged stat for every 200 levels when you Prestige\nPatience will also boost Times Prestiged stat by up to 30x",
+        "You gain 1 extra Times Prestiged stat for every 200 levels when you Prestige<br>Patience will also boost Times Prestiged stat by up to 30x",
         5
     )
     //ultracharge [5]
     new generator_perk(
         "Ultracharge",
-        "EXP Overclocker cooldown time is halved a second time\n(stacks with Supercharge)",
+        "EXP Overclocker cooldown time is halved a second time<br>(stacks with Supercharge)",
         6
     )
     //exp discount 1 [6]
@@ -1945,7 +2437,7 @@ class generator_perk {
     //max capacity [9]
     new generator_perk(
         "Max Capacity",
-        "Discharge is 2x stronger\nDischarge automation is also now unlocked with the EXP Capacitor instead of High Voltage I",
+        "Discharge is 2x stronger<br>Discharge automation is also now unlocked with the EXP Capacitor instead of High Voltage I",
         16
     )
     //technological gift 2 [10]
@@ -1957,7 +2449,7 @@ class generator_perk {
     //autocapacitance [11]
     new generator_perk(
         "Auto-Capacitance",
-        "Unlocks automated mode switching for Capacitor, automatically switching to the highest available mode\nAlso unlocks Smart Auto-Discharge, which automatically Discharges when best to do so",
+        "Unlocks automated mode switching for Capacitor, automatically switching to the highest available mode<br>Also unlocks Smart Auto-Discharge, which automatically Discharges when best to do so",
         24
     )
     //starter kit 6 [12]
@@ -1981,7 +2473,7 @@ class generator_perk {
     //auto-reboot [15]
     new generator_perk(
         "Auto-Reboot",
-        "Unlocks automation for Reboot\nAlso has an average watts/sec display",
+        "Unlocks automation for Reboot<br>Also has an average watts/sec display",
         64
     )
     //speed power [16]
@@ -2019,7 +2511,7 @@ class generator_perk {
     //go nuclear [22]
     new generator_perk(
         "Go Nuclear",
-        "Unlocks the Nuclear Reactor\nRebooting will now also give hydrogen",
+        "Unlocks the Nuclear Reactor<br>Rebooting will now also give hydrogen",
         98304
     )
     //dual power [23]
@@ -2037,7 +2529,7 @@ class generator_perk {
     //deuterium channeling [25]
     new generator_perk(
         "Deuterium Channeling",
-        "Deuterium Power now boosts hydrogen gains 2.50x per tier instead\n(This applies retroactively)",
+        "Deuterium Power now boosts hydrogen gains 2.50x per tier instead<br>(This applies retroactively)",
         4423680
     )
     //amp conversion [26]
@@ -2049,7 +2541,7 @@ class generator_perk {
     //pp shift [27]
     new generator_perk(
         "PP Shift",
-        "PP is immediately granted on leveling up rather than Prestiging\nAMP Conversion now gives 100% of your pending AMP instead",
+        "PP is immediately granted on leveling up rather than Prestiging<br>AMP Conversion now gives 100% of your pending AMP instead",
         21233664
     )
 }
@@ -2115,6 +2607,8 @@ class achievement {
     new achievement("To hell and back again", "Reach LVL 80,000", 130, 0)
     new achievement("The big one-oh-oh-oh-oh-oh", "Reach LVL 100,000", 131, 0)
     new achievement("The grandmaster of level ups", "Reach LVL 150,000", 135, 0)
+    new achievement("200 Grand™", "Reach LVL 200,000", 137, 0)
+    new achievement("Stare into the abyss", "Reach LVL 300,000", 145, 0)
     new achievement("Square one", "Prestige 1 time", 13, 1)
     new achievement("See you in another life", "Prestige 10 times", 14, 1)
     new achievement("Nowhere to go but up", "Prestige 100 times", 15, 1)
@@ -2193,7 +2687,7 @@ class achievement {
         0
     )
     new achievement(
-        "Large",
+        "One chonker number",
         "Get " + format_num(10 ** 36) + " all time EXP",
         29,
         0
@@ -2274,6 +2768,18 @@ class achievement {
         "EXP singularity",
         "Get " + format_num(10 ** 138) + " all time EXP",
         134,
+        0
+    )
+    new achievement(
+        "Halfway to infinity",
+        "Get " + format_num(10 ** 153) + " all time EXP",
+        138,
+        0
+    )
+    new achievement(
+        "On the exponential scale this isn't really that big",
+        "Get " + format_num(10 ** 183) + " all time EXP",
+        146,
         0
     )
     new achievement("Hot minute", "Play for 1 hour", 31, 0)
@@ -2506,6 +3012,12 @@ class achievement {
         107,
         3
     )
+    new achievement(
+        "In case of implosion look at implosion",
+        "Make " + format_num(10 ** 60) + " mg helium/sec",
+        148,
+        3
+    )
     new achievement("Tesseract one", "Quantize 1 time", 120, 4)
     new achievement(
         "Now you're thinking with photons!",
@@ -2526,9 +3038,12 @@ class achievement {
         124,
         4
     )
+    new achievement("Back into the blender again", "Quantize 50 times", 139, 4)
+    new achievement("You should go get a PhD", "Quantize 100 times", 140, 4)
     new achievement("All hail the Prism", "Reach Prism LVL 1", 126, 4)
     new achievement("Let its light inside you", "Reach Prism LVL 10", 127, 4)
     new achievement("Dazzling brilliance", "Reach Prism LVL 30", 125, 4)
+    new achievement("Superluminous", "Reach Prism LVL 100", 141, 4)
     new achievement("With great haste", "Quantize in under 1 hour", 128, 4)
     new achievement(
         "Look at the sparks fly",
@@ -2537,9 +3052,28 @@ class achievement {
         4
     )
     new achievement(
-        "Fastest reset in the west",
+        "Quickest reset in the west",
         "Quantize in under 1 minute",
         136,
+        4
+    )
+    new achievement("Mach 874,030", "Quantize in under 30 seconds", 142, 4)
+    new achievement(
+        "Actually faster than light",
+        "Quantize in under 10 seconds",
+        147,
+        4
+    )
+    new achievement(
+        "Objects in well are heavier than they appear",
+        "Unlock the Gravity Well",
+        143,
+        4
+    )
+    new achievement(
+        "To infinity and not beyond",
+        "Reach ∞ kg dark matter",
+        144,
         4
     )
     new achievement(
@@ -2627,7 +3161,7 @@ class notify {
         notification.className = "notification"
 
         let notif_text = document.createElement("P")
-        notif_text.innerText = this.text
+        notif_text.innerHTML = this.text
         notif_text.style.color = this.color
         notif_text.className = "notif_text"
 
@@ -2646,48 +3180,54 @@ class challenge {
     goal
     step
     step2
+    goal2
+    step3
+    step4
 
     //challenge constructor
-    constructor(name, desc, goal, step, step2) {
+    constructor(name, desc, goal, step, step2, goal2, step3, step4) {
         this.name = name
         this.desc = desc
         this.goal = goal
+        this.goal2 = goal2
         this.id = challenge.challenges.length + 1
         this.step = step
         this.step2 = step2
+        this.step3 = step3
+        this.step4 = step4
 
         challenge.challenges.push(this)
 
         //challenge name
         let challenge_name = document.createElement("P")
-        challenge_name.innerText = this.name
+        challenge_name.innerHTML = this.name
         challenge_name.className = "challenge_name"
 
         //challenge description
         let challenge_desc = document.createElement("P")
-        challenge_desc.innerText = this.desc
+        challenge_desc.innerHTML = this.desc
         challenge_desc.className = "challenge_desc"
 
         //challenge goal
         let challenge_goal = document.createElement("P")
-        challenge_goal.innerText = "Goal: " + format_num(this.goal) + " PP"
+        challenge_goal.innerHTML = "Goal: " + format_num(this.goal) + " PP"
         challenge_goal.className = "challenge_goal"
 
         //challenge_completions
         let challenge_complete = document.createElement("P")
-        challenge_complete.innerText =
+        challenge_complete.innerHTML =
             "Completions: " +
             format_num(0) +
             " / " +
             format_num(12) +
-            "\nEXP boost from completions: " +
+            "<br>EXP boost from completions: " +
             format_eff(1) +
             "x"
         challenge_complete.className = "challenge_complete"
 
         //enter challenge button
         let enter_button = document.createElement("BUTTON")
-        enter_button.innerText = "ENTER CHALLENGE"
+        enter_button.innerHTML = "ENTER CHALLENGE"
         enter_button.className = "enter_button"
         enter_button.addEventListener("click", () => {
             enter_challenge(this.id)
@@ -2720,67 +3260,94 @@ class challenge {
         "EXP Overclocker and EXP Capacitor are disabled",
         225000,
         65000,
-        5000
+        5000,
+        102330000,
+        71335000,
+        6685000
     )
     new challenge(
         "Challenge II",
         "All upgrades require " + format_num(5) + "x as many levels",
         280000,
         95000,
-        5000
+        5000,
+        99995000,
+        58075000,
+        4340000
     )
     new challenge(
         "Challenge III",
         "Levels require more EXP the more levels you have",
         340000,
         80000,
-        5000
+        5000,
+        91880000,
+        51440000,
+        4560000
     )
     new challenge(
         "Challenge IV",
         "You must surpass your highest level to gain more AMP, Patience does not apply",
         585000,
         120000,
-        -5000
+        -5000,
+        114750000,
+        62420000,
+        5235000
     )
     new challenge(
         "Challenge V",
         "All EXP production reduces to zero over 30 seconds",
         750000,
         390000,
-        -15000
+        -15000,
+        103295000,
+        57775000,
+        2100000
     )
     new challenge(
         "Challenge VI",
         "All EXP production is divided by " +
             format_num(10 ** 12) +
-            ", Multi-Prestige and Reboot Residue do not apply\nReboot in 6 Prestiges or less",
+            ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in 6 Prestiges or less",
         1420000,
         0,
-        0
+        0,
+        63640000,
+        11225000,
+        -645000
     )
     new challenge(
         "Challenge VII",
-        "All Upgrades tab things except EXP Boost and Autoclicker are disabled\nThe only EXP multipliers that apply are AMP, Challenge boosts, and Helium",
+        "All Upgrades tab things except EXP Boost and Autoclicker are disabled<br>The only EXP multipliers that apply are AMP, Challenge boosts, and Helium",
         1745000,
         185000,
-        30000
+        30000,
+        14115000,
+        3975000,
+        540000
     )
     new challenge(
         "Challenge VIII",
         "Helium production is disabled",
         1645000,
         100000,
-        -5000
+        -5000,
+        9320000,
+        230000,
+        20000
     )
     new challenge(
         "Challenge IX",
-        "All rules from the first four challenges, simultaneously\nAll EXP production is divided by " +
+        "All rules from the first four challenges, simultaneously<br>All EXP production is divided by " +
             format_num(10 ** 16) +
             ", AMP Conversion does not apply",
         3000000,
         200000,
-        -10000
+        -10000,
+        56800000,
+        10200000,
+        900000
     )
 }
 //done initializing challenges
@@ -2801,19 +3368,19 @@ class core {
 
         //core id
         let core_id = document.createElement("P")
-        core_id.innerText = "Core " + format_num(this.id)
+        core_id.innerHTML = "Core " + format_num(this.id)
         core_id.className = "core_id"
 
         //core power
         let core_power = document.createElement("P")
         if (this.id === 0)
-            core_power.innerText = "+" + format_eff(0) + " mg base helium/sec"
-        else core_power.innerText = format_num(1) + "x helium production"
+            core_power.innerHTML = "+" + format_eff(0) + " mg base helium/sec"
+        else core_power.innerHTML = format_num(1) + "x helium production"
         core_power.className = "core_power"
 
         //core upgrade button
         let core_button = document.createElement("BUTTON")
-        core_button.innerText =
+        core_button.innerHTML =
             "-" + format_num(this.base_price) + " g hydrogen"
         core_button.className = "core_button core_locked"
         core_button.addEventListener("click", () => {
@@ -2825,13 +3392,13 @@ class core {
                     game.core_level[this.id]++
                     if (
                         game.core_level[this.id] >
-                        Math.floor(1000000 / 2 ** this.id)
+                        Math.floor(500000 / 2 ** this.id)
                     ) {
                         game.core_price[this.id] +=
                             (this.base_price *
                                 (game.core_level[this.id] -
-                                    Math.floor(1000000 / 2 ** this.id)) **
-                                    3) /
+                                    Math.floor(500000 / 2 ** this.id)) **
+                                    1.65) /
                             4
                     } else {
                         game.core_price[this.id] += this.base_price / 4
@@ -2853,8 +3420,8 @@ class core {
                         game.core_price[this.id] +=
                             (this.base_price *
                                 (game.core_level[this.id] -
-                                    Math.floor(1000000 / 2 ** this.id)) **
-                                    2) /
+                                    Math.floor(500000 / 2 ** this.id)) **
+                                    1.65) /
                             4
                     } else {
                         game.core_price[this.id] += this.base_price / 4
@@ -2918,17 +3485,17 @@ class quantum_upgrade {
 
         //upgrade name
         let qu_name = document.createElement("P")
-        qu_name.innerText = this.name
+        qu_name.innerHTML = this.name
         qu_name.className = "qu_name"
 
         //upgrade description
         let qu_desc = document.createElement("P")
-        qu_desc.innerText = this.desc
+        qu_desc.innerHTML = this.desc
         qu_desc.className = "qu_desc"
 
         //upgrade purchase button
         let qu_button = document.createElement("BUTTON")
-        qu_button.innerText = "-" + this.price + " photons"
+        qu_button.innerHTML = "-" + this.price + " photons"
         qu_button.className = "qu_button unlit"
         qu_button.addEventListener("click", () => {
             if (
@@ -2940,9 +3507,9 @@ class quantum_upgrade {
                 this.on_purchase()
                 prism_update()
                 if (game.photons === 1 && game.notation !== 8)
-                    document.getElementById("photons_text").innerText = "photon"
+                    document.getElementById("photons_text").innerHTML = "photon"
                 else
-                    document.getElementById("photons_text").innerText =
+                    document.getElementById("photons_text").innerHTML =
                         "photons"
             }
         })
@@ -3016,11 +3583,141 @@ new quantum_upgrade(
     function () {}
 )
 //gravity well [7]
-/*new quantum_upgrade(
+new quantum_upgrade(
     "Gravity Well",
-    "Unlock coming soon...",
+    "Unlocks the Gravity Well",
     4.32 * 10 ** 13,
+    function () {
+        document.getElementById("quantum_tabs").style.display = "flex"
+        if (!game.achievements[143]) get_achievement(143)
+    }
+)
+//done initializing quantum upgrades
+
+//dark upgrade class
+class dark_upgrade {
+    static upgrades = []
+
+    name
+    desc
+    price
+    func
+
+    //dark constructor
+    constructor(name, desc, price, func) {
+        this.name = name
+        this.desc = desc
+        this.price = price
+        this.id = dark_upgrade.upgrades.length
+        game.dk_bought[this.id] = false
+        this.on_purchase = func
+
+        dark_upgrade.upgrades.push(this)
+
+        //upgrade name
+        let dk_name = document.createElement("P")
+        dk_name.innerHTML = this.name
+        dk_name.className = "dk_name"
+
+        //upgrade description
+        let dk_desc = document.createElement("P")
+        dk_desc.innerHTML = this.desc
+        dk_desc.className = "dk_desc"
+
+        //upgrade purchase button
+        let dk_button = document.createElement("BUTTON")
+        dk_button.innerHTML = "-" + this.price + " photons"
+        dk_button.className = "qu_button unlit"
+        dk_button.addEventListener("click", () => {
+            if (
+                game.photons >= this.price &&
+                game.dk_bought[this.id] === false
+            ) {
+                game.photons -= this.price
+                game.dk_bought[this.id] = true
+                this.on_purchase()
+                prism_update()
+                if (game.photons === 1 && game.notation !== 8)
+                    document.getElementById("photons_text").innerHTML = "photon"
+                else
+                    document.getElementById("photons_text").innerHTML =
+                        "photons"
+            }
+        })
+
+        //all text div
+        let dk_text = document.createElement("DIV")
+        dk_text.className = "dk_text"
+        dk_text.appendChild(dk_name)
+        dk_text.appendChild(dk_desc)
+
+        //entire upgrade div
+        let dk_block = document.createElement("DIV")
+        dk_block.className = "dk_upgrade"
+        dk_block.appendChild(dk_text)
+        dk_block.appendChild(dk_button)
+
+        //attatching upgrade to gravity well page
+        quantum_map.set(this, dk_block)
+        document.getElementById("gravity_page").appendChild(dk_block)
+    }
+}
+
+//initializing dark upgrades
+//expert auto-reboot [0]
+new dark_upgrade(
+    "Expert Auto-Reboot",
+    "Unlocks automation for pushing levels",
+    5.2 * 10 ** 16,
     function () {}
 )
-*/
-//done initializing quantum upgrades
+//auto-quantize [1]
+new dark_upgrade(
+    "Auto-Quantize",
+    "Unlocks Quantize automation",
+    7.8 * 10 ** 19,
+    function () {}
+)
+//photonic infusion [2]
+new dark_upgrade(
+    "Photonic Infusion",
+    "EXP production is boosted based on unspent photons",
+    1.56 * 10 ** 23,
+    function () {}
+)
+//extended difficulty [3]
+new dark_upgrade(
+    "Extended Difficulty",
+    "All challenges can now be completed up to 20 times<br>Completions past 12 also give a helium production boost",
+    1.872 * 10 ** 27,
+    function () {}
+)
+//atomic refraction [4]
+new dark_upgrade(
+    "Atomic Refraction",
+    "Helium production is boosted based on Prism LVL",
+    9.36 * 10 ** 32,
+    function () {}
+)
+//open sesame [5]
+new dark_upgrade(
+    "Open Sesame",
+    "Hydrogen now no longer requires 98,304 watts to be gained<br>Deuterium Power now also boosts 3x instead",
+    10 ** 39,
+    function () {}
+)
+//gravitational waves [6]
+new dark_upgrade(
+    "Gravitational Waves",
+    "Dark matter also boosts helium production at a reduced amount",
+    1.5 * 10 ** 45,
+    function () {}
+)
+//omega drive [7]
+/*new dark_upgrade(
+    "Omega Drive",
+    "Unlocks the Omega Drive",
+    3.75 * 10 ** 51,
+    function () {}
+)*/
+//done initializing dark upgrades
