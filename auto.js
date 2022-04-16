@@ -5,32 +5,32 @@ function up_toggle(id) {
         switch (id) {
             case 0:
                 //exp boost
-                document.getElementById("boost_auto").innerText = "ON"
+                document.getElementById("boost_auto").innerHTML = "ON"
                 document.getElementById("boost_auto").style.color = "#00ff00"
                 break
             case 1:
                 //autoclicker
-                document.getElementById("auto_auto").innerText = "ON"
+                document.getElementById("auto_auto").innerHTML = "ON"
                 document.getElementById("auto_auto").style.color = "#00ff00"
                 break
             case 2:
                 //exp fluctuation
-                document.getElementById("fluct_auto").innerText = "ON"
+                document.getElementById("fluct_auto").innerHTML = "ON"
                 document.getElementById("fluct_auto").style.color = "#00ff00"
                 break
             case 3:
                 //exp factor
-                document.getElementById("fact_auto").innerText = "ON"
+                document.getElementById("fact_auto").innerHTML = "ON"
                 document.getElementById("fact_auto").style.color = "#00ff00"
                 break
             case 4:
                 //exp flux
-                document.getElementById("flux_auto").innerText = "ON"
+                document.getElementById("flux_auto").innerHTML = "ON"
                 document.getElementById("flux_auto").style.color = "#00ff00"
                 break
             case 5:
                 //exp battery
-                document.getElementById("battery_auto").innerText = "ON"
+                document.getElementById("battery_auto").innerHTML = "ON"
                 document.getElementById("battery_auto").style.color = "#00ff00"
                 break
         }
@@ -39,32 +39,32 @@ function up_toggle(id) {
         switch (id) {
             case 0:
                 //exp boost
-                document.getElementById("boost_auto").innerText = "OFF"
+                document.getElementById("boost_auto").innerHTML = "OFF"
                 document.getElementById("boost_auto").style.color = "#ff0000"
                 break
             case 1:
                 //autoclicker
-                document.getElementById("auto_auto").innerText = "OFF"
+                document.getElementById("auto_auto").innerHTML = "OFF"
                 document.getElementById("auto_auto").style.color = "#ff0000"
                 break
             case 2:
                 //exp fluctuation
-                document.getElementById("fluct_auto").innerText = "OFF"
+                document.getElementById("fluct_auto").innerHTML = "OFF"
                 document.getElementById("fluct_auto").style.color = "#ff0000"
                 break
             case 3:
                 //exp factor
-                document.getElementById("fact_auto").innerText = "OFF"
+                document.getElementById("fact_auto").innerHTML = "OFF"
                 document.getElementById("fact_auto").style.color = "#ff0000"
                 break
             case 4:
                 //exp flux
-                document.getElementById("flux_auto").innerText = "OFF"
+                document.getElementById("flux_auto").innerHTML = "OFF"
                 document.getElementById("flux_auto").style.color = "#ff0000"
                 break
             case 5:
                 //exp battery
-                document.getElementById("battery_auto").innerText = "OFF"
+                document.getElementById("battery_auto").innerHTML = "OFF"
                 document.getElementById("battery_auto").style.color = "#ff0000"
                 break
         }
@@ -75,15 +75,15 @@ function up_toggle(id) {
 function pr_toggle() {
     if (!game.autopr_toggle) {
         game.autopr_toggle = true
-        document.getElementById("amp_auto").innerText = "ON"
+        document.getElementById("amp_auto").innerHTML = "ON"
         document.getElementById("amp_auto").style.color = "#00ff00"
-        document.getElementById("auto_toggle").innerText = "ENABLED"
+        document.getElementById("auto_toggle").innerHTML = "ENABLED"
         document.getElementById("auto_toggle").style.color = "#00ff00"
     } else {
         game.autopr_toggle = false
-        document.getElementById("amp_auto").innerText = "OFF"
+        document.getElementById("amp_auto").innerHTML = "OFF"
         document.getElementById("amp_auto").style.color = "#ff0000"
-        document.getElementById("auto_toggle").innerText = "DISABLED"
+        document.getElementById("auto_toggle").innerHTML = "DISABLED"
         document.getElementById("auto_toggle").style.color = "#ff0000"
     }
 }
@@ -92,11 +92,11 @@ function pr_toggle() {
 function oc_toggle() {
     if (!game.autooc_toggle) {
         game.autooc_toggle = true
-        document.getElementById("oc_auto").innerText = "ON"
+        document.getElementById("oc_auto").innerHTML = "ON"
         document.getElementById("oc_auto").style.color = "#00ff00"
     } else {
         game.autooc_toggle = false
-        document.getElementById("oc_auto").innerText = "OFF"
+        document.getElementById("oc_auto").innerHTML = "OFF"
         document.getElementById("oc_auto").style.color = "#ff0000"
     }
 }
@@ -111,7 +111,7 @@ function ds_toggle() {
     }
     switch (game.autods_toggle) {
         case 0:
-            document.getElementById("dis_auto").innerText = "OFF"
+            document.getElementById("dis_auto").innerHTML = "OFF"
             document.getElementById("dis_auto").style.color = "#ff0000"
             if (
                 (game.pp_bought[32] && game.perks[9]) ||
@@ -122,11 +122,11 @@ function ds_toggle() {
             }
             break
         case 1:
-            document.getElementById("dis_auto").innerText = "ON"
+            document.getElementById("dis_auto").innerHTML = "ON"
             document.getElementById("dis_auto").style.color = "#00ff00"
             break
         case 2:
-            document.getElementById("dis_auto").innerText = "SMART"
+            document.getElementById("dis_auto").innerHTML = "SMART"
             document.getElementById("dis_auto").style.color = "#00ffff"
             document.getElementById("dis_text").style.display = "none"
             document.getElementById("dis_input").style.display = "none"
@@ -138,11 +138,11 @@ function ds_toggle() {
 function pp_toggle() {
     if (!game.autopp_toggle) {
         game.autopp_toggle = true
-        document.getElementById("autopp_toggle").innerText = "ENABLED"
+        document.getElementById("autopp_toggle").innerHTML = "ENABLED"
         document.getElementById("autopp_toggle").style.color = "#00ff00"
     } else {
         game.autopp_toggle = false
-        document.getElementById("autopp_toggle").innerText = "DISABLED"
+        document.getElementById("autopp_toggle").innerHTML = "DISABLED"
         document.getElementById("autopp_toggle").style.color = "#ff0000"
     }
 }
@@ -151,7 +151,7 @@ function pp_toggle() {
 function cp_toggle() {
     if (!game.autocp_toggle) {
         game.autocp_toggle = true
-        document.getElementById("cap_auto").innerText = "ON"
+        document.getElementById("cap_auto").innerHTML = "ON"
         document.getElementById("cap_auto").style.color = "#00ff00"
         if (game.pp_bought[38]) set_capacitance(4)
         else if (game.pp_bought[37]) set_capacitance(3)
@@ -159,7 +159,7 @@ function cp_toggle() {
         else if (game.pp_bought[32]) set_capacitance(1)
     } else {
         game.autocp_toggle = false
-        document.getElementById("cap_auto").innerText = "OFF"
+        document.getElementById("cap_auto").innerHTML = "OFF"
         document.getElementById("cap_auto").style.color = "#ff0000"
     }
 }
@@ -169,15 +169,15 @@ function rb_toggle() {
     if (!game.confirmation) {
         if (!game.autorb_toggle) {
             game.autorb_toggle = true
-            document.getElementById("watt_auto").innerText = "ON"
+            document.getElementById("watt_auto").innerHTML = "ON"
             document.getElementById("watt_auto").style.color = "#00ff00"
-            document.getElementById("autorb_toggle").innerText = "ENABLED"
+            document.getElementById("autorb_toggle").innerHTML = "ENABLED"
             document.getElementById("autorb_toggle").style.color = "#00ff00"
         } else {
             game.autorb_toggle = false
-            document.getElementById("watt_auto").innerText = "OFF"
+            document.getElementById("watt_auto").innerHTML = "OFF"
             document.getElementById("watt_auto").style.color = "#ff0000"
-            document.getElementById("autorb_toggle").innerText = "DISABLED"
+            document.getElementById("autorb_toggle").innerHTML = "DISABLED"
             document.getElementById("autorb_toggle").style.color = "#ff0000"
         }
     } else {
@@ -187,14 +187,33 @@ function rb_toggle() {
     }
 }
 
+//quantize automation toggle
+function qu_toggle() {
+    if (!game.quantum_confirmation) {
+        if (!game.autoqu_toggle) {
+            game.autoqu_toggle = true
+            document.getElementById("autoqu_toggle").innerHTML = "ENABLED"
+            document.getElementById("autoqu_toggle").style.color = "#00ff00"
+        } else {
+            game.autoqu_toggle = false
+            document.getElementById("autoqu_toggle").innerHTML = "DISABLED"
+            document.getElementById("autoqu_toggle").style.color = "#ff0000"
+        }
+    } else {
+        alert(
+            "Quantize Confirmation must be turned off to enable Quantize automation"
+        )
+    }
+}
+
 //pending reboot toggle
 function pendingrb_toggle() {
     if (!game.autorb_pending) {
         game.autorb_pending = true
-        document.getElementById("pendingrb_toggle").innerText = "YES"
+        document.getElementById("pendingrb_toggle").innerHTML = "YES"
     } else {
         game.autorb_pending = false
-        document.getElementById("pendingrb_toggle").innerText = "NO"
+        document.getElementById("pendingrb_toggle").innerHTML = "NO"
     }
 }
 
@@ -204,11 +223,11 @@ function smart_toggle() {
         game.smartpr_toggle = true
         if (game.smartpr_mode === 0) autopr_switch(4)
         else if (game.smartpr_mode === 1) autopr_switch(2)
-        document.getElementById("smart_toggle").innerText = "ENABLED"
+        document.getElementById("smart_toggle").innerHTML = "ENABLED"
         document.getElementById("smart_toggle").style.color = "#00ff00"
     } else {
         game.smartpr_toggle = false
-        document.getElementById("smart_toggle").innerText = "DISABLED"
+        document.getElementById("smart_toggle").innerHTML = "DISABLED"
         document.getElementById("smart_toggle").style.color = "#ff0000"
     }
 }
@@ -236,11 +255,11 @@ function initial_switch(mode) {
 function hy_toggle() {
     if (!game.autohy_toggle) {
         game.autohy_toggle = true
-        document.getElementById("autohy_toggle").innerText = "ENABLED"
+        document.getElementById("autohy_toggle").innerHTML = "ENABLED"
         document.getElementById("autohy_toggle").style.color = "#00ff00"
     } else {
         game.autohy_toggle = false
-        document.getElementById("autohy_toggle").innerText = "DISABLED"
+        document.getElementById("autohy_toggle").innerHTML = "DISABLED"
         document.getElementById("autohy_toggle").style.color = "#ff0000"
     }
 }
@@ -249,11 +268,11 @@ function hy_toggle() {
 function battery_toggle() {
     if (game.battery_mode === 0) {
         game.battery_mode = 1
-        document.getElementById("battery_mode").innerText = "IDLE"
+        document.getElementById("battery_mode").innerHTML = "IDLE"
         document.getElementById("battery_mode").style.color = "#00ffff"
     } else {
         game.battery_mode = 0
-        document.getElementById("battery_mode").innerText = "ACTIVE"
+        document.getElementById("battery_mode").innerHTML = "ACTIVE"
         document.getElementById("battery_mode").style.color = "#ff0000"
     }
 }
@@ -347,6 +366,30 @@ function autorb_switch(mode) {
     }
 }
 
+//switching autoquantize modes
+function autoqu_switch(mode) {
+    game.autoqu_mode = mode
+
+    document.getElementById("auto_photons").style.display = "none"
+    document.getElementById("auto_time3").style.display = "none"
+
+    document.getElementById("photons_mode").className = "button"
+    document.getElementById("time_mode3").className = "button"
+
+    switch (mode) {
+        case 0:
+            document.getElementById("photons_mode").className =
+                "button mode_active"
+            document.getElementById("auto_photons").style.display = "block"
+            break
+        case 1:
+            document.getElementById("time_mode3").className =
+                "button mode_active"
+            document.getElementById("auto_time3").style.display = "block"
+            break
+    }
+}
+
 //toggling all automation
 function toggle_all_automation() {
     let all_off = true
@@ -360,7 +403,9 @@ function toggle_all_automation() {
         game.autopp_toggle ||
         game.autocp_toggle ||
         game.autorb_toggle ||
-        game.smartpr_toggle
+        game.smartpr_toggle ||
+        game.autohy_toggle ||
+        game.autoqu_toggle
     )
         all_off = false
 
@@ -375,6 +420,8 @@ function toggle_all_automation() {
         game.autocp_toggle = true
         game.autorb_toggle = true
         game.smartpr_toggle = true
+        game.autohy_toggle = true
+        game.autoqu_toggle = true
     } else {
         for (let i = 0; i < 6; i++) {
             game.autoup_toggle[i] = false
@@ -386,6 +433,8 @@ function toggle_all_automation() {
         game.autocp_toggle = false
         game.autorb_toggle = false
         game.smartpr_toggle = false
+        game.autohy_toggle = false
+        game.autoqu_toggle = false
     }
 
     for (let i = 0; i < 6; i++) {
@@ -407,6 +456,10 @@ function toggle_all_automation() {
     cp_toggle()
     rb_toggle()
     rb_toggle()
+    hy_toggle()
+    hy_toggle()
+    qu_toggle()
+    qu_toggle()
     battery_toggle()
     battery_toggle()
 }
