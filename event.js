@@ -1,10 +1,21 @@
 //function to increment exp and handle showing the results
 function increment(num) {
     if (game.level < game.pr_min || game.pp_bought[6]) {
-        game.total_exp += num
-        game.prestige_exp += num
-        game.reboot_exp += num
-        game.all_time_exp += num
+        if (game.total_exp + num < 1.7976931348622053 * 10 ** 308)
+            game.total_exp += num
+        else game.total_exp = 1.7976931348622053 * 10 ** 308
+
+        if (game.prestige_exp + num < 1.7976931348622053 * 10 ** 308)
+            game.prestige_exp += num
+        else game.prestige_exp = 1.7976931348622053 * 10 ** 308
+
+        if (game.reboot_exp + num < 1.7976931348622053 * 10 ** 308)
+            game.reboot_exp += num
+        else game.reboot_exp = 1.7976931348622053 * 10 ** 308
+
+        if (game.all_time_exp + num < 1.7976931348622053 * 10 ** 308)
+            game.all_time_exp += num
+        else game.all_time_exp = 1.7976931348622053 * 10 ** 308
 
         let prev_level = game.level
 
@@ -28,7 +39,15 @@ function increment(num) {
                             get_pp(game.level) - get_pp(game.highest_level)
                     }
 
-                    if (game.challenge !== 9) game.highest_level = game.level
+                    if (
+                        game.challenge !== 9 &&
+                        !(
+                            game.challenge === 4 &&
+                            game.dk_bought[3] &&
+                            game.completions[3] >= 12
+                        )
+                    )
+                        game.highest_level = game.level
                 }
             }
 
@@ -66,6 +85,10 @@ function increment(num) {
                 get_achievement(131)
             if (!game.achievements[135] && game.level >= 150000)
                 get_achievement(135)
+            if (!game.achievements[137] && game.level >= 200000)
+                get_achievement(137)
+            if (!game.achievements[145] && game.level >= 300000)
+                get_achievement(145)
 
             if (game.level >= 5 && !game.hold_notify) {
                 new notify("Protip: you can hold the EXP button", "#ffc400")
@@ -128,6 +151,10 @@ function increment(num) {
             get_achievement(132)
         if (!game.achievements[134] && game.all_time_exp >= 10 ** 138)
             get_achievement(134)
+        if (!game.achievements[138] && game.all_time_exp >= 10 ** 153)
+            get_achievement(138)
+        if (!game.achievements[146] && game.all_time_exp >= 10 ** 183)
+            get_achievement(146)
 
         game.exp = game.total_exp - Math.ceil(get_exp(game.level - 1))
         game.goal = Math.ceil(get_exp(game.level) - get_exp(game.level - 1))
@@ -248,12 +275,12 @@ function upgrade(id, max) {
                             get_achievement(55)
                         if (game.pp_bought[24] && game.challenge !== 7) {
                             pp_upgrade.upgrades[24].desc =
-                                "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: " +
+                                "Unautomated clicks are boosted a further +32% for every Autoclicker tier<br>(Currently: " +
                                 format_eff(16 + game.cps * 0.16) +
                                 "x)"
                             pp_map
                                 .get(pp_upgrade.upgrades[24])
-                                .querySelector(".pp_desc").innerText =
+                                .querySelector(".pp_desc").innerHTML =
                                 pp_upgrade.upgrades[24].desc
                             game.ml_boost = 16 + game.cps * 0.16
                         }
@@ -441,12 +468,12 @@ function upgrade(id, max) {
                         get_achievement(55)
                     if (game.pp_bought[24] && game.challenge !== 7) {
                         pp_upgrade.upgrades[24].desc =
-                            "Unautomated clicks are boosted a further +32% for every Autoclicker tier\n(Currently: " +
+                            "Unautomated clicks are boosted a further +32% for every Autoclicker tier<br>(Currently: " +
                             format_eff(16 + game.cps * 0.16) +
                             "x)"
                         pp_map
                             .get(pp_upgrade.upgrades[24])
-                            .querySelector(".pp_desc").innerText =
+                            .querySelector(".pp_desc").innerHTML =
                             pp_upgrade.upgrades[24].desc
                         game.ml_boost = 16 + game.cps * 0.16
                     }
@@ -590,7 +617,7 @@ function oc_activate() {
         game.exp_oc = 3
         if (game.pp_bought[19]) game.exp_oc = 4
         if (game.pp_bought[23]) game.exp_oc = 5
-        document.getElementById("oc_state").innerText =
+        document.getElementById("oc_state").innerHTML =
             "Boosting " + format_num(game.exp_oc) + "x"
         document.getElementById("oc_button").style.display = "none"
         document.getElementById("oc_timer").style.display = "block"
@@ -799,7 +826,10 @@ function exit_challenge() {
 
 //upgrading the prism
 function upgrade_prism() {
-    if (game.photons >= Math.round(5 * 2.8 ** game.prism_level)) {
+    if (
+        game.photons >= Math.round(5 * 2.8 ** game.prism_level) &&
+        Math.round(5 * 2.8 ** game.prism_level) < Infinity
+    ) {
         game.photons -= Math.round(5 * 2.8 ** game.prism_level)
         game.prism_level++
         game.prism_boost = game.prism_level * (game.prism_level + 4)
@@ -810,5 +840,26 @@ function upgrade_prism() {
             get_achievement(127)
         if (!game.achievements[125] && game.prism_level >= 30)
             get_achievement(125)
+        if (!game.achievements[141] && game.prism_level >= 100)
+            get_achievement(141)
+    }
+}
+
+//upgrading growth interval
+function upgrade_interval() {
+    if (game.photons >= game.growth_price[0] && game.growth_interval > 1) {
+        game.photons -= game.growth_price[0]
+        game.growth_price[0] *= 80
+        game.growth_interval *= 0.9
+        if (game.growth_interval < 1) game.growth_interval = 1
+    }
+}
+
+//upgrading growth facor
+function upgrade_growth() {
+    if (game.photons >= game.growth_price[1]) {
+        game.photons -= game.growth_price[1]
+        game.growth_price[1] *= 15
+        game.growth_factor *= 1.02
     }
 }
