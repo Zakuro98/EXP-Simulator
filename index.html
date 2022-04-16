@@ -560,6 +560,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div id="autorb_block">
                         <div id="autorb_config">
                             <p class="perk_name">
@@ -592,7 +593,7 @@
                             </div>
                             <div id="auto_time2">
                                 <p class="goal_text">
-                                    Auto-Reboot Time:
+                                    Auto-Reboot Time (in seconds):
                                 </p>
                                 <input class="goal_input" id="time_input2" type="number" value="0.8" step="0.01" min="0">
                             </div>
@@ -603,6 +604,12 @@
                                 <button id="pendingrb_toggle" class="button" onclick="pendingrb_toggle()">
                                     NO
                                 </button>
+                            </div>
+                            <div id="auto_push">
+                                <p class="goal_text">
+                                    Begin Push Time (in seconds):
+                                </p>
+                                <input class="goal_input" id="push_input" type="number" value="60" step="0.01" min="0">
                             </div>
                             <p id="watts_eff" class="goal_text">
                                 Watt Efficiency: ???
@@ -682,7 +689,7 @@
                                 <p class="goal_text">
                                     Deuterium Importance:
                                 </p>
-                                <input class="goal_input" id="importance_input" type="number" value="1" step="0.01" min="0.01" max="3">
+                                <input class="goal_input" id="importance_input" type="number" value="1" step="0.01" min="0.01" max="100">
                             </div>
                         </div>
                     </div>
@@ -716,15 +723,27 @@
                         <button id="supply_button" class="core_button core_locked" onclick="
                             if (game.hydrogen >= game.supply_price) {
                                 game.hydrogen -= game.supply_price
+                                game.budget -= game.supply_price
+                                if (game.budget < 0) game.budget = 0
                                 game.supply_level++
                                 game.supply_price *= 5
+                                if (game.supply_level > 16) game.supply_price *= 5 * (game.supply_level - 16) ** 2
                             }">
                             -16.0 g hydrogen
                         </button>
                     </div>
+                </div>                
+
+                <div id="quantum_tabs" class="menu">
+                    <button id="prism_tab" class="button" onclick="goto_subtab(0)">
+                        PRISM
+                    </button>
+                    <button id="gravity_tab" class="button" onclick="goto_subtab(1)">
+                        GRAVITY WELL
+                    </button>
                 </div>
 
-                <div id="prism_page">
+                <div id="quantum_page">
                     <div id="photons_block">
                         <p id="photons" class="photons">
                             0
@@ -733,7 +752,9 @@
                             photons
                         </p>
                     </div>
+                </div>
 
+                <div id="prism_page">
                     <div id="quantize_block">
                         <button id="quantize_button" class="lit" onclick="quantize()">
                             QUANTIZE!
@@ -749,7 +770,47 @@
                     </div>
                     <p id="quantize_footer">
                         Photons gained are based on your Highest Level (Current Iteration)
+                        <br>They don't do anything by themselves, and are only for spending
                     </p>
+
+                    <div id="autoqu_block">
+                        <div id="autoqu_config">
+                            <p class="qu_name">
+                                Auto-Quantize Configuration
+                            </p>
+                            <div id="autoqu_enabled">
+                                <p class="goal_text">
+                                    Automation:
+                                </p>
+                                <button id="autoqu_toggle" class="button" onclick="qu_toggle()">
+                                    DISABLED
+                                </button>
+                            </div>
+                            <div id="autoqu_mode">
+                                <p class="goal_text">
+                                    Auto-Quantize Mode:
+                                </p>
+                                <button id="photons_mode" class="button mode_active" onclick="autoqu_switch(0)">
+                                    PHOTONS
+                                </button>
+                                <button id="time_mode3" class="button" onclick="autoqu_switch(1)">
+                                    TIME
+                                </button>
+                            </div>
+                            <div id="auto_photons">
+                                <p class="goal_text">
+                                    Auto-Quantize Photons:
+                                </p>
+                                <input class="goal_input" id="photons_input" type="number" value="1" min="1">
+                            </div>
+                            <div id="auto_time3">
+                                <p class="goal_text">
+                                    Auto-Quantize Time (in seconds):
+                                </p>
+                                <input class="goal_input" id="time_input3" type="number" value="60" step="0.01" min="0">
+                            </div>
+                        </div>
+                    </div>
 
                     <div id="prism_block">
                         <div id="prism_level">
@@ -784,6 +845,49 @@
 
                     <p id="quantum_upgrades_text">
                         QUANTUM UPGRADES
+                    </p>
+                </div>
+
+                <div id="gravity_page">
+                    <div id="dark_matter_block">
+                        <p id="dark_matter" class="dark_matter">
+                            1.00
+                        </p>
+                        <p id="dark_matter_text" class="dark_matter_text">
+                            kg dark matter
+                        </p>
+                    </div>
+                    <p id="dark_matter_boost" class="dark_matter_text">
+                        creating 1.00x EXP production
+                    </p>
+
+                    <div id="gravity_upgrades">
+                        <div id="interval_upgrade">
+                            <p id="interval_text" class="dark_matter_text">
+                                Growth Interval
+                                <br>2.00 seconds
+                            </p>
+                            <div id="interval_button_center">
+                                <button id="interval_button" class="unlit" onclick="upgrade_interval()">
+                                    -1.000e15 photons
+                                </button>
+                            </div>
+                        </div>
+                        <div id="growth_upgrade">
+                            <p id="growth_text" class="dark_matter_text">
+                                Growth Factor
+                                <br>1.00x
+                            </p>
+                            <div id="growth_button_center">
+                                <button id="growth_button" class="unlit" onclick="upgrade_growth()">
+                                    -1.000e13 photons
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p id="dark_upgrades_text">
+                        DARK UPGRADES
                     </p>
                 </div>
 
@@ -1306,7 +1410,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.3.002<br>Made by Zakuro
+                    <br><br><br>EXP Simulator v2.3.103<br>Made by Zakuro
                 </p>
                 <a href="changelog.html" target="_blank" class="info link">
                     Changelog
