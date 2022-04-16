@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.3.100",
+    version: "2.3.103",
 
     //v2.0.000 variables
     total_exp: 0,
