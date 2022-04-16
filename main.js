@@ -1536,7 +1536,7 @@ function pre_save() {
 function save() {
     pre_save()
     game.beta = false
-    game.version = "2.3.100"
+    game.version = "2.3.103"
     localStorage.setItem("exp_simulator_save", JSON.stringify(game))
 }
 
