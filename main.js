@@ -21,7 +21,9 @@ function tick() {
         game.ch_boost[8] *
         reduction *
         game.helium_boost *
-        game.superspeed_power
+        game.superspeed_power *
+        game.dark_matter_boost *
+        game.infusion
 
     if (game.challenge === 7) {
         game.global_multiplier =
@@ -75,7 +77,15 @@ function tick() {
     }
 
     //amp conversion
-    if (game.perks[26] && game.challenge !== 9) {
+    if (
+        game.perks[26] &&
+        game.challenge !== 9 &&
+        !(
+            game.challenge === 4 &&
+            game.dk_bought[3] &&
+            game.completions[3] >= 12
+        )
+    ) {
         if (game.challenge === 4) {
             if (game.level >= game.highest_level) {
                 if (!game.perks[27])
@@ -190,7 +200,11 @@ function tick() {
     )
 
     //ease of completion
-    if (game.qu_bought[2] && game.challenge !== 0) {
+    if (
+        game.qu_bought[2] &&
+        game.challenge !== 0 &&
+        !(game.challenge === 6 && game.completions[5] >= 12)
+    ) {
         let challenge_requirement = 0
         let ch = game.challenge - 1
 
@@ -203,57 +217,49 @@ function tick() {
                     game.completions[ch]) /
                     2
         } else {
-            challenge_requirement =
-                challenge.challenges[ch].goal +
-                challenge.challenges[ch].step * 11 +
-                challenge.challenges[ch].step2 * 55
+            if (game.dk_bought[3]) {
+                if (game.completions[ch] < 20) {
+                    challenge_requirement =
+                        challenge.challenges[ch].goal2 +
+                        challenge.challenges[ch].step3 *
+                            (game.completions[ch] - 12) +
+                        (challenge.challenges[ch].step4 *
+                            (game.completions[ch] - 13) *
+                            (game.completions[ch] - 12)) /
+                            2
+                } else {
+                    challenge_requirement =
+                        challenge.challenges[ch].goal2 +
+                        challenge.challenges[ch].step3 * 7 +
+                        challenge.challenges[ch].step4 * 21
+                }
+            } else {
+                challenge_requirement =
+                    challenge.challenges[ch].goal +
+                    challenge.challenges[ch].step * 11 +
+                    challenge.challenges[ch].step2 * 55
+            }
         }
 
         if (game.pp >= challenge_requirement) {
-            if (game.completions[ch] < 12) game.completions[ch]++
+            if (game.dk_bought[3]) {
+                if (game.completions[ch] < 20) game.completions[ch]++
+            } else {
+                if (game.completions[ch] < 12) game.completions[ch]++
+            }
 
             if (!game.achievements[92] && game.blind) get_achievement(92)
 
-            switch (game.completions[ch]) {
-                case 0:
-                    game.ch_boost[ch] = 1
-                    break
-                case 1:
-                    game.ch_boost[ch] = 4
-                    break
-                case 2:
-                    game.ch_boost[ch] = 8
-                    break
-                case 3:
-                    game.ch_boost[ch] = 12
-                    break
-                case 4:
-                    game.ch_boost[ch] = 16
-                    break
-                case 5:
-                    game.ch_boost[ch] = 20
-                    break
-                case 6:
-                    game.ch_boost[ch] = 24
-                    break
-                case 7:
-                    game.ch_boost[ch] = 28
-                    break
-                case 8:
-                    game.ch_boost[ch] = 32
-                    break
-                case 9:
-                    game.ch_boost[ch] = 36
-                    break
-                case 10:
-                    game.ch_boost[ch] = 40
-                    break
-                case 11:
-                    game.ch_boost[ch] = 44
-                    break
-                case 12:
-                    game.ch_boost[ch] = 48
-                    break
+            if (game.completions[ch] === 0) {
+                game.ch_boost[ch] = 1
+            } else {
+                game.ch_boost[ch] = game.completions[ch] * 4
+                if (game.completions[ch] >= 13) {
+                    game.ch_helium_boost[ch] =
+                        (game.completions[ch] - 12) * 0.5 + 1
+                } else {
+                    game.ch_helium_boost[ch] = 1
+                }
             }
         }
     }
@@ -290,7 +296,15 @@ function tick() {
             reduction = (1 - game.prestige_time / (30 * game.tickspeed)) ** 4
         }
     } else if (game.challenge === 6) {
-        reduction = 10 ** -12
+        if (game.dk_bought[3]) {
+            if (game.completions[5] >= 12) {
+                reduction = 10 ** (-6 * (game.completions[5] - 11))
+            } else {
+                reduction = 10 ** -12
+            }
+        } else {
+            reduction = 10 ** -12
+        }
     } else if (game.challenge === 9) {
         reduction = 10 ** -16
     } else {
@@ -395,20 +409,20 @@ function tick() {
         }
         if (!game.achievements[52] && game.exp_flux >= 100) get_achievement(52)
         pp_upgrade.upgrades[20].desc =
-            "Unlocks an upgrade that generates a boost to EXP production, increasing over time\n(Currently: " +
+            "Unlocks an upgrade that generates a boost to EXP production, increasing over time<br>(Currently: " +
             format_eff(game.exp_flux) +
             "x)"
         pp_map
             .get(pp_upgrade.upgrades[20])
-            .querySelector(".pp_desc").innerText = pp_upgrade.upgrades[20].desc
+            .querySelector(".pp_desc").innerHTML = pp_upgrade.upgrades[20].desc
     } else {
         pp_upgrade.upgrades[20].desc =
-            "Unlocks an upgrade that generates a boost to EXP production, increasing over time\n(Caps at " +
+            "Unlocks an upgrade that generates a boost to EXP production, increasing over time<br>(Caps at " +
             format_num(20) +
             "x)"
         pp_map
             .get(pp_upgrade.upgrades[20])
-            .querySelector(".pp_desc").innerText = pp_upgrade.upgrades[20].desc
+            .querySelector(".pp_desc").innerHTML = pp_upgrade.upgrades[20].desc
     }
 
     //grabbing level from autoprestige level config
@@ -496,6 +510,13 @@ function tick() {
                     if (pp_amount >= game.autopr_goal[2]) {
                         prestige()
                     }
+                    if (
+                        game.perks[14] &&
+                        game.smartpr_time >= game.smartpr_pp * game.tickspeed
+                    ) {
+                        prestige()
+                        game.smartpr_time = 0
+                    }
                     break
                 case 3:
                     if (game.time >= game.autopr_goal[3] * game.tickspeed) {
@@ -538,7 +559,7 @@ function tick() {
     if (game.perks[14]) {
         if (game.smartpr_toggle && game.autopr_toggle) {
             game.smartpr_time++
-            document.getElementById("smart_time").innerText =
+            document.getElementById("smart_time").innerHTML =
                 "Current Mode Time: " + format_time(game.smartpr_time)
             if (game.smartpr_mode === 0) {
                 if (game.smartpr_time >= game.smartpr_peak * game.tickspeed) {
@@ -599,7 +620,7 @@ function tick() {
             case 0:
                 game.oc_time++
                 if (game.pp_bought[26] && game.perks[5]) {
-                    document.getElementById("oc_timer").innerText =
+                    document.getElementById("oc_timer").innerHTML =
                         format_time(90 * game.tickspeed - game.oc_time) +
                         " Left"
                     document.getElementById("oc_progress").style.width =
@@ -611,13 +632,13 @@ function tick() {
                         game.oc_state = 1
                         document.getElementById("oc_button").style.display =
                             "inline"
-                        document.getElementById("oc_state").innerText =
+                        document.getElementById("oc_state").innerHTML =
                             "Standby"
                         document.getElementById("oc_timer").style.display =
                             "none"
                     }
                 } else if (game.pp_bought[26] || game.perks[5]) {
-                    document.getElementById("oc_timer").innerText =
+                    document.getElementById("oc_timer").innerHTML =
                         format_time(180 * game.tickspeed - game.oc_time) +
                         " Left"
                     document.getElementById("oc_progress").style.width =
@@ -629,13 +650,13 @@ function tick() {
                         game.oc_state = 1
                         document.getElementById("oc_button").style.display =
                             "inline"
-                        document.getElementById("oc_state").innerText =
+                        document.getElementById("oc_state").innerHTML =
                             "Standby"
                         document.getElementById("oc_timer").style.display =
                             "none"
                     }
                 } else {
-                    document.getElementById("oc_timer").innerText =
+                    document.getElementById("oc_timer").innerHTML =
                         format_time(360 * game.tickspeed - game.oc_time) +
                         " Left"
                     document.getElementById("oc_progress").style.width =
@@ -647,7 +668,7 @@ function tick() {
                         game.oc_state = 1
                         document.getElementById("oc_button").style.display =
                             "inline"
-                        document.getElementById("oc_state").innerText =
+                        document.getElementById("oc_state").innerHTML =
                             "Standby"
                         document.getElementById("oc_timer").style.display =
                             "none"
@@ -657,7 +678,7 @@ function tick() {
             case 2:
                 if (game.oc_time > 0) {
                     game.oc_time--
-                    document.getElementById("oc_timer").innerText =
+                    document.getElementById("oc_timer").innerHTML =
                         format_time(game.oc_time) + " Left"
                     document.getElementById("oc_progress").style.width =
                         (100 * game.oc_time) / (45 * game.tickspeed) + "%"
@@ -667,7 +688,7 @@ function tick() {
                 } else {
                     game.exp_oc = 1
                     game.oc_state = 0
-                    document.getElementById("oc_state").innerText = "Recharging"
+                    document.getElementById("oc_state").innerHTML = "Recharging"
                     document.getElementById("oc_progress").style.background =
                         "#ff2f00"
                 }
@@ -689,12 +710,12 @@ function tick() {
             game.exp_oc = 3
             if (game.pp_bought[19]) game.exp_oc = 4
             if (game.pp_bought[23]) game.exp_oc = 5
-            document.getElementById("oc_state").innerText =
+            document.getElementById("oc_state").innerHTML =
                 "Boosting " + format_num(game.exp_oc) + "x"
             document.getElementById("oc_button").style.display = "none"
             document.getElementById("oc_auto").style.display = "none"
             document.getElementById("oc_timer").style.display = "block"
-            document.getElementById("oc_timer").innerText = "∞ Left"
+            document.getElementById("oc_timer").innerHTML = "∞ Left"
             document.getElementById("oc_progress").style.background = "#ff7f00"
             document.getElementById("oc_progress").style.width = "100%"
         }
@@ -777,13 +798,13 @@ function tick() {
                     format_num(game.cap_mode * 4) +
                     "x)"
         }
-        document.getElementById("cap_stats").innerText =
+        document.getElementById("cap_stats").innerHTML =
             base_exp +
-            "\n" +
+            "<br>" +
             effective_exp +
-            "\n" +
+            "<br>" +
             stored +
-            "\n" +
+            "<br>" +
             if_discharge
 
         if (game.stored_exp <= 300 * game.tickspeed) {
@@ -840,7 +861,7 @@ function tick() {
                     game.pp -= pp_upgrade.upgrades[cheapest].price
                     game.pp_bought[cheapest] = true
                     pp_upgrade.upgrades[cheapest].on_purchase()
-                    document.getElementById("pp").innerText =
+                    document.getElementById("pp").innerHTML =
                         format_num(game.pp) + " PP"
                 }
                 break
@@ -864,7 +885,7 @@ function tick() {
                     game.pp -= pp_upgrade.upgrades[lowest].price
                     game.pp_bought[lowest] = true
                     pp_upgrade.upgrades[lowest].on_purchase()
-                    document.getElementById("pp").innerText =
+                    document.getElementById("pp").innerHTML =
                         format_num(game.pp) + " PP"
                 }
                 break
@@ -888,7 +909,7 @@ function tick() {
                         game.pp -= pp_upgrade.upgrades[lowest2].price
                         game.pp_bought[lowest2] = true
                         pp_upgrade.upgrades[lowest2].on_purchase()
-                        document.getElementById("pp").innerText =
+                        document.getElementById("pp").innerHTML =
                             format_num(game.pp) + " PP"
                     }
                 }
@@ -919,6 +940,10 @@ function tick() {
     if (game.autorb_goal[1] === NaN) game.autorb_goal[1] = 0
     if (game.autorb_goal[1] < 0) game.autorb_goal[1] = 0
 
+    game.autorb_push = Number(document.getElementById("push_input").value)
+    if (game.autorb_push === NaN) game.autorb_push = 0
+    if (game.autorb_push < 0) game.autorb_push = 0
+
     if (game.autorb_toggle && game.perks[15] && game.challenge === 0) {
         if (
             game.autorb_pending &&
@@ -929,25 +954,33 @@ function tick() {
             prestige()
         }
 
-        switch (game.autorb_mode) {
-            case 0:
-                if (
-                    get_watts(game.pp) * game.prism_boost >=
-                    game.autorb_goal[0]
-                ) {
-                    reboot()
-                }
-                break
-            case 1:
-                if (game.prestige_time >= game.autorb_goal[1] * game.tickspeed) {
-                    reboot()
-                }
-                break
+        if (
+            game.reboot_time < game.autorb_push * game.tickspeed ||
+            !game.dk_bought[0]
+        ) {
+            switch (game.autorb_mode) {
+                case 0:
+                    if (
+                        get_watts(game.pp) * game.prism_boost >=
+                        game.autorb_goal[0]
+                    ) {
+                        reboot()
+                    }
+                    break
+                case 1:
+                    if (
+                        game.prestige_time >=
+                        game.autorb_goal[1] * game.tickspeed
+                    ) {
+                        reboot()
+                    }
+                    break
+            }
         }
     }
 
     //reactor handling
-    if (game.perks[22] && game.watts >= 98304) {
+    if (game.perks[22] && (game.watts >= 98304 || game.dk_bought[5])) {
         game.hps =
             game.core_level[0] *
             (game.core_level[1] + 1) *
@@ -965,9 +998,25 @@ function tick() {
         }
         if (game.qu_bought[0] && game.hydrogen >= 1)
             game.hps *= game.hydrogen ** 0.25
+        if (game.dk_bought[3]) {
+            game.hps *=
+                game.ch_helium_boost[0] *
+                game.ch_helium_boost[1] *
+                game.ch_helium_boost[2] *
+                game.ch_helium_boost[3] *
+                game.ch_helium_boost[4] *
+                game.ch_helium_boost[5] *
+                game.ch_helium_boost[6] *
+                game.ch_helium_boost[7] *
+                game.ch_helium_boost[8]
+        }
+        if (game.dk_bought[4]) game.hps *= (game.prism_boost / 150) ** (4 / 3)
+        if (game.dk_bought[6]) game.hps *= game.dark_matter_boost ** 0.2
 
         if (!game.achievements[107] && game.hps >= 10 ** 30)
             get_achievement(107)
+        if (!game.achievements[148] && game.hps >= 10 ** 60)
+            get_achievement(148)
 
         if (game.challenge !== 8) game.helium += game.hps / game.tickspeed
         game.helium_boost = (game.helium / 256 + 1) ** 1.25
@@ -988,22 +1037,37 @@ function tick() {
         document.getElementById("importance_input").value
     )
     if (game.autohy_importance === NaN) game.autohy_importance = 1
-    if (game.autohy_importance < 0) game.autohy_importance = 0
-    if (game.autohy_importance > 3) game.autohy_importance = 3
+    if (game.autohy_importance < 0.01) game.autohy_importance = 0.01
+    if (game.autohy_importance > 100) game.autohy_importance = 100
 
-    if (game.qu_bought[4] && game.autohy_toggle && game.watts >= 98304) {
+    if (
+        game.qu_bought[4] &&
+        game.autohy_toggle &&
+        (game.watts >= 98304 || game.dk_bought[5])
+    ) {
+        let deuterium = false
         let supply_boost = 2 ** game.supply_level
         if (game.perks[25]) supply_boost = 2.5 ** game.supply_level
+        if (game.dk_bought[5]) supply_boost = 3 ** game.supply_level
+        if (game.core_level[0] >= 500000) {
+            if (
+                game.hydrogen * game.autohy_importance ** 0.5 >
+                game.supply_price
+            )
+                deuterium = true
+        } else {
+            if (game.core_level[0] * game.autohy_importance > supply_boost)
+                deuterium = true
+        }
 
-        if (
-            game.core_level[2] >= 1 &&
-            game.core_level[0] * game.autohy_importance > supply_boost
-        ) {
+        if (game.core_level[2] >= 1 && deuterium) {
             while (game.budget >= game.supply_price) {
                 game.hydrogen -= game.supply_price
                 game.budget -= game.supply_price
                 game.supply_level++
                 game.supply_price *= 5
+                if (game.supply_level > 16)
+                    game.supply_price *= 5 * (game.supply_level - 16) ** 2
             }
         } else {
             let efficiency = new Array(8).fill(Infinity)
@@ -1031,13 +1095,13 @@ function tick() {
                 game.core_level[selection]++
                 if (
                     game.core_level[selection] >
-                    Math.floor(1000000 / 2 ** selection)
+                    Math.floor(500000 / 2 ** selection)
                 ) {
                     game.core_price[selection] +=
                         (core.cores[selection].base_price *
                             (game.core_level[selection] -
-                                Math.floor(1000000 / 2 ** selection)) **
-                                2) /
+                                Math.floor(500000 / 2 ** selection)) **
+                                1.65) /
                         4
                 } else {
                     game.core_price[selection] +=
@@ -1065,6 +1129,80 @@ function tick() {
                         selection = i
                 }
             }
+        }
+    }
+
+    //quantize automation
+    game.autoqu_goal[0] = Number(document.getElementById("photons_input").value)
+    if (game.autoqu_goal[0] === NaN) game.autoqu_goal[0] = 1
+    if (game.autoqu_goal[0] < 1) game.autoqu_goal[0] = 1
+
+    game.autoqu_goal[1] = Number(document.getElementById("time_input3").value)
+    if (game.autoqu_goal[1] === NaN) game.autoqu_goal[1] = 0
+    if (game.autoqu_goal[1] < 0) game.autoqu_goal[1] = 0
+
+    let highest_level = game.reboot_highest_level
+    if (game.highest_level > highest_level) highest_level = game.highest_level
+    if (game.level > highest_level) highest_level = game.level
+
+    if (game.autoqu_toggle && game.dk_bought[1]) {
+        switch (game.autoqu_mode) {
+            case 0:
+                if (
+                    Math.floor(1000000 ** ((highest_level - 65536) / 32768)) >=
+                    game.autoqu_goal[0]
+                ) {
+                    quantize()
+                }
+                break
+            case 1:
+                if (game.reboot_time >= game.autoqu_goal[1] * game.tickspeed) {
+                    quantize()
+                }
+                break
+        }
+    }
+
+    //dark matter shadow animation
+    let shadow_constant = 0.1 * Math.sin((game.all_time * 2) / game.tickspeed)
+    document.documentElement.style.setProperty(
+        "--shadow_size1",
+        0.2 + shadow_constant + "em"
+    )
+    document.documentElement.style.setProperty(
+        "--shadow_size2",
+        0.3 + shadow_constant + "em"
+    )
+    document.documentElement.style.setProperty(
+        "--shadow_size3",
+        0.4 + shadow_constant + "em"
+    )
+    document.documentElement.style.setProperty(
+        "--shadow_size4",
+        0.6 + shadow_constant + "em"
+    )
+    document.documentElement.style.setProperty(
+        "--shadow_size5",
+        0.8 + shadow_constant + "em"
+    )
+
+    //dark matter handling
+    if (game.qu_bought[7]) {
+        game.growth_time++
+
+        if (game.growth_time >= game.growth_interval) {
+            game.growth_time -= game.growth_interval
+            if (
+                game.dark_matter * game.growth_factor <
+                1.7976931348622053 * 10 ** 308
+            ) {
+                game.dark_matter *= game.growth_factor
+            } else {
+                game.dark_matter = 1.7976931348622053 * 10 ** 308
+
+                if (!game.achievements[144]) get_achievement(144)
+            }
+            game.dark_matter_boost = (Math.log(game.dark_matter) + 1) ** 5
         }
     }
 
@@ -1108,12 +1246,28 @@ function tick() {
                     "You have exceeded 2 Prestiges, you will now exit Challenge VI."
                 )
             }
-        } else if (game.completions[5] >= 8) {
+        } else if (game.completions[5] >= 8 && game.completions[5] <= 11) {
             if (game.prestige > 1) {
                 exit_challenge()
                 alert(
                     "You have exceeded 1 Prestige, you will now exit Challenge VI."
                 )
+            }
+        } else if (game.completions[5] >= 12) {
+            if (game.dk_bought[3]) {
+                if (game.prestige > 0) {
+                    exit_challenge()
+                    alert(
+                        "You have exceeded 0 Prestiges, you will now exit Challenge VI."
+                    )
+                }
+            } else {
+                if (game.prestige > 1) {
+                    exit_challenge()
+                    alert(
+                        "You have exceeded 1 Prestige, you will now exit Challenge VI."
+                    )
+                }
             }
         }
     }
@@ -1248,17 +1402,17 @@ function tick() {
         new Date().getUTCDate() === 1 &&
         new Date().getUTCMonth() === 3
     ) {
-        document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v?.?.???\nMade by ???"
+        document.getElementById("version").innerHTML =
+            "<br><br><br>EXP Simulator v?.?.???<br>Made by ???"
 
         game.notation = 8
         notation()
     } else if (game.notation === 8) {
-        document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v?.?.???\nMade by Zakuro"
+        document.getElementById("version").innerHTML =
+            "<br><br><br>EXP Simulator v?.?.???<br>Made by Zakuro"
     } else {
-        document.getElementById("version").innerText =
-            "\n\n\nEXP Simulator v2.3.002\nMade by Zakuro"
+        document.getElementById("version").innerHTML =
+            "<br><br><br>EXP Simulator v2.3.103<br>Made by Zakuro"
     }
 }
 
@@ -1349,8 +1503,8 @@ document.addEventListener("keyup", function (event) {
 })
 
 //wish granted
-document.getElementById("slot8").addEventListener("click", function () {
-    if (!game.achievements[64] && game.achiev_page === 12) {
+document.getElementById("slot10").addEventListener("click", function () {
+    if (!game.achievements[64] && game.achiev_page === 13) {
         get_achievement(64)
     }
 })
@@ -1382,7 +1536,7 @@ function pre_save() {
 function save() {
     pre_save()
     game.beta = false
-    game.version = "2.3.000"
+    game.version = "2.3.100"
     localStorage.setItem("exp_simulator_save", JSON.stringify(game))
 }
 
@@ -1448,9 +1602,85 @@ function load(savegame) {
             regenerate_ui()
             return
         }
-        //v2.1.405
+
         game = savegame
-        game.version = "2.3.002"
+        //v2.1.000
+        if (minor < 3) {
+            game.pp_hide = false
+        }
+        //v2.1.003
+        if (minor < 100) {
+            game.amp_eff = 0
+            game.autopr_mode = 0
+            game.exp_oc = 1
+            game.oc_state = 0
+            game.oc_state = game.tickspeed * 180
+        }
+        //v2.1.100
+        if (minor < 102) {
+            game.autopr_goal = [60, 1, 1, 0]
+        }
+        //v2.1.102
+        if (minor < 200) {
+            game.exp_flux = 1
+            game.pp_power = 1
+            game.fluct_tier = 0
+            game.flux_level = 75
+            game.pr_min = 60 + game.jumpstart * 10
+        }
+        //v2.1.200
+        if (minor < 300) {
+            game.epilepsy = true
+            game.exp_battery = 1
+            game.battery_mode = 0
+            game.battery_tier = 0
+            game.battery_level = 90
+            game.patience = 1
+            game.prestige_power = 1
+            game.depth_power = 1
+        }
+        //v2.1.300
+        if (minor < 400) {
+            game.color_mode = 0
+            game.custom_hue = 0
+            game.cap_mode = 0
+            game.prev_mode = 0
+            game.cap_boost = 1
+            game.stored_exp = 0
+            game.global_multiplier = 1
+            game.flux_boost = 1
+            game.autods_toggle = 0
+            game.autods_goal = 30
+        }
+        //v2.1.400
+        if (minor < 401) {
+            game.pp_progress = false
+            game.hotkeys = false
+            game.total_pp = game.pp
+            for (let i = 0; i <= pp_upgrade.upgrades.length; i++) {
+                if (game.pp_bought[i]) {
+                    game.total_pp += pp_upgrade.upgrades[i].price
+                }
+            }
+        }
+        //v2.1.401
+        if (minor < 403) {
+            game.hotkey_configurations = {}
+        }
+        for (const hotkey of configurable_hotkey.hotkeys) {
+            if (game.hotkey_configurations[hotkey.name])
+                hotkey.parse_key(game.hotkey_configurations[hotkey.name])
+            else hotkey.parse_key(hotkey.default_combination)
+            hotkey.text.data = `${hotkey.key_to_string(true)}: ${hotkey.name}`
+        }
+        //v2.1.403
+        if (minor < 405) {
+            game.hold_time = 0
+            game.mouse_time = 0
+            game.mouse_held = false
+        }
+        //v2.1.405
+        game.version = "2.3.103"
         if (game.tab > 2) game.tab += 2
         if (game.tab > 3) game.tab += 1
         game.reboot = 0
@@ -1468,7 +1698,7 @@ function load(savegame) {
         game.autopp_toggle = false
         game.autopp_mode = 0
         game.priority = new Array(39).fill(1)
-        game.achievements = new Array(137).fill(false)
+        game.achievements = new Array(149).fill(false)
         game.ach_power = 1
         game.achiev_page = 0
         game.no_automation = true
@@ -1506,6 +1736,7 @@ function load(savegame) {
         game.true_banked_prestige = 0
         game.subtab[0] = 0
         game.subtab[1] = 0
+        game.subtab[2] = 0
         game.challenge = 0
         game.completions = new Array(9).fill(0)
         game.ch_boost = new Array(9).fill(1)
@@ -1545,172 +1776,22 @@ function load(savegame) {
         game.budget = 0
         game.superspeed_power = 1
         game.question = true
-        //v2.1.403
-        if (minor < 405) {
-            game.hold_time = 0
-            game.mouse_time = 0
-            game.mouse_held = false
-        }
-        //v2.1.401
-        if (minor < 403) {
-            game.hotkey_configurations = {}
-        }
-        for (const hotkey of configurable_hotkey.hotkeys) {
-            if (game.hotkey_configurations[hotkey.name])
-                hotkey.parse_key(game.hotkey_configurations[hotkey.name])
-            else hotkey.parse_key(hotkey.default_combination)
-            hotkey.text.data = `${hotkey.key_to_string(true)}: ${hotkey.name}`
-        }
-        //v2.1.400
-        if (minor < 401) {
-            game.pp_progress = false
-            game.hotkeys = false
-            game.total_pp = game.pp
-            for (let i = 0; i <= pp_upgrade.upgrades.length; i++) {
-                if (game.pp_bought[i]) {
-                    game.total_pp += pp_upgrade.upgrades[i].price
-                }
-            }
-        }
-        //v2.1.300
-        if (minor < 400) {
-            game.color_mode = 0
-            game.custom_hue = 0
-            game.cap_mode = 0
-            game.prev_mode = 0
-            game.cap_boost = 1
-            game.stored_exp = 0
-            game.global_multiplier = 1
-            game.flux_boost = 1
-            game.autods_toggle = 0
-            game.autods_goal = 30
-        }
-        //v2.1.200
-        if (minor < 300) {
-            game.epilepsy = true
-            game.exp_battery = 1
-            game.battery_mode = 0
-            game.battery_tier = 0
-            game.battery_level = 90
-            game.patience = 1
-            game.prestige_power = 1
-            game.depth_power = 1
-        }
-        //v2.1.102
-        if (minor < 200) {
-            game.exp_flux = 1
-            game.pp_power = 1
-            game.fluct_tier = 0
-            game.flux_level = 75
-            game.pr_min = 60 + game.jumpstart * 10
-        }
-
-        //v2.1.100
-        if (minor < 102) {
-            game.autopr_goal = [60, 1, 1, 0]
-        }
-        //v2.1.003
-        if (minor < 100) {
-            game.amp_eff = 0
-            game.autopr_mode = 0
-            game.exp_oc = 1
-            game.oc_state = 0
-            game.oc_state = game.tickspeed * 180
-        }
-        //v2.1.000
-        if (minor < 3) {
-            game.pp_hide = false
-        }
+        game.dark_matter = 1
+        game.dark_matter_boost = 1
+        game.growth_interval = 60
+        game.growth_factor = 1
+        game.growth_time = 0
+        game.growth_price = [10 ** 15, 10 ** 13]
+        game.dk_bought = new Array(8).fill(false)
+        game.infusion = 1
+        game.ch_helium_boost = new Array(9).fill(1)
+        game.autorb_push = 60
+        game.autoqu_toggle = false
+        game.autoqu_mode = 0
+        game.autoqu_goal = [1, 60]
+        game.omega_base = 10
     } else if (major < 3) {
-        //v2.2.301
         game = savegame
-        game.version = "2.3.002"
-        game.amp_eff = new Array(5).fill(-1)
-        game.watts_eff = new Array(5).fill(-1)
-        game.quantum = 0
-        game.photons = 0
-        game.prism_level = 0
-        game.prism_boost = 1
-        game.reboot_exp = game.all_time_exp
-        game.reboot_time = game.all_time
-        game.fastest_quantize = 10 ** 21
-        game.reboot_highest_level = game.all_time_highest_level
-        game.reboot_clicks = game.total_clicks
-        game.quantum_confirmation = true
-        if (game.tab > 3) game.tab += 1
-        game.qu_bought = new Array(8).fill(false)
-        game.prev_completions = 0
-        game.autorb_mode = 0
-        game.autohy_toggle = false
-        game.autohy_portion = 0.5
-        game.autohy_importance = 1
-        game.budget = 0
-        game.superspeed_power = 1
-        let old_achievements = game.achievements
-        game.achievements = new Array(137).fill(false)
-        for (let i = 0; i <= 119; i++) {
-            game.achievements[i] = old_achievements[i]
-        }
-        let reboot_watts = game.autorb_goal
-        game.autorb_goal = [reboot_watts, 0.8]
-        game.question = true
-        //v2.2.300
-        if (minor < 301) {
-            game.subtab = [0, 0]
-            game.priority_layer = 1
-            game.switchpoint = 0
-        }
-        //v2.2.201
-        if (minor < 300) {
-            let old_perks = game.perks
-            game.perks = new Array(28).fill(false)
-            for (let i = 0; i <= 22; i++) {
-                game.perks[i] = old_perks[i]
-            }
-            let old_achievements = game.achievements
-            game.achievements = new Array(137).fill(false)
-            for (let i = 0; i <= 96; i++) {
-                game.achievements[i] = old_achievements[i]
-            }
-            game.completions[8] = 0
-            game.ch_boost[8] = 1
-            game.hydrogen = 0
-            game.helium = 0
-            game.helium_boost = 1
-            game.hps = 0
-            game.core_level = new Array(8).fill(0)
-            game.core_price = [1, 3, 10, 36, 136, 528, 2080, 8256]
-            game.buy_max = false
-            game.supply_level = 0
-            game.supply_price = 16
-            game.true_banked_prestige = game.banked_prestige
-        }
-        //v2.2.102, v2.2.200
-        if (minor < 200) {
-            let old_perks = game.perks
-            game.perks = new Array(28).fill(false)
-            for (let i = 0; i <= 15; i++) {
-                game.perks[i] = old_perks[i]
-            }
-            let old_achievements = game.achievements
-            game.achievements = new Array(137).fill(false)
-            for (let i = 0; i <= 76; i++) {
-                game.achievements[i] = old_achievements[i]
-            }
-            game.speed_power = 1
-            game.banked_prestige = 0
-            game.subtab[1] = 0
-            game.challenge = 0
-            game.completions = new Array(9).fill(0)
-            game.ch_boost = new Array(9).fill(1)
-            game.challenge_confirmation = true
-            game.hints = false
-            game.refresh_rate = 30
-        }
-        //v2.2.100
-        if (minor < 102) {
-            game.beta = false
-        }
         //v2.2.000
         if (minor < 100) {
             let old_perks = game.perks
@@ -1737,20 +1818,161 @@ function load(savegame) {
             game.autorb_pending = false
             game.cancer_reboots = 0
         }
+        //v2.2.100
+        if (minor < 102) {
+            game.beta = false
+        }
+        //v2.2.102, v2.2.200
+        if (minor < 200) {
+            let old_perks = game.perks
+            game.perks = new Array(28).fill(false)
+            for (let i = 0; i <= 15; i++) {
+                game.perks[i] = old_perks[i]
+            }
+            let old_achievements = game.achievements
+            game.achievements = new Array(137).fill(false)
+            for (let i = 0; i <= 76; i++) {
+                game.achievements[i] = old_achievements[i]
+            }
+            game.speed_power = 1
+            game.banked_prestige = 0
+            game.subtab[1] = 0
+            game.challenge = 0
+            game.completions = new Array(9).fill(0)
+            game.ch_boost = new Array(9).fill(1)
+            game.challenge_confirmation = true
+            game.hints = false
+            game.refresh_rate = 30
+        }
+        //v2.2.201
+        if (minor < 300) {
+            let old_perks = game.perks
+            game.perks = new Array(28).fill(false)
+            for (let i = 0; i <= 22; i++) {
+                game.perks[i] = old_perks[i]
+            }
+            let old_achievements = game.achievements
+            game.achievements = new Array(149).fill(false)
+            for (let i = 0; i <= 96; i++) {
+                game.achievements[i] = old_achievements[i]
+            }
+            old_completions = game.completions
+            old_boost = game.ch_boost
+            game.completions = new Array(9).fill(0)
+            game.ch_boost = new Array(9).fill(1)
+            for (let i = 0; i <= 7; i++) {
+                game.completions[i] = old_completions[i]
+                game.ch_boost[i] = old_boost[i]
+            }
+            game.hydrogen = 0
+            game.helium = 0
+            game.helium_boost = 1
+            game.hps = 0
+            game.core_level = new Array(8).fill(0)
+            game.core_price = [1, 3, 10, 36, 136, 528, 2080, 8256]
+            game.buy_max = false
+            game.supply_level = 0
+            game.supply_price = 16
+            game.true_banked_prestige = game.banked_prestige
+        }
+        //v2.2.300
+        if (minor < 301) {
+            game.subtab = [0, 0]
+            game.priority_layer = 1
+            game.switchpoint = 0
+        }
+        //v2.2.301
+        game.version = "2.3.103"
+        game.amp_eff = new Array(5).fill(-1)
+        game.watts_eff = new Array(5).fill(-1)
+        game.quantum = 0
+        game.photons = 0
+        game.prism_level = 0
+        game.prism_boost = 1
+        game.reboot_exp = game.all_time_exp
+        game.reboot_time = game.all_time
+        game.fastest_quantize = 10 ** 21
+        game.reboot_highest_level = game.all_time_highest_level
+        game.reboot_clicks = game.total_clicks
+        game.quantum_confirmation = true
+        if (game.tab > 3) game.tab += 1
+        game.qu_bought = new Array(8).fill(false)
+        game.prev_completions = 0
+        game.autorb_mode = 0
+        game.autohy_toggle = false
+        game.autohy_portion = 0.5
+        game.autohy_importance = 1
+        game.budget = 0
+        game.superspeed_power = 1
+        let old_achievements = game.achievements
+        game.achievements = new Array(149).fill(false)
+        for (let i = 0; i <= 119; i++) {
+            game.achievements[i] = old_achievements[i]
+        }
+        let reboot_watts = game.autorb_goal
+        game.autorb_goal = [reboot_watts, 0.8]
+        game.question = true
+        let old_subtab = game.subtab
+        game.subtab = new Array(3).fill(0)
+        game.subtab[0] = old_subtab[0]
+        game.subtab[1] = old_subtab[1]
+        game.dark_matter = 1
+        game.dark_matter_boost = 1
+        game.growth_interval = 60
+        game.growth_factor = 1
+        game.growth_time = 0
+        game.growth_price = [10 ** 15, 10 ** 13]
+        game.dk_bought = new Array(8).fill(false)
+        game.infusion = 1
+        game.ch_helium_boost = new Array(9).fill(1)
+        game.autorb_push = 60
+        game.autoqu_toggle = false
+        game.autoqu_mode = 0
+        game.autoqu_goal = [1, 60]
+        game.omega_base = 10
     } else {
-        if (minor > 2) {
+        if (minor > 103) {
             alert(
                 "You cannot load saves from game versions that do not exist\nIf you think you are recieving this alert in error, reload and try again"
             )
             return
         }
-        //v2.3.002
         game = savegame
-        game.version = "2.3.002"
         //v2.3.000
         if (minor < 2) {
             game.question = true
         }
+        //v2.3.002
+        if (minor < 100) {
+            let old_subtab = game.subtab
+            game.subtab = new Array(3).fill(0)
+            game.subtab[0] = old_subtab[0]
+            game.subtab[1] = old_subtab[1]
+            game.dark_matter = 1
+            game.dark_matter_boost = 1
+            game.growth_interval = 60
+            game.growth_factor = 1
+            game.growth_time = 0
+            game.growth_price = [10 ** 15, 10 ** 13]
+            game.dk_bought = new Array(8).fill(false)
+            game.infusion = 1
+            game.ch_helium_boost = new Array(9).fill(1)
+            game.autorb_push = 60
+            game.autoqu_toggle = false
+            game.autoqu_mode = 0
+            game.autoqu_goal = [1, 60]
+            let old_achievements = game.achievements
+            game.achievements = new Array(149).fill(false)
+            for (let i = 0; i <= 136; i++) {
+                game.achievements[i] = old_achievements[i]
+            }
+        }
+        //v2.3.100
+        if (minor < 103) {
+            game.omega_base = 10
+        }
+        //v2.3.103
+        game.version = "2.3.103"
     }
     regenerate_ui()
 
@@ -1761,7 +1983,15 @@ function load(savegame) {
             reduction = (1 - game.prestige_time / (30 * game.tickspeed)) ** 4
         }
     } else if (game.challenge === 6) {
-        reduction = 10 ** -12
+        if (game.dk_bought[3]) {
+            if (game.completions[5] >= 12) {
+                reduction = 10 ** (-6 * (game.completions[5] - 11))
+            } else {
+                reduction = 10 ** -12
+            }
+        } else {
+            reduction = 10 ** -12
+        }
     } else if (game.challenge === 9) {
         reduction = 10 ** -16
     } else {
@@ -1806,10 +2036,12 @@ function wipe() {
         game.perks = new Array(8).fill(false)
         game.subtab[0] = 0
         game.subtab[1] = 0
+        game.subtab[2] = 0
 
         game.challenge = 0
         game.completions = new Array(9).fill(0)
         game.ch_boost = new Array(9).fill(1)
+        game.ch_helium_boost = new Array(9).fill(1)
 
         game.hydrogen = 0
         game.helium = 0
@@ -1835,6 +2067,16 @@ function wipe() {
 
         game.prev_completions = 0
         game.superspeed_power = 1
+
+        game.dark_matter = 1
+        game.dark_matter_boost = 1
+        game.growth_interval = 60
+        game.growth_factor = 1
+        game.growth_time = 0
+        game.growth_price = [10 ** 15, 10 ** 13]
+        game.dk_bought = new Array(8).fill(false)
+
+        game.infusion = 1
 
         game.reboot_exp = 0
         game.reboot_time = 0
@@ -1901,7 +2143,7 @@ function wipe() {
         game.flux_boost = 1
 
         set_capacitance(0)
-        document.getElementById("click").innerText =
+        document.getElementById("click").innerHTML =
             "+" + format_num(1) + " EXP"
 
         document.getElementById("amp_up").style.display = "none"
@@ -1927,16 +2169,18 @@ function wipe() {
 
         document.getElementById("amp_auto").style.display = "none"
         document.getElementById("prestige").style.display = "none"
+        document.getElementById("prestige_tabs").style.display = "none"
         document.getElementById("reboot").style.display = "none"
         document.getElementById("reboot_tabs").style.display = "none"
         document.getElementById("reactor_tab").style.display = "none"
+        document.getElementById("quantum_tabs").style.display = "none"
         document.getElementById("auto_config").style.display = "none"
         document.getElementById("auto_mode").style.display = "none"
 
         document.getElementById("overclock").style.display = "none"
         document.getElementById("oc_auto").style.display = "none"
         document.getElementById("oc_button").style.display = "none"
-        document.getElementById("oc_state").innerText = "Recharging"
+        document.getElementById("oc_state").innerHTML = "Recharging"
         document.getElementById("oc_timer").style.display = "block"
         document.getElementById("oc_progress").style.background = "#ff2f00"
 
@@ -1986,12 +2230,12 @@ class configurable_hotkey {
         this.container = document.createElement("span")
         this.container.appendChild(this.text)
         this.changeButton = document.createElement("button")
-        this.changeButton.innerText = "CHANGE"
+        this.changeButton.innerHTML = "CHANGE"
         this.changeButton.classList.add("option_button")
         this.changeButton.addEventListener("click", () => {
             if (recorded_hotkey) recorded_hotkey = null
             else recorded_hotkey = this
-            this.changeButton.innerText =
+            this.changeButton.innerHTML =
                 recorded_hotkey === this ? "RECORDING..." : "CHANGE"
         })
         this.container.appendChild(this.changeButton)
@@ -2109,6 +2353,7 @@ function refresh() {
     challenge_update()
     reactor_update()
     prism_update()
+    gravity_update()
 
     if (new Date().getUTCDate() === 1 && new Date().getUTCMonth() === 3)
         document.getElementById("question").style.display = "flex"
@@ -2132,5 +2377,5 @@ let save_loop = window.setInterval(function () {
 }, 60000)
 
 console.log(
-    "Hey! I see you there in the console...\nIf you're here to cheat I know I can't force you not to, but just know that it will ruin all the fun!"
+    "Hey! I see you there in the console...<br>If you're here to cheat I know I can't force you not to, but just know that it will ruin all the fun!"
 )
