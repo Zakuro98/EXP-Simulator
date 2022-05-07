@@ -2377,5 +2377,5 @@ let save_loop = window.setInterval(function () {
 }, 60000)
 
 console.log(
-    "Hey! I see you there in the console...<br>If you're here to cheat I know I can't force you not to, but just know that it will ruin all the fun!"
+    "Hey! I see you there in the console...\nIf you're here to cheat I know I can't force you not to, but just know that it will ruin all the fun!"
 )
