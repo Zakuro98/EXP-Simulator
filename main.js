@@ -1734,9 +1734,7 @@ function load(savegame) {
         game.speed_power = 1
         game.banked_prestige = 0
         game.true_banked_prestige = 0
-        game.subtab[0] = 0
-        game.subtab[1] = 0
-        game.subtab[2] = 0
+        game.subtab = new Array(3).fill(0)
         game.challenge = 0
         game.completions = new Array(9).fill(0)
         game.ch_boost = new Array(9).fill(1)
@@ -1836,7 +1834,9 @@ function load(savegame) {
             }
             game.speed_power = 1
             game.banked_prestige = 0
-            game.subtab[1] = 0
+            let old_subtab = game.subtab
+            game.subtab = new Array(3).fill(0)
+            game.subtab[0] = old_subtab[0]
             game.challenge = 0
             game.completions = new Array(9).fill(0)
             game.ch_boost = new Array(9).fill(1)
@@ -1877,7 +1877,7 @@ function load(savegame) {
         }
         //v2.2.300
         if (minor < 301) {
-            game.subtab = [0, 0]
+            game.subtab = new Array(3).fill(0)
             game.priority_layer = 1
             game.switchpoint = 0
         }
@@ -2034,9 +2034,7 @@ function wipe() {
         game.watts = 0
         game.watt_boost = 1
         game.perks = new Array(8).fill(false)
-        game.subtab[0] = 0
-        game.subtab[1] = 0
-        game.subtab[2] = 0
+        game.subtab = new Array(3).fill(0)
 
         game.challenge = 0
         game.completions = new Array(9).fill(0)
