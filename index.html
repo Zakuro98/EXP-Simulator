@@ -121,10 +121,11 @@
 
                 <div id="upgrades_page">
                     <div class="upgrades">
+                        <h1>Upgrades</h1>
                         <div class="item">
-                            <p id="boost" class="uptext">
+                            <h2 id="boost" class="uptext">
                                 EXP Boost<br>Tier 0: +1 EXP/click
-                            </p>
+                            </h2>
                             <button id="boost_button" class="button" onclick="upgrade(0,false)">
                                 UPGRADE!
                             </button>
@@ -133,9 +134,9 @@
                             </button>
                         </div>
                         <div class="item">
-                            <p id="auto" class="uptext">
+                            <h2 id="auto" class="uptext">
                                 Autoclicker<br>Tier 0: 0 clicks/s
-                            </p>
+                            </h2>
                             <button id="auto_button" class="button" onclick="upgrade(1,false)">
                                 UPGRADE!
                             </button>
@@ -147,10 +148,10 @@
 
                     <div class="upgrades">
                         <div class="item">
-                            <p id="fluct" class="uptext">
+                            <h2 id="fluct" class="uptext">
                                 EXP Fluctuation<br>Tier 0: +0 max extra
                                 EXP/click
-                            </p>
+                            </h2>
                             <button id="fluct_button" class="button" onclick="upgrade(2,false)">
                                 UPGRADE!
                             </button>
@@ -159,9 +160,9 @@
                             </button>
                         </div>
                         <div class="item">
-                            <p id="fact" class="uptext">
+                            <h2 id="fact" class="uptext">
                                 EXP Factor<br>Tier 0: 1x EXP/click
-                            </p>
+                            </h2>
                             <button  id="fact_button" class="button" onclick="upgrade(3,false)">
                                 UPGRADE!
                             </button>
@@ -173,9 +174,9 @@
 
                     <div class="upgrades">
                         <div class="item">
-                            <p id="flux" class="uptext">
+                            <h2 id="flux" class="uptext">
                                 EXP Flux<br>Tier 0: +0x flux/min
-                            </p>
+                            </h2>
                             <button id="flux_button" class="button" onclick="upgrade(4,false)">
                                 UPGRADE!
                             </button>
@@ -184,10 +185,10 @@
                             </button>
                         </div>
                         <div class="item">
-                            <p id="battery" class="uptext">
+                            <h2 id="battery" class="uptext">
                                 EXP Battery<br>Tier 0: 1x manual EXP
                                 production
-                            </p>
+                            </h2>
                             <button id="battery_button" class="button" onclick="upgrade(5,false)">
                                 UPGRADE!
                             </button>
@@ -200,15 +201,15 @@
                         </div>
                     </div>
 
-                    <p id="starter_kit" class="uptext">
+                    <h2 id="starter_kit" class="uptext">
                         +0 free tiers from Starter Kit
-                    </p>
+                    </h2>
 
                     <div id="overclock">
                         <div class="oc_top">
-                            <p id="oc_text">
+                            <h2 id="oc_text">
                                 EXP Overclocker
-                            </p>
+                            </h2>
                             <p id="oc_timer">
                                 3:00 Left
                             </p>
@@ -234,9 +235,9 @@
                     </div>
 
                     <div id="capacitor">
-                        <p id="cap_title" class="cap_text">
+                        <h2 id="cap_title" class="cap_text">
                             EXP Capacitor
-                        </p>
+                        </h2>
                         <div class="backpanel">
                             <div id="capacitance">
                                 <div id="cap_mode">
@@ -282,7 +283,7 @@
                                 <p id="dis_text" class="cap_text">
                                     Discharge at (seconds):
                                 </p>
-                                <input class="goal_input" id="dis_input" type="number" value="30" step="0.01" min="1" max="300">
+                                <input class="goal_input" id="dis_input" type="number" value="30" step="0.01" min="1" max="300" title="=Discharge at (seconds)">
                             </div>
                         </div>
                     </div>
@@ -298,6 +299,7 @@
                 </div>
 
                 <div class="prestige" id="prestige_page">
+                    <h1>Prestige</h1>
                     <div id="amp_block">
                         <p id="amp2" class="amp2">
                             1
@@ -365,9 +367,9 @@
 
                 <div class="p_config" id="p_config_page">
                     <div id="auto_config">
-                        <p class="auto_header">
+                        <h2 class="auto_header">
                             Auto-Prestige Configuration
-                        </p>
+                        </h2>
                         <div id="auto_enabled">
                             <p class="goal_text">
                                 Automation:
@@ -400,34 +402,34 @@
                             <p class="goal_text">
                                 Auto-Prestige Level:
                             </p>
-                            <input class="goal_input" id="level_input" type="number" value="60" min="60">
+                            <input class="goal_input" id="level_input" type="number" value="60" min="60" title="level">
                         </div>
                         <div id="auto_amp">
                             <p class="goal_text">
                                 Auto-Prestige AMP:
                             </p>
-                            <input class="goal_input" id="amp_input" type="number" value="1" min="1">
+                            <input class="goal_input" id="amp_input" type="number" value="1" min="1" title="AMP">
                         </div>
                         <div id="auto_pp">
                             <p class="goal_text">
                                 Auto-Prestige PP:
                             </p>
-                            <input class="goal_input" id="pp_input" type="number" value="1" min="1">
+                            <input class="goal_input" id="pp_input" type="number" value="1" min="1" title="PP">
                         </div>
                         <div id="auto_time">
                             <p class="goal_text">
                                 Auto-Prestige Time (in seconds):
                             </p>
-                            <input class="goal_input" id="time_input" type="number" value="0" step="0.01" min="0">
+                            <input class="goal_input" id="time_input" type="number" value="0" step="0.01" min="0" title="Auto-Prestige Time (in seconds)">
                         </div>
                         <p id="amp_eff" class="goal_text">
                             AMP Efficiency: ???
                         </p>
                     </div>
                     <div id="smart_config">
-                        <p class="auto_header">
+                        <h3 class="auto_header">
                             Smart Auto-Prestige Configuration
-                        </p>
+                        </h3>
                         <div id="smart_enabled">
                             <p class="goal_text">
                                 Smart Mode:
@@ -443,19 +445,19 @@
                             <p class="goal_text">
                                 Time to wait in Peak mode (in seconds):
                             </p>
-                            <input class="goal_input" id="smart_peak_input" type="number" value="60" step="0.01" min="0">
+                            <input class="goal_input" id="smart_peak_input" type="number" value="60" step="0.01" min="0" title="Time to wait in Peak mode (in seconds)">
                         </div>
                         <div id="smart_pp">
                             <p class="goal_text">
                                 Time to wait in PP mode (in seconds):
                             </p>
-                            <input class="goal_input" id="smart_pp_input" type="number" value="120" step="0.01" min="0">
+                            <input class="goal_input" id="smart_pp_input" type="number" value="120" step="0.01" min="0" title="Time to wait in PP mode (in seconds)">
                         </div>
                         <div id="smart_amp">
                             <p class="goal_text">
                                 AMP Limit (0 for no limit):
                             </p>
-                            <input class="goal_input" id="smart_amp_input" type="number" value="0" min="0">
+                            <input class="goal_input" id="smart_amp_input" type="number" value="0" min="0" title="AMP Limit (0 for no limit)">
                         </div>
                         <div id="smart_start">
                             <p class="goal_text">
@@ -511,6 +513,7 @@
                 </div>
 
                 <div id="reboot_page">
+                    <h1>Reboot</h1>
                     <div id="generator">
                         <div id="watts_block">
                             <p id="watts" class="watts_text no_power">
@@ -589,13 +592,13 @@
                                 <p class="goal_text">
                                     Auto-Reboot Watts:
                                 </p>
-                                <input class="goal_input" id="watts_input" type="number" value="1" min="1">
+                                <input class="goal_input" id="watts_input" type="number" value="1" min="1" title="Auto-Reboot Watts">
                             </div>
                             <div id="auto_time2">
                                 <p class="goal_text">
                                     Auto-Reboot Time (in seconds):
                                 </p>
-                                <input class="goal_input" id="time_input2" type="number" value="0.8" step="0.01" min="0">
+                                <input class="goal_input" id="time_input2" type="number" value="0.8" step="0.01" min="0" title="Auto-Reboot Time (in seconds)">
                             </div>
                             <div id="pendingrb_enabled">
                                 <p class="goal_text">
@@ -609,7 +612,7 @@
                                 <p class="goal_text">
                                     Begin Push Time (in seconds):
                                 </p>
-                                <input class="goal_input" id="push_input" type="number" value="60" step="0.01" min="0">
+                                <input class="goal_input" id="push_input" type="number" value="60" step="0.01" min="0" title="Begin Push Time (in seconds)">
                             </div>
                             <p id="watts_eff" class="goal_text">
                                 Watt Efficiency: ???
@@ -683,13 +686,13 @@
                                 <p class="goal_text">
                                     Hydrogen Savings Proportion:
                                 </p>
-                                <input class="goal_input" id="portion_input" type="number" value="0.5" step="0.01" min="0" max="1">
+                                <input class="goal_input" id="portion_input" type="number" value="0.5" step="0.01" min="0" max="1" title="Hydrogen Savings Proportion">
                             </div>
                             <div id="autohy_importance">
                                 <p class="goal_text">
                                     Deuterium Importance:
                                 </p>
-                                <input class="goal_input" id="importance_input" type="number" value="1" step="0.01" min="0.01" max="100">
+                                <input class="goal_input" id="importance_input" type="number" value="1" step="0.01" min="0.01" max="100" title="Deuterium Importance">
                             </div>
                         </div>
                     </div>
@@ -801,13 +804,13 @@
                                 <p class="goal_text">
                                     Auto-Quantize Photons:
                                 </p>
-                                <input class="goal_input" id="photons_input" type="number" value="1" min="1">
+                                <input class="goal_input" id="photons_input" type="number" value="1" min="1" title="Auto-Quantize Photons">
                             </div>
                             <div id="auto_time3">
                                 <p class="goal_text">
                                     Auto-Quantize Time (in seconds):
                                 </p>
-                                <input class="goal_input" id="time_input3" type="number" value="60" step="0.01" min="0">
+                                <input class="goal_input" id="time_input3" type="number" value="60" step="0.01" min="0" title="Auto-Quantize Time (in seconds)">
                             </div>
                         </div>
                     </div>
@@ -892,6 +895,7 @@
                 </div>
 
                 <div class="statistics" id="statistics_page">
+                    <h1>Statistics</h1>
                     <div id="current_level" class="stat_item">
                         <p id="current_level_name" class="stat_left">
                             Current Level:
@@ -1175,6 +1179,7 @@
                 </div>
 
                 <div id="achievements_page">
+                    <h1>Achievements</h1>
                     <p id="achievement_count" class="achievement_title">
                         Achievements earned: 0 / 77
                     </p>
@@ -1190,81 +1195,81 @@
                         </button>
                     </div>
                     <div id="slot1" class="achievement_slot">
-                        <p id="ach_header1" class="achievement_header">
+                        <h2 id="ach_header1" class="achievement_header">
                             Achievement slot 1
-                        </p>
+                        </h2>
                         <p id="ach_reqr1" class="achievement_requirement">
                             Achievement requirement here
                         </p>
                     </div>
                     <div id="slot2" class="achievement_slot">
-                        <p id="ach_header2" class="achievement_header">
+                        <h2 id="ach_header2" class="achievement_header">
                             Achievement slot 2
-                        </p>
+                        </h2>
                         <p id="ach_reqr2" class="achievement_requirement">
                             Achievement requirement here
                         </p>
                     </div>
                     <div id="slot3" class="achievement_slot">
-                        <p id="ach_header3" class="achievement_header">
+                        <h2 id="ach_header3" class="achievement_header">
                             Achievement slot 3
-                        </p>
+                        </h2>
                         <p id="ach_reqr3" class="achievement_requirement">
                             Achievement requirement here
                         </p>
                     </div>
                     <div id="slot4" class="achievement_slot">
-                        <p id="ach_header4" class="achievement_header">
+                        <h2 id="ach_header4" class="achievement_header">
                             Achievement slot 4
-                        </p>
+                        </h2>
                         <p id="ach_reqr4" class="achievement_requirement">
                             Achievement requirement here
                         </p>
                     </div>
                     <div id="slot5" class="achievement_slot">
-                        <p id="ach_header5" class="achievement_header">
+                        <h2 id="ach_header5" class="achievement_header">
                             Achievement slot 5
-                        </p>
+                        </h2>
                         <p id="ach_reqr5" class="achievement_requirement">
                             Achievement requirement here
                         </p>
                     </div>
                     <div id="slot6" class="achievement_slot">
-                        <p id="ach_header6" class="achievement_header">
+                        <h2 id="ach_header6" class="achievement_header">
                             Achievement slot 6
-                        </p>
+                        </h2>
                         <p id="ach_reqr6" class="achievement_requirement">
                             Achievement requirement here
                         </p>
                     </div>
                     <div id="slot7" class="achievement_slot">
-                        <p id="ach_header7" class="achievement_header">
+                        <h2 id="ach_header7" class="achievement_header">
                             Achievement slot 7
-                        </p>
+                        </h2>
                         <p id="ach_reqr7" class="achievement_requirement">
                             Achievement requirement here
                         </p>
                     </div>
                     <div id="slot8" class="achievement_slot">
-                        <p id="ach_header8" class="achievement_header">
+                        <h2 id="ach_header8" class="achievement_header">
                             Achievement slot 8
-                        </p>
+                        </h2>
                         <p id="ach_reqr8" class="achievement_requirement">
                             Achievement requirement here
                         </p>
                     </div>
                     <div id="slot9" class="achievement_slot">
-                        <p id="ach_header9" class="achievement_header">
+                        <h2 id="ach_header9" class="achievement_header">
                             Achievement slot 9
-                        </p>
+                        </h2>
                         <p id="ach_reqr9" class="achievement_requirement">
                             Achievement requirement here
                         </p>
                     </div>
                     <div id="slot10" class="achievement_slot">
-                        <p id="ach_header10" class="achievement_header">
+                        <h2 id="ach_header10" class="achievement_header">
                             Achievement slot 10
-                        </p>
+                        </h2>
                         <p id="ach_reqr10" class="achievement_requirement">
                             Achievement requirement here
                         </p>
@@ -1283,6 +1288,7 @@
                 </div>
 
                 <div class="settings" id="settings_page">
+                    <h1>Settings</h1>
                     <button id="save_button" class="option option_button" onclick='save(); new notify("Game saved", "#00ddff")'>
                         SAVE
                     </button>
@@ -1377,14 +1383,14 @@
                         <p id="custom_hue_text" class="option_text">
                             Hue:
                         </p>
-                        <input class="goal_input" id="hue_input" type="number" value="0" min="0" max="359">
+                        <input class="goal_input" id="hue_input" type="number" value="0" min="0" max="359" title="Hue">
                     </div>
                     <div class="option">
                         <p id="refresh_text" class="option_text">
                             Visual Update Rate
                         </p>
                         <div>
-                            <input class="goal_input" id="refresh_input" type="number" value="30" min="2" max="30">
+                            <input class="goal_input" id="refresh_input" type="number" value="30" min="2" max="30" title="Visual Update Rate">
                             <p id="hertz_text" class="option_text">
                                 Hz
                             </p>
@@ -1415,10 +1421,10 @@
                 <a href="changelog.html" target="_blank" class="info link">
                     Changelog
                 </a>
-                <a href="https://zakuro98.github.io/EXP-Simulator-Beta/" target="_blank" class="info link">
+                <a href="https://zakuro98.github.io/EXP-Simulator-Beta/" target="_blank" class="info link" rel="noopener noreferrer">
                     Beta
                 </a>
-                <a href="https://discord.gg/fuQSBkYYqH" target="_blank" class="info link">
+                <a href="https://discord.gg/fuQSBkYYqH" target="_blank" class="info link" rel="noopener noreferrer">
                     Discord
                 </a>
 
