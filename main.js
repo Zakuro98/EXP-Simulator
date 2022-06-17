@@ -1309,6 +1309,13 @@ function tick() {
         }
     }
 
+    //depth power
+    if (game.pp_bought[30] && game.challenge !== 7) {
+        game.depth_power = 1 + game.highest_level / 400
+    } else {
+        game.depth_power = 1
+    }
+
     //did it for the memes
     for (let i = 0; i < 4; i++) {
         if (
