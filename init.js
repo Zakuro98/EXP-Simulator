@@ -2150,8 +2150,6 @@ class pp_upgrade_child extends pp_upgrade {
         "EXP production is boosted based on your highest level",
         6400,
         function () {
-            if (game.challenge !== 7)
-                game.depth_power = 1 + game.highest_level / 400
             pp_upgrade.upgrades[30].desc =
                 "EXP production is boosted based on your highest level<br>(Currently: " +
                 format_eff(game.depth_power) +
