@@ -95,17 +95,30 @@ main {
     display: none;
 }
 
-#prestige_tabs, #reboot_tabs, #quantum_tabs {
+#the_end {
+    display: none;
+    color: var(--photon_color);
+    border: 2px solid var(--photon_color);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#the_end:active {
+    background-color: var(--photon_color);
+    color: black;
+}
+
+#prestige_tabs, #reboot_tabs, #quantum_tabs, #statistics_tabs {
     display: none;
     margin-top: 1em;
 }
 
-#config_tab, #challenges_tab, #reactor_tab, #gravity_tab {
+#config_tab, #challenges_tab, #reactor_tab, #gravity_tab, #omega_tab, #past_resets_tab {
     display: inline;
     margin-left: 0.285em;
 }
 
-#p_upgrades_tab, #generator_tab, #prism_tab {
+#p_upgrades_tab, #generator_tab, #prism_tab, #general_tab {
     display: inline;
 }
 
@@ -198,6 +211,22 @@ main {
 #hydrogen_up {
     color: #ffaef6;
     text-shadow: 0em 0em 0.1em #ff00e1, 0em 0em 0.2em #ff00e1;
+    margin-top: 0.35em;
+}
+
+.quantum_area {
+    display: block;
+    margin-top: 0.3em;
+}
+
+#photon_button {
+    margin-top: 0em;
+    display: inline;
+}
+
+#photons_up2 {
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
     margin-top: 0.35em;
 }
 
@@ -301,6 +330,14 @@ main {
 #hydrogen3 {
     color: #ffaef6;
     text-shadow: 0em 0em 0.1em #ff00e1, 0em 0em 0.2em #ff00e1;
+    margin-top: 0.1em;
+    margin-bottom: 0em;
+    display: none;
+}
+
+#photons2 {
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
     margin-top: 0.1em;
     margin-bottom: 0em;
     display: none;
@@ -557,6 +594,13 @@ main {
     flex-direction: column;
 }
 
+#past_resets_page {
+    font-size: 0.714em;
+    color: white;
+    margin-top: 1.142em;
+    display: none;
+}
+
 .stat_item {
     display: flex;
 }
@@ -581,6 +625,13 @@ main {
     margin-top: 0em;
     margin-bottom: 0em;
     align-self: flex-start;
+}
+
+.stats {
+    display: block;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
 }
 
 .settings {
@@ -1024,6 +1075,21 @@ main {
     color: #ff0000;
 }
 
+#smart_time {
+    display: inline;
+}
+
+#smart_time_reset {
+    display: inline;
+    margin-left: 0.375em;
+    color: #cccccc;
+    cursor: pointer;
+}
+
+#smart_time_reset:hover {
+    color: #aaaaaa;
+}
+
 #smart_peak {
     display: block;
     margin-top: 0.1em;
@@ -1194,6 +1260,11 @@ main {
     text-align: right;
 }
 
+#perks_hidden {
+    font-size: 0.857em;
+    color: white;
+}
+
 #gen_perks_text {
     color: #ffff00;
     text-shadow: 0em 0em 0.2em #ffff00;
@@ -1362,16 +1433,14 @@ main {
     margin-bottom: 0em;
 }
 
-.challenge_desc {
+.challenge_desc, .challenge_goal {
     color: white;
     margin-top: 0em;
     margin-bottom: 0em;
 }
 
-.challenge_goal {
+.challenge_pp {
     color: #d000ff;
-    margin-top: 0em;
-    margin-bottom: 0em;
 }
 
 .challenge_complete {
@@ -1724,14 +1793,23 @@ main {
     display: inline;
 }
 
+#step_mode {
+    display: none;
+}
+
 #auto_photons {
     display: block;
     margin-top: 0.1em;
 }
 
-#auto_time3 {
+#auto_time3, #auto_step {
     display: none;
     margin-top: 0.1em;
+}
+
+#step_goal {
+    display: none;
+    margin-top: 0.25em;
 }
 
 #autoqu_toggle {
@@ -1778,14 +1856,16 @@ main {
 .lit:active {
     background-color: var(--photon_color);
     color: black;
+    text-shadow: none;
     font-weight: bold;
     border: 1px solid var(--photon_color);
     box-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
 }
 
-.superlit {
+.superlit, .superlit:hover, .superlit:active {
     background-color: var(--photon_color);
     color: black;
+    text-shadow: none;
     font-weight: bold;
     border: 1px solid var(--photon_color);
     box-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
@@ -1926,7 +2006,7 @@ main {
     padding: 0.285em 0.428em;
     font-size: 1em;
     font-family: var(--font_small);
-    flex: 0 0 8.3em;
+    flex: 0 0 8.8em;
 }
 
 .dark_matter_text {
@@ -1965,8 +2045,13 @@ main {
     margin-top: 0.1em;
 }
 
-#achievements_page {
-    display: none;
+#omega_level_text {
+    color: #e1ff38;
+    text-shadow: 0em 0em 0.1em #e1ff38, 0em 0em 0.2em #4bff87, 0em 0em 0.4em #0de655, 0em 0em 0.6em #00c241;
+    font-size: 1.4em;
+    text-align: center;
+    margin-top: 0.5em;
+    margin-bottom: 0em;
 }
 
 #gravity_upgrades {
@@ -1986,11 +2071,17 @@ main {
     align-self: center;
 }
 
+#growth_reset {
+    flex-grow: 1;
+    width: 50%;
+    align-self: center;
+}
+
 #interval_text, #growth_text {
     text-align: center;
 }
 
-#interval_button_center, #growth_button_center {
+#interval_button_center, #growth_button_center, #collapse_button_center, #retrieve_button_center, #omega_exit_center {
     display: flex;
     flex-direction: column;
 }
@@ -2003,6 +2094,23 @@ main {
     margin-top: 0.428em;
     margin-bottom: 0.7em;
     align-self: center;
+}
+
+#collapse_menu, #growth_menu, #prism_menu {
+    align-self: center;
+}
+
+#collapse_button {
+    display: inline;
+    padding: 0.3em 0.5em;
+    font-family: var(--font_small);
+    font-size: 0.857em;
+    font-weight: normal;
+    margin-bottom: 0.428em;
+}
+
+#collapse_time {
+    margin-top: 0.75em;
 }
 
 #dark_upgrades_text {
@@ -2038,6 +2146,295 @@ main {
     color: white;
     margin-top: 0em;
     margin-bottom: 0em;
+}
+
+#omega_points_block {
+    display: flex;
+    justify-content: center;
+}
+
+#omega_points {
+    display: inline;
+    align-self: flex-end;
+    font-size: 2.25em;
+    font-weight: bold;
+    margin-top: 0.6em;
+    margin-bottom: -0.13em;
+    color: #e1ff38;
+    text-shadow: 0em 0em 0.1em #e1ff38, 0em 0em 0.2em #4bff87, 0em 0em 0.4em #0de655, 0em 0em 0.6em #00c241;
+}
+
+#omega_points_text {
+    display: inline;
+    align-self: flex-end;
+    font-size: 1.25em;
+    margin-left: 0.285em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    color: #e1ff38;
+    text-shadow: 0em 0em 0.1em #e1ff38, 0em 0em 0.2em #4bff87, 0em 0em 0.4em #0de655, 0em 0em 0.6em #00c241;
+}
+
+#highest_omega_level {
+    display: block;
+    font-size: 1em;
+    color: white;
+    text-align: center;
+    margin-top: 0.2em;
+}
+
+#omega_drive_text, #omega_upgrades_text {
+    color: #e1ff38;
+    text-shadow: 0em 0em 0.1em #e1ff38, 0em 0em 0.2em #4bff87, 0em 0em 0.4em #0de655, 0em 0em 0.6em #00c241;
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0.285em;
+}
+
+#omega_challenge_header {
+    color: #e1ff38;
+    text-shadow: 0em 0em 0.1em #e1ff38, 0em 0em 0.2em #4bff87, 0em 0em 0.4em #0de655, 0em 0em 0.6em #00c241;
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0em;
+}
+
+#omega_drive_block {
+    display: flex;
+}
+
+.chamber {
+    display: block;
+    flex: 0 0 calc(33.3% - 1.26em);
+    margin-bottom: 0.6em;
+    background-color: #44194d;
+    padding: 0.4em;
+    border: 2px solid #e1ff38;
+    box-shadow: 0em 0em 0.1em #4bff87, 0em 0em 0.2em #0de655, 0em 0em 0.3em #00c241, 0em 0em 0.1em #4bff87 inset, 0em 0em 0.2em #0de655 inset, 0em 0em 0.3em #00c241 inset;
+}
+
+@media (min-width: 1024px) {
+    #omega_drive_block {
+        flex-direction: row;
+    }
+
+    .chamber_left {
+        margin-right: 0.5em;
+    }
+}
+
+@media (max-width: 1023px) {
+    #omega_drive_block {
+        flex-direction: column;
+    }
+
+    .chamber {
+        width: 12.5em;
+        align-self: center;
+    }
+
+    .chamber_left {
+        margin-right: 0em;
+    }
+}
+
+.omega_drive_name {
+    color: #e1ff38;
+    text-shadow: 0em 0em 0.1em #e1ff38, 0em 0em 0.2em #4bff87, 0em 0em 0.4em #0de655, 0em 0em 0.6em #00c241;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0.8em;
+}
+
+.omega_drive_text {
+    color: white;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 1.2em;
+}
+
+.chamber_buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.omega_button {
+    background-color: #410a4a;
+    color: #e1ff38;
+    text-shadow: 0em 0em 0.1em #e1ff38, 0em 0em 0.2em #4bff87, 0em 0em 0.4em #0de655, 0em 0em 0.6em #00c241;
+    font-family: var(--font_small);
+    padding: 0.3em 0.5em;
+    font-size: 0.714em;
+    border: 1px solid white;
+    cursor: pointer;
+}
+
+.omega_button:hover {
+    background-color: #5d0d61;
+    color: white;
+    text-shadow: 0em 0em 0.1em white, 0em 0em 0.2em #72ffa1, 0em 0em 0.4em #22e764, 0em 0em 0.6em #0cd14d;
+}
+
+.omega_button:active {
+    background-color: white;
+    color: black;
+    text-shadow: none;
+}
+
+.omega_left {
+    margin-right: 0.5em;
+}
+
+#retrieve_button {
+    font-size: 0.857em;
+    align-self: center;
+}
+
+.om_upgrade {
+    display: flex;
+    margin-bottom: 0.4em;
+    background-color: #44194d;
+    padding: 0.4em;
+    border: 2px solid #e1ff38;
+    box-shadow: 0em 0em 0.1em #4bff87, 0em 0em 0.2em #0de655, 0em 0em 0.3em #00c241, 0em 0em 0.1em #4bff87 inset, 0em 0em 0.2em #0de655 inset, 0em 0em 0.3em #00c241 inset;
+}
+
+.om_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.om_name {
+    color: #e1ff38;
+    text-shadow: 0em 0em 0.1em #e1ff38, 0em 0em 0.2em #4bff87, 0em 0em 0.4em #0de655, 0em 0em 0.6em #00c241;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.om_desc {
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.autoqu {
+    display: none;
+    padding: 0.3em 0.5em;
+    font-family: var(--font_small);
+    font-size: 0.857em;
+    font-weight: normal;
+    margin-bottom: 0.428em;
+    align-self: center;
+}
+
+#omega_challenge_block {
+    display: none;
+}
+
+#omega_challenge_info {
+    color: white;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0.2em;
+}
+
+#omega_exit_button {
+    font-size: 0.857em;
+    align-self: center;
+    margin-bottom: 0.6em;
+}
+
+#omega_challenge_panel {
+    display: flex;
+    margin-bottom: 0.4em;
+    background-color: #44194d;
+    padding: 0.4em;
+    border: 2px solid #e1ff38;
+    box-shadow: 0em 0em 0.1em #4bff87, 0em 0em 0.2em #0de655, 0em 0em 0.3em #00c241, 0em 0em 0.1em #4bff87 inset, 0em 0em 0.2em #0de655 inset, 0em 0em 0.3em #00c241 inset;
+}
+
+#omega_challenge_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+#omega_challenge_desc, #omega_challenge_goal {
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.challenge_photons {
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#omega_challenge_complete {
+    color: white;
+    margin-top: 0.285em;
+    margin-bottom: 0em;
+    font-size: 0.75em;
+}
+
+#omega_enter_button {
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-family: var(--font_small);
+    font-weight: normal;
+    flex: 0 0 6.4em;
+}
+
+.cannot_enter {
+    background-color: black;
+    color: #00c241;
+    border: 1px solid #00c241;
+}
+
+.can_enter {
+    background-color: black;
+    color: #e1ff38;
+    text-shadow: 0em 0em 0.1em #e1ff38, 0em 0em 0.2em #4bff87, 0em 0em 0.4em #0de655, 0em 0em 0.6em #00c241;
+    border: 1px solid #e1ff38;
+    box-shadow: 0em 0em 0.1em #4bff87, 0em 0em 0.2em #0de655, 0em 0em 0.3em #00c241, 0em 0em 0.5em #39df70 inset, 0em 0em 1.5em #0aad41 inset, 0em 0em 3em #007928 inset;
+    cursor: pointer;
+}
+
+.can_enter:hover {
+    background-color: #003010;
+    color: white;
+    text-shadow: 0em 0em 0.1em white, 0em 0em 0.2em #72ffa1, 0em 0em 0.4em #22e764, 0em 0em 0.6em #0cd14d;
+    box-shadow: 0em 0em 0.1em #4bff87, 0em 0em 0.2em #0de655, 0em 0em 0.3em #00c241, 0em 0em 0.5em #e1ff38 inset, 0em 0em 1.5em #39df70 inset, 0em 0em 3em #076d29 inset;
+}
+
+.omega_in_progress, .omega_in_progress:hover{
+    background-color: #e1ff38;
+    color: black;
+    border: 1px solid #e1ff38;
+    box-shadow: 0em 0em 0.1em #4bff87, 0em 0em 0.2em #0de655, 0em 0em 0.3em #00c241;
+    cursor: default;
+}
+
+#the_end_page {
+    display: none;
+}
+
+#the_end_text {
+    color: white;
+    margin-top: 1.2em;
+    text-align: center;
+}
+
+#congratulations {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0em 0em 0.1em var(--photon_color), 0em 0em 0.2em var(--photon_color), 0em 0em 0.3em var(--photon_color2);
+}
+
+#achievements_page {
+    display: none;
 }
 
 .achievement_title {
