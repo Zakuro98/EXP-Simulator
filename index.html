@@ -71,6 +71,17 @@
                                 +0.01 g hydrogen
                             </p>
                         </div>
+                        <div id="quantum_area" class="quantum_area">
+                            <button id="photon_button" class="button unlit" onclick="quantize()">
+                                QUANTIZE!
+                            </button>
+                            <button id="photon_auto" class="button autoup" onclick="qu_toggle()">
+                                OFF
+                            </button>
+                            <p id="photons_up2" class="uptext">
+                                +1 watt
+                            </p>
+                        </div>
                     </div>
                     <div class="resources">
                         <p id="total_exp">
@@ -87,6 +98,9 @@
                         </p>
                         <p id="hydrogen3">
                             0.00 g hydrogen
+                        </p>
+                        <p id="photons2">
+                            0 photons
                         </p>
                     </div>
                 </div>
@@ -115,6 +129,9 @@
                         </button>
                         <button id="settings" class="tab" onclick="goto_tab(7)">
                             SETTINGS
+                        </button>
+                        <button id="the_end" class="tab" onclick="goto_tab(8)">
+                            THE END!
                         </button>
                     </div>
                 </div>
@@ -420,9 +437,6 @@
                             </p>
                             <input class="goal_input" id="time_input" type="number" value="0" step="0.01" min="0">
                         </div>
-                        <p id="amp_eff" class="goal_text">
-                            AMP Efficiency: ???
-                        </p>
                     </div>
                     <div id="smart_config">
                         <p class="auto_header">
@@ -438,6 +452,9 @@
                         </div>
                         <p id="smart_time" class="goal_text">
                             Current Mode Time: 0.00s
+                        </p>
+                        <p id="smart_time_reset" class="goal_text" onclick="game.smartpr_time = 0">
+                            Reset
                         </p>
                         <div id="smart_peak">
                             <p class="goal_text">
@@ -607,14 +624,20 @@
                             </div>
                             <div id="auto_push">
                                 <p class="goal_text">
-                                    Begin Push Time (in seconds):
+                                    Stop Rebooting after (in seconds):
                                 </p>
                                 <input class="goal_input" id="push_input" type="number" value="60" step="0.01" min="0">
                             </div>
-                            <p id="watts_eff" class="goal_text">
-                                Watt Efficiency: ???
-                            </p>
                         </div>
+                    </div>
+
+                    <div class="option" id="perks_hidden">
+                        <p id="perks_hidden_text" class="option_text">
+                            Hide Completed Perks
+                        </p>
+                        <button id="perks_hidden_button" class="option_button small" onclick="perks_hidden()">
+                            DISABLED
+                        </button>
                     </div>
 
                     <p id="gen_perks_text">
@@ -741,6 +764,9 @@
                     <button id="gravity_tab" class="button" onclick="goto_subtab(1)">
                         GRAVITY WELL
                     </button>
+                    <button id="omega_tab" class="button" onclick="goto_subtab(2)">
+                        OMEGA DRIVE
+                    </button>
                 </div>
 
                 <div id="quantum_page">
@@ -761,7 +787,7 @@
                         </button>
                         <div id="quantize_details">
                             <p id="quantize_req" class="quantize_text">
-                                108 challenge completions required
+                                108 challenge completions & LVL 65,536 required
                             </p>
                             <p id="photons_up" class="quantize_text">
                                 +0 photons
@@ -796,6 +822,9 @@
                                 <button id="time_mode3" class="button" onclick="autoqu_switch(1)">
                                     TIME
                                 </button>
+                                <button id="step_mode" class="button" onclick="autoqu_switch(2)">
+                                    STEP
+                                </button>
                             </div>
                             <div id="auto_photons">
                                 <p class="goal_text">
@@ -809,6 +838,15 @@
                                 </p>
                                 <input class="goal_input" id="time_input3" type="number" value="60" step="0.01" min="0">
                             </div>
+                            <div id="auto_step">
+                                <p class="goal_text">
+                                    Auto-Quantize Multiplicative Step:
+                                </p>
+                                <input class="goal_input" id="step_input" type="number" value="2" step="0.1" min="1.1">
+                            </div>
+                            <p id="step_goal" class="goal_text">
+                                Current Quantize Goal: 1 photon
+                            </p>
                         </div>
                     </div>
 
@@ -838,9 +876,14 @@
                         Upgrade Prism LVL
                     </p>
                     <div id="prism_button_center">
-                        <button id="prism_button" class="unlit" onclick="upgrade_prism()">
-                            -5 photons
-                        </button>
+                        <div id="prism_menu">
+                            <button id="prism_button" class="unlit" onclick="upgrade_prism()">
+                                -5 photons
+                            </button>
+                            <button id="prism_auto" class="button autoqu lit" onclick="ps_toggle()">
+                                OFF
+                            </button>
+                        </div>
                     </div>
 
                     <p id="quantum_upgrades_text">
@@ -861,6 +904,15 @@
                         creating 1.00x EXP production
                     </p>
 
+                    <div id="omega_level">
+                        <p id="omega_level_text">
+                            Omega LVL 1
+                        </p>
+                        <p id="growth_penalty" class="dark_matter_text">
+                            Total Growth Penalty ^0.800
+                        </p>
+                    </div>
+
                     <div id="gravity_upgrades">
                         <div id="interval_upgrade">
                             <p id="interval_text" class="dark_matter_text">
@@ -879,16 +931,172 @@
                                 <br>1.00x
                             </p>
                             <div id="growth_button_center">
-                                <button id="growth_button" class="unlit" onclick="upgrade_growth()">
-                                    -1.000e13 photons
-                                </button>
+                                <div id="growth_menu">
+                                    <button id="growth_button" class="unlit" onclick="upgrade_growth()">
+                                        -1.000e13 photons
+                                    </button>
+                                    <button id="growth_auto" class="button autoqu lit" onclick="gr_toggle()">
+                                        OFF
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                        <div id="growth_reset">
+                            <div id="collapse_button_center">
+                                <div id="collapse_menu">
+                                    <button id="collapse_button" class="unlit" onclick="collapse()">
+                                        COLLAPSE!
+                                    </button>
+                                    <button id="collapse_auto" class="button autoqu lit" onclick="cl_toggle()">
+                                        OFF
+                                    </button>
+                                </div>
+                            </div>
+                            <p id="collapse_text" class="dark_matter_text">
+                                Resets dark matter and<br>reduces Growth Factor 30%
+                            </p>
+                        </div>
                     </div>
+
+                    <p id="collapse_time" class="dark_matter_text">
+                        Collapse ready in 0.000s
+                    </p>
 
                     <p id="dark_upgrades_text">
                         DARK UPGRADES
                     </p>
+                </div>
+
+                <div id="omega_page">
+                    <div id="omega_points_block">
+                        <p id="omega_points">
+                            0
+                        </p>
+                        <p id="omega_points_text">
+                            Ω
+                        </p>
+                    </div>
+                    <p id="highest_omega_level">
+                        Highest Omega LVL 0
+                    </p>
+
+                    <p id="omega_drive_text">
+                        OMEGA DRIVE
+                    </p>
+                    <div id="omega_drive_block">
+                        <div class="chamber chamber_left">
+                            <p class="omega_drive_name">
+                                Prism Chamber
+                            </p>
+                            <p id="prism_assigned" class="omega_drive_text">
+                                0 Ω assigned
+                                <br>1x Prism output
+                            </p>
+                            <div class="chamber_buttons">
+                                <button class="omega_button omega_left" onclick="assign(0,false)">
+                                    ASSIGN 1 Ω
+                                </button>
+                                <button class="omega_button" onclick="assign(0,true)">
+                                    ASSIGN ALL Ω
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chamber chamber_left">
+                            <p class="omega_drive_name">
+                                Reactor Chamber
+                            </p>
+                            <p id="reactor_assigned" class="omega_drive_text">
+                                0 Ω assigned
+                                <br>1x helium production
+                            </p>
+                            <div class="chamber_buttons">
+                                <button class="omega_button omega_left" onclick="assign(1,false)">
+                                    ASSIGN 1 Ω
+                                </button>
+                                <button class="omega_button" onclick="assign(1,true)">
+                                    ASSIGN ALL Ω
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chamber">
+                            <p class="omega_drive_name">
+                                Dark Matter Chamber
+                            </p>
+                            <p id="dark_matter_assigned" class="omega_drive_text">
+                                0 Ω assigned
+                                <br>dark matter formula ^1.00
+                            </p>
+                            <div class="chamber_buttons">
+                                <button class="omega_button omega_left" onclick="assign(2,false)">
+                                    ASSIGN 1 Ω
+                                </button>
+                                <button class="omega_button" onclick="assign(2,true)">
+                                    ASSIGN ALL Ω
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="retrieve_button_center">
+                        <button id="retrieve_button" class="omega_button" onclick="retrieve()">
+                            RETRIEVE ALL Ω
+                        </button>
+                    </div>
+
+                    <div id="omega_challenge_block">
+                        <p id="omega_challenge_header">
+                            OMEGA CHALLENGE
+                        </p>
+                        <p id="omega_challenge_info">
+                            You must be able to Quantize to enter the Omega Challenge
+                            <br>Gain the required amount of photons to complete the Omega Challenge
+                        </p>
+                        <div id="omega_exit_center">
+                            <button id="omega_exit_button" class="omega_button" onclick="exit_omega_challenge()">
+                                EXIT OMEGA CHALLENGE
+                            </button>
+                        </div>
+                        <div id="omega_challenge_panel">
+                            <div id="omega_challenge_text">
+                                <p id="omega_challenge_desc">
+                                    All EXP production ^0.50
+                                </p>
+                                <p id="omega_challenge_goal">
+                                    Goal: <span class="challenge_photons">+1.000e17 photons</span>
+                                </p>
+                                <p id="omega_challenge_complete">
+                                    Completions: 0<br>Growth Factor boost from completions: 1x
+                                </p>
+                            </div>
+                            <button id="omega_enter_button" class="cannot_enter" onclick="enter_omega_challenge()">
+                                ENTER CHALLENGE
+                            </button>
+                        </div>
+                    </div>
+
+                    <p id="omega_upgrades_text">
+                        OMEGA UPGRADES
+                    </p>
+                </div>
+
+                <div id="the_end_page">
+                    <p id="the_end_text">
+                        <span id="congratulations">CONGRATULATIONS!</span>
+                        <br>You have reached LVL 1,000,000 and thus officially beaten EXP Simulator!
+                        <br>Thanks for sticking with the game for this long!
+                        <br><br>
+                        There's no second Limit Break or anything so you can't go past LVL 1,000,000...
+                        <br>You can quit now, or you can try to play more if you want.
+                        <br>Maybe you could even get all the achievements if you haven't already. Good luck!
+                    </p>
+                </div>                
+
+                <div id="statistics_tabs" class="menu">
+                    <button id="general_tab" class="button" onclick="goto_subtab(0)">
+                        GENERAL
+                    </button>
+                    <button id="past_resets_tab" class="button" onclick="goto_subtab(1)">
+                        PAST RESETS
+                    </button>
                 </div>
 
                 <div class="statistics" id="statistics_page">
@@ -1174,9 +1382,22 @@
                     </div>
                 </div>
 
+                <div id="past_resets_page">
+                    <p id="past_resets_text" class="stats">
+                        Past Prestiges:
+                        <br>[1] no data
+                        <br>[2] no data
+                        <br>[3] no data
+                        <br>[4] no data
+                        <br>[5] no data
+                        <br><br>
+                        Average AMP gain: undefined
+                    </p>
+                </div>
+
                 <div id="achievements_page">
                     <p id="achievement_count" class="achievement_title">
-                        Achievements earned: 0 / 77
+                        Achievements earned: 0 / 169
                     </p>
                     <div class="page_switcher">
                         <button id="page_left1" class="button page_left" onclick='change_page("prev")'>
@@ -1410,7 +1631,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.3.103<br>Made by Zakuro
+                    <br><br><br>EXP Simulator v2.3.201<br>Made by Zakuro
                 </p>
                 <a href="changelog.html" target="_blank" class="info link">
                     Changelog
@@ -1425,6 +1646,7 @@
                 <div id="notifications"></div>
             </div>
         </main>
+        <script src="break_infinity.js" charset="utf-8" type="text/javascript"></script>
         <script src="init.js" charset="utf-8" type="text/javascript"></script>
         <script src="auto.js" charset="utf-8" type="text/javascript"></script>
         <script src="reset.js" charset="utf-8" type="text/javascript"></script>
