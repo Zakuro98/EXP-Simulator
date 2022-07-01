@@ -6,7 +6,7 @@ function notation() {
         !game.question
     )
         game.notation += 1
-    if (game.notation >= 13) game.notation = 0
+    if (game.notation >= 12) game.notation = 0
     pp_update()
     switch (game.notation) {
         case 0:
@@ -40,12 +40,9 @@ function notation() {
             document.getElementById("notation_button").innerHTML = "INFINITY"
             break
         case 10:
-            document.getElementById("notation_button").innerHTML = "OMEGA"
-            break
-        case 11:
             document.getElementById("notation_button").innerHTML = "ROMAN"
             break
-        case 12:
+        case 11:
             document.getElementById("notation_button").innerHTML = "BASE64"
             break
     }
@@ -126,6 +123,17 @@ function pp_hidden() {
         case 2:
             document.getElementById("hidden_button").innerHTML = "HIDE BOUGHT"
             break
+    }
+}
+
+//hidden completed perks toggle
+function perks_hidden() {
+    if (game.perks_hidden) {
+        game.perks_hidden = false
+        document.getElementById("perks_hidden_button").innerHTML = "DISABLED"
+    } else {
+        game.perks_hidden = true
+        document.getElementById("perks_hidden_button").innerHTML = "ENABLED"
     }
 }
 
@@ -243,7 +251,9 @@ function question() {
 //priority reset layer switching
 function priority_layer() {
     game.priority_layer += 1
-    if (game.reboot >= 1 || game.quantum >= 1) {
+    if (game.quantum >= 1) {
+        if (game.priority_layer >= 4) game.priority_layer = 0
+    } else if (game.reboot >= 1) {
         if (game.priority_layer >= 3) game.priority_layer = 0
     } else {
         if (game.priority_layer >= 2) game.priority_layer = 0
@@ -257,6 +267,9 @@ function priority_layer() {
             break
         case 2:
             document.getElementById("layer_button").innerHTML = "REBOOT"
+            break
+        case 3:
+            document.getElementById("layer_button").innerHTML = "QUANTUM"
             break
     }
 }
@@ -293,9 +306,12 @@ function goto_tab(id) {
     document.getElementById("quantum_page").style.display = "none"
     document.getElementById("prism_page").style.display = "none"
     document.getElementById("gravity_page").style.display = "none"
+    document.getElementById("omega_page").style.display = "none"
     document.getElementById("statistics_page").style.display = "none"
+    document.getElementById("past_resets_page").style.display = "none"
     document.getElementById("achievements_page").style.display = "none"
     document.getElementById("settings_page").style.display = "none"
+    document.getElementById("the_end_page").style.display = "none"
 
     document.getElementById("prestige_tabs").style.display = "none"
     document.getElementById("reboot_tabs").style.display = "none"
@@ -332,11 +348,18 @@ function goto_tab(id) {
                 document.getElementById("prism_page").style.display = "block"
             if (game.subtab[2] === 1)
                 document.getElementById("gravity_page").style.display = "block"
+            if (game.subtab[2] === 2)
+                document.getElementById("omega_page").style.display = "block"
             if (game.qu_bought[7])
                 document.getElementById("quantum_tabs").style.display = "flex"
             break
         case 5:
-            document.getElementById("statistics_page").style.display = "flex"
+            if (game.subtab[3] === 0)
+                document.getElementById("statistics_page").style.display =
+                    "flex"
+            if (game.subtab[3] === 1)
+                document.getElementById("past_resets_page").style.display =
+                    "block"
             break
         case 6:
             document.getElementById("achievements_page").style.display = "block"
@@ -344,6 +367,9 @@ function goto_tab(id) {
             break
         case 7:
             document.getElementById("settings_page").style.display = "flex"
+            break
+        case 8:
+            document.getElementById("the_end_page").style.display = "block"
             break
     }
 }
@@ -389,6 +415,7 @@ function goto_subtab(id) {
 
         document.getElementById("prism_page").style.display = "none"
         document.getElementById("gravity_page").style.display = "none"
+        document.getElementById("omega_page").style.display = "none"
 
         switch (id) {
             case 0:
@@ -396,6 +423,25 @@ function goto_subtab(id) {
                 break
             case 1:
                 document.getElementById("gravity_page").style.display = "block"
+                break
+            case 2:
+                document.getElementById("omega_page").style.display = "block"
+                break
+        }
+    } else if (game.tab === 5) {
+        game.subtab[3] = id
+
+        document.getElementById("statistics_page").style.display = "none"
+        document.getElementById("past_resets_page").style.display = "none"
+
+        switch (id) {
+            case 0:
+                document.getElementById("statistics_page").style.display =
+                    "flex"
+                break
+            case 1:
+                document.getElementById("past_resets_page").style.display =
+                    "block"
                 break
         }
     }
@@ -432,11 +478,6 @@ function change_page(dir) {
             document.getElementById("page_right2").style.display = "inline"
         }
     }
-
-    document.getElementById("page_text1").innerHTML =
-        "Page " + (game.achiev_page + 1)
-    document.getElementById("page_text2").innerHTML =
-        "Page " + (game.achiev_page + 1)
 }
 
 //toggling buy one/buy max
