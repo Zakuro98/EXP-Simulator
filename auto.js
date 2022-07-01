@@ -192,10 +192,14 @@ function qu_toggle() {
     if (!game.quantum_confirmation) {
         if (!game.autoqu_toggle) {
             game.autoqu_toggle = true
+            document.getElementById("photon_auto").innerHTML = "ON"
+            document.getElementById("photon_auto").style.color = "#00ff00"
             document.getElementById("autoqu_toggle").innerHTML = "ENABLED"
             document.getElementById("autoqu_toggle").style.color = "#00ff00"
         } else {
             game.autoqu_toggle = false
+            document.getElementById("photon_auto").innerHTML = "OFF"
+            document.getElementById("photon_auto").style.color = "#ff0000"
             document.getElementById("autoqu_toggle").innerHTML = "DISABLED"
             document.getElementById("autoqu_toggle").style.color = "#ff0000"
         }
@@ -261,6 +265,48 @@ function hy_toggle() {
         game.autohy_toggle = false
         document.getElementById("autohy_toggle").innerHTML = "DISABLED"
         document.getElementById("autohy_toggle").style.color = "#ff0000"
+    }
+}
+
+//collapse automation toggle
+function cl_toggle() {
+    if (!game.autocl_toggle) {
+        game.autocl_toggle = true
+        document.getElementById("collapse_auto").innerHTML = "ON"
+        document.getElementById("collapse_auto").className =
+            "button autoqu superlit"
+    } else {
+        game.autocl_toggle = false
+        document.getElementById("collapse_auto").innerHTML = "OFF"
+        document.getElementById("collapse_auto").className = "button autoqu lit"
+    }
+}
+
+//growth factor automation toggle
+function gr_toggle() {
+    if (!game.autogr_toggle) {
+        game.autogr_toggle = true
+        document.getElementById("growth_auto").innerHTML = "ON"
+        document.getElementById("growth_auto").className =
+            "button autoqu superlit"
+    } else {
+        game.autogr_toggle = false
+        document.getElementById("growth_auto").innerHTML = "OFF"
+        document.getElementById("growth_auto").className = "button autoqu lit"
+    }
+}
+
+//prism automation toggle
+function ps_toggle() {
+    if (!game.autops_toggle) {
+        game.autops_toggle = true
+        document.getElementById("prism_auto").innerHTML = "ON"
+        document.getElementById("prism_auto").className =
+            "button autoqu superlit"
+    } else {
+        game.autops_toggle = false
+        document.getElementById("prism_auto").innerHTML = "OFF"
+        document.getElementById("prism_auto").className = "button autoqu lit"
     }
 }
 
@@ -372,9 +418,12 @@ function autoqu_switch(mode) {
 
     document.getElementById("auto_photons").style.display = "none"
     document.getElementById("auto_time3").style.display = "none"
+    document.getElementById("auto_step").style.display = "none"
+    document.getElementById("step_goal").style.display = "none"
 
     document.getElementById("photons_mode").className = "button"
     document.getElementById("time_mode3").className = "button"
+    document.getElementById("step_mode").className = "button"
 
     switch (mode) {
         case 0:
@@ -386,6 +435,12 @@ function autoqu_switch(mode) {
             document.getElementById("time_mode3").className =
                 "button mode_active"
             document.getElementById("auto_time3").style.display = "block"
+            break
+        case 2:
+            document.getElementById("step_mode").className =
+                "button mode_active"
+            document.getElementById("auto_step").style.display = "block"
+            document.getElementById("step_goal").style.display = "block"
             break
     }
 }
