@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.3.103",
+    version: "2.3.201",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -37,6 +37,7 @@ let game = {
     //v2.1.000 variables
     pp: 0,
     pp_bought: new Array(40).fill(false),
+
     pr_min: 60,
 
     ml_boost: 1,
@@ -168,7 +169,7 @@ let game = {
     speed_power: 1,
     banked_prestige: 0,
 
-    subtab: [0, 0, 0],
+    subtab: [0, 0, 0, 0],
     challenge: 0,
     challenge_confirmation: true,
     completions: new Array(9).fill(0),
@@ -224,7 +225,7 @@ let game = {
     question: true,
 
     //v2.3.100 variables
-    dark_matter: 1,
+    dark_matter: new Decimal(1),
     dark_matter_boost: 1,
     growth_interval: 60,
     growth_factor: 1,
@@ -238,11 +239,31 @@ let game = {
     autorb_push: 60,
     autoqu_toggle: false,
     autoqu_mode: 0,
-    autoqu_goal: [1, 60],
+    autoqu_goal: [1, 60, 2],
 
     //v2.3.103 variables
     omega_base: 10,
+
+    //v2.3.200 variables
+    omega_level: 0,
+    highest_omega_level: 0,
+    omega_points: 0,
+    om_bought: new Array(8).fill(false),
+    om_boost: [1, 1, 0],
+    om_assigned: [0, 0, 0],
+
+    omega_challenge: false,
+    om_completions: 0,
+
+    autocl_toggle: false,
+    autogr_toggle: false,
+    autops_toggle: false,
+    prev_photons: 0,
+
+    perks_hide: false,
 }
+
+game.pp_bought[8] = true
 
 //initialize maps
 const pp_map = new Map()
@@ -443,7 +464,7 @@ function format_num(num) {
                     lead_str2 = lead2.toFixed(1)
                 }
 
-                output = lead_str2 + one_str2 + ten_str2
+                output = lead_str2 + " " + one_str2 + ten_str2
                 break
             case 5:
                 let exponent3 = Math.log10(num)
@@ -490,7 +511,7 @@ function format_num(num) {
                     lead_str3 = lead3.toFixed(1)
                 }
 
-                output = lead_str3
+                output = lead_str3 + " "
                 order3 -= 1
                 if (order3 === 0) {
                     output += "A"
@@ -573,9 +594,6 @@ function format_num(num) {
         }
     }
     if (game.notation === 10) {
-        output = format_omega(Math.floor(num))
-    }
-    if (game.notation === 11) {
         output = ""
 
         const fraction_array = [
@@ -628,46 +646,61 @@ function format_num(num) {
             "DCCC",
             "CM",
         ]
-        const thousand_array = ["", "M", "MM", "MMM"]
+        const thousand_array = [
+            "",
+            "M",
+            "MM",
+            "MMM",
+            'M<span style="text-decoration:overline">V</span>',
+            '<span style="text-decoration:overline">V</span>',
+            '<span style="text-decoration:overline">V</span>M',
+            '<span style="text-decoration:overline">V</span>MM',
+            '<span style="text-decoration:overline">V</span>MMM',
+            'M<span style="text-decoration:overline">X</span>',
+        ]
+        const ten_thousand_array = [
+            "",
+            '<span style="text-decoration:overline">X</span>',
+            '<span style="text-decoration:overline">XX</span>',
+            '<span style="text-decoration:overline">XXX</span>',
+            '<span style="text-decoration:overline">XL</span>',
+            '<span style="text-decoration:overline">L</span>',
+            '<span style="text-decoration:overline">LX</span>',
+            '<span style="text-decoration:overline">LXX</span>',
+            '<span style="text-decoration:overline">LXXX</span>',
+            '<span style="text-decoration:overline">XC</span>',
+        ]
+        const hundred_thousand_array = [
+            "",
+            '<span style="text-decoration:overline">C</span>',
+            '<span style="text-decoration:overline">CC</span>',
+            '<span style="text-decoration:overline">CCC</span>',
+            '<span style="text-decoration:overline">CD</span>',
+            '<span style="text-decoration:overline">D</span>',
+            '<span style="text-decoration:overline">DC</span>',
+            '<span style="text-decoration:overline">DCC</span>',
+            '<span style="text-decoration:overline">DCCC</span>',
+            '<span style="text-decoration:overline">CM</span>',
+        ]
+        const million_array = [
+            "",
+            '<span style="text-decoration:overline">M</span>',
+            '<span style="text-decoration:overline">MM</span>',
+            '<span style="text-decoration:overline">MMM</span>',
+        ]
 
-        if (num >= 4000000) {
-            output += "["
-
-            if (num / 1000000 >= 100) {
-                output += hundred_array[Math.floor(num / 100000000) % 10]
-            }
-            if (num / 1000000 >= 10) {
-                output += ten_array[Math.floor(num / 10000000) % 10]
-            }
-            output += one_array[Math.floor(num / 1000000) % 10]
-
-            output += "] "
+        if (num >= 1000000) {
+            output += million_array[Math.floor(num / 1000000) % 10]
         }
-
+        if (num >= 100000) {
+            output += hundred_thousand_array[Math.floor(num / 100000) % 10]
+        }
+        if (num >= 10000) {
+            output += ten_thousand_array[Math.floor(num / 10000) % 10]
+        }
         if (num >= 1000) {
-            if (
-                num > 4000 &&
-                !(Math.floor(num / 1000) % 1000 === 0 && num > 1000000)
-            ) {
-                output += "("
-
-                if (num / 1000 >= 1000 && num < 4000000) {
-                    output += thousand_array[Math.floor(num / 1000000) % 10]
-                }
-                if (num / 1000 >= 100) {
-                    output += hundred_array[Math.floor(num / 100000) % 10]
-                }
-                if (num / 1000 >= 10) {
-                    output += ten_array[Math.floor(num / 10000) % 10]
-                }
-                output += one_array[Math.floor(num / 1000) % 10]
-
-                output += ") "
-            } else {
-                output += thousand_array[Math.floor(num / 1000) % 10]
-            }
+            output += thousand_array[Math.floor(num / 1000) % 10]
         }
-
         if (num >= 100) {
             output += hundred_array[Math.floor(num / 100) % 10]
         }
@@ -676,7 +709,7 @@ function format_num(num) {
         }
         output += one_array[num % 10]
 
-        if (num >= cutoff) {
+        if (num >= 4000000) {
             output = ""
 
             let exponent = Math.floor(Math.log10(num))
@@ -686,19 +719,12 @@ function format_num(num) {
             output += fraction_array[Math.floor(mantissa * 12) % 12]
 
             output += "↑"
-
-            if (exponent >= 100) {
-                output += hundred_array[Math.floor(exponent / 100) % 10]
-            }
-            if (exponent >= 10) {
-                output += ten_array[Math.floor(exponent / 10) % 10]
-            }
-            output += one_array[exponent % 10]
+            output += format_num(exponent)
         }
 
         if (output === "") output = "0"
     }
-    if (game.notation === 12) {
+    if (game.notation === 11) {
         const char_array = [
             "0",
             "1",
@@ -812,11 +838,9 @@ function format_num(num) {
     return output
 }
 
-//special omega formatting
-function format_omega(num) {
-    let output = ""
-    let terms = 0
-
+//post-infinity number formatting
+function format_infinity(num) {
+    let negative = false
     let cutoff = 1000000
     switch (game.switchpoint) {
         case 0:
@@ -826,162 +850,818 @@ function format_omega(num) {
             cutoff = 1000000000
             break
     }
-
-    let base = Math.round(game.omega_base)
-    if (base < 2) base = 2
-
-    let base_exponent = Math.floor(
-        parseFloat(parseFloat(Math.log(num) / Math.log(base)).toPrecision(12))
-    )
-    let exponent = base_exponent
-
-    if (base === 2) {
-        while (terms <= 3 && exponent >= -5) {
-            let num2 = Math.floor(num / base ** exponent) % base
-            if (num2 !== 0) {
-                if (terms < 3) {
-                    let output2 = num2.toString()
-                    if (exponent === 0) {
-                        output += output2
-                        if (num % 1 !== 0) output += "+"
-                    } else {
-                        if (exponent >= 1) {
-                            if (Math.floor(exponent / 8) === 1) {
-                                output += "ε<sub>1</sub>"
-                            } else if (Math.floor(exponent / 8) > 1) {
-                                output +=
-                                    "ε<sub>1</sub><sup>" +
-                                    format_omega(Math.floor(exponent / 8)) +
-                                    "</sup>"
-                            }
-                            if (Math.floor(exponent / 2) % 4 === 1) {
-                                output += "ε<sub>0</sub>"
-                            } else if (Math.floor(exponent / 2) % 4 > 1) {
-                                output +=
-                                    "ε<sub>0</sub><sup>" +
-                                    format_omega(Math.floor(exponent / 2) % 4) +
-                                    "</sup>"
-                            }
-                            if (exponent % 2 === 1) {
-                                output += "ω"
-                            }
-                        } else if (exponent <= -1) {
-                            if (Math.floor(-exponent / 2) === 1) {
-                                output += "ε<sub>0</sub><sup>-1</sup>"
-                            } else if (Math.floor(-exponent / 2) > 1) {
-                                output +=
-                                    "ε<sub>0</sub><sup>-" +
-                                    format_omega(Math.floor(-exponent / 2)) +
-                                    "</sup>"
-                            }
-                            if (-exponent % 2 === 1) {
-                                output += "ω<sup>-1</sup>"
-                            }
-                        }
-                        if (num2 !== 1) output += output2
-                        if (num % base ** exponent !== 0 && exponent >= -4)
-                            output += "+"
-                    }
-                } else {
-                    output += "..."
+    if (num.cmp(0) === -1) {
+        negative = true
+        num = num.mul(-1)
+    }
+    let output = ""
+    if (num.cmp(1.7976931348622053 * 10 ** 308) === -1) {
+        let output = num.toNumber().toString()
+        if (num >= 1000) {
+            let digits = output.length
+            if (num < 10 ** 21) {
+                for (let i = digits - 3; i > 0; i -= 3) {
+                    output = output.substr(0, i) + "," + output.substr(i)
                 }
-                terms++
             }
-            exponent--
         }
-    } else if (base === 3) {
-        while (terms <= 3 && exponent >= -5) {
-            let num2 = Math.floor(num / base ** exponent) % base
-            if (num2 !== 0) {
-                if (terms < 3) {
-                    let output2 = num2.toString()
-                    if (exponent === 0) {
-                        output += output2
-                        if (num % 1 !== 0) output += "+"
-                    } else {
-                        if (exponent >= 1) {
-                            if (Math.floor(exponent / 27) === 1) {
-                                output += "ε<sub>0</sub>"
-                            } else if (Math.floor(exponent / 27) > 1) {
-                                output +=
-                                    "ε<sub>0</sub><sup>" +
-                                    format_omega(Math.floor(exponent / 27)) +
-                                    "</sup>"
-                            }
-                            if (exponent % 27 === 1) {
-                                output += "ω"
-                            } else if (exponent % 27 > 1) {
-                                output +=
-                                    "ω<sup>" +
-                                    format_omega(exponent % 27) +
-                                    "</sup>"
-                            }
-                        } else if (exponent <= -1 && exponent >= -3) {
-                            output +=
-                                "ω<sup>-" + format_omega(-exponent) + "</sup>"
-                        } else if (exponent <= -4) {
-                            output +=
-                                "ω<sup>-(" + format_omega(-exponent) + ")</sup>"
-                        }
-                        if (num2 !== 1) output += output2
-                        if (num % base ** exponent !== 0 && exponent >= -4)
-                            output += "+"
-                    }
+    } else {
+        let exponent = Math.floor(num.exponent)
+        let mantissa = num.mantissa
+        output = mantissa.toFixed(16) + "e+" + format_num(exponent)
+    }
+    if (num.cmp(cutoff) === 1 || num.cmp(cutoff) === 0) {
+        switch (game.notation) {
+            case 1:
+                const single_array = [
+                    "",
+                    "m",
+                    "b",
+                    "tr",
+                    "quadr",
+                    "quint",
+                    "sext",
+                    "sept",
+                    "oct",
+                    "non",
+                ]
+                const one_array = [
+                    "",
+                    "un",
+                    "duo",
+                    "tre",
+                    "quattuor",
+                    "quin",
+                    "se",
+                    "septe",
+                    "octo",
+                    "nove",
+                ]
+                const ten_array = [
+                    "",
+                    "dec",
+                    "vigint",
+                    "trigint",
+                    "quadragint",
+                    "quinquagint",
+                    "sexagint",
+                    "septuagint",
+                    "octagint",
+                    "nonagint",
+                ]
+                const hundred_array = [
+                    "",
+                    "cent",
+                    "ducent",
+                    "trecent",
+                    "quadringent",
+                    "quingent",
+                    "sescent",
+                    "septingent",
+                    "octingent",
+                    "nongent",
+                ]
+
+                let order = Math.floor(num.exponent / 3) - 1
+                let one_str = ""
+                let one_mod = ""
+                let ten_str = ""
+                let hundred_str = ""
+                if (order < 10) {
+                    one_str = single_array[order]
                 } else {
-                    output += "..."
+                    one_str = one_array[order % 10]
+                    ten_str = ten_array[Math.floor(order / 10) % 10]
+                    hundred_str = hundred_array[Math.floor(order / 100) % 10]
+
+                    const r_order = Math.floor(order / 10)
+                    if (
+                        (order % 10 === 7 || order % 10 === 9) &&
+                        r_order % 10 !== 9 &&
+                        r_order !== 90
+                    )
+                        if (
+                            r_order % 10 === 2 ||
+                            r_order % 10 === 8 ||
+                            r_order === 80
+                        )
+                            one_mod = "m"
+                        else one_mod = "n"
+                    if (
+                        (order % 10 === 3 || order % 10 === 6) &&
+                        ((r_order >= 2 && r_order <= 5) ||
+                            r_order % 10 === 8 ||
+                            r_order === 0 ||
+                            r_order === 10 ||
+                            r_order === 30 ||
+                            r_order === 40 ||
+                            r_order === 50 ||
+                            r_order === 80)
+                    )
+                        one_mod = "s"
+                    if (
+                        order % 10 === 6 &&
+                        (r_order % 10 === 8 ||
+                            r_order === 0 ||
+                            r_order === 10 ||
+                            r_order === 80)
+                    )
+                        one_mod = "x"
+                    if (r_order === 0) one_mod += "t"
+
+                    if (
+                        Math.floor(order / 100) % 10 !== 0 &&
+                        Math.floor(order / 10) % 10 >= 1
+                    ) {
+                        if (Math.floor(order / 10) % 10 <= 2) {
+                            ten_str += "i"
+                        } else {
+                            ten_str += "a"
+                        }
+                    }
                 }
-                terms++
-            }
-            exponent--
-        }
-    } else if (base >= 4) {
-        while (terms <= 3 && exponent >= -5) {
-            let num2 = Math.floor(num / base ** exponent) % base
-            if (num2 !== 0) {
-                if (terms < 3) {
-                    let output2 = num2.toString()
-                    if (num2 >= 1000) {
-                        let digits = output2.length
-                        for (let i = digits - 3; i > 0; i -= 3) {
-                            output2 =
-                                output2.substr(0, i) + "," + output2.substr(i)
+                let unit_str = one_str + one_mod + ten_str + hundred_str
+                let thousand_str = ""
+                let million_str = ""
+
+                if (order >= 1000) {
+                    let orderk = Math.floor(order / 1000) % 1000
+                    one_str = ""
+                    one_mod = ""
+                    ten_str = ""
+                    hundred_str = ""
+                    if (orderk > 1) {
+                        one_str = one_array[orderk % 10]
+                        ten_str = ten_array[Math.floor(orderk / 10) % 10]
+                        hundred_str =
+                            hundred_array[Math.floor(orderk / 100) % 10]
+
+                        const r_orderk = Math.floor(orderk / 10)
+                        if (
+                            (orderk % 10 === 7 || orderk % 10 === 9) &&
+                            r_orderk % 10 !== 9 &&
+                            r_orderk !== 90
+                        )
+                            if (
+                                r_orderk % 10 === 2 ||
+                                r_orderk % 10 === 8 ||
+                                r_orderk === 80
+                            )
+                                one_mod = "m"
+                            else one_mod = "n"
+                        if (
+                            (orderk % 10 === 3 || orderk % 10 === 6) &&
+                            ((r_orderk >= 2 && r_orderk <= 5) ||
+                                r_orderk % 10 === 8 ||
+                                r_orderk === 10 ||
+                                r_orderk === 30 ||
+                                r_orderk === 40 ||
+                                r_orderk === 50 ||
+                                r_orderk === 80)
+                        )
+                            one_mod = "s"
+                        if (
+                            orderk % 10 === 6 &&
+                            (r_orderk % 10 === 8 ||
+                                r_orderk === 10 ||
+                                r_orderk === 80)
+                        )
+                            one_mod = "x"
+
+                        if (
+                            Math.floor(orderk / 100) % 10 !== 0 &&
+                            Math.floor(orderk / 10) % 10 >= 1
+                        ) {
+                            if (Math.floor(orderk / 10) % 10 <= 2) {
+                                ten_str += "i"
+                            } else {
+                                ten_str += "a"
+                            }
                         }
                     }
-                    if (num2 >= cutoff) {
-                        let exponent2 = Math.floor(Math.log10(num2))
-                        let mantissa = num2 / 10 ** exponent2
-                        output2 = mantissa.toFixed(3) + "e" + exponent2
+
+                    if (orderk !== 0) {
+                        thousand_str =
+                            one_str + one_mod + ten_str + hundred_str + "milli"
+                        if ((unit_str = "")) thousand_str += "n"
                     }
-                    if (exponent === 0) {
-                        output += output2
-                        if (num % 1 !== 0) output += "+"
-                    } else {
-                        if (exponent === 1) {
-                            output += "ω"
-                        } else if (exponent > 1) {
-                            output +=
-                                "ω<sup>" + format_omega(exponent) + "</sup>"
-                        } else if (exponent <= -1 && exponent >= -base) {
-                            output +=
-                                "ω<sup>-" + format_omega(-exponent) + "</sup>"
-                        } else if (exponent <= -base - 1) {
-                            output +=
-                                "ω<sup>-(" + format_omega(-exponent) + ")</sup>"
+                }
+
+                if (order >= 1000000) {
+                    let orderm = Math.floor(order / 1000000)
+                    one_str = ""
+                    one_mod = ""
+                    ten_str = ""
+                    hundred_str = ""
+                    if (orderm > 1) {
+                        one_str = one_array[orderm % 10]
+                        ten_str = ten_array[Math.floor(orderm / 10) % 10]
+                        hundred_str =
+                            hundred_array[Math.floor(orderm / 100) % 10]
+
+                        const r_orderm = Math.floor(orderm / 10)
+                        if (
+                            (orderm % 10 === 7 || orderm % 10 === 9) &&
+                            r_orderm % 10 !== 9 &&
+                            r_orderm !== 90
+                        )
+                            if (
+                                r_orderm % 10 === 2 ||
+                                r_orderm % 10 === 8 ||
+                                r_orderm === 80
+                            )
+                                one_mod = "m"
+                            else one_mod = "n"
+                        if (
+                            (orderm % 10 === 3 || orderm % 10 === 6) &&
+                            ((r_orderm >= 2 && r_orderk <= 5) ||
+                                r_orderm % 10 === 8 ||
+                                r_orderm === 10 ||
+                                r_orderm === 30 ||
+                                r_orderm === 40 ||
+                                r_orderm === 50 ||
+                                r_orderm === 80)
+                        )
+                            one_mod = "s"
+                        if (
+                            orderm % 10 === 6 &&
+                            (r_orderm % 10 === 8 ||
+                                r_orderm === 10 ||
+                                r_orderm === 80)
+                        )
+                            one_mod = "x"
+
+                        if (
+                            Math.floor(orderm / 100) % 10 !== 0 &&
+                            Math.floor(orderm / 10) % 10 >= 1
+                        ) {
+                            if (Math.floor(orderm / 10) % 10 <= 2) {
+                                ten_str += "i"
+                            } else {
+                                ten_str += "a"
+                            }
                         }
-                        if (num2 !== 1) output += output2
-                        if (num % base ** exponent !== 0 && exponent >= -4)
-                            output += "+"
                     }
+
+                    if (orderm !== 0) {
+                        million_str =
+                            one_str + one_mod + ten_str + hundred_str + "micri"
+                        if ((unit_str = "")) million_str += "n"
+                    }
+                }
+
+                let lead = num
+                    .div(new Decimal(10).pow(3 * order + 3))
+                    .toNumber()
+                let lead_str = ""
+                if (lead < 10) {
+                    lead_str = lead.toFixed(3)
+                } else if (lead < 100) {
+                    lead_str = lead.toFixed(2)
                 } else {
-                    output += "..."
+                    lead_str = lead.toFixed(1)
                 }
-                terms++
-            }
-            exponent--
+
+                output =
+                    lead_str +
+                    " " +
+                    million_str +
+                    thousand_str +
+                    unit_str +
+                    "illion"
+                break
+            case 2:
+                let exponent = Math.floor(num.exponent)
+                let mantissa = num.mantissa
+                output = mantissa.toFixed(3) + "e" + format_num(exponent)
+                break
+            case 3:
+                let exponent2 = Math.floor(num.exponent / 3) * 3
+                let mantissa2 = num
+                    .div(new Decimal(10).pow(exponent2))
+                    .toNumber()
+                if (mantissa2 < 10) {
+                    output = mantissa2.toFixed(3) + "e" + format_num(exponent2)
+                } else if (mantissa2 < 100) {
+                    output = mantissa2.toFixed(2) + "e" + format_num(exponent2)
+                } else {
+                    output = mantissa2.toFixed(1) + "e" + format_num(exponent2)
+                }
+                break
+            case 4:
+                const single_array_cond = [
+                    "",
+                    "M",
+                    "B",
+                    "T",
+                    "Qa",
+                    "Qn",
+                    "Se",
+                    "Sp",
+                    "Oc",
+                    "No",
+                ]
+                const one_array_cond = [
+                    "",
+                    "U",
+                    "D",
+                    "T",
+                    "Qa",
+                    "Qn",
+                    "Se",
+                    "Sp",
+                    "O",
+                    "N",
+                ]
+                const ten_array_cond = [
+                    "",
+                    "Dc",
+                    "Vg",
+                    "Tg",
+                    "Qg",
+                    "Qi",
+                    "Sx",
+                    "Sg",
+                    "Og",
+                    "Ng",
+                ]
+                const hundred_array_cond = [
+                    "",
+                    "Ce",
+                    "Du",
+                    "Tc",
+                    "Qd",
+                    "Qe",
+                    "Sc",
+                    "St",
+                    "Oe",
+                    "Ne",
+                ]
+
+                let order2 = Math.floor(num.exponent / 3) - 1
+                let one_str2 = ""
+                let ten_str2 = ""
+                let hundred_str2 = ""
+                if (order2 < 10) {
+                    one_str2 = single_array_cond[order2]
+                } else {
+                    one_str2 = one_array_cond[order2 % 10]
+                    ten_str2 = ten_array_cond[Math.floor(order2 / 10) % 10]
+                    hundred_str2 =
+                        hundred_array_cond[Math.floor(order2 / 100) % 10]
+                }
+                let unit_str2 = one_str2 + ten_str2 + hundred_str2
+                let thousand_str2 = ""
+                let million_str2 = ""
+
+                if (order2 >= 1000) {
+                    let order2k = Math.floor(order2 / 1000) % 1000
+                    one_str2 = ""
+                    ten_str2 = ""
+                    hundred_str2 = ""
+
+                    if (order2k > 1) {
+                        one_str2 = one_array_cond[order2k % 10]
+                        ten_str2 = ten_array_cond[Math.floor(order2k / 10) % 10]
+                        hundred_str2 =
+                            hundred_array_cond[Math.floor(order2k / 100) % 10]
+                    }
+                    if (order2k !== 0) {
+                        thousand_str2 =
+                            one_str2 + ten_str2 + hundred_str2 + "MI"
+                        if (unit_str2 !== "") thousand_str2 += "-"
+                    }
+                }
+
+                if (order2 >= 1000000) {
+                    let order2m = Math.floor(order2 / 1000000)
+                    one_str2 = ""
+                    ten_str2 = ""
+                    hundred_str2 = ""
+
+                    if (order2m > 1) {
+                        one_str2 = one_array_cond[order2m % 10]
+                        ten_str2 = ten_array_cond[Math.floor(order2m / 10) % 10]
+                        hundred_str2 =
+                            hundred_array_cond[Math.floor(order2m / 100) % 10]
+                    }
+                    million_str2 = one_str2 + ten_str2 + hundred_str2 + "MC"
+                    if (unit_str2 !== "") million_str2 += "-"
+                }
+
+                let lead2 = num
+                    .div(new Decimal(10).pow(3 * order2 + 3))
+                    .toNumber()
+                let lead_str2 = ""
+                if (lead2 < 10) {
+                    lead_str2 = lead2.toFixed(3)
+                } else if (lead2 < 100) {
+                    lead_str2 = lead2.toFixed(2)
+                } else {
+                    lead_str2 = lead2.toFixed(1)
+                }
+
+                output =
+                    lead_str2 + " " + million_str2 + thousand_str2 + unit_str2
+                break
+            case 5:
+                let exponent3 = num.log10()
+                output = "e" + exponent3.toFixed(3)
+                break
+            case 6:
+                const alphabet = [
+                    "A",
+                    "B",
+                    "C",
+                    "D",
+                    "E",
+                    "F",
+                    "G",
+                    "H",
+                    "I",
+                    "J",
+                    "K",
+                    "L",
+                    "M",
+                    "N",
+                    "O",
+                    "P",
+                    "Q",
+                    "R",
+                    "S",
+                    "T",
+                    "U",
+                    "V",
+                    "W",
+                    "X",
+                    "Y",
+                    "Z",
+                    "A",
+                ]
+                let order3 = Math.floor(num.exponent / 3) - 1
+                let lead3 = num
+                    .div(new Decimal(10).pow(3 * order3 + 3))
+                    .toNumber()
+                let lead_str3 = ""
+                if (lead3 < 10) {
+                    lead_str3 = lead3.toFixed(3)
+                } else if (lead3 < 100) {
+                    lead_str3 = lead3.toFixed(2)
+                } else {
+                    lead_str3 = lead3.toFixed(1)
+                }
+
+                output = lead_str3 + " "
+                order3 -= 1
+                if (order3 === 0) {
+                    output += "A"
+                } else if (order3 > 0) {
+                    let index = 0
+                    for (
+                        let i = Math.floor(Math.log(order3) / Math.log(26));
+                        i >= 0;
+                        i--
+                    ) {
+                        index = (Math.floor(order3 / 26 ** i) - 1) % 26
+                        if (i === 0) index += 1
+                        output += alphabet[index]
+                    }
+                }
+                break
+            case 7:
+                const cancer_alphabet = [
+                    "😠",
+                    "🎂",
+                    "🎄",
+                    "💀",
+                    "🍆",
+                    "🐱",
+                    "🌈",
+                    "💯",
+                    "🍦",
+                    "🎃",
+                    "💋",
+                    "😂",
+                    "🌙",
+                    "⛔",
+                    "🐙",
+                    "💩",
+                    "❓",
+                    "☢",
+                    "🙈",
+                    "👍",
+                    "☂",
+                    "✌",
+                    "⚠",
+                    "❌",
+                    "😋",
+                    "⚡",
+                    "😠",
+                ]
+                let order4 = Math.floor(num.exponent / 3) - 1
+                let lead4 = num
+                    .div(new Decimal(10).pow(3 * order4 + 3))
+                    .toNumber()
+                let lead_str4 = ""
+                if (lead4 < 10) {
+                    lead_str4 = lead4.toFixed(3)
+                } else if (lead4 < 100) {
+                    lead_str4 = lead4.toFixed(2)
+                } else {
+                    lead_str4 = lead4.toFixed(1)
+                }
+
+                output = lead_str4
+                order4 -= 1
+                if (order4 === 0) {
+                    output += "😠"
+                } else if (order4 > 0) {
+                    let index2 = 0
+                    for (
+                        let i = Math.floor(Math.log(order4) / Math.log(26));
+                        i >= 0;
+                        i--
+                    ) {
+                        index2 = (Math.floor(order4 / 26 ** i) - 1) % 26
+                        if (i === 0) index2 += 1
+                        output += cancer_alphabet[index2]
+                    }
+                }
+                break
+            case 9:
+                let exponent4 = num.log(1.7976931348622053 * 10 ** 308)
+                output = exponent4.toFixed(3) + "∞"
+                break
         }
     }
+    if (game.notation === 10) {
+        output = ""
 
-    if (output === "") output = "0"
+        const fraction_array = [
+            "",
+            "·",
+            ":",
+            "∴",
+            "∷",
+            "⁙",
+            "S",
+            "S·",
+            "S:",
+            "S∴",
+            "S∷",
+            "S⁙",
+        ]
+        const one_array = [
+            "",
+            "I",
+            "II",
+            "III",
+            "IV",
+            "V",
+            "VI",
+            "VII",
+            "VIII",
+            "IX",
+        ]
+        const ten_array = [
+            "",
+            "X",
+            "XX",
+            "XXX",
+            "XL",
+            "L",
+            "LX",
+            "LXX",
+            "LXXX",
+            "XC",
+        ]
+        const hundred_array = [
+            "",
+            "C",
+            "CC",
+            "CCC",
+            "CD",
+            "D",
+            "DC",
+            "DCC",
+            "DCCC",
+            "CM",
+        ]
+        const thousand_array = [
+            "",
+            "M",
+            "MM",
+            "MMM",
+            'M<span style="text-decoration:overline">V</span>',
+            '<span style="text-decoration:overline">V</span>',
+            '<span style="text-decoration:overline">V</span>M',
+            '<span style="text-decoration:overline">V</span>MM',
+            '<span style="text-decoration:overline">V</span>MMM',
+            'M<span style="text-decoration:overline">X</span>',
+        ]
+        const ten_thousand_array = [
+            "",
+            '<span style="text-decoration:overline">X</span>',
+            '<span style="text-decoration:overline">XX</span>',
+            '<span style="text-decoration:overline">XXX</span>',
+            '<span style="text-decoration:overline">XL</span>',
+            '<span style="text-decoration:overline">L</span>',
+            '<span style="text-decoration:overline">LX</span>',
+            '<span style="text-decoration:overline">LXX</span>',
+            '<span style="text-decoration:overline">LXXX</span>',
+            '<span style="text-decoration:overline">XC</span>',
+        ]
+        const hundred_thousand_array = [
+            "",
+            '<span style="text-decoration:overline">C</span>',
+            '<span style="text-decoration:overline">CC</span>',
+            '<span style="text-decoration:overline">CCC</span>',
+            '<span style="text-decoration:overline">CD</span>',
+            '<span style="text-decoration:overline">D</span>',
+            '<span style="text-decoration:overline">DC</span>',
+            '<span style="text-decoration:overline">DCC</span>',
+            '<span style="text-decoration:overline">DCCC</span>',
+            '<span style="text-decoration:overline">CM</span>',
+        ]
+        const million_array = [
+            "",
+            '<span style="text-decoration:overline">M</span>',
+            '<span style="text-decoration:overline">MM</span>',
+            '<span style="text-decoration:overline">MMM</span>',
+        ]
+
+        if (num.cmp(4000000) === 1 || num.cmp(4000000) === 0) {
+            output = ""
+
+            let exponent = num.exponent
+            let mantissa = num.mantissa
+
+            output += one_array[Math.floor(mantissa)]
+            output += fraction_array[Math.floor(mantissa * 12) % 12]
+
+            output += "↑"
+            output += format_num(exponent)
+        } else {
+            let num2 = num.toNumber()
+
+            if (num2 >= 1000000) {
+                output += million_array[Math.floor(num2 / 1000000) % 10]
+            }
+            if (num2 >= 100000) {
+                output += hundred_thousand_array[Math.floor(num2 / 100000) % 10]
+            }
+            if (num2 >= 10000) {
+                output += ten_thousand_array[Math.floor(num2 / 10000) % 10]
+            }
+            if (num2 >= 1000) {
+                output += thousand_array[Math.floor(num2 / 1000) % 10]
+            }
+            if (num2 >= 100) {
+                output += hundred_array[Math.floor(num2 / 100) % 10]
+            }
+            if (num2 >= 10) {
+                output += ten_array[Math.floor(num2 / 10) % 10]
+            }
+            output += one_array[num2 % 10]
+        }
+
+        if (output === "") output = "0"
+    }
+    if (game.notation === 11) {
+        const char_array = [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "x",
+            "y",
+            "z",
+            "+",
+            "/",
+        ]
+        output = ""
+        switch (game.switchpoint) {
+            case 0:
+                cutoff = 64 ** 6
+                break
+            case 1:
+                cutoff = 64 ** 9
+                break
+        }
+
+        let exponent = Math.floor(num.log(64))
+
+        if (num.cmp(cutoff) === 1 || num.cmp(cutoff) === 0) {
+            output =
+                char_array[
+                    Math.floor(
+                        num.div(new Decimal(64).pow(exponent)).toNumber()
+                    )
+                ] +
+                "." +
+                char_array[
+                    Math.floor(
+                        num.div(new Decimal(64).pow(exponent - 1)).toNumber()
+                    ) % 64
+                ] +
+                char_array[
+                    Math.floor(
+                        num.div(new Decimal(64).pow(exponent - 2)).toNumber()
+                    ) % 64
+                ] +
+                char_array[
+                    Math.floor(
+                        num.div(new Decimal(64).pow(exponent - 3)).toNumber()
+                    ) % 64
+                ] +
+                "^"
+            let exponent2 = Math.floor(Math.log(exponent) / Math.log(64))
+            for (let i = exponent2; i >= 0; i--) {
+                output += char_array[Math.floor(exponent / 64 ** i) % 64]
+            }
+        } else {
+            let num2 = num.toNumber()
+            for (let i = exponent; i >= 0; i--) {
+                output += char_array[Math.floor(num2 / 64 ** i) % 64]
+            }
+        }
+
+        if (output === "") output = "0"
+    }
+    if (
+        (num.cmp(1.7976931348622053 * 10 ** 308) === 1 ||
+            num.cmp(1.7976931348622053 * 10 ** 308) === 0) &&
+        game.notation !== 9 &&
+        !game.om_bought[6]
+    ) {
+        output = "∞"
+    }
+    if (negative) {
+        output = "-" + output
+    }
+    if (
+        game.notation === 8 ||
+        (game.question &&
+            new Date().getUTCDate() === 1 &&
+            new Date().getUTCMonth() === 3)
+    ) {
+        output = "???"
+    }
     return output
 }
 
@@ -1019,8 +1699,6 @@ function format_eff(num) {
     ) {
         return "???"
     } else if (game.notation === 10) {
-        return format_omega(num)
-    } else if (game.notation === 11) {
         if (num >= 100) {
             return format_num(Math.round(num))
         } else {
@@ -1039,13 +1717,15 @@ function format_eff(num) {
                 "S⁙",
             ]
             let output = format_num(Math.floor(num))
-            if (Math.floor(num) === 0 && Math.floor(num * 12) === 0)
-                output = "0"
+            if (Math.floor(num) === 0) {
+                if (Math.floor(num * 12) === 0) output = "0"
+                else output = ""
+            }
             output += fraction_array[Math.floor(num * 12) % 12]
 
             return output
         }
-    } else if (game.notation === 12) {
+    } else if (game.notation === 11) {
         if (num >= 64 ** 2) {
             return format_num(Math.round(num))
         } else {
@@ -1147,6 +1827,15 @@ function format_eff(num) {
         } else {
             return num.toFixed(3)
         }
+    }
+}
+
+//special post-infinity decimal formatting
+function format_eff_infinity(num) {
+    if (num.cmp(1.7976931348622053 * 10 ** 308) === -1) {
+        return format_eff(num.toNumber())
+    } else {
+        return format_infinity(num)
     }
 }
 
@@ -1819,11 +2508,13 @@ class pp_upgrade_child extends pp_upgrade {
     //auto prestige [3]
     let autoprestige = new pp_upgrade_child(
         "Auto-Prestiging",
-        "Unlocks automation for Prestige",
+        "Unlocks automation for Prestige<br>Also unlocks Past Prestiges in Statistics",
         3,
         function () {
             document.getElementById("auto_config").style.display = "block"
             document.getElementById("amp_auto").style.display = "inline"
+            if (game.tab === 2)
+                document.getElementById("prestige_tabs").style.display = "flex"
         },
         autoupgrade
     )
@@ -2471,7 +3162,7 @@ class generator_perk {
     //auto-reboot [15]
     new generator_perk(
         "Auto-Reboot",
-        "Unlocks automation for Reboot<br>Also has an average watts/sec display",
+        "Unlocks automation for Reboot<br>Also unlocks Past Reboots in Statistics",
         64
     )
     //speed power [16]
@@ -2574,7 +3265,7 @@ class achievement {
     new achievement("Push it to the limit", "Reach LVL 60", 3, 0)
     new achievement("Level 100 boss", "Reach LVL 100", 4, 0)
     new achievement("What do all these levels even do?", "Reach LVL 200", 5, 0)
-    new achievement("Push it to the limit x5", "Reach LVL 300", 6, 0)
+    new achievement("The limit does not exist", "Reach LVL 300", 6, 0)
     new achievement("Addicted to EXP", "Reach LVL 500", 7, 0)
     new achievement("The pursuit of madness", "Reach LVL 1,000", 8, 0)
     new achievement("I tried so hard and got so far", "Reach LVL 2,000", 9, 0)
@@ -2607,6 +3298,19 @@ class achievement {
     new achievement("The grandmaster of level ups", "Reach LVL 150,000", 135, 0)
     new achievement("200 Grand™", "Reach LVL 200,000", 137, 0)
     new achievement("Stare into the abyss", "Reach LVL 300,000", 145, 0)
+    new achievement("Levels all the way down", "Reach LVL 500,000", 149, 0)
+    new achievement(
+        "What if the real levels were the friends we made along the way?",
+        "Reach LVL 750,000",
+        150,
+        0
+    )
+    new achievement(
+        "As it turns out, the limit DOES exist",
+        "Reach LVL 1,000,000",
+        151,
+        0
+    )
     new achievement("Square one", "Prestige 1 time", 13, 1)
     new achievement("See you in another life", "Prestige 10 times", 14, 1)
     new achievement("Nowhere to go but up", "Prestige 100 times", 15, 1)
@@ -2691,7 +3395,7 @@ class achievement {
         0
     )
     new achievement(
-        "Even Zakuro didn't expect you to make it this far",
+        "Endless growth",
         "Get " + format_num(10 ** 39) + " all time EXP",
         30,
         0
@@ -2739,7 +3443,7 @@ class achievement {
         0
     )
     new achievement(
-        "Endless growth",
+        "Generic large number achievement name #20",
         "Get " + format_num(10 ** 87) + " all time EXP",
         101,
         0
@@ -2778,6 +3482,18 @@ class achievement {
         "On the exponential scale this isn't really that big",
         "Get " + format_num(10 ** 183) + " all time EXP",
         146,
+        0
+    )
+    new achievement(
+        "Even Zakuro didn't expect you to make it this far",
+        "Get " + format_num(10 ** 228) + " all time EXP",
+        152,
+        0
+    )
+    new achievement(
+        "A hundred, at least",
+        "Get " + format_num(10 ** 303) + " all time EXP",
+        153,
         0
     )
     new achievement("Hot minute", "Play for 1 hour", 31, 0)
@@ -2974,6 +3690,12 @@ class achievement {
         3
     )
     new achievement(
+        "One down, eight to go",
+        "Complete a single challenge 20 times",
+        158,
+        4
+    )
+    new achievement(
         "I like a little challenge in my life",
         "Get 27 total challenge completions",
         91,
@@ -2990,6 +3712,12 @@ class achievement {
         "Get 108 total challenge completions",
         114,
         3
+    )
+    new achievement(
+        "Never again again",
+        "Get 180 total challenge completions",
+        159,
+        4
     )
     new achievement(
         "Congration, you done it",
@@ -3016,6 +3744,12 @@ class achievement {
         148,
         3
     )
+    new achievement(
+        "No shortage of helium for sure",
+        "Make " + format_num(10 ** 90) + " mg helium/sec",
+        157,
+        3
+    )
     new achievement("Tesseract one", "Quantize 1 time", 120, 4)
     new achievement(
         "Now you're thinking with photons!",
@@ -3038,10 +3772,22 @@ class achievement {
     )
     new achievement("Back into the blender again", "Quantize 50 times", 139, 4)
     new achievement("You should go get a PhD", "Quantize 100 times", 140, 4)
+    new achievement(
+        "Heat death of the universe",
+        "Quantize 1,000 times",
+        160,
+        4
+    )
     new achievement("All hail the Prism", "Reach Prism LVL 1", 126, 4)
     new achievement("Let its light inside you", "Reach Prism LVL 10", 127, 4)
     new achievement("Dazzling brilliance", "Reach Prism LVL 30", 125, 4)
     new achievement("Superluminous", "Reach Prism LVL 100", 141, 4)
+    new achievement(
+        "Okay that was too bright I'm blind now",
+        "Reach Prism LVL 200",
+        161,
+        4
+    )
     new achievement("With great haste", "Quantize in under 1 hour", 128, 4)
     new achievement(
         "Look at the sparks fly",
@@ -3068,10 +3814,43 @@ class achievement {
         143,
         4
     )
+    new achievement("Transfinite windup toy", "Unlock the Omega Drive", 156, 4)
     new achievement(
         "To infinity and not beyond",
         "Reach ∞ kg dark matter",
         144,
+        4
+    )
+    new achievement(
+        "Infinity doesn't seem so far anymore",
+        "Reach ∞ kg dark matter in under 1 minute",
+        154,
+        4
+    )
+    new achievement(
+        "At any point did someone say it was too much dark matter?",
+        "Reach ∞ kg dark matter",
+        155,
+        4
+    )
+    new achievement("Infinity to one, real quick", "Reach Omega LVL 1", 162, 4)
+    new achievement(
+        "Now don't collapse too much or you might break it",
+        "Reach Omega LVL 10",
+        163,
+        4
+    )
+    new achievement("Impressive", "Reach Omega LVL 30", 164, 4)
+    new achievement(
+        "The Challenge to end all Challenges",
+        "Complete the Omega Challenge for the first time",
+        165,
+        4
+    )
+    new achievement(
+        "Not a task for the faint of heart",
+        "Complete the Omega Challenge 5 times",
+        166,
         4
     )
     new achievement(
@@ -3134,6 +3913,18 @@ class achievement {
         "You could stop at five or six Prestiges, or just none",
         "Reboot without Prestiging",
         119,
+        5
+    )
+    new achievement(
+        "Like adding a needle to a haystack",
+        "Manually upgrade a Reactor core when it has already been upgraded 100,000 times",
+        167,
+        5
+    )
+    new achievement(
+        "A real power move",
+        "Quantize without upgrading the Reactor",
+        168,
         5
     )
     new achievement("You win 1 EXP", "Get every achievement", 69, 0)
@@ -3208,7 +3999,10 @@ class challenge {
 
         //challenge goal
         let challenge_goal = document.createElement("P")
-        challenge_goal.innerHTML = "Goal: " + format_num(this.goal) + " PP"
+        challenge_goal.innerHTML =
+            'Goal: <span class="challenge_pp">' +
+            format_num(this.goal) +
+            " PP</span>"
         challenge_goal.className = "challenge_goal"
 
         //challenge_completions
@@ -3388,6 +4182,7 @@ class core {
                     game.budget -= game.core_price[this.id]
                     if (game.budget < 0) game.budget = 0
                     game.core_level[this.id]++
+
                     if (
                         game.core_level[this.id] >
                         Math.floor(500000 / 2 ** this.id)
@@ -3404,6 +4199,12 @@ class core {
 
                     if (!game.achievements[106] && this.id === 7)
                         get_achievement(106)
+
+                    if (
+                        !game.achievements[167] &&
+                        game.core_level[this.id] > 100000
+                    )
+                        get_achievement(167)
                 }
             } else {
                 while (game.hydrogen >= game.core_price[this.id]) {
@@ -3665,7 +4466,7 @@ class dark_upgrade {
 //expert auto-reboot [0]
 new dark_upgrade(
     "Expert Auto-Reboot",
-    "Unlocks automation for pushing levels",
+    "Unlocks automation for not rebooting (to push levels for gaining photons)",
     5.2 * 10 ** 16,
     function () {}
 )
@@ -3712,10 +4513,140 @@ new dark_upgrade(
     function () {}
 )
 //omega drive [7]
-/*new dark_upgrade(
+new dark_upgrade(
     "Omega Drive",
     "Unlocks the Omega Drive",
     3.75 * 10 ** 51,
-    function () {}
-)*/
+    function () {
+        if (!game.achievements[156]) get_achievement(156)
+    }
+)
 //done initializing dark upgrades
+
+//omega upgrade class
+class omega_upgrade {
+    static upgrades = []
+
+    name
+    desc
+    price
+    func
+
+    //omega constructor
+    constructor(name, desc, price, func) {
+        this.name = name
+        this.desc = desc
+        this.price = price
+        this.id = omega_upgrade.upgrades.length
+        game.om_bought[this.id] = false
+        this.on_purchase = func
+
+        omega_upgrade.upgrades.push(this)
+
+        //upgrade name
+        let om_name = document.createElement("P")
+        om_name.innerHTML = this.name
+        om_name.className = "om_name"
+
+        //upgrade description
+        let om_desc = document.createElement("P")
+        om_desc.innerHTML = this.desc
+        om_desc.className = "om_desc"
+
+        //upgrade purchase button
+        let om_button = document.createElement("BUTTON")
+        om_button.innerHTML = "-" + this.price + " photons"
+        om_button.className = "qu_button unlit"
+        om_button.addEventListener("click", () => {
+            if (
+                game.photons >= this.price &&
+                game.om_bought[this.id] === false
+            ) {
+                game.photons -= this.price
+                game.om_bought[this.id] = true
+                this.on_purchase()
+                prism_update()
+                if (game.photons === 1 && game.notation !== 8)
+                    document.getElementById("photons_text").innerHTML = "photon"
+                else
+                    document.getElementById("photons_text").innerHTML =
+                        "photons"
+            }
+        })
+
+        //all text div
+        let om_text = document.createElement("DIV")
+        om_text.className = "om_text"
+        om_text.appendChild(om_name)
+        om_text.appendChild(om_desc)
+
+        //entire upgrade div
+        let om_block = document.createElement("DIV")
+        om_block.className = "om_upgrade"
+        om_block.appendChild(om_text)
+        om_block.appendChild(om_button)
+
+        //attatching upgrade to gravity well page
+        quantum_map.set(this, om_block)
+        document.getElementById("omega_page").appendChild(om_block)
+    }
+}
+
+//initializing omega upgrades
+//auto-collapse [0]
+new omega_upgrade(
+    "Auto-Collapse",
+    "Unlocks automation for collapse",
+    1.875 * 10 ** 59,
+    function () {}
+)
+//advanced auto-quantize [1]
+new omega_upgrade(
+    "Advanced Auto-Quantize",
+    "Unlocks Step mode for Quantize automation",
+    2.813 * 10 ** 67,
+    function () {}
+)
+//omega supplement [2]
+new omega_upgrade(
+    "Omega Supplement",
+    "Dark matter growth factor is boosted based on your Highest Omega LVL",
+    8.438 * 10 ** 75,
+    function () {}
+)
+//auto-growth [3]
+new omega_upgrade(
+    "Auto-Growth",
+    "Unlocks automation for Growth Factor upgrade",
+    4.219 * 10 ** 84,
+    function () {}
+)
+//auto-prism [4]
+new omega_upgrade(
+    "Auto-Prism",
+    "Unlocks automation for Prism upgrading",
+    3.164 * 10 ** 93,
+    function () {}
+)
+//transfinite liberty [5]
+new omega_upgrade(
+    "Transfinite Liberty",
+    "The penalty for collapse is weaker",
+    3.322 * 10 ** 102,
+    function () {}
+)
+//the great beyond [6]
+new omega_upgrade(
+    "The Great Beyond",
+    "You can gain more than ∞ kg dark matter<br>Growth Factor will be reduced the further past ∞ kg you go",
+    4.651 * 10 ** 111,
+    function () {}
+)
+//omega challenge [7]
+new omega_upgrade(
+    "Omega Challenge",
+    "Unlocks the Omega Challenge",
+    8.372 * 10 ** 120,
+    function () {}
+)
+//done initializing omega upgrades
