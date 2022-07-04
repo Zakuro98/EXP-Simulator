@@ -1143,6 +1143,7 @@ function empty_reboot() {
     for (let i = 0; i < 39; i++) {
         game.pp_bought[i] = false
     }
+    game.pp_bought[8] = true
 
     if (game.perks[18]) {
         game.true_banked_prestige += Math.floor(game.prestige / 4)
