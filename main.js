@@ -1999,6 +1999,7 @@ function load(savegame) {
         for (let i = 0; i <= 38; i++) {
             game.pp_bought[i] = old_bought[i]
         }
+        game.pp_bought[8] = true
         if (game.prestige >= 1 || game.reboot >= 1 || game.quantum >= 1) {
             game.hold_notify = true
             game.halfway_notify = true
@@ -2252,6 +2253,7 @@ function load(savegame) {
         game.amp_time = new Array(5).fill(-1)
         game.watts_amount = new Array(5).fill(-1)
         game.watts_time = new Array(5).fill(-1)
+        game.pp_bought[8] = true
     } else {
         if (minor > 201) {
             alert(
@@ -2322,6 +2324,7 @@ function load(savegame) {
             game.subtab[0] = old_subtab[0]
             game.subtab[1] = old_subtab[1]
             game.subtab[2] = old_subtab[2]
+            game.pp_bought[8] = true
         }
         //v2.3.201
         game.version = "2.3.201"
