@@ -261,6 +261,12 @@ let game = {
     prev_photons: 0,
 
     perks_hide: false,
+
+    //v2.3.201
+    amp_amount: new Array(5).fill(-1),
+    amp_time: new Array(5).fill(-1),
+    watts_amount: new Array(5).fill(-1),
+    watts_time: new Array(5).fill(-1),
 }
 
 game.pp_bought[8] = true
