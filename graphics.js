@@ -1986,7 +1986,11 @@ function pp_update() {
         if (upgrade.name === "The Generator") {
             let all_pp_upgrades = true
             for (const upgrade2 of pp_upgrade.upgrades) {
-                if (upgrade2.id < 39 && !game.pp_bought[upgrade2.id])
+                if (
+                    upgrade2.id < 39 &&
+                    upgrade2.id !== 8 &&
+                    !game.pp_bought[upgrade2.id]
+                )
                     all_pp_upgrades = false
             }
             if (all_pp_upgrades) {
