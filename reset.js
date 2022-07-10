@@ -536,7 +536,11 @@ function respec() {
     if (game.level >= game.pr_min) {
         let all_pp_upgrades = true
         for (const upgrade3 of pp_upgrade.upgrades) {
-            if (upgrade3.id < 39 && !game.pp_bought[upgrade3.id])
+            if (
+                upgrade3.id < 39 &&
+                upgrade3.id !== 8 &&
+                !game.pp_bought[upgrade3.id]
+            )
                 all_pp_upgrades = false
         }
         if (!game.achievements[75] && all_pp_upgrades) get_achievement(75)
@@ -584,7 +588,11 @@ function reboot() {
     let all_pp_upgrades = true
     let confirmed = false
     for (const upgrade2 of pp_upgrade.upgrades) {
-        if (upgrade2.id < 39 && !game.pp_bought[upgrade2.id])
+        if (
+            upgrade2.id < 39 &&
+            upgrade2.id !== 8 &&
+            !game.pp_bought[upgrade2.id]
+        )
             all_pp_upgrades = false
     }
 
