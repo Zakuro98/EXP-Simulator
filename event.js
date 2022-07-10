@@ -836,7 +836,11 @@ function enter_challenge(id) {
     if (game.challenge === 0) {
         let all_pp_upgrades = true
         for (const upgrade4 of pp_upgrade.upgrades) {
-            if (upgrade4.id < 39 && !game.pp_bought[upgrade4.id])
+            if (
+                upgrade4.id < 39 &&
+                upgrade4.id !== 8 &&
+                !game.pp_bought[upgrade4.id]
+            )
                 all_pp_upgrades = false
         }
 
