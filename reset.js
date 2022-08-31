@@ -433,10 +433,6 @@ function prestige() {
                 game.exp_fact = 1
             }
 
-            if (game.pp_bought[27] && game.challenge !== 7) {
-                game.prestige_power = 1 + (game.prestige / 1000) ** (1 / 2)
-            }
-
             if (game.perks[6] && game.challenge === 0) {
                 game.boost_level = Math.round(2 * 0.75)
                 game.auto_level = Math.round(5 * 0.75)
