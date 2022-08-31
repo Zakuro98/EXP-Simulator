@@ -460,7 +460,9 @@ function reset_button_update() {
         else
             document.getElementById("watts2").innerHTML =
                 format_num(game.watts) + " watts"
-        document.getElementById("hydrogen3").style.display = "block"
+        if (game.perks[22] || game.quantum >= 1)
+            document.getElementById("hydrogen3").style.display = "block"
+        else document.getElementById("hydrogen3").style.display = "none"
         document.getElementById("hydrogen3").innerHTML =
             format_eff(game.hydrogen) + " g hydrogen"
 
@@ -1555,11 +1557,11 @@ function stats_update() {
             game.total_clicks
         )
         document.getElementById("times_prestiged_stat").innerHTML =
-            "<br>" + format_num(game.prestige + game.banked_prestige)
+            "<br>" + format_num(game.prestige)
         if (game.perks[18] && game.banked_prestige > 0)
             document.getElementById("times_prestiged_stat").innerHTML =
                 "<br>" +
-                format_num(game.prestige + game.banked_prestige) +
+                format_num(game.prestige) +
                 " (+" +
                 format_num(game.banked_prestige) +
                 ")"
@@ -1771,7 +1773,7 @@ function stats_update() {
             } else {
                 reset_str +=
                     " +" +
-                    format_num(game.amp_amount[i]) +
+                    format_num(Math.round(game.amp_amount[i])) +
                     " AMP in " +
                     format_time(game.amp_time[i] * game.tickspeed) +
                     " (+" +
@@ -1790,7 +1792,7 @@ function stats_update() {
             reset_str += "<br><br>Average AMP gain: undefined"
         }
 
-        if (game.perks[15]) {
+        if (game.perks[13]) {
             reset_str += "<br><br><br>Past Reboots:"
 
             let watts_sec = 0
@@ -2216,12 +2218,18 @@ function watts_update() {
         document.getElementById("spare_pp_req").innerHTML =
             format_num(reboot_requirement) + " spare PP"
     } else {
-        document.getElementById("spare_pp_req").innerHTML =
-            format_num(
-                Math.ceil(
-                    15000 * (get_watts(game.pp) + 1) ** (20 / 17) + 185000
-                )
-            ) + " spare PP"
+        if (get_watts(game.pp) < 527)
+            document.getElementById("spare_pp_req").innerHTML =
+                format_num(
+                    Math.ceil(20000 * (get_watts(game.pp) + 1) + 180000)
+                ) + " spare PP"
+        else
+            document.getElementById("spare_pp_req").innerHTML =
+                format_num(
+                    Math.ceil(
+                        20000 * (get_watts(game.pp) - 526) ** 1.25 + 10720000
+                    )
+                ) + " spare PP"
     }
 
     if (game.challenge !== 0) {
@@ -3738,9 +3746,9 @@ function description_update() {
         .get(generator_perk.perks[9])
         .querySelector(".perk_desc").innerHTML = generator_perk.perks[9].desc
     generator_perk.perks[13].desc =
-        "You gain more watts on Reboot the farther past " +
+        "The spare PP requirement for Reboot stops increasing, and you gain more watts on Reboot the farther past " +
         format_num(200000) +
-        " PP you go"
+        " PP you go<br>Also unlocks Past Reboots in Statistics"
     perk_map
         .get(generator_perk.perks[13])
         .querySelector(".perk_desc").innerHTML = generator_perk.perks[13].desc
@@ -4159,7 +4167,7 @@ function description_update() {
         .querySelector(".challenge_desc").innerHTML =
         challenge.challenges[1].desc
     challenge.challenges[4].desc =
-        "All EXP production reduces to zero over " + format_num(20) + " seconds"
+        "All EXP production reduces to zero over " + format_num(30) + " seconds"
     challenge_map
         .get(challenge.challenges[4])
         .querySelector(".challenge_desc").innerHTML =
@@ -4621,14 +4629,13 @@ function description_update() {
 
     if (game.perks[17]) {
         generator_perk.perks[15].desc =
-            "Unlocks automation for Reboot<br>Also unlocks Past Reboots in Statistics<br>(Does not apply to challenges)"
+            "Unlocks automation for Reboot<br>(Does not apply to challenges)"
         perk_map
             .get(generator_perk.perks[15])
             .querySelector(".perk_desc").innerHTML =
             generator_perk.perks[15].desc
     } else {
-        generator_perk.perks[15].desc =
-            "Unlocks automation for Reboot<br>Also unlocks Past Reboots in Statistics"
+        generator_perk.perks[15].desc = "Unlocks automation for Reboot"
         perk_map
             .get(generator_perk.perks[15])
             .querySelector(".perk_desc").innerHTML =
@@ -4826,6 +4833,14 @@ function regenerate_ui() {
             break
         case 11:
             document.getElementById("notation_button").innerHTML = "BASE64"
+            break
+        case 12:
+            document.getElementById("notation_button").innerHTML =
+                "MIXED SCIENTIFIC"
+            break
+        case 13:
+            document.getElementById("notation_button").innerHTML =
+                "MIXED ENGINEERING"
             break
     }
     switch (game.switchpoint) {
@@ -5044,7 +5059,11 @@ function regenerate_ui() {
         document.getElementById("overclock").style.display = "none"
     }
 
-    if (game.autods_toggle !== 2) {
+    if (
+        game.autods_toggle !== 2 &&
+        ((game.pp_bought[35] && !game.perks[9]) ||
+            (game.pp_bought[32] && game.perks[9]))
+    ) {
         document.getElementById("dis_text").style.display = "block"
         document.getElementById("dis_input").style.display = "block"
     } else {
