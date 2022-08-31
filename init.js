@@ -269,8 +269,6 @@ let game = {
     watts_time: new Array(5).fill(-1),
 }
 
-game.pp_bought[8] = true
-
 //initialize maps
 const pp_map = new Map()
 const perk_map = new Map()
@@ -826,6 +824,87 @@ function format_num(num) {
         }
 
         if (output === "") output = "0"
+    }
+    if (
+        (game.notation === 12 || game.notation === 13) &&
+        num < 10 ** 36 &&
+        num > cutoff
+    ) {
+        const single_array_cond2 = [
+            "",
+            "M",
+            "B",
+            "T",
+            "Qa",
+            "Qn",
+            "Se",
+            "Sp",
+            "Oc",
+            "No",
+        ]
+        const one_array_cond2 = [
+            "",
+            "U",
+            "D",
+            "T",
+            "Qa",
+            "Qn",
+            "Se",
+            "Sp",
+            "O",
+            "N",
+        ]
+        const ten_array_cond2 = [
+            "",
+            "Dc",
+            "Vg",
+            "Tg",
+            "Qg",
+            "Qi",
+            "Sx",
+            "Sg",
+            "Og",
+            "Ng",
+            "Ce",
+        ]
+
+        let order = Math.floor(Math.log10(num) / 3) - 1
+        let one_str = ""
+        let ten_str = ""
+        if (order < 10) {
+            one_str = single_array_cond2[order]
+        } else {
+            one_str = one_array_cond2[order % 10]
+            ten_str = ten_array_cond2[Math.floor(order / 10)]
+        }
+
+        let lead = num / 10 ** (3 * order + 3)
+        let lead_str = ""
+        if (lead < 10) {
+            lead_str = lead.toFixed(3)
+        } else if (lead < 100) {
+            lead_str = lead.toFixed(2)
+        } else {
+            lead_str = lead.toFixed(1)
+        }
+
+        output = lead_str + " " + one_str + ten_str
+    } else if (num >= cutoff) {
+        if (game.notation === 12) {
+            let exponent = Math.floor(Math.log10(num))
+            let mantissa = num / 10 ** exponent
+            output = mantissa.toFixed(3) + "e" + exponent
+        } else if (game.notation === 13) {
+            let exponent = Math.floor(Math.log10(num) / 3) * 3
+            let mantissa = num / 10 ** exponent
+            if (mantissa < 10) {
+                output = mantissa.toFixed(3) + "e" + exponent
+            } else if (mantissa < 100) {
+                output = mantissa.toFixed(2) + "e" + exponent
+            } else {
+                output = mantissa.toFixed(1) + "e" + exponent
+            }
+        }
     }
     if (num >= 1.7976931348622053 * 10 ** 308 && game.notation !== 9) {
         output = "∞"
@@ -1650,6 +1729,137 @@ function format_infinity(num) {
         if (output === "") output = "0"
     }
     if (
+        (game.notation === 12 || game.notation === 13) &&
+        num.cmp(10 ** 36) === -1 &&
+        num.cmp(cutoff) >= 0
+    ) {
+        const single_array_cond = [
+            "",
+            "M",
+            "B",
+            "T",
+            "Qa",
+            "Qn",
+            "Se",
+            "Sp",
+            "Oc",
+            "No",
+        ]
+        const one_array_cond = [
+            "",
+            "U",
+            "D",
+            "T",
+            "Qa",
+            "Qn",
+            "Se",
+            "Sp",
+            "O",
+            "N",
+        ]
+        const ten_array_cond = [
+            "",
+            "Dc",
+            "Vg",
+            "Tg",
+            "Qg",
+            "Qi",
+            "Sx",
+            "Sg",
+            "Og",
+            "Ng",
+        ]
+        const hundred_array_cond = [
+            "",
+            "Ce",
+            "Du",
+            "Tc",
+            "Qd",
+            "Qe",
+            "Sc",
+            "St",
+            "Oe",
+            "Ne",
+        ]
+
+        let order2 = Math.floor(num.exponent / 3) - 1
+        let one_str2 = ""
+        let ten_str2 = ""
+        let hundred_str2 = ""
+        if (order2 < 10) {
+            one_str2 = single_array_cond[order2]
+        } else {
+            one_str2 = one_array_cond[order2 % 10]
+            ten_str2 = ten_array_cond[Math.floor(order2 / 10) % 10]
+            hundred_str2 = hundred_array_cond[Math.floor(order2 / 100) % 10]
+        }
+        let unit_str2 = one_str2 + ten_str2 + hundred_str2
+        let thousand_str2 = ""
+        let million_str2 = ""
+
+        if (order2 >= 1000) {
+            let order2k = Math.floor(order2 / 1000) % 1000
+            one_str2 = ""
+            ten_str2 = ""
+            hundred_str2 = ""
+
+            if (order2k > 1) {
+                one_str2 = one_array_cond[order2k % 10]
+                ten_str2 = ten_array_cond[Math.floor(order2k / 10) % 10]
+                hundred_str2 =
+                    hundred_array_cond[Math.floor(order2k / 100) % 10]
+            }
+            if (order2k !== 0) {
+                thousand_str2 = one_str2 + ten_str2 + hundred_str2 + "MI"
+                if (unit_str2 !== "") thousand_str2 += "-"
+            }
+        }
+
+        if (order2 >= 1000000) {
+            let order2m = Math.floor(order2 / 1000000)
+            one_str2 = ""
+            ten_str2 = ""
+            hundred_str2 = ""
+
+            if (order2m > 1) {
+                one_str2 = one_array_cond[order2m % 10]
+                ten_str2 = ten_array_cond[Math.floor(order2m / 10) % 10]
+                hundred_str2 =
+                    hundred_array_cond[Math.floor(order2m / 100) % 10]
+            }
+            million_str2 = one_str2 + ten_str2 + hundred_str2 + "MC"
+            if (unit_str2 !== "") million_str2 += "-"
+        }
+
+        let lead2 = num.div(new Decimal(10).pow(3 * order2 + 3)).toNumber()
+        let lead_str2 = ""
+        if (lead2 < 10) {
+            lead_str2 = lead2.toFixed(3)
+        } else if (lead2 < 100) {
+            lead_str2 = lead2.toFixed(2)
+        } else {
+            lead_str2 = lead2.toFixed(1)
+        }
+
+        output = lead_str2 + " " + million_str2 + thousand_str2 + unit_str2
+    } else if (num.cmp(cutoff) >= 0) {
+        if (game.notation === 12) {
+            let exponent = Math.floor(num.exponent)
+            let mantissa = num.mantissa
+            output = mantissa.toFixed(3) + "e" + format_num(exponent)
+        } else if (game.notation === 13) {
+            let exponent = Math.floor(num.exponent / 3) * 3
+            let mantissa = num.div(new Decimal(10).pow(exponent)).toNumber()
+            if (mantissa < 10) {
+                output = mantissa.toFixed(3) + "e" + format_num(exponent)
+            } else if (mantissa < 100) {
+                output = mantissa.toFixed(2) + "e" + format_num(exponent)
+            } else {
+                output = mantissa.toFixed(1) + "e" + format_num(exponent)
+            }
+        }
+    }
+    if (
         (num.cmp(1.7976931348622053 * 10 ** 308) === 1 ||
             num.cmp(1.7976931348622053 * 10 ** 308) === 0) &&
         game.notation !== 9 &&
@@ -2331,8 +2541,10 @@ function get_pp(lvl) {
 function get_watts(pp) {
     if (pp < 200000) {
         return 0
+    } else if (pp < 10720000) {
+        return Math.floor((pp - 180000) / 20000)
     } else {
-        return Math.floor(((pp - 185000) / 15000) ** 0.85)
+        return Math.floor(((pp - 10720000) / 20000) ** 0.8) + 527
     }
 }
 
@@ -3133,49 +3345,45 @@ class generator_perk {
     new generator_perk(
         "Max Capacity",
         "Discharge is 2x stronger<br>Discharge automation is also now unlocked with the EXP Capacitor instead of High Voltage I",
-        16
+        14
     )
     //technological gift 2 [10]
     new generator_perk(
         "Technological Gift II",
         "You begin Reboots with every PP upgrade up to EXP Overclocker already purchased",
-        20
+        16
     )
     //autocapacitance [11]
     new generator_perk(
         "Auto-Capacitance",
         "Unlocks automated mode switching for Capacitor, automatically switching to the highest available mode<br>Also unlocks Smart Auto-Discharge, which automatically Discharges when best to do so",
-        24
+        18
     )
     //starter kit 6 [12]
     new generator_perk(
         "Starter Kit VI",
         "All upgrades on the Upgrades tab have twice as many free tiers",
-        28
+        20
     )
     //energize [13]
     new generator_perk(
         "Energize",
-        "You gain more watts on Reboot the farther past 200,000 PP you go",
-        36
+        "The spare PP requirement for Reboot stops increasing, and you gain more watts on Reboot the farther past 200,000 PP you go<br>Also unlocks Past Reboots in Statistics",
+        24
     )
     //smart auto-prestige [14]
     new generator_perk(
         "Smart Auto-Prestige",
         "Unlocks a customizable Auto-Prestige setting that automatically switches between Peak and PP mode",
-        48
+        32
     )
     //auto-reboot [15]
-    new generator_perk(
-        "Auto-Reboot",
-        "Unlocks automation for Reboot<br>Also unlocks Past Reboots in Statistics",
-        64
-    )
+    new generator_perk("Auto-Reboot", "Unlocks automation for Reboot", 48)
     //speed power [16]
     new generator_perk(
         "Speed Power I",
         "EXP production is boosted based on your fastest Reboot",
-        96
+        72
     )
     //challenges [17]
     new generator_perk("Challenges", "Unlocks Challenges", 144)
@@ -3237,7 +3445,7 @@ class generator_perk {
     new generator_perk(
         "PP Shift",
         "PP is immediately granted on leveling up rather than Prestiging<br>AMP Conversion now gives 100% of your pending AMP instead",
-        21233664
+        15482880
     )
 }
 //done initializing generator perks
