@@ -6,7 +6,7 @@ function notation() {
         !game.question
     )
         game.notation += 1
-    if (game.notation >= 12) game.notation = 0
+    if (game.notation >= 14) game.notation = 0
     pp_update()
     switch (game.notation) {
         case 0:
@@ -44,6 +44,14 @@ function notation() {
             break
         case 11:
             document.getElementById("notation_button").innerHTML = "BASE64"
+            break
+        case 12:
+            document.getElementById("notation_button").innerHTML =
+                "MIXED SCIENTIFIC"
+            break
+        case 13:
+            document.getElementById("notation_button").innerHTML =
+                "MIXED ENGINEERING"
             break
     }
     increment(0)
