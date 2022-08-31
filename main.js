@@ -378,7 +378,10 @@ function tick() {
                 game.smartds_oc = true
 
                 if (game.perks[14]) {
-                    if (game.smartpr_pp < oc_cycle) {
+                    if (
+                        game.smartpr_pp < oc_cycle &&
+                        game.amp < game.smartpr_amp
+                    ) {
                         game.smartds_oc = false
                     } else {
                         game.smartds_oc = true
@@ -544,7 +547,8 @@ function tick() {
                     }
                     if (
                         game.perks[14] &&
-                        game.smartpr_time >= game.smartpr_pp * game.tickspeed
+                        game.smartpr_time >= game.smartpr_pp * game.tickspeed &&
+                        game.amp < game.smartpr_amp
                     ) {
                         prestige()
                         game.smartpr_time = 0
@@ -612,13 +616,6 @@ function tick() {
                     game.smartpr_mode = 0
                     game.smartpr_time = 0
                     autopr_switch(4)
-                }
-                if (
-                    game.smartpr_time >= game.smartpr_pp * game.tickspeed &&
-                    game.amp >= game.smartpr_amp
-                ) {
-                    game.smartpr_time = 0
-                    prestige()
                 }
                 if (
                     game.smartpr_time >= game.smartpr_pp * game.tickspeed &&
@@ -985,12 +982,29 @@ function tick() {
 
     if (game.autorb_toggle && game.perks[15] && game.challenge === 0) {
         if (
-            game.autorb_pending &&
-            !game.perks[27] &&
-            game.pp + get_pp(game.level) - get_pp(game.highest_level) >=
-                Math.ceil(15000 * game.autorb_goal[0] ** (20 / 17) + 185000)
+            get_watts(
+                game.pp + get_pp(game.level) - get_pp(game.highest_level)
+            ) < 527
         ) {
-            prestige()
+            if (
+                game.autorb_pending &&
+                !game.perks[27] &&
+                game.pp + get_pp(game.level) - get_pp(game.highest_level) >=
+                    Math.ceil(20000 * game.autorb_goal[0] + 180000)
+            ) {
+                prestige()
+            }
+        } else {
+            if (
+                game.autorb_pending &&
+                !game.perks[27] &&
+                game.pp + get_pp(game.level) - get_pp(game.highest_level) >=
+                    Math.ceil(
+                        20000 * (game.autorb_goal[0] - 526) ** 1.25 + 10720000
+                    )
+            ) {
+                prestige()
+            }
         }
 
         if (
@@ -1453,6 +1467,14 @@ function tick() {
         game.depth_power = 1
     }
 
+    //prestige power
+    if (game.pp_bought[27] && game.challenge !== 7) {
+        game.prestige_power =
+            1 + ((game.prestige + game.banked_prestige) / 1000) ** (1 / 2)
+    } else {
+        game.depth_power = 1
+    }
+
     //did it for the memes
     for (let i = 0; i < 4; i++) {
         if (
@@ -1652,7 +1674,7 @@ function tick() {
             "<br><br><br>EXP Simulator v?.?.???<br>Made by Zakuro"
     } else {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v2.3.202<br>Made by Zakuro"
+            "<br><br><br>EXP Simulator v2.3.203<br>Made by Zakuro"
     }
 }
 
@@ -1892,7 +1914,6 @@ function load(savegame) {
         }
 
         game = savegame
-        game.dark_matter = new Decimal(game.dark_matter)
         //v2.1.000
         if (minor < 3) {
             game.pp_hide = false
@@ -2096,7 +2117,6 @@ function load(savegame) {
         game.watts_time = new Array(5).fill(-1)
     } else if (major < 3) {
         game = savegame
-        game.dark_matter = new Decimal(game.dark_matter)
         //v2.2.000
         if (minor < 100) {
             let old_perks = game.perks
@@ -2260,7 +2280,9 @@ function load(savegame) {
             return
         }
         game = savegame
-        game.dark_matter = new Decimal(game.dark_matter)
+        if (game.dark_matter !== undefined)
+            game.dark_matter = new Decimal(game.dark_matter)
+        else game.dark_matter = new Decimal(1)
         //v2.3.000
         if (minor < 2) {
             game.question = true
@@ -2364,7 +2386,7 @@ function wipe() {
         game.watts = 0
         game.watt_boost = 1
         game.perks = new Array(8).fill(false)
-        game.subtab = new Array(3).fill(0)
+        game.subtab = new Array(4).fill(0)
 
         game.challenge = 0
         game.completions = new Array(9).fill(0)
@@ -2469,6 +2491,11 @@ function wipe() {
         game.cap_boost = 1
         game.stored_exp = 0
         game.flux_boost = 1
+
+        game.amp_amount = new Array(5).fill(-1)
+        game.amp_time = new Array(5).fill(-1)
+        game.watts_amount = new Array(5).fill(-1)
+        game.watts_time = new Array(5).fill(-1)
 
         set_capacitance(0)
         document.getElementById("click").innerHTML =
