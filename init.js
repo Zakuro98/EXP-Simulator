@@ -249,7 +249,7 @@ let game = {
     highest_omega_level: 0,
     omega_points: 0,
     om_bought: new Array(8).fill(false),
-    om_boost: [1, 1, 0],
+    om_boost: [1, 1, 1],
     om_assigned: [0, 0, 0],
 
     omega_challenge: false,
