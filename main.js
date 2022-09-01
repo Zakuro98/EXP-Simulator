@@ -2348,6 +2348,7 @@ function load(savegame) {
         //v2.3.201
         game.version = "2.3.201"
     }
+    if (game.om_boost[2] === 0) game.om_boost[2] === 1
     regenerate_ui()
 }
 
