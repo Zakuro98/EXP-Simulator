@@ -285,6 +285,15 @@ let entering = false
 let reduction = 1
 let prism_angle = Math.PI / 10
 
+let meme = false
+
+if (new Date().getDate() === 1 && new Date().getMonth() === 3) meme = true
+
+if (meme) {
+    document.getElementById("main_css").rel = "stylesheet alternate"
+    document.getElementById("meme_css").rel = "stylesheet"
+}
+
 //initialize pp upgrade priorities
 for (let i = 0; i < 39; i++) {
     game.priority[i] = i
@@ -912,12 +921,7 @@ function format_num(num) {
     if (negative) {
         output = "-" + output
     }
-    if (
-        game.notation === 8 ||
-        (game.question &&
-            new Date().getUTCDate() === 1 &&
-            new Date().getUTCMonth() === 3)
-    ) {
+    if (game.notation === 8) {
         output = "???"
     }
     return output
@@ -1870,12 +1874,7 @@ function format_infinity(num) {
     if (negative) {
         output = "-" + output
     }
-    if (
-        game.notation === 8 ||
-        (game.question &&
-            new Date().getUTCDate() === 1 &&
-            new Date().getUTCMonth() === 3)
-    ) {
+    if (game.notation === 8) {
         output = "???"
     }
     return output
@@ -1893,12 +1892,7 @@ function format_lvl(num) {
         }
     }
 
-    if (
-        game.notation === 8 ||
-        (game.question &&
-            new Date().getUTCDate() === 1 &&
-            new Date().getUTCMonth() === 3)
-    ) {
+    if (game.notation === 8) {
         output = "???"
     }
 
@@ -1907,12 +1901,7 @@ function format_lvl(num) {
 
 //special decimal formatting
 function format_eff(num) {
-    if (
-        game.notation === 8 ||
-        (game.question &&
-            new Date().getUTCDate() === 1 &&
-            new Date().getUTCMonth() === 3)
-    ) {
+    if (game.notation === 8) {
         return "???"
     } else if (game.notation === 10) {
         if (num >= 100) {
@@ -2084,13 +2073,7 @@ function format_time(input) {
             (Math.floor(time) % 60)
     }
 
-    if (
-        game.notation === 8 ||
-        (game.question &&
-            new Date().getUTCDate() === 1 &&
-            new Date().getUTCMonth() === 3)
-    )
-        output = "???"
+    if (game.notation === 8) output = "???"
     return output
 }
 
@@ -2580,13 +2563,8 @@ function get_color(num) {
             break
     }
 
-    if (
-        game.notation === 8 ||
-        (game.question &&
-            new Date().getUTCDate() === 1 &&
-            new Date().getUTCMonth() === 3)
-    )
-        color = colors[0]
+    if (game.notation === 8) color = colors[0]
+    if (meme) color = "black"
     return color
 }
 
@@ -3253,7 +3231,9 @@ class generator_perk {
         perk_desc.className = "perk_desc"
 
         //perk completion box
-        let perk_complete = document.createElement("DIV")
+        let perk_complete = undefined
+        if (meme) perk_complete = document.createElement("BUTTON")
+        else perk_complete = document.createElement("DIV")
         perk_complete.className = "perk_complete incomplete"
 
         //perk requirement
@@ -4165,7 +4145,7 @@ class notify {
 
         let notif_text = document.createElement("P")
         notif_text.innerHTML = this.text
-        notif_text.style.color = this.color
+        if (!meme) notif_text.style.color = this.color
         notif_text.className = "notif_text"
 
         notification.appendChild(notif_text)
