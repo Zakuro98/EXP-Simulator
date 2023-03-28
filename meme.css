@@ -1,0 +1,2032 @@
+:root {
+    --button_background: white;
+    --button_color: black;
+    --font_small: Abel;
+    --font_large: "Josefin Sans";
+    --font_size: 28px;
+    --enter_color: white;
+    --enter_shadow: white;
+    --photon_color: #ff8080;
+    --photon_color2: #ff0000;
+    --photon_color3: #400000;
+    --shadow_size1: 0.1em;
+    --shadow_size2: 0.2em;
+    --shadow_size3: 0.3em;
+    --shadow_size4: 0.5em;
+    --shadow_size5: 0.7em;
+    --dark_matter_size: 2em;
+}
+
+body {
+    background-color: white;
+    color: black;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 26px;
+    font-weight: normal;
+}
+
+main {
+    margin: 16px;
+}
+
+@media (min-width: 1216px) {
+    .ui {
+        width: 1168px;
+        margin: auto;
+    }
+}
+
+.clr {
+    clear: both;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    flex: 0;
+    margin-top: 0.857em;
+}
+
+@media (min-width: 1024px) {
+    .short {
+        flex-direction: row;
+    }
+
+    .short_row {
+        margin-top: 0.857em;
+    }
+}
+
+@media (max-width: 1023px) {
+    .short {
+        flex-direction: column;
+    }
+
+    .short_row {
+        margin-top: 0.285em;
+    }
+}
+
+.tab {
+    padding: 0.15em 0.25em;
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 0em;
+    margin-left: 0.285em;
+    margin-right: 0em;
+    cursor: pointer;
+}
+
+#upgrades {
+    margin-left: 0em;
+}
+
+#prestige, #reboot, #quantum {
+    display: none;
+}
+
+#the_end {
+    display: none;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#prestige_tabs, #reboot_tabs, #quantum_tabs, #statistics_tabs {
+    display: none;
+    margin-top: 1em;
+}
+
+#config_tab, #challenges_tab, #reactor_tab, #gravity_tab, #omega_tab, #past_resets_tab {
+    display: inline;
+    margin-left: 0.285em;
+}
+
+#p_upgrades_tab, #generator_tab, #prism_tab, #general_tab {
+    display: inline;
+}
+
+.button {
+    padding: 0.3em 0.5em;
+    font-size: 0.714em;
+    font-weight: normal;
+    margin-top: -0.82em;
+    display: none;
+    cursor: pointer;
+}
+
+.mode_active {
+    cursor: default;
+}
+
+.autoup {
+    display: none;
+}
+
+.amp_area {
+    display: block;
+    margin-top: 0.3em;
+}
+
+#amp_button {
+    margin-top: 0em;
+    display: none;
+    width: 7em;
+}
+
+#amp_up {
+    margin-top: 0.35em;
+}
+
+#pp_up {
+    margin-top: 0.35em;
+}
+
+.reboot_area {
+    display: block;
+    margin-top: 0.3em;
+}
+
+#watt_button {
+    margin-top: 0em;
+    display: inline;
+}
+
+#watts_up {
+    margin-top: 0.35em;
+}
+
+#hydrogen_up {
+    margin-top: 0.35em;
+}
+
+.quantum_area {
+    display: block;
+    margin-top: 0.3em;
+}
+
+#photon_button {
+    margin-top: 0em;
+    display: inline;
+}
+
+#photons_up2 {
+    margin-top: 0.35em;
+}
+
+.lvlbar {
+    display: flex;
+    align-items: flex-end;
+}
+
+.level {
+    flex-grow: 1;
+}
+
+#lvltext {
+    font-size: 1.285em;
+    display: inline;
+}
+
+#lvlnum {
+    font-weight: 700;
+    display: inline;
+    font-size: 2.857em;
+}
+
+#lvlrequirement {
+    font-size: 1.285em;
+    display: inline;
+}
+
+#exp {
+    text-align: right;
+    flex-grow: 1;
+    margin-bottom: 0.48em;
+}
+
+.lvlbar2 {
+    display: flex;
+    align-items: flex-start;
+}
+
+#click {
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-weight: normal;
+    margin-top: 0.857em;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.resources {
+    text-align: right;
+    flex-grow: 1;
+    margin-top: 0.68em;
+}
+
+#total_exp {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#amp {
+    margin-top: 0.1em;
+    margin-bottom: 0em;
+    display: none;
+}
+
+#pp {
+    margin-top: 0.1em;
+    margin-bottom: 0em;
+    display: none;
+}
+
+#watts2 {
+    margin-top: 0.1em;
+    margin-bottom: 0em;
+    display: block;
+}
+
+#hydrogen3 {
+    margin-top: 0.1em;
+    margin-bottom: 0em;
+    display: none;
+}
+
+#photons2 {
+    margin-top: 0.1em;
+    margin-bottom: 0em;
+    display: none;
+}
+
+.back {
+    background: lightgray;
+    height: 1.428em;
+    width: 100%;
+    margin-top: 0.2em;
+}
+
+#progress {
+    display: block;
+    background: black;
+    height: 1.428em;
+    width: 0%;
+}
+
+.pp_back {
+    display: none;
+    background: lightgray;
+    height: 0.142em;
+    width: 100%;
+    margin-top: 0.285em;
+}
+
+#pp_progress {
+    display: block;
+    background: black;
+    height: 0.142em;
+    width: 0%;
+}
+
+#upgrades_page {
+    display: block;
+}
+
+@media (min-width: 900px) {
+    .upgrades {
+        display: flex;
+    }
+
+    .item {
+        flex-grow: 1;
+        width: 50%;
+        padding-right: 0.214em;
+        align-self: self-start;
+    }
+}
+
+@media (max-width: 899px) {
+    .item {
+        width: 100%;
+        padding-right: 0.214em;
+    }
+
+    .lvlbar, .lvlbar2 {
+        display: block;
+    }
+
+    .resources {
+        text-align: left;
+    }
+
+    #exp {
+        text-align: left;
+        margin-top: -0.142em;
+    }
+
+    #click {
+        width: 100%;
+    }
+}
+
+@media (max-width: 800px) {
+    body {
+        font-size: 3.5vw;
+    }
+}
+
+#overclock {
+    display: none;
+}
+
+.oc_top {
+    display: flex;
+    font-size: 0.857em;
+    align-items: flex-end;
+    margin-top: 2em;
+    margin-bottom: 0em;
+}
+
+#oc_text {
+    flex-grow: 1;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#oc_timer {
+    text-align: right;
+    flex-grow: 1;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.oc_bottom {
+    display: flex;
+    font-size: 0.857em;
+    align-items: flex-end;
+    margin-top: 0.2em;
+    margin-bottom: 0em;
+}
+
+.oc_back {
+    background: lightgray;
+    height: 0.214em;
+    width: 100%;
+    margin-top: 0.2em;
+    margin-bottom: 0em;
+}
+
+#oc_state {
+    flex-grow: 1;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#oc_activator {
+    text-align: right;
+    margin-top: 0em;
+}
+
+#oc_button, #oc_auto {
+    display: none;
+}
+
+#oc_progress {
+    display: block;
+    background: black;
+    height: 0.214em;
+    width: 100%;
+}
+
+#capacitor {
+    margin-top: 1.4em;
+    display: none;
+}
+
+.backpanel {
+    display: flex;
+    margin-top: 0.25em;
+    padding: 0.4em;
+}
+
+#capacitance {
+    display: block;
+    flex-grow: 1;
+}
+
+#discharge {
+    display: flex;
+    flex-direction: column;
+}
+
+.cap_text {
+    font-size: 0.857em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    display: inline;
+}
+
+#cap_mode {
+    margin-bottom: 0.5em;
+}
+
+#dis_text {
+    display: none;
+    margin-top: 0.4em;
+    align-self: center;
+}
+
+#dis_auto {
+    display: none;
+    margin-top: 0.4em;
+    padding: 0.1em 0em;
+}
+
+#dis_input {
+    display: none;
+    width: 11.9em;
+    margin-top: 0.4em;
+}
+
+#cap_off, #cap_25 {
+    display: inline;
+}
+
+#cap_50, #cap_75, #cap_100 {
+    display: none;
+}
+
+#cap_disc {
+    display: none;
+    font-size: 0.65em;
+    margin-left: 0.25em;
+}
+
+.blocked {
+    display: inline;
+    width: 9.1em;
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    margin-top: 0em;
+    flex-basis: 2.6em;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.ready {
+    display: inline;
+    width: 9.1em;
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    margin-top: 0em;
+    flex-basis: 2.6em;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.statistics {
+    font-size: 0.714em;
+    margin-top: 1.142em;
+    display: none;
+    flex-direction: column;
+}
+
+#past_resets_page {
+    font-size: 0.714em;
+    margin-top: 1.142em;
+    display: none;
+}
+
+.stat_item {
+    display: flex;
+}
+
+.stat_left {
+    flex-grow: 1;
+    display: inline;
+    text-align: right;
+    padding-right: 0.321em;
+    width: 50%;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    align-self: flex-start;
+}
+
+.stat_right {
+    flex-grow: 1;
+    display: inline;
+    text-align: left;
+    padding-left: 0.321em;
+    width: 50%;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    align-self: flex-start;
+}
+
+.stats {
+    display: block;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.settings {
+    font-size: 0.857em;
+    display: none;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 1.35em;
+}
+
+.option {
+    margin-bottom: 1.4em;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#export_button {
+    margin-bottom: 0.285em;
+}
+
+.option_text {
+    margin-top: 0em;
+    margin-bottom: 0.2em;
+    display: block;
+}
+
+#custom_hue_text {
+    margin-top: 0.25em;
+    display: none;
+}
+
+#hue_input {
+    display: none;
+    font-size: 0.8em;
+    width: 2.8em;
+}
+
+#refresh_input {
+    display: inline;
+    font-size: 0.8em;
+    width: 2em;
+}
+
+#hertz_text {
+    margin-top: 0.25em;
+    display: inline;
+}
+
+.option_button {
+    padding: 0.2em 0.4em;
+    font-size: 1em;
+    font-weight: normal;
+    margin-top: 0em;
+    margin-left: 0.285em;
+    cursor: pointer;
+}
+
+.small {
+    padding: 0em 0.2em;
+    display: block;
+}
+
+#hidden {
+    flex-grow: 0;
+    flex-basis: 33.3%;
+    font-size: 0.857em;
+}
+
+#pp_bar {
+    flex-grow: 0;
+    flex-basis: 33.4%;
+    font-size: 0.857em;
+}
+
+#respec{
+    flex-grow: 0;
+    flex-basis: 33.3%;
+}
+
+#respec_button {
+    padding: 0.433em 0.571em;
+    font-size: 1em;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+#pp_options {
+    display: flex;
+}
+
+.wipe_button {
+    padding: 0.2em 0.4em;
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 0.6em;
+    margin-bottom: 0em;
+    display: inline;
+    cursor: pointer;
+}
+
+#hotkeys_list {
+    font-size: 0.7em;
+    margin-top: 2.4em;
+    text-align: center;
+}
+
+.amp_text {
+    display: block;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#amp_block {
+    display: flex;
+    justify-content: center;
+}
+
+#amp_text {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.285em;
+}
+
+#amp2 {
+    display: inline;
+    align-self: flex-end;
+    font-size: 1.75em;
+    font-weight: bold;
+    margin-top: 0em;
+    margin-bottom: -0.1em;
+    margin-left: 0.214em;
+}
+
+#amp_boost {
+    margin-top: 0.1em;
+}
+
+.pp_text2 {
+    display: block;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#pp_block {
+    display: flex;
+    justify-content: center;
+}
+
+#pp_text2 {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.285em;
+}
+
+#pp2 {
+    display: inline;
+    align-self: flex-end;
+    font-size: 1.75em;
+    font-weight: bold;
+    margin-top: 0.25em;
+    margin-bottom: -0.1em;
+    margin-left: 0.214em;
+}
+
+.prestige {
+    display: none;
+    margin-top: 1.142em;
+    margin-bottom: 1.28em;
+}
+
+#prestige_block {
+    display: flex;
+    margin-top: 1.285em;
+    margin-bottom: 2.4em;
+    padding: 0.4em;
+}
+
+#prestige_details {
+    flex-grow: 1;
+    margin-left: 0.5em;
+}
+
+.prestige_text {
+    display: block;
+    font-size: 1em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#amp_up2 {
+    margin-top: 0em;
+}
+
+#pp_next {
+    display: none;
+}
+
+#prestige_button {
+    padding: 0.285em 0.571em;
+    font-size: 1.2em;
+    margin-bottom: 0.05em;
+    font-weight: normal;
+    flex-grow: 0;
+    cursor: pointer;
+    width: 7em;
+}
+
+.pp_upgrade {
+    display: flex;
+    margin-bottom: 0.4em;
+    padding: 0.4em;
+}
+
+.pp_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.pp_name {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.pp_desc, .priority_text {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.pp_priority {
+    display: none;
+}
+
+.priority_input {
+    width: 2.5em;
+    padding: 0.1em 0.25em;
+    font-size: 0.714em;
+    font-weight: normal;
+    display: inline;
+    margin-left: 0.285em;
+}
+
+.pp_button {
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-weight: normal;
+    flex: 0 0 6.4em;
+}
+
+#auto_config {
+    display: none;
+    margin-bottom: 2.4em;
+    padding: 0.4em;
+}
+
+.auto_header {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    display: block;
+}
+
+.goal_text {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    display: inline;
+}
+
+.goal_input {
+    width: 5em;
+    padding: 0.1em 0.25em;
+    font-size: 0.714em;
+    font-weight: normal;
+    display: inline;
+}
+
+#auto_enabled {
+    margin-top: 0.1em;
+}
+
+#auto_toggle {
+    display: inline;
+}
+
+#auto_mode {
+    display: none;
+    margin-top: 0.1em;
+}
+
+#level_mode, #amp_mode, #pp_mode, #time_mode {
+    display: inline;
+}
+
+#peak_mode {
+    display: none;
+}
+
+#auto_level, #auto_amp, #auto_pp, #auto_time {
+    display: none;
+    margin-top: 0.1em;
+}
+
+#amp_eff {
+    margin-top: 0.1em;
+}
+
+#smart_config {
+    display: none;
+    margin-bottom: 2.4em;
+    padding: 0.4em;
+}
+
+#smart_enabled {
+    display: block;
+    margin-top: 0.15em;
+    margin-bottom: 0.1em;
+}
+
+#smart_toggle {
+    display: inline;
+}
+
+#smart_time {
+    display: inline;
+}
+
+#smart_time_reset {
+    display: inline;
+    margin-left: 0.375em;
+    cursor: pointer;
+}
+
+#smart_peak {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#smart_pp, #smart_amp, #smart_start {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#smart_peak_mode, #smart_pp_mode {
+    display: inline;
+}
+
+#autopp_config {
+    display: none;
+    margin-bottom: 2.4em;
+    padding: 0.4em;
+}
+
+#autopp_enabled {
+    display: block;
+    margin-top: 0.15em;
+}
+
+#autopp_mode {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#autopp_toggle {
+    display: inline;
+}
+
+#ignore_mode, #weak_mode, #strict_mode {
+    display: inline;
+}
+
+#reboot_page {
+    display: none;
+    margin-top: 1.142em;
+}
+
+.watts_text {
+    display: block;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.reboot_text {
+    display: block;
+    font-size: 1em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#watts_block {
+    display: flex;
+    justify-content: center;
+}
+
+#gen_power_text {
+    display: inline;
+    align-self: flex-end;
+}
+
+#watts_text {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.428em;
+}
+
+#watts {
+    display: inline;
+    align-self: flex-end;
+    font-size: 3em;
+    font-weight: bold;
+    margin-bottom: -0.14em;
+    margin-left: 0.214em;
+}
+
+#watts_plus {
+    display: none;
+}
+
+#hydrogen_plus {
+    display: none;
+}
+
+#gen_boost {
+    margin-top: 0.285em;
+}
+
+#reboot_block {
+    display: flex;
+    margin-top: 1em;
+    margin-bottom: 2em;
+    padding: 0.4em;
+}
+
+#generator_requirements{
+    flex-grow: 1;
+}
+
+#reboot_panel {
+    flex-grow: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#reboot_button {
+    padding: 0.285em 0.571em;
+    font-size: 1.2em;
+    margin-bottom: 0.18em;
+    font-weight: normal;
+    align-self: flex-end;
+}
+
+.no_reboot_power, .no_reboot_power:hover, .no_reboot_power:active {
+    cursor: default;
+}
+
+.reboot_power {
+    cursor: pointer;
+}
+
+#watts_plus {
+    text-align: right;
+}
+
+#perks_hidden {
+    font-size: 0.857em;
+}
+
+#gen_perks_text {
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0.285em;
+}
+
+#autorb_block {
+    display: none;
+    margin-top: 1em;
+    margin-bottom: 2em;
+    padding: 0.4em;
+}
+
+#autorb_enabled {
+    display: block;
+    margin-top: 0.15em;
+}
+
+#autorb_mode {
+    display: none;
+    margin-top: 0.1em;
+}
+
+#watts_mode, #time_mode2 {
+    display: inline;
+}
+
+#auto_watts {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#auto_time2, #auto_push {
+    display: none;
+    margin-top: 0.1em;
+}
+
+#pendingrb_enabled {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#autorb_toggle {
+    display: inline;
+}
+
+#pendingrb_toggle {
+    display: inline;
+}
+
+#watts_eff {
+    margin-top: 0.25em;
+}
+
+.generator_perk {
+    display: flex;
+    margin-bottom: 0.4em;
+    padding: 0.4em;
+}
+
+.perk_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.perk_name {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.perk_desc {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.perk_complete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-weight: normal;
+    flex: 0 0 6em;
+    pointer-events: none;
+}
+
+.perk_requirement {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    text-align: center;
+}
+
+.complete_text {
+    font-weight: bold;
+}
+
+#challenges_page {
+    display: none;
+    margin-top: 1.142em;
+}
+
+#challenge_header {
+    font-size: 1em;
+    text-align: center;
+    margin-bottom: 1.142em;
+}
+
+#challenge_footer {
+    font-size: 1em;
+    text-align: center;
+    margin-top: 2em;
+}
+
+.challenge_block {
+    display: flex;
+    margin-bottom: 0.4em;
+    padding: 0.4em;
+}
+
+.challenge_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.challenge_name {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.challenge_desc, .challenge_goal {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.challenge_complete {
+    margin-top: 0.285em;
+    margin-bottom: 0em;
+    font-size: 0.75em;
+}
+
+.enter_button {
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-weight: normal;
+    flex: 0 0 6.4em;
+    cursor: pointer;
+}
+
+.in_progress {
+    cursor: default;
+}
+
+.in_progress:hover {
+    cursor: default;
+}
+
+#exit_center {
+    display: flex;
+    justify-content: center;
+}
+
+#exit_button {
+    display: block;
+    margin-top: 0.0714em;
+    margin-bottom: 1em;
+}
+
+.helium_text {
+    display: block;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#helium_block {
+    display: flex;
+    justify-content: center;
+}
+
+#helium_text {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.428em;
+}
+
+#helium {
+    display: inline;
+    align-self: flex-end;
+    font-size: 2em;
+    font-weight: bold;
+    margin-top: 0.68em;
+    margin-bottom: -0.12em;
+    margin-left: 0.214em;
+}
+
+#helium_boost {
+    margin-top: 0.1em;
+}
+
+#helium_rate {
+    margin-top: 0.5em;
+}
+
+.hydrogen_block {
+    display: flex;
+    justify-content: center;
+}
+
+#hydrogen_block1 {
+    display: none;
+}
+
+.hydrogen_text {
+    display: inline;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    align-self: flex-end;
+    margin-left: 0.285em;
+}
+
+.hydrogen {
+    display: inline;
+    align-self: flex-end;
+    font-size: 1.5em;
+    margin-top: 0.25em;
+    margin-bottom: -0.1em;
+    margin-left: 0.214em;
+}
+
+#hydrogen2 {
+    margin-top: 0.5em;
+}
+
+#reactor_text {
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0.285em;
+}
+
+.reactor_core {
+    display: flex;
+    margin-bottom: 0.4em;
+    padding: 0.4em;
+}
+
+#power_supply {
+    margin-top: 2em;
+}
+
+#core0 {
+    margin-bottom: 2em;
+}
+
+.core_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.core_id {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.core_power {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.core_button {
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-weight: normal;
+    flex-grow: 0;
+}
+
+.core_unlocked {
+    cursor: pointer;
+}
+
+#max_buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+    margin-bottom: 0.571em;
+}
+
+.reactor_button {
+    display: inline;
+}
+
+#reactor_max_all, #reactor_max_half {
+    margin-left: 0.285em;
+}
+
+#autohy_block {
+    display: none;
+    margin-top: 2em;
+    margin-bottom: 0em;
+    padding: 0.4em;
+}
+
+#autohy_enabled {
+    display: block;
+    margin-top: 0.15em;
+}
+
+#autohy_toggle {
+    display: inline;
+}
+
+.photons_text {
+    display: block;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#photons_block {
+    display: flex;
+    justify-content: center;
+}
+
+#photons_text {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.428em;
+}
+
+#photons {
+    display: inline;
+    align-self: flex-end;
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-top: 0.68em;
+    margin-bottom: -0.12em;
+    margin-left: 0.214em;
+}
+
+#quantize_block {
+    display: flex;
+    margin-top: 1.285em;
+    margin-bottom: 1em;
+    padding: 0.4em;
+}
+
+#quantize_details {
+    flex-grow: 1;
+    margin-left: 0.5em;
+}
+
+.quantize_text {
+    display: block;
+    font-size: 1em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#quantize_req {
+    margin-top: 0em;
+}
+
+#quantize_footer {
+    font-size: 1em;
+    text-align: center;
+    margin-top: 1em;
+}
+
+#quantize_button {
+    padding: 0.285em 0.571em;
+    font-size: 1.2em;
+    margin-bottom: 0.05em;
+    flex-grow: 0;
+}
+
+#autoqu_block {
+    display: none;
+    margin-top: 1em;
+    margin-bottom: 2em;
+    padding: 0.4em;
+}
+
+#autoqu_enabled {
+    display: block;
+    margin-top: 0.15em;
+}
+
+#autoqu_mode {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#photons_mode, #time_mode3 {
+    display: inline;
+}
+
+#step_mode {
+    display: none;
+}
+
+#auto_photons {
+    display: block;
+    margin-top: 0.1em;
+}
+
+#auto_time3, #auto_step {
+    display: none;
+    margin-top: 0.1em;
+}
+
+#step_goal {
+    display: none;
+    margin-top: 0.25em;
+}
+
+#autoqu_toggle {
+    display: inline;
+}
+
+#photons_input {
+    width: 5.75em;
+}
+
+.unlit {
+    cursor: default;
+    font-weight: normal;
+}
+
+.lit {
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.lit:active {
+    text-shadow: none;
+}
+
+.superlit, .superlit:hover, .superlit:active {
+    text-shadow: none;
+}
+
+#prism_block {
+    display: flex;
+}
+
+#prism {
+    width: 12em;
+    height: 12em;
+    margin-top: 0.2em;
+    flex-grow: 0;
+    display: block;
+    align-self: center;
+}
+
+#prism_level {
+    flex: 1;
+    align-self: center;
+    text-align: right;
+    margin-right: 1em;
+}
+
+#prism_lvl_text {
+    font-size: 1.25em;
+    display: inline;
+}
+
+#prism_lvl_num {
+    font-size: 2em;
+    display: inline;
+    margin-left: 0.05em;
+}
+
+#prism_boost {
+    flex: 1;
+    font-size: 1.25em;
+    margin-left: 1em;
+    align-self: center;
+}
+
+#small_prism_block {
+    text-align: center;
+    font-size: 1.25em;
+    margin-bottom: 0.5em;
+}
+
+@media (min-width: 1100px) {
+    #prism_level, #prism_boost {
+        display: block;
+    }
+
+    #small_prism_block {
+        display: none;
+    }
+
+    #prism_block {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 1099px) {
+    #prism_level, #prism_boost {
+        display: none;
+    }
+
+    #small_prism_block {
+        display: block;
+    }
+
+    #prism_block {
+        flex-direction: column;
+    }
+}
+
+#prism_upgrade {
+    text-align: center;
+}
+
+#prism_button_center {
+    display: flex;
+    flex-direction: column;
+}
+
+#prism_button {
+    padding: 0.3em 0.5em;
+    font-size: 0.857em;
+    font-weight: normal;
+    margin-top: 0.428em;
+    margin-bottom: 0.7em;
+    align-self: center;
+}
+
+#quantum_upgrades_text {
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0.285em;
+}
+
+.qu_upgrade {
+    display: flex;
+    margin-bottom: 0.4em;
+    padding: 0.4em;
+}
+
+.qu_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.qu_name {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.qu_desc {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.qu_button {
+    padding: 0.285em 0.428em;
+    font-size: 1em;
+    flex: 0 0 8.8em;
+}
+
+.dark_matter_text {
+    display: block;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#dark_matter_block {
+    display: flex;
+    justify-content: center;
+}
+
+#dark_matter_text {
+    display: inline;
+    align-self: flex-end;
+    margin-left: 0.428em;
+}
+
+#dark_matter {
+    display: inline;
+    align-self: flex-end;
+    font-size: var(--dark_matter_size);
+    font-weight: bold;
+    margin-top: 0.68em;
+    margin-bottom: -0.12em;
+    margin-left: 0.214em;
+}
+
+#dark_matter_boost {
+    margin-top: 0.1em;
+}
+
+#omega_level_text {
+    font-size: 1.4em;
+    text-align: center;
+    margin-top: 0.5em;
+    margin-bottom: 0em;
+}
+
+#gravity_upgrades {
+    display: flex;
+    margin-top: 1em;
+}
+
+#interval_upgrade {
+    flex-grow: 1;
+    width: 50%;
+    align-self: center;
+}
+
+#growth_upgrade {
+    flex-grow: 1;
+    width: 50%;
+    align-self: center;
+}
+
+#growth_reset {
+    flex-grow: 1;
+    width: 50%;
+    align-self: center;
+}
+
+#interval_text, #growth_text {
+    text-align: center;
+}
+
+#interval_button_center, #growth_button_center, #collapse_button_center, #retrieve_button_center, #omega_exit_center {
+    display: flex;
+    flex-direction: column;
+}
+
+#interval_button, #growth_button {
+    padding: 0.3em 0.5em;
+    font-size: 0.857em;
+    font-weight: normal;
+    margin-top: 0.428em;
+    margin-bottom: 0.7em;
+    align-self: center;
+}
+
+#collapse_menu, #growth_menu, #prism_menu {
+    align-self: center;
+}
+
+#collapse_button {
+    display: inline;
+    padding: 0.3em 0.5em;
+    font-size: 0.857em;
+    font-weight: normal;
+    margin-bottom: 0.428em;
+}
+
+#collapse_time {
+    margin-top: 0.75em;
+}
+
+#dark_upgrades_text {
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0.285em;
+}
+
+.dk_upgrade {
+    display: flex;
+    margin-bottom: 0.4em;
+    padding: 0.4em;
+}
+
+.dk_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.dk_name {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.dk_desc {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#omega_points_block {
+    display: flex;
+    justify-content: center;
+}
+
+#omega_points {
+    display: inline;
+    align-self: flex-end;
+    font-size: 2.25em;
+    font-weight: bold;
+    margin-top: 0.6em;
+    margin-bottom: -0.11em;
+}
+
+#omega_points_text {
+    display: inline;
+    align-self: flex-end;
+    font-size: 1.25em;
+    margin-left: 0.285em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#highest_omega_level {
+    display: block;
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0.2em;
+}
+
+#omega_drive_text, #omega_upgrades_text {
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0.285em;
+}
+
+#omega_challenge_header {
+    font-size: 1.5em;
+    text-align: center;
+    margin-bottom: 0em;
+}
+
+#omega_drive_block {
+    display: flex;
+}
+
+.chamber {
+    display: block;
+    flex: 0 0 calc(33.3% - 1.26em);
+    margin-bottom: 0.6em;
+    padding: 0.4em;
+}
+
+@media (min-width: 1024px) {
+    #omega_drive_block {
+        flex-direction: row;
+    }
+
+    .chamber_left {
+        margin-right: 0.5em;
+    }
+}
+
+@media (max-width: 1023px) {
+    #omega_drive_block {
+        flex-direction: column;
+    }
+
+    .chamber {
+        width: 12.5em;
+        align-self: center;
+    }
+
+    .chamber_left {
+        margin-right: 0em;
+    }
+}
+
+.omega_drive_name {
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0.8em;
+}
+
+.omega_drive_text {
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 1.2em;
+}
+
+.chamber_buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.omega_button {
+    padding: 0.3em 0.5em;
+    font-size: 0.714em;
+    cursor: pointer;
+}
+
+.omega_left {
+    margin-right: 0.5em;
+}
+
+#retrieve_button {
+    font-size: 0.857em;
+    align-self: center;
+}
+
+.om_upgrade {
+    display: flex;
+    margin-bottom: 0.4em;
+    padding: 0.4em;
+}
+
+.om_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+.om_name {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.om_desc {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.autoqu {
+    display: none;
+    padding: 0.3em 0.5em;
+    font-size: 0.857em;
+    font-weight: normal;
+    margin-bottom: 0.428em;
+    align-self: center;
+}
+
+#omega_challenge_block {
+    display: none;
+}
+
+#omega_challenge_info {
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0.2em;
+}
+
+#omega_exit_button {
+    font-size: 0.857em;
+    align-self: center;
+    margin-bottom: 0.6em;
+}
+
+#omega_challenge_panel {
+    display: flex;
+    margin-bottom: 0.4em;
+    padding: 0.4em;
+}
+
+#omega_challenge_text {
+    flex-grow: 1;
+    padding-right: 1.2em;
+}
+
+#omega_challenge_desc, #omega_challenge_goal {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.challenge_photons {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#omega_challenge_complete {
+    margin-top: 0.285em;
+    margin-bottom: 0em;
+    font-size: 0.75em;
+}
+
+#omega_enter_button {
+    padding: 0.285em 0.571em;
+    font-size: 1em;
+    font-weight: normal;
+    flex: 0 0 6.4em;
+}
+
+.can_enter {
+    cursor: pointer;
+}
+
+.omega_in_progress, .omega_in_progress:hover{
+    cursor: default;
+}
+
+#the_end_page {
+    display: none;
+}
+
+#the_end_text {
+    margin-top: 1.2em;
+    text-align: center;
+}
+
+#congratulations {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+#achievements_page {
+    display: none;
+}
+
+.achievement_title {
+    font-size: 1em;
+    text-align: center;
+    margin-top: 1.285em;
+    margin-bottom: 0em;
+}
+
+.page_switcher {
+    margin-top: 0.285em;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+#bottom_switcher {
+    margin-top: 1.285em;
+}
+
+.page_left, .page_right {
+    display: inline;
+}
+
+.page_text {
+    display: inline;
+    font-size: 1em;
+    margin-left: 0.285em;
+    margin-right: 0.285em;
+}
+
+.achievement_slot {
+    margin-bottom: 0.4em;
+    padding: 0.4em;
+}
+
+.achievement_header {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.achievement_requirement {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.uptext {
+    font-size: 0.857em;
+    display: none;
+    margin-bottom: 0.3em;
+}
+
+#hotkeys_reset_button {
+    margin-top: 0.285em;
+}
+
+.info {
+    font-size: 0.714em;
+    margin-bottom: 0em;
+}
+
+.link {
+    cursor: pointer;
+    margin-right: 0.25em;
+}
+
+#notifications {
+    display: flex;
+    flex-direction: column-reverse;
+    position: fixed;
+    top: 0.285em;
+    right: 0em;
+    left: 0em;
+}
+
+.notification {
+    background-color: black;
+    color: white;
+    padding: 0.2em 0.333em;
+    font-size: 0.857em;
+    font-weight: normal;
+    border: 1px solid black;
+    width: fit-content;
+    margin-bottom: 0.285em;
+    align-self: center;
+    box-shadow: 0em 0em 0.35em black;
+}
+
+.notif_text {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.title {
+    font-size: 2.857em;
+    margin-top: 0.4em;
+    margin-bottom: 0.8em;
+}
+
+.change_head {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.change_minor {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.change_major {
+    font-size: 1.4em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+#hotkeys_list {
+    display: flex;
+    flex-direction: column;
+}
