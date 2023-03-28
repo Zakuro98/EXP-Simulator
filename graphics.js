@@ -1,33 +1,35 @@
 //updating the color of the level bar
 function color_update() {
-    if (game.level < 60) {
-        document.getElementById("lvlnum").style.color = get_color(
-            Math.floor(game.level / 10)
-        )
-        document.getElementById("progress").style.background = get_color(
-            Math.floor(game.level / 10)
-        )
-    } else if (game.level < 12000) {
-        document.getElementById("lvlnum").style.color = get_color(
-            (Math.floor(game.level / 60) + 5) % 12
-        )
-        document.getElementById("progress").style.background = get_color(
-            (Math.floor(game.level / 60) + 5) % 12
-        )
-    } else if (game.level < 60000) {
-        document.getElementById("lvlnum").style.color = get_color(
-            (Math.floor(game.level / 300) - 3) % 12
-        )
-        document.getElementById("progress").style.background = get_color(
-            (Math.floor(game.level / 300) - 3) % 12
-        )
-    } else {
-        document.getElementById("lvlnum").style.color = get_color(
-            (Math.floor(game.level / 1200) + 3) % 12
-        )
-        document.getElementById("progress").style.background = get_color(
-            (Math.floor(game.level / 1200) + 3) % 12
-        )
+    if (!meme) {
+        if (game.level < 60) {
+            document.getElementById("lvlnum").style.color = get_color(
+                Math.floor(game.level / 10)
+            )
+            document.getElementById("progress").style.background = get_color(
+                Math.floor(game.level / 10)
+            )
+        } else if (game.level < 12000) {
+            document.getElementById("lvlnum").style.color = get_color(
+                (Math.floor(game.level / 60) + 5) % 12
+            )
+            document.getElementById("progress").style.background = get_color(
+                (Math.floor(game.level / 60) + 5) % 12
+            )
+        } else if (game.level < 60000) {
+            document.getElementById("lvlnum").style.color = get_color(
+                (Math.floor(game.level / 300) - 3) % 12
+            )
+            document.getElementById("progress").style.background = get_color(
+                (Math.floor(game.level / 300) - 3) % 12
+            )
+        } else {
+            document.getElementById("lvlnum").style.color = get_color(
+                (Math.floor(game.level / 1200) + 3) % 12
+            )
+            document.getElementById("progress").style.background = get_color(
+                (Math.floor(game.level / 1200) + 3) % 12
+            )
+        }
     }
 }
 
@@ -204,12 +206,7 @@ function level_update() {
         }
     }
 
-    if (
-        game.notation === 8 ||
-        (game.question &&
-            new Date().getUTCDate() === 1 &&
-            new Date().getUTCMonth() === 3)
-    ) {
+    if (game.notation === 8) {
         document.getElementById("progress").style.width = "100%"
         document.getElementById("pp_progress").style.width = "100%"
     }
@@ -369,11 +366,7 @@ function reset_button_update() {
                 document.getElementById("pp_up").innerHTML =
                     "+" + format_num(pp_amount) + " PP"
                 if (
-                    (pp_amount >= 1 ||
-                        game.notation === 8 ||
-                        (game.question &&
-                            new Date().getUTCDate() === 1 &&
-                            new Date().getUTCMonth() === 3)) &&
+                    (pp_amount >= 1 || game.notation === 8) &&
                     !game.perks[27]
                 ) {
                     document.getElementById("pp_up").style.display = "inline"
@@ -381,15 +374,20 @@ function reset_button_update() {
                     document.getElementById("pp_up").style.display = "none"
                 }
                 document.getElementById("amp_button").innerHTML = "PRESTIGE!"
-                document.getElementById("amp_button").style.color = "white"
+                if (!meme)
+                    document.getElementById("amp_button").style.color = "white"
+                else document.getElementById("amp_button").disabled = false
+                document.getElementById("amp_button").style.cursor = "pointer"
             } else {
                 document.getElementById("amp_up").style.display = "none"
                 document.getElementById("pp_up").style.display = "none"
                 document.getElementById("amp_button").innerHTML =
                     "LVL " + format_lvl(game.pr_min)
-                document.getElementById("amp_button").style.color = get_color(
-                    (Math.floor(game.pr_min / 60) + 5) % 12
-                )
+                if (!meme)
+                    document.getElementById("amp_button").style.color =
+                        get_color((Math.floor(game.pr_min / 60) + 5) % 12)
+                else document.getElementById("amp_button").disabled = true
+                document.getElementById("amp_button").style.cursor = "default"
             }
         } else {
             if (game.level >= game.highest_level) {
@@ -408,11 +406,7 @@ function reset_button_update() {
                 document.getElementById("pp_up").innerHTML =
                     "+" + format_num(pp_amount) + " PP"
                 if (
-                    (pp_amount >= 1 ||
-                        game.notation === 8 ||
-                        (game.question &&
-                            new Date().getUTCDate() === 1 &&
-                            new Date().getUTCMonth() === 3)) &&
+                    (pp_amount >= 1 || game.notation === 8) &&
                     !game.perks[27]
                 ) {
                     document.getElementById("pp_up").style.display = "inline"
@@ -420,29 +414,35 @@ function reset_button_update() {
                     document.getElementById("pp_up").style.display = "none"
                 }
                 document.getElementById("amp_button").innerHTML = "PRESTIGE!"
-                document.getElementById("amp_button").style.color = "white"
+                if (!meme)
+                    document.getElementById("amp_button").style.color = "white"
+                else document.getElementById("amp_button").disabled = false
+                document.getElementById("amp_button").style.cursor = "pointer"
             } else {
                 document.getElementById("amp_up").style.display = "none"
                 document.getElementById("pp_up").style.display = "none"
                 document.getElementById("amp_button").innerHTML =
                     "LVL " + format_lvl(game.highest_level)
 
-                if (game.highest_level < 12000) {
-                    document.getElementById("amp_button").style.color =
-                        get_color(
-                            (Math.floor(game.highest_level / 60) + 5) % 12
-                        )
-                } else if (game.highest_level < 60000) {
-                    document.getElementById("amp_button").style.color =
-                        get_color(
-                            (Math.floor(game.highest_level / 300) - 3) % 12
-                        )
-                } else {
-                    document.getElementById("amp_button").style.color =
-                        get_color(
-                            (Math.floor(game.highest_level / 1200) + 3) % 12
-                        )
-                }
+                if (!meme) {
+                    if (game.highest_level < 12000) {
+                        document.getElementById("amp_button").style.color =
+                            get_color(
+                                (Math.floor(game.highest_level / 60) + 5) % 12
+                            )
+                    } else if (game.highest_level < 60000) {
+                        document.getElementById("amp_button").style.color =
+                            get_color(
+                                (Math.floor(game.highest_level / 300) - 3) % 12
+                            )
+                    } else {
+                        document.getElementById("amp_button").style.color =
+                            get_color(
+                                (Math.floor(game.highest_level / 1200) + 3) % 12
+                            )
+                    }
+                } else document.getElementById("amp_button").disabled = true
+                document.getElementById("amp_button").style.cursor = "default"
             }
         }
     } else {
@@ -568,26 +568,44 @@ function reset_button_update() {
             document.getElementById("watt_button").className =
                 "button reboot_power"
             document.getElementById("watts_up").style.display = "inline"
+            if (meme) document.getElementById("watt_button").disabled = false
             if (!game.perks[13]) {
-                if (game.notation !== 8 && game.prism_level === 0)
-                    document.getElementById("watts_up").innerHTML =
-                        "+" + format_num(game.prism_boost) + " watt"
-                else
-                    document.getElementById("watts_up").innerHTML =
-                        "+" + format_num(game.prism_boost) + " watts"
-            } else {
                 if (
-                    get_watts(game.pp) * game.prism_boost === 1 &&
-                    game.notation !== 8
+                    game.notation !== 8 &&
+                    game.prism_level === 0 &&
+                    game.om_boost[0] === 1
                 )
                     document.getElementById("watts_up").innerHTML =
                         "+" +
-                        format_num(get_watts(game.pp) * game.prism_boost) +
+                        format_num(game.prism_boost * game.om_boost[0]) +
                         " watt"
                 else
                     document.getElementById("watts_up").innerHTML =
                         "+" +
-                        format_num(get_watts(game.pp) * game.prism_boost) +
+                        format_num(game.prism_boost * game.om_boost[0]) +
+                        " watts"
+            } else {
+                if (
+                    get_watts(game.pp) * game.prism_boost * game.om_boost[0] ===
+                        1 &&
+                    game.notation !== 8
+                )
+                    document.getElementById("watts_up").innerHTML =
+                        "+" +
+                        format_num(
+                            get_watts(game.pp) *
+                                game.prism_boost *
+                                game.om_boost[0]
+                        ) +
+                        " watt"
+                else
+                    document.getElementById("watts_up").innerHTML =
+                        "+" +
+                        format_num(
+                            get_watts(game.pp) *
+                                game.prism_boost *
+                                game.om_boost[0]
+                        ) +
                         " watts"
                 if (
                     game.perks[22] &&
@@ -628,6 +646,7 @@ function reset_button_update() {
                 "button no_reboot_power"
             document.getElementById("watts_up").style.display = "none"
             document.getElementById("hydrogen_up").style.display = "none"
+            if (meme) document.getElementById("watt_button").disabled = true
         }
     } else {
         document.getElementById("reboot_area").style.display = "none"
@@ -676,6 +695,7 @@ function reset_button_update() {
         if (total_completions >= 108 && highest_level >= 65536) {
             document.getElementById("photon_button").className = "button lit"
             document.getElementById("photons_up2").style.display = "inline"
+            if (meme) document.getElementById("photon_button").disabled = false
 
             if (amount === 1 && game.notation !== 8)
                 document.getElementById("photons_up2").innerHTML =
@@ -686,6 +706,7 @@ function reset_button_update() {
         } else {
             document.getElementById("photon_button").className = "button unlit"
             document.getElementById("photons_up2").style.display = "none"
+            if (meme) document.getElementById("photon_button").disabled = true
         }
     } else {
         document.getElementById("quantum_area").style.display = "none"
@@ -711,31 +732,39 @@ function upgrade_update() {
     ) {
         if (game.level >= game.boost_level) {
             document.getElementById("boost_button").innerHTML = "UPGRADE!"
-            document.getElementById("boost_button").style.color = "#ffffff"
+            if (!meme)
+                document.getElementById("boost_button").style.color = "#ffffff"
+            else document.getElementById("boost_button").disabled = false
+            document.getElementById("boost_button").style.cursor = "pointer"
         } else {
             document.getElementById("boost_button").innerHTML =
                 "LVL " + format_lvl(game.boost_level)
-            if (game.boost_level < 60) {
-                document.getElementById("boost_button").style.color = get_color(
-                    Math.floor(game.boost_level / 10)
-                )
-            } else if (game.boost_level < 12000) {
-                document.getElementById("boost_button").style.color = get_color(
-                    (Math.floor(game.boost_level / 60) + 5) % 12
-                )
-            } else if (game.boost_level < 60000) {
-                document.getElementById("boost_button").style.color = get_color(
-                    (Math.floor(game.boost_level / 300) - 3) % 12
-                )
-            } else {
-                document.getElementById("boost_button").style.color = get_color(
-                    (Math.floor(game.boost_level / 1200) + 3) % 12
-                )
+            if (!meme) {
+                if (game.boost_level < 60) {
+                    document.getElementById("boost_button").style.color =
+                        get_color(Math.floor(game.boost_level / 10))
+                } else if (game.boost_level < 12000) {
+                    document.getElementById("boost_button").style.color =
+                        get_color((Math.floor(game.boost_level / 60) + 5) % 12)
+                } else if (game.boost_level < 60000) {
+                    document.getElementById("boost_button").style.color =
+                        get_color((Math.floor(game.boost_level / 300) - 3) % 12)
+                } else {
+                    document.getElementById("boost_button").style.color =
+                        get_color(
+                            (Math.floor(game.boost_level / 1200) + 3) % 12
+                        )
+                }
             }
+            document.getElementById("boost_button").style.cursor = "default"
+            if (meme) document.getElementById("boost_button").disabled = true
         }
     } else {
         document.getElementById("boost_button").innerHTML = "MAXED"
-        document.getElementById("boost_button").style.color = "#ffffff"
+        if (!meme)
+            document.getElementById("boost_button").style.color = "#ffffff"
+        else document.getElementById("boost_button").disabled = true
+        document.getElementById("boost_button").style.cursor = "default"
     }
     if (game.battery_mode === 1 || game.perks[8]) {
         document.getElementById("boost").innerHTML =
@@ -831,31 +860,37 @@ function upgrade_update() {
     ) {
         if (game.level >= game.auto_level) {
             document.getElementById("auto_button").innerHTML = "UPGRADE!"
-            document.getElementById("auto_button").style.color = "#ffffff"
+            if (!meme)
+                document.getElementById("auto_button").style.color = "#ffffff"
+            else document.getElementById("auto_button").disabled = false
+            document.getElementById("auto_button").style.cursor = "pointer"
         } else {
             document.getElementById("auto_button").innerHTML =
                 "LVL " + format_lvl(game.auto_level)
-            if (game.auto_level < 60) {
-                document.getElementById("auto_button").style.color = get_color(
-                    Math.floor(game.auto_level / 10)
-                )
-            } else if (game.auto_level < 12000) {
-                document.getElementById("auto_button").style.color = get_color(
-                    (Math.floor(game.auto_level / 60) + 5) % 12
-                )
-            } else if (game.auto_level < 60000) {
-                document.getElementById("auto_button").style.color = get_color(
-                    (Math.floor(game.auto_level / 300) - 3) % 12
-                )
-            } else {
-                document.getElementById("auto_button").style.color = get_color(
-                    (Math.floor(game.auto_level / 1200) + 3) % 12
-                )
+            if (!meme) {
+                if (game.auto_level < 60) {
+                    document.getElementById("auto_button").style.color =
+                        get_color(Math.floor(game.auto_level / 10))
+                } else if (game.auto_level < 12000) {
+                    document.getElementById("auto_button").style.color =
+                        get_color((Math.floor(game.auto_level / 60) + 5) % 12)
+                } else if (game.auto_level < 60000) {
+                    document.getElementById("auto_button").style.color =
+                        get_color((Math.floor(game.auto_level / 300) - 3) % 12)
+                } else {
+                    document.getElementById("auto_button").style.color =
+                        get_color((Math.floor(game.auto_level / 1200) + 3) % 12)
+                }
             }
+            document.getElementById("auto_button").style.cursor = "default"
+            if (meme) document.getElementById("auto_button").disabled = true
         }
     } else {
         document.getElementById("auto_button").innerHTML = "MAXED"
-        document.getElementById("auto_button").style.color = "#ffffff"
+        if (!meme)
+            document.getElementById("auto_button").style.color = "#ffffff"
+        else document.getElementById("auto_button").disabled = true
+        document.getElementById("auto_button").style.cursor = "default"
     }
     document.getElementById("auto").innerHTML =
         "Autoclicker<br>Tier " +
@@ -877,31 +912,39 @@ function upgrade_update() {
     ) {
         if (game.level >= game.fluct_level) {
             document.getElementById("fluct_button").innerHTML = "UPGRADE!"
-            document.getElementById("fluct_button").style.color = "#ffffff"
+            if (!meme)
+                document.getElementById("fluct_button").style.color = "#ffffff"
+            else document.getElementById("fluct_button").disabled = false
+            document.getElementById("fluct_button").style.cursor = "pointer"
         } else {
             document.getElementById("fluct_button").innerHTML =
                 "LVL " + format_lvl(game.fluct_level)
-            if (game.fluct_level < 60) {
-                document.getElementById("fluct_button").style.color = get_color(
-                    Math.floor(game.fluct_level / 10)
-                )
-            } else if (game.fluct_level < 12000) {
-                document.getElementById("fluct_button").style.color = get_color(
-                    (Math.floor(game.fluct_level / 60) + 5) % 12
-                )
-            } else if (game.fluct_level < 60000) {
-                document.getElementById("fluct_button").style.color = get_color(
-                    (Math.floor(game.fluct_level / 300) - 3) % 12
-                )
-            } else {
-                document.getElementById("fluct_button").style.color = get_color(
-                    (Math.floor(game.fluct_level / 1200) + 3) % 12
-                )
+            if (!meme) {
+                if (game.fluct_level < 60) {
+                    document.getElementById("fluct_button").style.color =
+                        get_color(Math.floor(game.fluct_level / 10))
+                } else if (game.fluct_level < 12000) {
+                    document.getElementById("fluct_button").style.color =
+                        get_color((Math.floor(game.fluct_level / 60) + 5) % 12)
+                } else if (game.fluct_level < 60000) {
+                    document.getElementById("fluct_button").style.color =
+                        get_color((Math.floor(game.fluct_level / 300) - 3) % 12)
+                } else {
+                    document.getElementById("fluct_button").style.color =
+                        get_color(
+                            (Math.floor(game.fluct_level / 1200) + 3) % 12
+                        )
+                }
             }
+            document.getElementById("fluct_button").style.cursor = "default"
+            if (meme) document.getElementById("fluct_button").disabled = true
         }
     } else {
         document.getElementById("fluct_button").innerHTML = "MAXED"
-        document.getElementById("fluct_button").style.color = "#ffffff"
+        if (!meme)
+            document.getElementById("fluct_button").style.color = "#ffffff"
+        else document.getElementById("fluct_button").disabled = true
+        document.getElementById("fluct_button").style.cursor = "default"
     }
     if (game.battery_mode === 1 || game.perks[8]) {
         document.getElementById("fluct").innerHTML =
@@ -980,31 +1023,37 @@ function upgrade_update() {
     ) {
         if (game.level >= game.fact_level) {
             document.getElementById("fact_button").innerHTML = "UPGRADE!"
-            document.getElementById("fact_button").style.color = "#ffffff"
+            if (!meme)
+                document.getElementById("fact_button").style.color = "#ffffff"
+            else document.getElementById("fact_button").disabled = false
+            document.getElementById("fact_button").style.cursor = "pointer"
         } else {
             document.getElementById("fact_button").innerHTML =
                 "LVL " + format_lvl(game.fact_level)
-            if (game.fact_level < 60) {
-                document.getElementById("fact_button").style.color = get_color(
-                    Math.floor(game.fact_level / 10)
-                )
-            } else if (game.fact_level < 12000) {
-                document.getElementById("fact_button").style.color = get_color(
-                    (Math.floor(game.fact_level / 60) + 5) % 12
-                )
-            } else if (game.fact_level < 60000) {
-                document.getElementById("fact_button").style.color = get_color(
-                    (Math.floor(game.fact_level / 300) - 3) % 12
-                )
-            } else {
-                document.getElementById("fact_button").style.color = get_color(
-                    (Math.floor(game.fact_level / 1200) + 3) % 12
-                )
+            if (!meme) {
+                if (game.fact_level < 60) {
+                    document.getElementById("fact_button").style.color =
+                        get_color(Math.floor(game.fact_level / 10))
+                } else if (game.fact_level < 12000) {
+                    document.getElementById("fact_button").style.color =
+                        get_color((Math.floor(game.fact_level / 60) + 5) % 12)
+                } else if (game.fact_level < 60000) {
+                    document.getElementById("fact_button").style.color =
+                        get_color((Math.floor(game.fact_level / 300) - 3) % 12)
+                } else {
+                    document.getElementById("fact_button").style.color =
+                        get_color((Math.floor(game.fact_level / 1200) + 3) % 12)
+                }
             }
+            document.getElementById("fact_button").style.cursor = "default"
+            if (meme) document.getElementById("fact_button").disabled = true
         }
     } else {
         document.getElementById("fact_button").innerHTML = "MAXED"
-        document.getElementById("fact_button").style.color = "#ffffff"
+        if (!meme)
+            document.getElementById("fact_button").style.color = "#ffffff"
+        else document.getElementById("fact_button").disabled = true
+        document.getElementById("fact_button").style.cursor = "default"
     }
     document.getElementById("fact").innerHTML =
         "EXP Factor<br>Tier " +
@@ -1026,31 +1075,37 @@ function upgrade_update() {
     ) {
         if (game.level >= game.flux_level) {
             document.getElementById("flux_button").innerHTML = "UPGRADE!"
-            document.getElementById("flux_button").style.color = "#ffffff"
+            if (!meme)
+                document.getElementById("flux_button").style.color = "#ffffff"
+            else document.getElementById("flux_button").disabled = false
+            document.getElementById("flux_button").style.cursor = "pointer"
         } else {
             document.getElementById("flux_button").innerHTML =
                 "LVL " + format_lvl(game.flux_level)
-            if (game.flux_level < 60) {
-                document.getElementById("flux_button").style.color = get_color(
-                    Math.floor(game.flux_level / 10)
-                )
-            } else if (game.flux_level < 12000) {
-                document.getElementById("flux_button").style.color = get_color(
-                    (Math.floor(game.flux_level / 60) + 5) % 12
-                )
-            } else if (game.flux_level < 60000) {
-                document.getElementById("flux_button").style.color = get_color(
-                    (Math.floor(game.flux_level / 300) - 3) % 12
-                )
-            } else {
-                document.getElementById("flux_button").style.color = get_color(
-                    (Math.floor(game.flux_level / 1200) + 3) % 12
-                )
+            if (!meme) {
+                if (game.flux_level < 60) {
+                    document.getElementById("flux_button").style.color =
+                        get_color(Math.floor(game.flux_level / 10))
+                } else if (game.flux_level < 12000) {
+                    document.getElementById("flux_button").style.color =
+                        get_color((Math.floor(game.flux_level / 60) + 5) % 12)
+                } else if (game.flux_level < 60000) {
+                    document.getElementById("flux_button").style.color =
+                        get_color((Math.floor(game.flux_level / 300) - 3) % 12)
+                } else {
+                    document.getElementById("flux_button").style.color =
+                        get_color((Math.floor(game.flux_level / 1200) + 3) % 12)
+                }
             }
+            document.getElementById("flux_button").style.cursor = "default"
+            if (meme) document.getElementById("flux_button").disabled = true
         }
     } else {
         document.getElementById("flux_button").innerHTML = "MAXED"
-        document.getElementById("flux_button").style.color = "#ffffff"
+        if (!meme)
+            document.getElementById("flux_button").style.color = "#ffffff"
+        else document.getElementById("flux_button").disabled = true
+        document.getElementById("flux_button").style.cursor = "default"
     }
     document.getElementById("flux").innerHTML =
         "EXP Flux<br>Tier " +
@@ -1081,27 +1136,44 @@ function upgrade_update() {
     ) {
         if (game.level >= game.battery_level) {
             document.getElementById("battery_button").innerHTML = "UPGRADE!"
-            document.getElementById("battery_button").style.color = "#ffffff"
+            if (!meme)
+                document.getElementById("battery_button").style.color =
+                    "#ffffff"
+            else document.getElementById("battery_button").disabled = false
+            document.getElementById("battery_button").style.cursor = "pointer"
         } else {
             document.getElementById("battery_button").innerHTML =
                 "LVL " + format_lvl(game.battery_level)
-            if (game.battery_level < 60) {
-                document.getElementById("battery_button").style.color =
-                    get_color(Math.floor(game.battery_level / 10))
-            } else if (game.battery_level < 12000) {
-                document.getElementById("battery_button").style.color =
-                    get_color((Math.floor(game.battery_level / 60) + 5) % 12)
-            } else if (game.battery_level < 60000) {
-                document.getElementById("battery_button").style.color =
-                    get_color((Math.floor(game.battery_level / 300) - 3) % 12)
-            } else {
-                document.getElementById("battery_button").style.color =
-                    get_color((Math.floor(game.battery_level / 1200) + 3) % 12)
+            if (!meme) {
+                if (game.battery_level < 60) {
+                    document.getElementById("battery_button").style.color =
+                        get_color(Math.floor(game.battery_level / 10))
+                } else if (game.battery_level < 12000) {
+                    document.getElementById("battery_button").style.color =
+                        get_color(
+                            (Math.floor(game.battery_level / 60) + 5) % 12
+                        )
+                } else if (game.battery_level < 60000) {
+                    document.getElementById("battery_button").style.color =
+                        get_color(
+                            (Math.floor(game.battery_level / 300) - 3) % 12
+                        )
+                } else {
+                    document.getElementById("battery_button").style.color =
+                        get_color(
+                            (Math.floor(game.battery_level / 1200) + 3) % 12
+                        )
+                }
             }
+            document.getElementById("battery_button").style.cursor = "default"
+            if (meme) document.getElementById("battery_button").disabled = true
         }
     } else {
         document.getElementById("battery_button").innerHTML = "MAXED"
-        document.getElementById("battery_button").style.color = "#ffffff"
+        if (!meme)
+            document.getElementById("battery_button").style.color = "#ffffff"
+        document.getElementById("battery_button").style.cursor = "default"
+        if (meme) document.getElementById("battery_button").disabled = true
     }
     if (game.battery_mode === 0) {
         document.getElementById("battery").innerHTML =
@@ -1886,7 +1958,10 @@ function pp_update() {
             document.getElementById("pp_up2").innerHTML =
                 "+" + format_num(pp_amount) + " PP"
             document.getElementById("prestige_button").innerHTML = "PRESTIGE!"
-            document.getElementById("prestige_button").style.color = "white"
+            if (!meme)
+                document.getElementById("prestige_button").style.color = "white"
+            else document.getElementById("prestige_button").disabled = false
+            document.getElementById("prestige_button").style.cursor = "pointer"
         } else {
             document.getElementById("amp_up2").innerHTML =
                 "+" + format_num(0) + " AMP"
@@ -1894,9 +1969,11 @@ function pp_update() {
                 "+" + format_num(0) + " PP"
             document.getElementById("prestige_button").innerHTML =
                 "LVL " + format_lvl(game.pr_min)
-            document.getElementById("prestige_button").style.color = get_color(
-                (Math.floor(game.pr_min / 60) + 5) % 12
-            )
+            if (!meme)
+                document.getElementById("prestige_button").style.color =
+                    get_color((Math.floor(game.pr_min / 60) + 5) % 12)
+            else document.getElementById("prestige_button").disabled = true
+            document.getElementById("prestige_button").style.cursor = "default"
         }
     } else {
         if (game.level >= game.highest_level) {
@@ -1912,7 +1989,10 @@ function pp_update() {
             document.getElementById("pp_up2").innerHTML =
                 "+" + format_num(pp_amount) + " PP"
             document.getElementById("prestige_button").innerHTML = "PRESTIGE!"
-            document.getElementById("prestige_button").style.color = "white"
+            if (!meme)
+                document.getElementById("prestige_button").style.color = "white"
+            else document.getElementById("prestige_button").disabled = false
+            document.getElementById("prestige_button").style.cursor = "pointer"
         } else {
             document.getElementById("amp_up2").innerHTML =
                 "+" + format_num(0) + " AMP"
@@ -1920,16 +2000,26 @@ function pp_update() {
                 "+" + format_num(0) + " PP"
             document.getElementById("prestige_button").innerHTML =
                 "LVL " + format_lvl(game.highest_level)
+            if (meme) document.getElementById("prestige_button").disabled = true
+            document.getElementById("prestige_button").style.cursor = "default"
 
-            if (game.highest_level < 12000) {
-                document.getElementById("prestige_button").style.color =
-                    get_color((Math.floor(game.highest_level / 60) + 5) % 12)
-            } else if (game.highest_level < 60000) {
-                document.getElementById("prestige_button").style.color =
-                    get_color((Math.floor(game.highest_level / 300) - 3) % 12)
-            } else {
-                document.getElementById("prestige_button").style.color =
-                    get_color((Math.floor(game.highest_level / 1200) + 3) % 12)
+            if (!meme) {
+                if (game.highest_level < 12000) {
+                    document.getElementById("prestige_button").style.color =
+                        get_color(
+                            (Math.floor(game.highest_level / 60) + 5) % 12
+                        )
+                } else if (game.highest_level < 60000) {
+                    document.getElementById("prestige_button").style.color =
+                        get_color(
+                            (Math.floor(game.highest_level / 300) - 3) % 12
+                        )
+                } else {
+                    document.getElementById("prestige_button").style.color =
+                        get_color(
+                            (Math.floor(game.highest_level / 1200) + 3) % 12
+                        )
+                }
             }
         }
     }
@@ -2026,6 +2116,8 @@ function pp_update() {
             button.className = "pp_button pp_bought"
             button.innerHTML = "PURCHASED"
 
+            if (meme) button.disabled = true
+
             if (game.pp_hide === 2) {
                 element.style.display = "none"
             } else if (game.pp_hide === 1) {
@@ -2047,11 +2139,15 @@ function pp_update() {
             button.innerHTML = "-" + format_num(upgrade.price) + " PP"
             if (game.pp >= upgrade.price) {
                 button.className = "pp_button pp_hidden"
-                if (upgrade.can_buy())
+                if (meme) button.disabled = true
+                if (upgrade.can_buy()) {
                     button.className = "pp_button pp_unlocked"
+                    if (meme) button.disabled = false
+                }
             } else {
                 button.className = "pp_button pp_hidden"
                 if (upgrade.can_buy()) button.className = "pp_button pp_locked"
+                if (meme) button.disabled = true
             }
         }
 
@@ -2115,9 +2211,15 @@ function watts_update() {
             all_pp_upgrades = false
     }
 
-    if (all_pp_upgrades)
-        document.getElementById("all_pp_req").style.color = "#ffff00"
-    else document.getElementById("all_pp_req").style.color = "#ffffff"
+    if (!meme) {
+        if (all_pp_upgrades)
+            document.getElementById("all_pp_req").style.color = "#ffff00"
+        else document.getElementById("all_pp_req").style.color = "#ffffff"
+    } else {
+        if (all_pp_upgrades)
+            document.getElementById("all_pp_req").style.fontWeight = "bold"
+        else document.getElementById("all_pp_req").style.fontWeight = "normal"
+    }
 
     let reboot_requirement = 0
     if (game.reboot >= 1 || game.quantum >= 1) {
@@ -2211,9 +2313,15 @@ function watts_update() {
         document.getElementById("spare_pp_req").style.display = "none"
         document.getElementById("reboot_button").innerHTML = "ACTIVATE!"
     }
-    if (game.pp >= reboot_requirement)
-        document.getElementById("spare_pp_req").style.color = "#ffff00"
-    else document.getElementById("spare_pp_req").style.color = "#ffffff"
+    if (!meme) {
+        if (game.pp >= reboot_requirement)
+            document.getElementById("spare_pp_req").style.color = "#ffff00"
+        else document.getElementById("spare_pp_req").style.color = "#ffffff"
+    } else {
+        if (game.pp >= reboot_requirement)
+            document.getElementById("spare_pp_req").style.fontWeight = "bold"
+        else document.getElementById("spare_pp_req").style.fontWeight = "normal"
+    }
     if (!game.perks[13]) {
         document.getElementById("spare_pp_req").innerHTML =
             format_num(reboot_requirement) + " spare PP"
@@ -2285,26 +2393,42 @@ function watts_update() {
     if (all_pp_upgrades && game.pp >= reboot_requirement) {
         document.getElementById("reboot_button").className = "reboot_power"
         document.getElementById("watts_plus").style.display = "inline"
+        if (meme) {
+            document.getElementById("reboot_button").disabled = false
+        }
         if (!game.perks[13]) {
-            if (game.notation !== 8 && game.prism_level === 0)
-                document.getElementById("watts_plus").innerHTML =
-                    "+" + format_num(game.prism_boost) + " watt"
-            else
-                document.getElementById("watts_plus").innerHTML =
-                    "+" + format_num(game.prism_boost) + " watts"
-        } else {
             if (
-                get_watts(game.pp) * game.prism_boost === 1 &&
-                game.notation !== 8
+                game.notation !== 8 &&
+                game.prism_level === 0 &&
+                game.om_boost[0] === 1
             )
                 document.getElementById("watts_plus").innerHTML =
                     "+" +
-                    format_num(get_watts(game.pp) * game.prism_boost) +
+                    format_num(game.prism_boost * game.om_boost[0]) +
                     " watt"
             else
                 document.getElementById("watts_plus").innerHTML =
                     "+" +
-                    format_num(get_watts(game.pp) * game.prism_boost) +
+                    format_num(game.prism_boost * game.om_boost[0]) +
+                    " watts"
+        } else {
+            if (
+                get_watts(game.pp) * game.prism_boost * game.om_boost[0] ===
+                    1 &&
+                game.notation !== 8
+            )
+                document.getElementById("watts_plus").innerHTML =
+                    "+" +
+                    format_num(
+                        get_watts(game.pp) * game.prism_boost * game.om_boost[0]
+                    ) +
+                    " watt"
+            else
+                document.getElementById("watts_plus").innerHTML =
+                    "+" +
+                    format_num(
+                        get_watts(game.pp) * game.prism_boost * game.om_boost[0]
+                    ) +
                     " watts"
             if (game.perks[22] && (game.watts >= 98304 || game.dk_bought[5])) {
                 document.getElementById("hydrogen_plus").style.display =
@@ -2341,6 +2465,9 @@ function watts_update() {
         document.getElementById("reboot_button").className = "no_reboot_power"
         document.getElementById("watts_plus").style.display = "none"
         document.getElementById("hydrogen_plus").style.display = "none"
+        if (meme) {
+            document.getElementById("reboot_button").disabled = true
+        }
     }
 
     //perks handling
@@ -2354,10 +2481,12 @@ function watts_update() {
             box.className = "perk_complete complete"
             text.className = "perk_requirement complete_text"
             text.innerHTML = "COMPLETED!"
+            if (meme) box.disabled = true
         } else {
             element.className = "generator_perk incomplete_perk"
             box.className = "perk_complete incomplete"
             text.className = "perk_requirement incomplete_text"
+            if (meme) box.disabled = false
             if (perk.requirement === 1 && game.notation !== 8)
                 text.innerHTML =
                     "Requires<br>" + format_num(perk.requirement) + " watt"
@@ -2549,9 +2678,11 @@ function challenge_update() {
         if (game.challenge === chg.id) {
             button.className = "enter_button in_progress"
             button.innerHTML = "IN PROGRESS"
+            if (meme) button.disabled = true
         } else {
             button.className = "enter_button"
             button.innerHTML = "ENTER CHALLENGE"
+            if (meme) button.disabled = false
         }
 
         if (game.dk_bought[3]) {
@@ -2713,8 +2844,10 @@ function reactor_update() {
 
         if (game.hydrogen >= game.core_price[c.id]) {
             button.className = "core_button core_unlocked"
+            if (meme) button.disabled = false
         } else {
             button.className = "core_button core_locked"
+            if (meme) button.disabled = true
         }
     }
 
@@ -2723,9 +2856,11 @@ function reactor_update() {
         if (game.hydrogen >= game.supply_price) {
             document.getElementById("supply_button").className =
                 "core_button core_unlocked"
+            if (meme) document.getElementById("supply_button").disabled = false
         } else {
             document.getElementById("supply_button").className =
                 "core_button core_locked"
+            if (meme) document.getElementById("supply_button").disabled = true
         }
     } else {
         document.getElementById("power_supply").style.display = "none"
@@ -2804,6 +2939,7 @@ function prism_update() {
     if (total_completions >= 108 && amount >= quantum_requirement) {
         document.getElementById("quantize_button").className = "lit"
         document.getElementById("photons_up").style.display = "block"
+        if (meme) document.getElementById("quantize_button").disabled = false
         if (amount === 1 && game.notation !== 8)
             document.getElementById("photons_up").innerHTML =
                 "+" + format_num(amount) + " photon"
@@ -2812,6 +2948,7 @@ function prism_update() {
                 "+" + format_num(amount) + " photons"
     } else {
         document.getElementById("quantize_button").className = "unlit"
+        if (meme) document.getElementById("quantize_button").disabled = true
         if (amount >= 1) {
             document.getElementById("photons_up").style.display = "block"
             if (amount === 1 && game.notation !== 8)
@@ -2858,9 +2995,13 @@ function prism_update() {
     if (
         game.photons >= Math.round(5 * 2.8 ** game.prism_level) &&
         Math.round(5 * 2.8 ** game.prism_level) < Infinity
-    )
+    ) {
         document.getElementById("prism_button").className = "lit"
-    else document.getElementById("prism_button").className = "unlit"
+        if (meme) document.getElementById("prism_button").disabled = false
+    } else {
+        document.getElementById("prism_button").className = "unlit"
+        if (meme) document.getElementById("prism_button").disabled = true
+    }
 
     //quantum upgrades handling
     for (const upgrade of quantum_upgrade.upgrades) {
@@ -2870,12 +3011,15 @@ function prism_update() {
         if (game.qu_bought[upgrade.id]) {
             button.className = "qu_button superlit"
             button.innerHTML = "PURCHASED"
+            if (meme) button.disabled = true
         } else {
             button.innerHTML = "-" + format_num(upgrade.price) + " photons"
             if (game.photons >= upgrade.price) {
                 button.className = "qu_button lit"
+                if (meme) button.disabled = false
             } else {
                 button.className = "qu_button unlit"
+                if (meme) button.disabled = true
             }
         }
     }
@@ -3027,6 +3171,7 @@ function prism_update() {
         ctx.lineWidth = 10
         ctx.lineCap = "round"
         ctx.strokeStyle = "white"
+        if (meme) ctx.strokeStyle = "black"
         ctx.stroke()
     }
 }
@@ -3110,12 +3255,16 @@ function gravity_update() {
             "-" + format_num(game.growth_price[0]) + " photons"
         if (game.photons >= game.growth_price[0]) {
             document.getElementById("interval_button").className = "lit"
+            if (meme)
+                document.getElementById("interval_button").disabled = false
         } else {
             document.getElementById("interval_button").className = "unlit"
+            if (meme) document.getElementById("interval_button").disabled = true
         }
     } else {
         document.getElementById("interval_button").innerHTML = "MAXED"
         document.getElementById("interval_button").className = "superlit"
+        if (meme) document.getElementById("interval_button").disabled = true
     }
     document.getElementById("growth_text").innerHTML =
         "Growth Factor<br>" +
@@ -3130,15 +3279,14 @@ function gravity_update() {
                     12 ** game.om_completions
             ) +
             "x"
-    if (game.omega_challenge)
-        document.getElementById("growth_text").innerHTML =
-            "Growth Factor<br>" + format_eff(1) + "x"
     document.getElementById("growth_button").innerHTML =
         "-" + format_num(game.growth_price[1]) + " photons"
     if (game.photons >= game.growth_price[1]) {
         document.getElementById("growth_button").className = "lit"
+        if (meme) document.getElementById("growth_button").disabled = false
     } else {
         document.getElementById("growth_button").className = "unlit"
+        if (meme) document.getElementById("growth_button").disabled = true
     }
 
     if (game.dk_bought[7]) {
@@ -3146,9 +3294,14 @@ function gravity_update() {
         if (
             game.dark_matter.cmp(1.7976931348622053 * 10 ** 308) === 1 ||
             game.dark_matter.cmp(1.7976931348622053 * 10 ** 308) === 0
-        )
+        ) {
             document.getElementById("collapse_button").className = "lit"
-        else document.getElementById("collapse_button").className = "unlit"
+            if (meme)
+                document.getElementById("collapse_button").disabled = false
+        } else {
+            document.getElementById("collapse_button").className = "unlit"
+            if (meme) document.getElementById("collapse_button").disabled = true
+        }
         if (
             game.dark_matter.cmp(1.7976931348622053 * 10 ** 308) === -1 ||
             game.omega_level === 0
@@ -3249,18 +3402,28 @@ function gravity_update() {
         document.getElementById("collapse_time").style.display = "none"
     }
 
-    if (
-        game.dark_matter >= 1.7976931348622053 * 10 ** 308 &&
-        game.notation !== 9 &&
-        !game.om_bought[6]
-    ) {
-        document.documentElement.style.setProperty("--dark_matter_size", "3em")
-        document.getElementById("dark_matter").style.marginTop = "0.2em"
-        document.getElementById("dark_matter").style.marginBottom = "-0.28em"
-    } else {
-        document.documentElement.style.setProperty("--dark_matter_size", "2em")
-        document.getElementById("dark_matter").style.marginTop = "0.68em"
-        document.getElementById("dark_matter").style.marginBottom = "-0.18em"
+    if (!meme) {
+        if (
+            game.dark_matter >= 1.7976931348622053 * 10 ** 308 &&
+            game.notation !== 9 &&
+            !game.om_bought[6]
+        ) {
+            document.documentElement.style.setProperty(
+                "--dark_matter_size",
+                "3em"
+            )
+            document.getElementById("dark_matter").style.marginTop = "0.2em"
+            document.getElementById("dark_matter").style.marginBottom =
+                "-0.28em"
+        } else {
+            document.documentElement.style.setProperty(
+                "--dark_matter_size",
+                "2em"
+            )
+            document.getElementById("dark_matter").style.marginTop = "0.68em"
+            document.getElementById("dark_matter").style.marginBottom =
+                "-0.18em"
+        }
     }
 
     //dark upgrades handling
@@ -3271,12 +3434,15 @@ function gravity_update() {
         if (game.dk_bought[upgrade.id]) {
             button.className = "qu_button superlit"
             button.innerHTML = "PURCHASED"
+            if (meme) button.disabled = true
         } else {
             button.innerHTML = "-" + format_num(upgrade.price) + " photons"
             if (game.photons >= upgrade.price) {
                 button.className = "qu_button lit"
+                if (meme) button.disabled = false
             } else {
                 button.className = "qu_button unlit"
+                if (meme) button.disabled = true
             }
         }
     }
@@ -3326,12 +3492,15 @@ function omega_update() {
         if (game.om_bought[upgrade.id]) {
             button.className = "qu_button superlit"
             button.innerHTML = "PURCHASED"
+            if (meme) button.disabled = true
         } else {
             button.innerHTML = "-" + format_num(upgrade.price) + " photons"
             if (game.photons >= upgrade.price) {
                 button.className = "qu_button lit"
+                if (meme) button.disabled = false
             } else {
                 button.className = "qu_button unlit"
+                if (meme) button.disabled = true
             }
         }
     }
@@ -3361,6 +3530,8 @@ function omega_update() {
                 "omega_in_progress"
             document.getElementById("omega_enter_button").innerHTML =
                 "IN PROGRESS"
+            if (meme)
+                document.getElementById("omega_enter_button").disabled = true
         } else {
             let total_completions =
                 game.completions[0] +
@@ -3387,9 +3558,17 @@ function omega_update() {
             if (total_completions >= 108 && amount >= quantum_requirement) {
                 document.getElementById("omega_enter_button").className =
                     "can_enter"
+                if (meme)
+                    document.getElementById(
+                        "omega_enter_button"
+                    ).disabled = false
             } else {
                 document.getElementById("omega_enter_button").className =
                     "cannot_enter"
+                if (meme)
+                    document.getElementById(
+                        "omega_enter_button"
+                    ).disabled = true
             }
 
             document.getElementById("omega_enter_button").innerHTML =
@@ -3425,8 +3604,10 @@ function achievements_update() {
             if (game.achievements[r]) {
                 document.getElementById("ach_header" + (i + 1)).innerHTML =
                     achievement.achievements[p].name
-                document.getElementById("ach_header" + (i + 1)).style.color =
-                    "#00ff00"
+                if (!meme)
+                    document.getElementById(
+                        "ach_header" + (i + 1)
+                    ).style.color = "#00ff00"
                 document.getElementById("ach_reqr" + (i + 1)).innerHTML =
                     achievement.achievements[p].requirement
                 document.getElementById("slot" + (i + 1)).className =
@@ -3438,8 +3619,10 @@ function achievements_update() {
             } else {
                 document.getElementById("ach_header" + (i + 1)).innerHTML =
                     "?????"
-                document.getElementById("ach_header" + (i + 1)).style.color =
-                    "#ff0000"
+                if (!meme)
+                    document.getElementById(
+                        "ach_header" + (i + 1)
+                    ).style.color = "#ff0000"
                 document.getElementById("slot" + (i + 1)).className =
                     "achievement_slot"
 
@@ -4235,12 +4418,7 @@ function description_update() {
             break
     }
 
-    if (
-        game.notation === 8 ||
-        (game.question &&
-            new Date().getUTCDate() === 1 &&
-            new Date().getUTCMonth() === 3)
-    ) {
+    if (game.notation === 8) {
         pp_upgrade.upgrades[14].desc =
             "Unlocks the EXP Overclocker, which boosts EXP ???x for ???"
         pp_map
@@ -5029,23 +5207,26 @@ function regenerate_ui() {
                 document.getElementById("oc_button").style.display = "none"
                 document.getElementById("oc_state").innerHTML = "Recharging"
                 document.getElementById("oc_timer").style.display = "block"
-                document.getElementById("oc_progress").style.background =
-                    "#ff2f00"
+                if (!meme)
+                    document.getElementById("oc_progress").style.background =
+                        "#ff2f00"
                 break
             case 1:
                 document.getElementById("oc_button").style.display = "inline"
                 document.getElementById("oc_state").innerHTML = "Standby"
                 document.getElementById("oc_timer").style.display = "none"
-                document.getElementById("oc_progress").style.background =
-                    "#ff2f00"
+                if (!meme)
+                    document.getElementById("oc_progress").style.background =
+                        "#ff2f00"
                 break
             case 2:
                 document.getElementById("oc_button").style.display = "none"
                 document.getElementById("oc_state").innerHTML =
                     "Boosting " + format_num(game.exp_oc) + "x"
                 document.getElementById("oc_timer").style.display = "block"
-                document.getElementById("oc_progress").style.background =
-                    "#ff7f00"
+                if (!meme)
+                    document.getElementById("oc_progress").style.background =
+                        "#ff7f00"
                 break
         }
 
@@ -5225,12 +5406,6 @@ function regenerate_ui() {
     if (game.om_bought[4]) {
         ps_toggle()
         ps_toggle()
-    }
-
-    if (game.question) {
-        document.getElementById("question_button").innerHTML = "ENABLED"
-    } else {
-        document.getElementById("question_button").innerHTML = "DISABLED"
     }
 
     document.getElementById("level_input").value = game.autopr_goal[0]
