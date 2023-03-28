@@ -1,3 +1,6 @@
+let tick_time = Date.now()
+let delta_time = undefined
+
 //game operations run every tick
 function tick() {
     //calculating total multiplier
@@ -78,7 +81,7 @@ function tick() {
 
     //autoclicker operation
     if (game.cps > 0) {
-        game.click_time += game.cps / game.tickspeed
+        game.click_time += game.cps / delta_time
         if (game.click_time >= 1) {
             if (game.challenge !== 7) {
                 if (game.battery_mode === 1 || game.perks[8])
@@ -128,14 +131,14 @@ function tick() {
                 if (!game.perks[27])
                     game.amp += Math.floor(
                         (get_amp(game.level) * game.watt_boost * 0.2) /
-                            game.tickspeed
+                            delta_time
                     )
                 else
                     game.amp += Math.floor(
                         (get_amp(game.level) *
                             game.patience *
                             game.watt_boost) /
-                            game.tickspeed
+                            delta_time
                     )
 
                 if (!game.achievements[36] && game.amp >= 100)
@@ -173,14 +176,14 @@ function tick() {
                             game.patience *
                             game.watt_boost *
                             0.2) /
-                            game.tickspeed
+                            delta_time
                     )
                 else
                     game.amp += Math.floor(
                         (get_amp(game.level) *
                             game.patience *
                             game.watt_boost) /
-                            game.tickspeed
+                            delta_time
                     )
 
                 if (!game.achievements[36] && game.amp >= 100)
@@ -214,11 +217,11 @@ function tick() {
     }
 
     //incrementing time statistics
-    game.time += 1
-    game.prestige_time += 1
-    game.reboot_time += 1
-    game.all_time += 1
-    game.afk_time += 1
+    game.time += 30 / delta_time
+    game.prestige_time += 30 / delta_time
+    game.reboot_time += 30 / delta_time
+    game.all_time += 30 / delta_time
+    game.afk_time += 30 / delta_time
 
     //photon colors
     document.documentElement.style.setProperty(
@@ -432,7 +435,7 @@ function tick() {
                 game.flux_boost *
                 game.flux_increase *
                 (game.flux_tier + game.starter_kit + game.generator_kit)) /
-            game.tickspeed
+            delta_time
         if (game.perks[3] && game.pp_bought[33]) {
             game.flux_increase = 1
             if (game.exp_flux >= 100)
@@ -654,7 +657,7 @@ function tick() {
     ) {
         switch (game.oc_state) {
             case 0:
-                game.oc_time++
+                game.oc_time += 30 / delta_time
                 if (game.pp_bought[26] && game.perks[5]) {
                     document.getElementById("oc_timer").innerHTML =
                         format_time(90 * game.tickspeed - game.oc_time) +
@@ -713,7 +716,7 @@ function tick() {
                 break
             case 2:
                 if (game.oc_time > 0) {
-                    game.oc_time--
+                    game.oc_time -= 30 / delta_time
                     document.getElementById("oc_timer").innerHTML =
                         format_time(game.oc_time) + " Left"
                     document.getElementById("oc_progress").style.width =
@@ -724,18 +727,16 @@ function tick() {
                 } else {
                     game.exp_oc = 1
                     game.oc_state = 0
+                    game.oc_time = 0
                     document.getElementById("oc_state").innerHTML = "Recharging"
-                    document.getElementById("oc_progress").style.background =
-                        "#ff2f00"
+                    if (!meme)
+                        document.getElementById(
+                            "oc_progress"
+                        ).style.background = "#ff2f00"
                 }
                 break
         }
-        if (
-            game.notation === 8 ||
-            (game.question &&
-                new Date().getUTCDate() === 1 &&
-                new Date().getUTCMonth() === 3)
-        ) {
+        if (game.notation === 8) {
             document.getElementById("oc_progress").style.width = "100%"
         }
 
@@ -752,7 +753,9 @@ function tick() {
             document.getElementById("oc_auto").style.display = "none"
             document.getElementById("oc_timer").style.display = "block"
             document.getElementById("oc_timer").innerHTML = "∞ Left"
-            document.getElementById("oc_progress").style.background = "#ff7f00"
+            if (!meme)
+                document.getElementById("oc_progress").style.background =
+                    "#ff7f00"
             document.getElementById("oc_progress").style.width = "100%"
         }
     }
@@ -802,13 +805,7 @@ function tick() {
             stored = "Stored EXP: 5:00 of EXP (MAX)"
         let if_discharge =
             "If Discharged: +" + format_num(0) + " EXP (Not Active)"
-        if (
-            game.cap_mode >= 1 ||
-            game.notation === 8 ||
-            (game.question &&
-                new Date().getUTCDate() === 1 &&
-                new Date().getUTCMonth() === 3)
-        ) {
+        if (game.cap_mode >= 1 || game.notation === 8) {
             if (!game.perks[9])
                 if_discharge =
                     "If Discharged: +" +
@@ -853,17 +850,24 @@ function tick() {
         ) {
             document.getElementById("discharge_button").className =
                 "button ready"
-            if (game.level < 60) {
-                document.getElementById("discharge_button").style.color =
-                    get_color(Math.floor(game.level / 10))
-            } else {
-                document.getElementById("discharge_button").style.color =
-                    get_color((Math.floor(game.level / 60) + 5) % 12)
+            if (meme)
+                document.getElementById("discharge_button").disabled = false
+            else {
+                if (game.level < 60) {
+                    document.getElementById("discharge_button").style.color =
+                        get_color(Math.floor(game.level / 10))
+                } else {
+                    document.getElementById("discharge_button").style.color =
+                        get_color((Math.floor(game.level / 60) + 5) % 12)
+                }
             }
         } else {
             document.getElementById("discharge_button").className =
                 "button blocked"
-            document.getElementById("discharge_button").style.color = "silver"
+            if (!meme)
+                document.getElementById("discharge_button").style.color =
+                    "silver"
+            else document.getElementById("discharge_button").disabled = true
         }
     }
 
@@ -1074,7 +1078,7 @@ function tick() {
         if (!game.achievements[157] && game.hps >= 10 ** 90)
             get_achievement(157)
 
-        if (game.challenge !== 8) game.helium += game.hps / game.tickspeed
+        if (game.challenge !== 8) game.helium += game.hps / delta_time
         game.helium_boost = (game.helium / 256 + 1) ** 1.25
     } else {
         game.hps = 0
@@ -1268,7 +1272,7 @@ function tick() {
 
     //dark matter handling
     if (game.qu_bought[7]) {
-        game.growth_time++
+        game.growth_time += 30 / delta_time
 
         if (game.growth_time >= game.growth_interval) {
             game.growth_time -= game.growth_interval
@@ -1627,7 +1631,7 @@ function tick() {
 
     //notification age handling
     for (const notif of notify.queue) {
-        notif.age++
+        notif.age += 30 / delta_time
         if (notif.age >= game.tickspeed * 4) {
             notif_map.get(notif).remove()
             notif_map.delete(notif)
@@ -1654,33 +1658,23 @@ function tick() {
 
     //handling held mouse
     if (game.mouse_held == true) {
-        game.mouse_time++
+        game.mouse_time += 30 / delta_time
         if (game.mouse_time >= game.tickspeed / 2) hold_tick()
     }
 
     //???
-    if (
-        game.question &&
-        new Date().getUTCDate() === 1 &&
-        new Date().getUTCMonth() === 3
-    ) {
+    if (game.notation === 8) {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v?.?.???<br>Made by ???"
-
-        game.notation = 8
-        notation()
-    } else if (game.notation === 8) {
-        document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v?.?.???<br>Made by Zakuro"
+            "<br><br><br>EXP Simulator v?.?.???<br>Made by ???<br><br>Last updated ???"
     } else {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v2.3.203<br>Made by Zakuro"
+            "<br><br><br>EXP Simulator v2.3.204<br>Made by Zakuro<br><br>Last updated March 28, 2023"
     }
 }
 
 //hold exp key handling
 function hold_tick() {
-    game.hold_time++
+    game.hold_time += 30 / delta_time
     if (game.hold_time >= game.tickspeed / 10) {
         game.hold_time = 0
         player_increment()
@@ -1924,7 +1918,7 @@ function load(savegame) {
             game.autopr_mode = 0
             game.exp_oc = 1
             game.oc_state = 0
-            game.oc_state = game.tickspeed * 180
+            game.oc_time = game.tickspeed * 180
         }
         //v2.1.100
         if (minor < 102) {
@@ -2083,7 +2077,6 @@ function load(savegame) {
         game.autohy_importance = 1
         game.budget = 0
         game.superspeed_power = 1
-        game.question = true
         game.dark_matter = new Decimal(1)
         game.dark_matter_boost = 1
         game.growth_interval = 60
@@ -2236,7 +2229,6 @@ function load(savegame) {
         }
         let reboot_watts = game.autorb_goal
         game.autorb_goal = [reboot_watts, 0.8]
-        game.question = true
         let old_subtab = game.subtab
         game.subtab = new Array(4).fill(0)
         game.subtab[0] = old_subtab[0]
@@ -2283,10 +2275,6 @@ function load(savegame) {
         if (game.dark_matter !== undefined)
             game.dark_matter = new Decimal(game.dark_matter)
         else game.dark_matter = new Decimal(1)
-        //v2.3.000
-        if (minor < 2) {
-            game.question = true
-        }
         //v2.3.002
         if (minor < 100) {
             let old_subtab = game.subtab
@@ -2538,7 +2526,8 @@ function wipe() {
         document.getElementById("oc_button").style.display = "none"
         document.getElementById("oc_state").innerHTML = "Recharging"
         document.getElementById("oc_timer").style.display = "block"
-        document.getElementById("oc_progress").style.background = "#ff2f00"
+        if (!meme)
+            document.getElementById("oc_progress").style.background = "#ff2f00"
 
         document.getElementById("capacitor").style.display = "none"
         document.getElementById("cap_50").style.display = "none"
@@ -2691,9 +2680,32 @@ new configurable_hotkey("Buy all upgrades (on upgrades tab)", "KeyM", ev => {
 })
 
 //setting up the tick loop
-let tick_loop = window.setInterval(function () {
-    tick()
-}, 1000 / game.tickspeed)
+function tick_loop() {
+    let delta_ms = undefined
+    let delta_ticks = 1
+    if (delta_time === undefined) {
+        delta_time = game.tickspeed
+    } else {
+        delta_ms = Date.now() - tick_time
+        delta_time = 1000 / delta_ms
+        delta_ticks = Math.floor((delta_ms * game.tickspeed) / 1000)
+    }
+
+    tick_time = Date.now()
+
+    if (delta_ms >= 333) {
+        if (delta_ticks > 60 * game.tickspeed) delta_ticks = 60 * game.tickspeed
+        delta_time *= delta_ticks
+        while (delta_ticks > 0) {
+            tick()
+            delta_ticks--
+        }
+    } else {
+        tick()
+    }
+
+    window.setTimeout(tick_loop, 1000 / game.tickspeed)
+}
 
 //setting up the visual update loop
 function refresh() {
@@ -2712,13 +2724,10 @@ function refresh() {
     gravity_update()
     omega_update()
 
-    if (new Date().getUTCDate() === 1 && new Date().getUTCMonth() === 3)
-        document.getElementById("question").style.display = "flex"
-    else document.getElementById("question").style.display = "none"
-
     window.setTimeout(refresh, 250 / game.refresh_rate)
 }
 
+tick_loop()
 refresh()
 
 goto_tab(0)
@@ -2733,6 +2742,4 @@ let save_loop = window.setInterval(function () {
         new notify("Game saved", "#00ddff")
 }, 60000)
 
-console.log(
-    "Hey! I see you there in the console...\nI hope you know what you're doing!\nJust don't cheat... OR ELSE"
-)
+console.log("*hacker voice* I'm in")
