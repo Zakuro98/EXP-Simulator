@@ -228,7 +228,7 @@ function get_achievement(id) {
     if (document.visibilityState === "visible")
         new notify(achievement.achievements[true_id].name, "#00ff00")
     achievement.achievements[true_id].new = true
-    document.getElementById("achievements").style.color = "#00ff00"
+    if (!meme) document.getElementById("achievements").style.color = "#00ff00"
 }
 
 //purchasing upgrades
