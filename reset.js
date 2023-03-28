@@ -560,7 +560,8 @@ function respec() {
         document.getElementById("oc_button").style.display = "none"
         document.getElementById("oc_state").innerHTML = "Recharging"
         document.getElementById("oc_timer").style.display = "block"
-        document.getElementById("oc_progress").style.background = "#ff2f00"
+        if (!meme)
+            document.getElementById("oc_progress").style.background = "#ff2f00"
         set_capacitance(0)
         game.prev_mode = 0
         game.stored_exp = 0
@@ -1089,7 +1090,9 @@ function reboot() {
             document.getElementById("oc_button").style.display = "none"
             document.getElementById("oc_state").innerHTML = "Recharging"
             document.getElementById("oc_timer").style.display = "block"
-            document.getElementById("oc_progress").style.background = "#ff2f00"
+            if (!meme)
+                document.getElementById("oc_progress").style.background =
+                    "#ff2f00"
 
             document.getElementById("capacitor").style.display = "none"
             document.getElementById("cap_50").style.display = "none"
@@ -1225,7 +1228,8 @@ function empty_reboot() {
     document.getElementById("oc_button").style.display = "none"
     document.getElementById("oc_state").innerHTML = "Recharging"
     document.getElementById("oc_timer").style.display = "block"
-    document.getElementById("oc_progress").style.background = "#ff2f00"
+    if (!meme)
+        document.getElementById("oc_progress").style.background = "#ff2f00"
 
     document.getElementById("capacitor").style.display = "none"
     document.getElementById("cap_50").style.display = "none"
