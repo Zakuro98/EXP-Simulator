@@ -213,9 +213,10 @@ function confirmation() {
         game.confirmation = true
         game.autorb_toggle = false
         document.getElementById("autorb_toggle").innerHTML = "DISABLED"
-        document.getElementById("autorb_toggle").style.color = "#ff0000"
+        if (!meme)
+            document.getElementById("autorb_toggle").style.color = "#ff0000"
         document.getElementById("watt_auto").innerHTML = "OFF"
-        document.getElementById("watt_auto").style.color = "#ff0000"
+        if (!meme) document.getElementById("watt_auto").style.color = "#ff0000"
         document.getElementById("confirm_button").innerHTML = "ENABLED"
     }
 }
@@ -240,7 +241,8 @@ function quantum_confirmation() {
         game.quantum_confirmation = true
         game.autoqu_toggle = false
         document.getElementById("autoqu_toggle").innerHTML = "DISABLED"
-        document.getElementById("autoqu_toggle").style.color = "#ff0000"
+        if (!meme)
+            document.getElementById("autoqu_toggle").style.color = "#ff0000"
         document.getElementById("qu_confirm_button").innerHTML = "ENABLED"
     }
 }
@@ -296,7 +298,8 @@ function hints() {
 //tab switching
 function goto_tab(id) {
     if (id !== 5 && game.tab === 6) {
-        document.getElementById("achievements").style.color = "#ffffff"
+        if (!meme)
+            document.getElementById("achievements").style.color = "#ffffff"
         for (let i = 0; i < achievement.achievements.length; i++) {
             achievement.achievements[i].new = false
         }
@@ -371,7 +374,8 @@ function goto_tab(id) {
             break
         case 6:
             document.getElementById("achievements_page").style.display = "block"
-            document.getElementById("achievements").style.color = "#ffffff"
+            if (!meme)
+                document.getElementById("achievements").style.color = "#ffffff"
             break
         case 7:
             document.getElementById("settings_page").style.display = "flex"
@@ -493,15 +497,19 @@ function max_toggle() {
     if (game.buy_max) {
         game.buy_max = false
         document.getElementById("reactor_buy_max").innerHTML = "BUY ONE"
-        document.getElementById("reactor_buy_max").style.color = "#4db2ff"
-        document.getElementById("reactor_buy_max").style.textShadow =
-            "0em 0em 0.2em #0091ff"
+        if (!meme)
+            document.getElementById("reactor_buy_max").style.color = "#4db2ff"
+        if (!meme)
+            document.getElementById("reactor_buy_max").style.textShadow =
+                "0em 0em 0.2em #0091ff"
     } else {
         game.buy_max = true
         document.getElementById("reactor_buy_max").innerHTML = "BUY MAX"
-        document.getElementById("reactor_buy_max").style.color = "#ffffff"
-        document.getElementById("reactor_buy_max").style.textShadow =
-            "0em 0em 0.2em #ffffff"
+        if (!meme)
+            document.getElementById("reactor_buy_max").style.color = "#ffffff"
+        if (!meme)
+            document.getElementById("reactor_buy_max").style.textShadow =
+                "0em 0em 0.2em #ffffff"
     }
 }
 
