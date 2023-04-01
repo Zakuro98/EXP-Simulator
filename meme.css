@@ -2006,6 +2006,7 @@ main {
 
 .title {
     font-size: 2.857em;
+    font-weight: bold;
     margin-top: 0.4em;
     margin-bottom: 0.8em;
 }
@@ -2013,6 +2014,7 @@ main {
 .change_head {
     margin-top: 0em;
     margin-bottom: 0em;
+    font-weight: bold;
 }
 
 .change_minor {
@@ -2024,6 +2026,7 @@ main {
     font-size: 1.4em;
     margin-top: 0em;
     margin-bottom: 0em;
+    font-weight: bold;
 }
 
 #hotkeys_list {
