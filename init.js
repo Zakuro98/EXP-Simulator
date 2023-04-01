@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.3.201",
+    version: "2.3.205",
 
     //v2.0.000 variables
     total_exp: 0,
@@ -262,11 +262,15 @@ let game = {
 
     perks_hide: false,
 
-    //v2.3.201
+    //v2.3.201 variables
     amp_amount: new Array(5).fill(-1),
     amp_time: new Array(5).fill(-1),
     watts_amount: new Array(5).fill(-1),
     watts_time: new Array(5).fill(-1),
+
+    //v2.3.205 variables
+    work: true,
+    work_unlocked: false,
 }
 
 //initialize maps
@@ -285,14 +289,7 @@ let entering = false
 let reduction = 1
 let prism_angle = Math.PI / 10
 
-let meme = false
-
-if (new Date().getDate() === 1 && new Date().getMonth() === 3) meme = true
-
-if (meme) {
-    document.getElementById("main_css").rel = "stylesheet alternate"
-    document.getElementById("meme_css").rel = "stylesheet"
-}
+let meme = true
 
 //initialize pp upgrade priorities
 for (let i = 0; i < 39; i++) {
