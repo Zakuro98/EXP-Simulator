@@ -4975,6 +4975,11 @@ function regenerate_ui() {
     } else if (game.tab === 5) {
         goto_subtab(game.subtab[3])
     }
+    if (game.work) {
+        document.getElementById("work_button").innerHTML = "ENABLED"
+    } else {
+        document.getElementById("work_button").innerHTML = "DISABLED"
+    }
     switch (game.notation) {
         case 0:
             document.getElementById("notation_button").innerHTML = "LONG"
