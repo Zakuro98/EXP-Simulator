@@ -1668,7 +1668,7 @@ function tick() {
             "<br><br><br>EXP Simulator v?.?.???<br>Made by ???<br><br>Last updated ???"
     } else {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v2.3.204<br>Made by Zakuro<br><br>Last updated March 28, 2023"
+            "<br><br><br>EXP Simulator v2.3.205<br>Made by Zakuro<br><br>Last updated March 32, 2023"
     }
 }
 
@@ -1840,7 +1840,7 @@ function pre_save() {
 function save() {
     pre_save()
     game.beta = false
-    game.version = "2.3.201"
+    game.version = "2.3.205"
     localStorage.setItem("exp_simulator_save", JSON.stringify(game))
 }
 
@@ -1984,7 +1984,7 @@ function load(savegame) {
             game.mouse_held = false
         }
         //v2.1.405
-        game.version = "2.3.201"
+        game.version = "2.3.205"
         if (game.tab > 2) game.tab += 2
         if (game.tab > 3) game.tab += 1
         game.reboot = 0
@@ -2108,6 +2108,8 @@ function load(savegame) {
         game.amp_time = new Array(5).fill(-1)
         game.watts_amount = new Array(5).fill(-1)
         game.watts_time = new Array(5).fill(-1)
+        game.work = true
+        game.work_unlocked = false
     } else if (major < 3) {
         game = savegame
         //v2.2.000
@@ -2200,7 +2202,7 @@ function load(savegame) {
             game.switchpoint = 0
         }
         //v2.2.301
-        game.version = "2.3.201"
+        game.version = "2.3.205"
         game.amp_eff = new Array(5).fill(-1)
         game.watts_eff = new Array(5).fill(-1)
         game.quantum = 0
@@ -2264,8 +2266,10 @@ function load(savegame) {
         game.amp_time = new Array(5).fill(-1)
         game.watts_amount = new Array(5).fill(-1)
         game.watts_time = new Array(5).fill(-1)
+        game.work = true
+        game.work_unlocked = false
     } else {
-        if (minor > 201) {
+        if (minor > 205) {
             alert(
                 "You cannot load saves from game versions that do not exist\nIf you think you are recieving this alert in error, reload and try again"
             )
@@ -2334,7 +2338,12 @@ function load(savegame) {
             game.subtab[2] = old_subtab[2]
         }
         //v2.3.201
-        game.version = "2.3.201"
+        if (minor < 205) {
+            game.work = true
+            game.work_unlocked = false
+        }
+        //v2.3.205
+        game.version = "2.3.205"
     }
     if (game.om_boost[2] === 0) game.om_boost[2] === 1
     if (game.question) {
@@ -2739,6 +2748,25 @@ goto_tab(0)
 
 //load the game when opened
 load(JSON.parse(localStorage.getItem("exp_simulator_save")))
+
+meme = false
+
+if (new Date().getDate() === 1 && new Date().getMonth() === 3)
+    game.work_unlocked = true
+if (game.work_unlocked && game.work) meme = true
+
+if (meme) {
+    document.getElementById("main_css").rel = "stylesheet alternate"
+    document.getElementById("meme_css").rel = "stylesheet"
+
+    document.getElementById("changelog").href = "meme_changelog.html"
+}
+
+if (game.work_unlocked) {
+    document.getElementById("work").style.display = "flex"
+} else {
+    document.getElementById("work").style.display = "none"
+}
 
 //setting up the autosave loop
 let save_loop = window.setInterval(function () {
