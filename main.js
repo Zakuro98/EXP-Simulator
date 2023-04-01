@@ -2337,6 +2337,16 @@ function load(savegame) {
         game.version = "2.3.201"
     }
     if (game.om_boost[2] === 0) game.om_boost[2] === 1
+    if (game.question) {
+        game.question = false
+        notation()
+        notation()
+        notation()
+        notation()
+        notation()
+        notation()
+        notation()
+    }
     regenerate_ui()
 }
 
