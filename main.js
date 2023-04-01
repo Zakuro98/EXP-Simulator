@@ -2339,13 +2339,8 @@ function load(savegame) {
     if (game.om_boost[2] === 0) game.om_boost[2] === 1
     if (game.question) {
         game.question = false
-        notation()
-        notation()
-        notation()
-        notation()
-        notation()
-        notation()
-        notation()
+        game.notation = 1
+        document.getElementById("notation_button").innerHTML = "STANDARD"
     }
     regenerate_ui()
 }
