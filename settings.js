@@ -1,5 +1,6 @@
 //notation switching
 function notation() {
+    game.notation += 1
     if (game.notation >= 14) game.notation = 0
     pp_update()
     switch (game.notation) {
