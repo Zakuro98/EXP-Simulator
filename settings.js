@@ -1,3 +1,16 @@
+//toggle work theme
+function work() {
+    if (game.work) {
+        game.work = false
+        document.getElementById("work_button").innerHTML = "DISABLED"
+    } else {
+        game.work = true
+        document.getElementById("work_button").innerHTML = "ENABLED"
+    }
+    save()
+    window.location.reload()
+}
+
 //notation switching
 function notation() {
     game.notation += 1
