@@ -1,11 +1,5 @@
 //notation switching
 function notation() {
-    if (
-        new Date().getUTCDate() !== 1 ||
-        new Date().getUTCMonth() !== 3 ||
-        !game.question
-    )
-        game.notation += 1
     if (game.notation >= 14) game.notation = 0
     pp_update()
     switch (game.notation) {
