@@ -1668,7 +1668,7 @@ function tick() {
             "<br><br><br>EXP Simulator v?.?.???<br>Made by ???<br><br>Last updated ???"
     } else {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v2.3.205<br>Made by Zakuro<br><br>Last updated March 32, 2023"
+            "<br><br><br>EXP Simulator v2.3.206<br>Made by Zakuro<br><br>Last updated April 2, 2023"
     }
 }
 
@@ -2351,6 +2351,18 @@ function load(savegame) {
         game.notation = 1
         document.getElementById("notation_button").innerHTML = "STANDARD"
     }
+
+    if (new Date().getDate() === 1 && new Date().getMonth() === 3)
+        game.work_unlocked = true
+    if (game.work_unlocked && game.work) meme = true
+
+    if (meme) {
+        document.getElementById("main_css").rel = "stylesheet alternate"
+        document.getElementById("meme_css").rel = "stylesheet"
+
+        document.getElementById("changelog").href = "meme_changelog.html"
+    }
+
     regenerate_ui()
 }
 
@@ -2741,32 +2753,20 @@ function refresh() {
     window.setTimeout(refresh, 250 / game.refresh_rate)
 }
 
-tick_loop()
-refresh()
-
+meme = false
 goto_tab(0)
 
 //load the game when opened
 load(JSON.parse(localStorage.getItem("exp_simulator_save")))
-
-meme = false
-
-if (new Date().getDate() === 1 && new Date().getMonth() === 3)
-    game.work_unlocked = true
-if (game.work_unlocked && game.work) meme = true
-
-if (meme) {
-    document.getElementById("main_css").rel = "stylesheet alternate"
-    document.getElementById("meme_css").rel = "stylesheet"
-
-    document.getElementById("changelog").href = "meme_changelog.html"
-}
 
 if (game.work_unlocked) {
     document.getElementById("work").style.display = "flex"
 } else {
     document.getElementById("work").style.display = "none"
 }
+
+tick_loop()
+refresh()
 
 //setting up the autosave loop
 let save_loop = window.setInterval(function () {
