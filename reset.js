@@ -574,6 +574,7 @@ function respec() {
         document.getElementById("dis_auto").style.display = "none"
         document.getElementById("dis_text").style.display = "none"
         document.getElementById("dis_input").style.display = "none"
+        if (game.challenge !== 7) game.flux_boost /= 5
 
         prestige()
         game.pp = game.total_pp
