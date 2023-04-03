@@ -530,6 +530,8 @@ function prestige() {
 //respeccing prestige upgrades
 function respec() {
     if (game.level >= game.pr_min) {
+        if (game.challenge !== 7 && game.pp_bought[33]) game.flux_boost /= 5
+        
         let all_pp_upgrades = true
         for (const upgrade3 of pp_upgrade.upgrades) {
             if (
@@ -574,7 +576,6 @@ function respec() {
         document.getElementById("dis_auto").style.display = "none"
         document.getElementById("dis_text").style.display = "none"
         document.getElementById("dis_input").style.display = "none"
-        if (game.challenge !== 7) game.flux_boost /= 5
 
         prestige()
         game.pp = game.total_pp
