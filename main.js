@@ -841,7 +841,7 @@ function tick() {
             if_discharge
 
         if (game.stored_exp <= 300 * game.tickspeed) {
-            game.stored_exp += 1 - game.cap_boost
+            game.stored_exp += (30 / delta_time) * (1 - game.cap_boost)
         }
 
         if (
