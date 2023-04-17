@@ -2707,11 +2707,15 @@ new configurable_hotkey("Buy all upgrades (on upgrades tab)", "KeyM", ev => {
 
 //setting up the tick loop
 function tick_loop() {
+    let start_time = Date.now()
     let delta_ms = undefined
     let delta_ticks = 1
     if (delta_time === undefined) {
         delta_time = game.tickspeed
     } else {
+        if (Date.now() < tick_time) tick_time = Date.now()
+        if (Date.now() > tick_time + 3600000) tick_time = Date.now() - 3600000
+
         delta_ms = Date.now() - tick_time
         delta_time = 1000 / delta_ms
         delta_ticks = Math.floor((delta_ms * game.tickspeed) / 1000)
@@ -2730,7 +2734,14 @@ function tick_loop() {
         tick()
     }
 
-    window.setTimeout(tick_loop, 1000 / game.tickspeed)
+    let end_time = Date.now()
+    let total_time = end_time - start_time
+    if (total_time < 0) total_time = 0
+    if (total_time < 1000 / game.tickspeed) {
+        window.setTimeout(tick_loop, 1000 / game.tickspeed - total_time)
+    } else {
+        tick_loop()
+    }
 }
 
 //setting up the visual update loop
