@@ -597,7 +597,7 @@ function tick() {
     //smart prestige automation
     if (game.perks[14]) {
         if (game.smartpr_toggle && game.autopr_toggle) {
-            game.smartpr_time++
+            game.smartpr_time += 30 / delta_time
             document.getElementById("smart_time").innerHTML =
                 "Current Mode Time: " + format_time(game.smartpr_time)
             if (game.smartpr_mode === 0) {
@@ -841,7 +841,7 @@ function tick() {
             if_discharge
 
         if (game.stored_exp <= 300 * game.tickspeed) {
-            game.stored_exp += (30 / delta_time) * (1 - game.cap_boost)
+            game.stored_exp += 1 - game.cap_boost
         }
 
         if (
