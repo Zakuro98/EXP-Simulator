@@ -131,9 +131,6 @@
                         <button id="settings" class="tab" onclick="goto_tab(7)">
                             SETTINGS
                         </button>
-                        <button id="the_end" class="tab" onclick="goto_tab(8)">
-                            THE END!
-                        </button>
                     </div>
                 </div>
 
@@ -513,6 +510,11 @@
                                 STRICT
                             </button>
                         </div>
+                        <p class="goal_text2">
+                            IGNORE Mode: Ignores upgrade priority and will always buy the cheapest upgrade available
+                            <br>WEAK Mode: Behaves like IGNORE, but if given a choice of multiple upgrades to buy, will buy the cheapest one with the lowest priority value
+                            <br>STRICT Mode: Will wait until it can afford the cheapest upgrade with the lowest priority value that hasn't been purchased
+                        </p>
                     </div>
                 </div>
 
@@ -705,15 +707,15 @@
                             </div>
                             <div id="autohy_portion">
                                 <p class="goal_text">
-                                    Hydrogen Savings Proportion:
+                                    Portion of hydrogen gains to use:
                                 </p>
                                 <input class="goal_input" id="portion_input" type="number" value="0.5" step="0.01" min="0" max="1">
                             </div>
-                            <div id="autohy_importance">
+                            <div id="autohy_deuterium">
                                 <p class="goal_text">
-                                    Deuterium Importance:
+                                    Portion of hydrogen to use on Deuterium Power:
                                 </p>
-                                <input class="goal_input" id="importance_input" type="number" value="1" step="0.01" min="0.01" max="100">
+                                <input class="goal_input" id="deuterium_input" type="number" value="0.5" step="0.01" min="0" max="1">
                             </div>
                         </div>
                     </div>
@@ -750,8 +752,9 @@
                                 game.budget -= game.supply_price
                                 if (game.budget < 0) game.budget = 0
                                 game.supply_level++
-                                game.supply_price *= 5
-                                if (game.supply_level > 16) game.supply_price *= 5 * (game.supply_level - 16) ** 2
+                                if (game.supply_level > 11)
+                                    game.supply_price *= 5 ** (game.supply_level - 10)
+                                else game.supply_price *= 5
                             }">
                             -16.0 g hydrogen
                         </button>
@@ -1049,7 +1052,8 @@
                         </p>
                         <p id="omega_challenge_info">
                             You must be able to Quantize to enter the Omega Challenge
-                            <br>Gain the required amount of photons to complete the Omega Challenge
+                            <br>You will gain boosts based on your best photons gained inside the challenge
+                            <br>Free Omega Points gained from the challenge cannot be used inside the challenge
                         </p>
                         <div id="omega_exit_center">
                             <button id="omega_exit_button" class="omega_button" onclick="exit_omega_challenge()">
@@ -1061,11 +1065,12 @@
                                 <p id="omega_challenge_desc">
                                     All EXP production ^0.50
                                 </p>
-                                <p id="omega_challenge_goal">
-                                    Goal: <span class="challenge_photons">+1.000e17 photons</span>
+                                <p id="omega_challenge_best">
+                                    Best photons: <span class="challenge_photons">+0 photons</span>
                                 </p>
-                                <p id="omega_challenge_complete">
-                                    Completions: 0<br>Growth Factor boost from completions: 1x
+                                <p id="omega_challenge_boosts">
+                                    Growth Factor boost: 1.00x
+                                    <br>Free Omega Points: +0 Ω (next at +2.000e16 photons)
                                 </p>
                             </div>
                             <button id="omega_enter_button" class="cannot_enter" onclick="enter_omega_challenge()">
@@ -1077,19 +1082,7 @@
                     <p id="omega_upgrades_text">
                         OMEGA UPGRADES
                     </p>
-                </div>
-
-                <div id="the_end_page">
-                    <p id="the_end_text">
-                        <span id="congratulations">CONGRATULATIONS!</span>
-                        <br>You have reached LVL 1,000,000 and thus officially beaten EXP Simulator!
-                        <br>Thanks for sticking with the game for this long!
-                        <br><br>
-                        There's no second Limit Break or anything so you can't go past LVL 1,000,000...
-                        <br>You can quit now, or you can try to play more if you want.
-                        <br>Maybe you could even get all the achievements if you haven't already. Good luck!
-                    </p>
-                </div>                
+                </div>               
 
                 <div id="statistics_tabs" class="menu">
                     <button id="general_tab" class="button" onclick="goto_subtab(0)">
@@ -1218,6 +1211,14 @@
                             EXP Automation Power:
                         </p>
                         <p id="auto_power_stat" class="stat_right">
+                            -
+                        </p>
+                    </div>
+                    <div id="level_rate" class="stat_item">
+                        <p id="level_rate_name" class="stat_left">
+                            Level-Up Rate:
+                        </p>
+                        <p id="level_rate_stat" class="stat_right">
                             -
                         </p>
                     </div>
@@ -1632,7 +1633,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.3.207<br>Made by Zakuro<br><br>Last updated March 14, 2024
+                    <br><br><br>EXP Simulator v2.3.300<br>Made by Zakuro<br><br>Last updated July 18, 2024
                 </p>
                 <a id="changelog" href="changelog.html" target="_blank" class="info link">
                     Changelog
