@@ -1014,6 +1014,13 @@ main {
     display: inline;
 }
 
+.goal_text2 {
+    color: white;
+    font-size: 0.75em;
+    margin-top: 0.5em;
+    margin-bottom: 0em;
+}
+
 .goal_input {
     background-color: #410a4a;
     width: 5em;
@@ -2081,9 +2088,15 @@ main {
     text-align: center;
 }
 
-#interval_button_center, #growth_button_center, #collapse_button_center, #retrieve_button_center, #omega_exit_center {
+#interval_button_center, #growth_button_center, #collapse_button_center, #omega_exit_center {
     display: flex;
     flex-direction: column;
+}
+
+#retrieve_button_center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 #interval_button, #growth_button {
@@ -2258,6 +2271,10 @@ main {
     justify-content: center;
 }
 
+#linked_chamber_buttons {
+    display: none;
+}
+
 .omega_button {
     background-color: #410a4a;
     color: #e1ff38;
@@ -2286,6 +2303,11 @@ main {
 }
 
 #retrieve_button {
+    font-size: 0.857em;
+}
+
+#assign_1_linked, #assign_all_linked {
+    display: none;
     font-size: 0.857em;
     align-self: center;
 }
@@ -2358,7 +2380,7 @@ main {
     padding-right: 1.2em;
 }
 
-#omega_challenge_desc, #omega_challenge_goal {
+#omega_challenge_desc, #omega_challenge_best {
     color: white;
     margin-top: 0em;
     margin-bottom: 0em;
@@ -2371,7 +2393,7 @@ main {
     margin-bottom: 0em;
 }
 
-#omega_challenge_complete {
+#omega_challenge_boosts {
     color: white;
     margin-top: 0.285em;
     margin-bottom: 0em;
