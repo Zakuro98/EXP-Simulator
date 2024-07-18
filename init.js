@@ -1,13 +1,13 @@
 //initializing game variables
 let game = {
-    version: "2.3.205",
+    version: "2.3.300",
 
     //v2.0.000 variables
-    total_exp: 0,
+    total_exp: new Decimal(0),
     exp_add: 1,
     level: 1,
-    exp: 0,
-    goal: 32,
+    exp: new Decimal(0),
+    goal: new Decimal(32),
 
     cps: 0,
     click_time: 0,
@@ -22,7 +22,7 @@ let game = {
     tickspeed: 30,
 
     //v2.0.200 variables
-    all_time_exp: 0,
+    all_time_exp: new Decimal(0),
     highest_level: 1,
     clicks: 0,
     total_clicks: 0,
@@ -92,7 +92,7 @@ let game = {
     cap_boost: 1,
     stored_exp: 0,
 
-    global_multiplier: 1,
+    global_multiplier: new Decimal(1),
     flux_boost: 1,
 
     autods_toggle: 0,
@@ -116,7 +116,7 @@ let game = {
 
     //v2.2.000 variables
     reboot: 0,
-    prestige_exp: 0,
+    prestige_exp: new Decimal(0),
     prestige_time: 0,
     fastest_reboot: 10 ** 21,
     all_time_highest_level: 1,
@@ -125,7 +125,7 @@ let game = {
     watts: 0,
     watt_boost: 1,
 
-    perks: new Array(28).fill(false),
+    perks: new Array(29).fill(false),
     generator_kit: 0,
     flux_increase: 1,
 
@@ -133,7 +133,7 @@ let game = {
     autopp_mode: 0,
     priority: new Array(39).fill(1),
 
-    achievements: new Array(149).fill(false),
+    achievements: new Array(175).fill(false),
     ach_power: 1,
     achiev_page: 0,
     no_automation: true,
@@ -200,13 +200,13 @@ let game = {
 
     //v2.3.000 variables
     quantum: 0,
-    reboot_exp: 0,
+    reboot_exp: new Decimal(0),
     reboot_time: 0,
     fastest_quantize: 10 ** 21,
     reboot_highest_level: 1,
     reboot_clicks: 0,
 
-    photons: 0,
+    photons: new Decimal(0),
     prism_level: 0,
     prism_boost: 1,
     qu_bought: new Array(8).fill(false),
@@ -214,15 +214,12 @@ let game = {
     autorb_mode: 0,
     autohy_toggle: false,
     autohy_portion: 0.5,
-    autohy_importance: 1,
-    budget: 0,
+    autohy_deuterium: 0.5,
+    budget: new Array(9).fill(0),
     prev_completions: 0,
     superspeed_power: 1,
 
     quantum_confirmation: true,
-
-    //v2.3.002 variables
-    question: true,
 
     //v2.3.100 variables
     dark_matter: new Decimal(1),
@@ -230,7 +227,7 @@ let game = {
     growth_interval: 60,
     growth_factor: 1,
     growth_time: 0,
-    growth_price: [10 ** 15, 10 ** 13],
+    growth_price: [new Decimal(10 ** 17), new Decimal(5 * 10 ** 14)],
     dk_bought: new Array(8).fill(false),
 
     infusion: 1,
@@ -253,7 +250,6 @@ let game = {
     om_assigned: [0, 0, 0],
 
     omega_challenge: false,
-    om_completions: 0,
 
     autocl_toggle: false,
     autogr_toggle: false,
@@ -271,6 +267,13 @@ let game = {
     //v2.3.205 variables
     work: true,
     work_unlocked: false,
+
+    //v2.3.300 variables
+    prism_price: new Decimal(1),
+    growth_level: [0, 0],
+    omega_best: new Decimal(0),
+    free_omega_points: 0,
+    op_dark_boost: 1,
 }
 
 //initialize maps
@@ -942,10 +945,10 @@ function format_infinity(num) {
     }
     let output = ""
     if (num.cmp(1.7976931348622053 * 10 ** 308) === -1) {
-        let output = num.toNumber().toString()
-        if (num >= 1000) {
+        output = num.toNumber().toString()
+        if (num.cmp(1000) >= 0) {
             let digits = output.length
-            if (num < 10 ** 21) {
+            if (num.cmp(Decimal.pow(10, 21)) === -1) {
                 for (let i = digits - 3; i > 0; i -= 3) {
                     output = output.substr(0, i) + "," + output.substr(i)
                 }
@@ -1861,8 +1864,7 @@ function format_infinity(num) {
         }
     }
     if (
-        (num.cmp(1.7976931348622053 * 10 ** 308) === 1 ||
-            num.cmp(1.7976931348622053 * 10 ** 308) === 0) &&
+        num.cmp(Decimal.pow(10, 2 ** 53)) >= 1 &&
         game.notation !== 9 &&
         !game.om_bought[6]
     ) {
@@ -2131,72 +2133,84 @@ function get_level(xp) {
     const ak = 760779.9379686277
 
     if (game.challenge !== 3 && game.challenge !== 9) {
-        if (xp < a) {
-            return Math.floor(((27 * xp) / 32) ** (1 / 3) - 1)
-        } else if (xp < d) {
-            return Math.floor(((27 * (xp + b - a)) / 32) ** (1 / 5) + 60 - c)
-        } else if (xp < g) {
-            return Math.floor(((27 * (xp + e - d)) / 32) ** (2 / 13) + 300 - f)
-        } else if (xp < j) {
-            return Math.floor(((27 * (xp + h - g)) / 32) ** (1 / 8) + 1320 - i)
-        } else if (xp < m) {
-            return Math.floor(((27 * (xp + k - j)) / 32) ** (1 / 9) + 4200 - l)
-        } else if (xp < p) {
+        if (xp.cmp(a) === -1) {
+            return Math.floor(((27 * xp.toNumber()) / 32) ** (1 / 3) - 1)
+        } else if (xp.cmp(d) === -1) {
             return Math.floor(
-                ((27 * (xp + n - m)) / 32) ** (1 / 12) + 12000 - o
+                ((27 * (xp.toNumber() + b - a)) / 32) ** (1 / 5) + 60 - c
             )
-        } else if (xp < s) {
+        } else if (xp.cmp(g) === -1) {
             return Math.floor(
-                ((27 * (xp + q - p)) / 32) ** (1 / 14) + 16800 - r
+                ((27 * (xp.toNumber() + e - d)) / 32) ** (2 / 13) + 300 - f
             )
-        } else if (xp < v) {
+        } else if (xp.cmp(j) === -1) {
             return Math.floor(
-                ((27 * (xp + t - s)) / 32) ** (1 / 18) + 24000 - u
+                ((27 * (xp.toNumber() + h - g)) / 32) ** (1 / 8) + 1320 - i
             )
-        } else if (xp < y) {
+        } else if (xp.cmp(m) === -1) {
             return Math.floor(
-                ((27 * (xp + w - v)) / 32) ** (1 / 21) + 32000 - x
+                ((27 * (xp.toNumber() + k - j)) / 32) ** (1 / 9) + 4200 - l
             )
-        } else if (xp < ab) {
+        } else if (xp.cmp(p) === -1) {
             return Math.floor(
-                ((27 * (xp + z - y)) / 32) ** (1 / 24) + 42000 - aa
+                ((27 * (xp.toNumber() + n - m)) / 32) ** (1 / 12) + 12000 - o
             )
-        } else if (xp < ae) {
+        } else if (xp.cmp(s) === -1) {
             return Math.floor(
-                ((27 * (xp + ac - ab)) / 32) ** (1 / 30) + 60000 - ad
+                ((27 * (xp.toNumber() + q - p)) / 32) ** (1 / 14) + 16800 - r
             )
-        } else if (xp < ah) {
+        } else if (xp.cmp(v) === -1) {
             return Math.floor(
-                ((27 * (xp + af - ae)) / 32) ** (1 / 36) + 150000 - ag
+                ((27 * (xp.toNumber() + t - s)) / 32) ** (1 / 18) + 24000 - u
+            )
+        } else if (xp.cmp(y) === -1) {
+            return Math.floor(
+                ((27 * (xp.toNumber() + w - v)) / 32) ** (1 / 21) + 32000 - x
+            )
+        } else if (xp.cmp(ab) === -1) {
+            return Math.floor(
+                ((27 * (xp.toNumber() + z - y)) / 32) ** (1 / 24) + 42000 - aa
+            )
+        } else if (xp.cmp(ae) === -1) {
+            return Math.floor(
+                ((27 * (xp.toNumber() + ac - ab)) / 32) ** (1 / 30) + 60000 - ad
+            )
+        } else if (xp.cmp(ah) === -1) {
+            return Math.floor(
+                ((27 * (xp.toNumber() + af - ae)) / 32) ** (1 / 36) +
+                    150000 -
+                    ag
             )
         } else {
-            return Math.floor(Math.log(xp - ai) / aj - ak)
+            return Math.floor(xp.sub(ai).ln() / aj - ak)
         }
     } else {
         let precision = 10 ** 14
-        if (xp < a * 60) {
+        if (xp.cmp(a * 60) === -1) {
             let guess = 60
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) * (guess + 1) ** 2 * (4 * guess + 1)) +
                     guess
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < d * 300) {
+        } else if (xp.cmp(d * 300) === -1) {
             let guess = 300
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 60 + c) ** 4 *
                             (6 * guess - 60 + c) +
@@ -2206,15 +2220,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < g * 1320) {
+        } else if (xp.cmp(g * 1320) === -1) {
             let guess = 1320
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 300 + f) ** 5.5 *
                             (7.5 * guess - 300 + f) +
@@ -2224,15 +2239,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < j * 4200) {
+        } else if (xp.cmp(j * 4200) === -1) {
             let guess = 4200
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 1320 + i) ** 7 *
                             (9 * guess - 1320 + i) +
@@ -2242,15 +2258,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < m * 12000) {
+        } else if (xp.cmp(m * 12000) === -1) {
             let guess = 12000
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 4200 + l) ** 8 *
                             (10 * guess - 4200 + l) +
@@ -2260,15 +2277,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < p * 16800) {
+        } else if (xp.cmp(p * 16800) === -1) {
             let guess = 16800
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 12000 + o) ** 11 *
                             (13 * guess - 12000 + o) +
@@ -2278,15 +2296,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < s * 24000) {
+        } else if (xp.cmp(s * 24000) === -1) {
             let guess = 24000
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 16800 + r) ** 13 *
                             (15 * guess - 16800 + r) +
@@ -2296,15 +2315,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < v * 32000) {
+        } else if (xp.cmp(v * 32000) === -1) {
             let guess = 32000
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 24000 + u) ** 17 *
                             (19 * guess - 24000 + u) +
@@ -2314,15 +2334,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < y * 42000) {
+        } else if (xp.cmp(y * 42000) === -1) {
             let guess = 42000
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 32000 + x) ** 20 *
                             (22 * guess - 32000 + x) +
@@ -2332,15 +2353,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < ab * 60000) {
+        } else if (xp.cmp(ab * 60000) === -1) {
             let guess = 60000
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 42000 + aa) ** 23 *
                             (25 * guess - 42000 + aa) +
@@ -2350,15 +2372,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < ae * 150000) {
+        } else if (xp.cmp(ae * 150000) === -1) {
             let guess = 150000
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 60000 + ad) ** 29 *
                             (31 * guess - 60000 + ad) +
@@ -2368,15 +2391,16 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < ah * 320000) {
+        } else if (xp.cmp(ah * 320000) === -1) {
             let guess = 320000
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                Math.abs(xp.toNumber() - get_exp(guess - 1)) >
+                    xp.toNumber() / precision &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
+                    (xp.toNumber() - get_exp(guess - 1)) /
                         ((32 / 27) *
                             (guess - 150000 + ag) ** 35 *
                             (37 * guess - 60000 + ag) +
@@ -2386,24 +2410,28 @@ function get_level(xp) {
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp < get_exp(965813)) {
-            let guess = 965813
+        } else {
+            let guess = 1000000
             let iterations = 0
             while (
-                Math.abs(xp - get_exp(guess - 1)) > xp / precision &&
+                xp
+                    .sub(get_exp(guess - 1))
+                    .abs()
+                    .cmp(xp.div(precision)) === 0 &&
                 iterations < 1000
             ) {
                 guess =
-                    (xp - get_exp(guess - 1)) /
-                        (ai +
-                            (aj * (guess - 1) + 1) *
-                                Math.E ** (aj * (guess + ak))) +
-                    guess
+                    xp
+                        .sub(get_exp(guess - 1))
+                        .div(
+                            Decimal.exp(aj * (guess + ak)).mul(
+                                aj * (guess - 1) + 1
+                            )
+                        )
+                        .toNumber() + guess
                 iterations++
             }
             return Math.floor(guess)
-        } else if (xp >= get_exp(965813)) {
-            return 965813
         }
     }
 }
@@ -2464,37 +2492,60 @@ function get_exp(lvl) {
     const aj = 0.0004031069968415499
     const ak = 760779.9379686277
 
-    let output = 0
+    let output = new Decimal(0)
     if (lvl !== 0) {
         if (lvl < 60) {
-            output = (32 / 27) * (lvl + 2) ** 3
+            output = Decimal.pow(lvl + 2, 3).mul(32 / 27)
         } else if (lvl < 300) {
-            output = (32 / 27) * (lvl - 59 + c) ** 5 + a - b
+            output = Decimal.pow(lvl - 59 + c, 5)
+                .mul(32 / 27)
+                .add(a - b)
         } else if (lvl < 1320) {
-            output = (32 / 27) * (lvl - 299 + f) ** 6.5 + d - e
+            output = Decimal.pow(lvl - 299 + f, 6.5)
+                .mul(32 / 27)
+                .add(d - e)
         } else if (lvl < 4200) {
-            output = (32 / 27) * (lvl - 1319 + i) ** 8 + g - h
+            output = Decimal.pow(lvl - 1319 + i, 8)
+                .mul(32 / 27)
+                .add(g - h)
         } else if (lvl < 12000) {
-            output = (32 / 27) * (lvl - 4199 + l) ** 9 + j - k
+            output = Decimal.pow(lvl - 4199 + l, 9)
+                .mul(32 / 27)
+                .add(j - k)
         } else if (lvl < 16800) {
-            output = (32 / 27) * (lvl - 11999 + o) ** 12 + m - n
+            output = Decimal.pow(lvl - 11999 + o, 12)
+                .mul(32 / 27)
+                .add(m - n)
         } else if (lvl < 24000) {
-            output = (32 / 27) * (lvl - 16799 + r) ** 14 + p - q
+            output = Decimal.pow(lvl - 16799 + r, 14)
+                .mul(32 / 27)
+                .add(p - q)
         } else if (lvl < 32000) {
-            output = (32 / 27) * (lvl - 23999 + u) ** 18 + s - t
+            output = Decimal.pow(lvl - 23999 + u, 18)
+                .mul(32 / 27)
+                .add(s - t)
         } else if (lvl < 42000) {
-            output = (32 / 27) * (lvl - 31999 + x) ** 21 + v - w
+            output = Decimal.pow(lvl - 31999 + x, 21)
+                .mul(32 / 27)
+                .add(v - w)
         } else if (lvl < 60000) {
-            output = (32 / 27) * (lvl - 41999 + aa) ** 24 + y - z
+            output = Decimal.pow(lvl - 41999 + aa, 24)
+                .mul(32 / 27)
+                .add(y - z)
         } else if (lvl < 150000) {
-            output = (32 / 27) * (lvl - 59999 + ad) ** 30 + ab - ac
+            output = Decimal.pow(lvl - 59999 + ad, 30)
+                .mul(32 / 27)
+                .add(ab - ac)
         } else if (lvl < 320000) {
-            output = (32 / 27) * (lvl - 149999 + ag) ** 36 + ae - af
+            output = Decimal.pow(lvl - 149999 + ag, 36)
+                .mul(32 / 27)
+                .add(ae - af)
         } else {
-            output = ai + Math.E ** (aj * (lvl + ak + 1))
+            output = Decimal.exp(aj * (lvl + ak + 1)).add(ai)
         }
 
-        if (game.challenge === 3 || game.challenge === 9) output *= lvl + 1
+        if (game.challenge === 3 || game.challenge === 9)
+            output = output.mul(lvl + 1)
     }
     return output
 }
@@ -3284,7 +3335,7 @@ class generator_perk {
     )
     //uninhibited flux [3]
     new generator_perk(
-        "Uninhibited Flux",
+        "Endless Flux",
         "EXP Flux permanently increases 5x faster and has a 5x higher cap<br>(stacks with Magnified Flux if you have it, making it uncapped)",
         4
     )
@@ -3388,37 +3439,43 @@ class generator_perk {
         "All upgrades require 50% fewer levels",
         4096
     )
-    //go nuclear [22]
+    //exp discount 2 [22]
+    new generator_perk(
+        "Advanced Auto-Reboot",
+        "Unlocks Time mode for Auto-Reboot",
+        16384
+    )
+    //go nuclear [23]
     new generator_perk(
         "Go Nuclear",
         "Unlocks the Nuclear Reactor<br>Rebooting will now also give hydrogen",
         98304
     )
-    //dual power [23]
+    //dual power [24]
     new generator_perk(
         "Dual Power",
         "Helium production is boosted based on how many watts you have",
         589824
     )
-    //snowball effect [24]
+    //snowball effect [25]
     new generator_perk(
         "Snowball Effect",
         "Helium production is boosted based on how much helium you have",
         1769472
     )
-    //deuterium channeling [25]
+    //deuterium channeling [26]
     new generator_perk(
         "Deuterium Channeling",
         "Deuterium Power now boosts hydrogen gains 2.50x per tier instead<br>(This applies retroactively)",
         4423680
     )
-    //amp conversion [26]
+    //amp conversion [27]
     new generator_perk(
         "AMP Conversion",
         "You gain 20% of your pending AMP every second",
         8847360
     )
-    //pp shift [27]
+    //pp shift [28]
     new generator_perk(
         "PP Shift",
         "PP is immediately granted on leveling up rather than Prestiging<br>AMP Conversion now gives 100% of your pending AMP instead",
@@ -3490,18 +3547,20 @@ class achievement {
     new achievement("200 Grand™", "Reach LVL 200,000", 137, 0)
     new achievement("Stare into the abyss", "Reach LVL 300,000", 145, 0)
     new achievement("Levels all the way down", "Reach LVL 500,000", 149, 0)
+    new achievement("Bottom of the EXP iceberg", "Reach LVL 750,000", 150, 0)
     new achievement(
-        "What if the real levels were the friends we made along the way?",
-        "Reach LVL 750,000",
-        150,
-        0
-    )
-    new achievement(
-        "As it turns out, the limit DOES exist",
+        "CONGRATULATIONS!!! THAT WAS YOUR ONE MILLIONTH LEVEL! YOU WIN 1 EXP",
         "Reach LVL 1,000,000",
         151,
         0
     )
+    new achievement(
+        "How deep DOES the rabbit hole go?",
+        "Reach LVL 1,250,000",
+        170,
+        0
+    )
+    new achievement("That never-ending journey", "Reach LVL 1,500,000", 171, 0)
     new achievement("Square one", "Prestige 1 time", 13, 1)
     new achievement("See you in another life", "Prestige 10 times", 14, 1)
     new achievement("Nowhere to go but up", "Prestige 100 times", 15, 1)
@@ -3514,7 +3573,7 @@ class achievement {
         1
     )
     new achievement(
-        "And the reward for misplaced effort goes to... you",
+        "And the award for misplaced effort goes to... you",
         "Prestige 1 million times",
         78,
         1
@@ -3581,110 +3640,116 @@ class achievement {
     )
     new achievement(
         "One chonker number",
-        "Get " + format_num(10 ** 36) + " all time EXP",
+        "Get " + format_num(10 ** 39) + " all time EXP",
         29,
         0
     )
     new achievement(
         "Endless growth",
-        "Get " + format_num(10 ** 39) + " all time EXP",
+        "Get " + format_num(10 ** 45) + " all time EXP",
         30,
         0
     )
     new achievement(
         "It's okay I lost track too",
-        "Get " + format_num(10 ** 42) + " all time EXP",
-        70,
-        0
-    )
-    new achievement(
-        "45 digits is a lot",
-        "Get " + format_num(10 ** 45) + " all time EXP",
-        79,
-        0
-    )
-    new achievement(
-        "Hungolomghnonoloughongous",
-        "Get " + format_num(10 ** 48) + " all time EXP",
-        80,
-        0
-    )
-    new achievement(
-        "Big numbers for a big boy",
         "Get " + format_num(10 ** 51) + " all time EXP",
-        93,
+        70,
         0
     )
     new achievement(
         "I like my women like I like my numbers",
         "Get " + format_num(10 ** 57) + " all time EXP",
-        96,
+        79,
+        0
+    )
+    new achievement(
+        "64 digits is a lot",
+        "Get " + format_num(10 ** 63) + " all time EXP",
+        80,
         0
     )
     new achievement(
         "Honestly quite sizeable",
-        "Get " + format_num(10 ** 63) + " all time EXP",
+        "Get " + format_num(10 ** 78) + " all time EXP",
+        93,
+        0
+    )
+    new achievement(
+        "Big numbers for a big boy",
+        "Get " + format_num(10 ** 93) + " all time EXP",
+        96,
+        0
+    )
+    new achievement(
+        "An introduction to googology",
+        "Get " + format_num(10 ** 108) + " all time EXP",
         99,
         0
     )
     new achievement(
-        "More! More! More!!",
-        "Get " + format_num(10 ** 75) + " all time EXP",
+        "Hungolomghnonoloughongous",
+        "Get " + format_num(10 ** 123) + " all time EXP",
         100,
         0
     )
     new achievement(
         "Generic large number achievement name #20",
-        "Get " + format_num(10 ** 87) + " all time EXP",
+        "Get " + format_num(10 ** 138) + " all time EXP",
         101,
         0
     )
     new achievement(
-        "Well the digits keep comin and they don't stop comin",
-        "Get " + format_num(10 ** 99) + " all time EXP",
+        "More! More! More!!",
+        "Get " + format_num(10 ** 153) + " all time EXP",
         102,
         0
     )
     new achievement(
-        "Honestly bro, this is just a really heckin big number... like I can't even think of any good name for this one so this is what you get",
-        "Get " + format_num(10 ** 111) + " all time EXP",
+        "Well the digits keep comin and they don't stop comin",
+        "Get " + format_num(10 ** 183) + " all time EXP",
         118,
         0
     )
     new achievement(
-        "*notices your EXP*",
-        "Get " + format_num(10 ** 123) + " all time EXP",
+        "Honestly bro, this is just a really huge number... like I can't even think of anything good to say for this one so this is what you get",
+        "Get " + format_num(10 ** 213) + " all time EXP",
         132,
         0
     )
     new achievement(
-        "EXP singularity",
-        "Get " + format_num(10 ** 138) + " all time EXP",
+        "*notices your EXP*",
+        "Get " + format_num(10 ** 243) + " all time EXP",
         134,
         0
     )
     new achievement(
-        "Halfway to infinity",
-        "Get " + format_num(10 ** 153) + " all time EXP",
+        "EXP singularity",
+        "Get " + format_num(10 ** 273) + " all time EXP",
         138,
         0
     )
     new achievement(
-        "On the exponential scale this isn't really that big",
-        "Get " + format_num(10 ** 183) + " all time EXP",
+        "Even Zakuro didn't expect you to make it this far",
+        "Get " + format_num(10 ** 303) + " all time EXP",
         146,
         0
     )
     new achievement(
-        "Even Zakuro didn't expect you to make it this far",
-        "Get " + format_num(10 ** 228) + " all time EXP",
+        "Yeah, that's like a couple",
+        "Get " + format_infinity(Decimal.pow(10, 333)) + " all time EXP",
         152,
         0
     )
     new achievement(
-        "A hundred, at least",
-        "Get " + format_num(10 ** 303) + " all time EXP",
+        "Are we there yet?",
+        "Get " + format_infinity(Decimal.pow(10, 363)) + " all time EXP",
         153,
+        0
+    )
+    new achievement(
+        "What if the real EXP was the friends we made along the way?",
+        "Get " + format_infinity(Decimal.pow(10, 393)) + " all time EXP",
+        174,
         0
     )
     new achievement("Hot minute", "Play for 1 hour", 31, 0)
@@ -3912,7 +3977,7 @@ class achievement {
     )
     new achievement(
         "Congration, you done it",
-        "Unlock all 28 Generator Perks",
+        "Unlock all 29 Generator Perks",
         104,
         3
     )
@@ -3939,6 +4004,12 @@ class achievement {
         "No shortage of helium for sure",
         "Make " + format_num(10 ** 90) + " mg helium/sec",
         157,
+        3
+    )
+    new achievement(
+        "Photonic boom",
+        "Make " + format_num(10 ** 120) + " mg helium/sec",
+        173,
         3
     )
     new achievement("Tesseract one", "Quantize 1 time", 120, 4)
@@ -3977,6 +4048,13 @@ class achievement {
         "Okay that was too bright I'm blind now",
         "Reach Prism LVL 200",
         161,
+        4
+    )
+    new achievement("Total internal reflection", "Reach Prism LVL 300", 169, 4)
+    new achievement(
+        "The whole electromagnetic spectrum",
+        "Reach Prism LVL 500",
+        172,
         4
     )
     new achievement("With great haste", "Quantize in under 1 hour", 128, 4)
@@ -4020,27 +4098,27 @@ class achievement {
     )
     new achievement(
         "At any point did someone say it was too much dark matter?",
-        "Reach ∞ kg dark matter",
+        "Reach more than ∞ kg dark matter",
         155,
         4
     )
-    new achievement("Infinity to one, real quick", "Reach Omega LVL 1", 162, 4)
+    new achievement("Gone, reduced to 1 kg", "Reach Omega LVL 1", 162, 4)
+    new achievement("Dark matter markup", "Reach Omega LVL 5", 163, 4)
     new achievement(
-        "Now don't collapse too much or you might break it",
-        "Reach Omega LVL 10",
-        163,
+        "A classic case of the Timewall™",
+        "Reach Omega LVL 20",
+        164,
         4
     )
-    new achievement("Impressive", "Reach Omega LVL 30", 164, 4)
     new achievement(
-        "The Challenge to end all Challenges",
-        "Complete the Omega Challenge for the first time",
+        "You have no idea what's in-store for you!",
+        "Enter the Omega Challenge for the first time",
         165,
         4
     )
     new achievement(
-        "Not a task for the faint of heart",
-        "Complete the Omega Challenge 5 times",
+        "An offer you can't refuse",
+        "Get 5 free Omega Points from the Omega Challenge",
         166,
         4
     )
@@ -4108,7 +4186,7 @@ class achievement {
     )
     new achievement(
         "Like adding a needle to a haystack",
-        "Manually upgrade a Reactor core when it has already been upgraded 100,000 times",
+        "Manually upgrade a Reactor core when it has been upgraded at least 100,000 times",
         167,
         5
     )
@@ -4118,7 +4196,7 @@ class achievement {
         168,
         5
     )
-    new achievement("You win 1 EXP", "Get every achievement", 69, 0)
+    new achievement("The end", "Get every achievement", 69, 0)
 }
 //done initializing achievements
 
@@ -4244,9 +4322,9 @@ class challenge {
         225000,
         65000,
         5000,
-        102330000,
-        71335000,
-        6685000
+        81160000,
+        56575000,
+        13365000
     )
     new challenge(
         "Challenge II",
@@ -4254,9 +4332,9 @@ class challenge {
         280000,
         95000,
         5000,
-        99995000,
-        58075000,
-        4340000
+        79305000,
+        46065000,
+        8680000
     )
     new challenge(
         "Challenge III",
@@ -4264,29 +4342,29 @@ class challenge {
         340000,
         80000,
         5000,
-        91880000,
-        51440000,
-        4560000
+        72870000,
+        40800000,
+        9120000
     )
     new challenge(
         "Challenge IV",
         "You must surpass your highest level to gain more AMP, Patience does not apply",
         585000,
         120000,
-        -5000,
-        114750000,
-        62420000,
-        5235000
+        5000,
+        91010000,
+        49510000,
+        10465000
     )
     new challenge(
         "Challenge V",
         "All EXP production reduces to zero over 30 seconds",
         750000,
         390000,
-        -15000,
-        103295000,
-        57775000,
-        2100000
+        -5000,
+        81925000,
+        45825000,
+        7350000
     )
     new challenge(
         "Challenge VI",
@@ -4296,9 +4374,9 @@ class challenge {
         1420000,
         0,
         0,
-        63640000,
+        65430000,
         11225000,
-        -645000
+        -325000
     )
     new challenge(
         "Challenge VII",
@@ -4306,31 +4384,30 @@ class challenge {
         1745000,
         185000,
         30000,
-        14115000,
-        3975000,
-        540000
+        11195000,
+        3155000,
+        2160000
     )
     new challenge(
         "Challenge VIII",
         "Helium production is disabled",
         1645000,
-        100000,
+        115000,
         -5000,
-        9320000,
-        230000,
-        20000
+        9420000,
+        250000,
+        60000
     )
     new challenge(
         "Challenge IX",
         "All rules from the first four challenges, simultaneously<br>All EXP production is divided by " +
-            format_num(10 ** 16) +
-            ", AMP Conversion does not apply",
-        3000000,
-        200000,
-        -10000,
-        56800000,
-        10200000,
-        900000
+            format_num(10 ** 16),
+        2650000,
+        150000,
+        10000,
+        35000000,
+        13500000,
+        3000000
     )
 }
 //done initializing challenges
@@ -4367,25 +4444,31 @@ class core {
             "-" + format_num(this.base_price) + " g hydrogen"
         core_button.className = "core_button core_locked"
         core_button.addEventListener("click", () => {
+            const scaling_array = [
+                60000, 40000, 20000, 10000, 5000, 2500, 1250, 625,
+            ]
+            let scaling = scaling_array[this.id]
             if (!game.buy_max) {
                 if (game.hydrogen >= game.core_price[this.id]) {
                     game.hydrogen -= game.core_price[this.id]
-                    game.budget -= game.core_price[this.id]
-                    if (game.budget < 0) game.budget = 0
+                    for (let i = 0; i < 9; i++) {
+                        game.budget[i] -= game.core_price[this.id] / 9
+                        if (game.budget[i] < 0) game.budget[i] = 0
+                    }
                     game.core_level[this.id]++
 
-                    if (
-                        game.core_level[this.id] >
-                        Math.floor(500000 / 2 ** this.id)
-                    ) {
-                        game.core_price[this.id] +=
-                            (this.base_price *
-                                (game.core_level[this.id] -
-                                    Math.floor(500000 / 2 ** this.id)) **
-                                    1.65) /
-                            4
+                    if (game.core_level[this.id] > scaling) {
+                        game.core_price[this.id] =
+                            (this.base_price / 8) *
+                            (game.core_level[this.id] ** 2 -
+                                game.core_level[this.id] * (2 * scaling - 3) +
+                                scaling ** 2 -
+                                scaling +
+                                8)
                     } else {
-                        game.core_price[this.id] += this.base_price / 4
+                        game.core_price[this.id] =
+                            (this.base_price / 4) *
+                            (game.core_level[this.id] + 4)
                     }
 
                     if (!game.achievements[106] && this.id === 7)
@@ -4393,28 +4476,108 @@ class core {
 
                     if (
                         !game.achievements[167] &&
-                        game.core_level[this.id] > 100000
+                        game.core_level[this.id] >= 100000
                     )
                         get_achievement(167)
                 }
             } else {
-                while (game.hydrogen >= game.core_price[this.id]) {
-                    game.hydrogen -= game.core_price[this.id]
-                    game.budget -= game.core_price[this.id]
-                    if (game.budget < 0) game.budget = 0
-                    game.core_level[this.id]++
-                    if (
-                        game.core_level[this.id] >
-                        Math.floor(1000000 / 2 ** this.id)
-                    ) {
-                        game.core_price[this.id] +=
-                            (this.base_price *
-                                (game.core_level[this.id] -
-                                    Math.floor(500000 / 2 ** this.id)) **
-                                    1.65) /
-                            4
-                    } else {
-                        game.core_price[this.id] += this.base_price / 4
+                if (game.hydrogen >= game.core_price[this.id]) {
+                    if (game.core_level[this.id] < scaling) {
+                        let n = Math.floor(
+                            ((game.core_level[this.id] + 3.5) ** 2 +
+                                (8 * game.hydrogen) / this.base_price) **
+                                0.5 -
+                                game.core_level[this.id] -
+                                3.5
+                        )
+                        if (n >= scaling - game.core_level[this.id])
+                            n = scaling - game.core_level[this.id]
+
+                        let hydrogen_before = game.hydrogen
+                        game.hydrogen -=
+                            (this.base_price * n ** 2 +
+                                n *
+                                    (2 *
+                                        this.base_price *
+                                        game.core_level[this.id] +
+                                        7 * this.base_price)) /
+                            8
+                        for (let i = 0; i < 9; i++) {
+                            game.budget[i] -=
+                                (hydrogen_before - game.hydrogen) / 9
+                            if (game.budget[i] < 0) game.budget[i] = 0
+                        }
+
+                        game.core_level[this.id] += n
+                        game.core_price[this.id] =
+                            (this.base_price / 4) *
+                            (game.core_level[this.id] + 4)
+                    }
+
+                    if (game.core_level[this.id] >= scaling) {
+                        let m = game.core_level[this.id] - scaling
+                        let p = (6 * scaling - 31) / 3
+                        let q =
+                            12 * (game.hydrogen / this.base_price) +
+                            (3 * scaling - 15) +
+                            m * (3 * scaling - 14) +
+                            m ** 2 * 1.5 +
+                            m ** 3 / 2
+                        let n = Math.floor(
+                            Math.cbrt(q + Math.sqrt(p ** 3 + q ** 2)) -
+                                p / Math.cbrt(q + Math.sqrt(p ** 3 + q ** 2)) -
+                                m -
+                                1.5
+                        )
+
+                        let a = 3 - 2 * scaling
+                        let b = scaling ** 2 - scaling + 8
+                        let u = n - 1
+                        let hydrogen_before = game.hydrogen
+                        game.hydrogen -=
+                            (this.base_price / 48) *
+                            (2 * u ** 3 +
+                                3 *
+                                    u *
+                                    (1 + a) *
+                                    (u + 2 * game.core_level[this.id]) +
+                                u * (3 * a + 6 * b + 1) +
+                                6 *
+                                    (game.core_level[this.id] * u ** 2 +
+                                        game.core_level[this.id] ** 2 * u +
+                                        game.core_level[this.id] ** 2 +
+                                        a * game.core_level[this.id] +
+                                        b))
+                        for (let i = 0; i < 9; i++) {
+                            game.budget[i] -=
+                                (hydrogen_before - game.hydrogen) / 9
+                            if (game.budget[i] < 0) game.budget[i] = 0
+                        }
+
+                        game.core_level[this.id] += n
+                        game.core_price[this.id] =
+                            (this.base_price / 8) *
+                            (game.core_level[this.id] ** 2 +
+                                a * game.core_level[this.id] +
+                                b)
+
+                        if (game.hydrogen >= game.core_price[this.id]) {
+                            game.hydrogen -= game.core_price[this.id]
+                            for (let i = 0; i < 9; i++) {
+                                game.budget[i] -= game.core_price[this.id] / 9
+                                if (game.budget[i] < 0) game.budget[i] = 0
+                            }
+                            game.core_level[this.id]++
+
+                            game.core_price[this.id] =
+                                (this.base_price / 8) *
+                                (game.core_level[this.id] ** 2 -
+                                    game.core_level[this.id] *
+                                        (2 * scaling - 3) +
+                                    scaling ** 2 -
+                                    scaling +
+                                    8)
+                        }
                     }
 
                     if (!game.achievements[106] && this.id === 7)
@@ -4489,14 +4652,14 @@ class quantum_upgrade {
         qu_button.className = "qu_button unlit"
         qu_button.addEventListener("click", () => {
             if (
-                game.photons >= this.price &&
+                game.photons.cmp(this.price) >= 0 &&
                 game.qu_bought[this.id] === false
             ) {
-                game.photons -= this.price
+                game.photons = game.photons.sub(this.price)
                 game.qu_bought[this.id] = true
                 this.on_purchase()
                 prism_update()
-                if (game.photons === 1 && game.notation !== 8)
+                if (game.photons.cmp(1) === 0 && game.notation !== 8)
                     document.getElementById("photons_text").innerHTML = "photon"
                 else
                     document.getElementById("photons_text").innerHTML =
@@ -4532,8 +4695,8 @@ new quantum_upgrade(
 )
 //advanced auto-reboot [1]
 new quantum_upgrade(
-    "Advanced Auto-Reboot",
-    "Unlocks Time mode for Auto-Reboot",
+    "Unstoppable Flux",
+    "The rate of increase of EXP Flux no longer diminishes after 100x",
     100,
     function () {}
 )
@@ -4548,35 +4711,35 @@ new quantum_upgrade(
 new quantum_upgrade(
     "Speed Power II",
     "EXP production is boosted based on your fastest Quantum Iteration",
-    28000,
+    42000,
     function () {}
 )
 //auto-reactor [4]
 new quantum_upgrade(
     "Auto-Reactor",
     "Unlocks automation for Reactor core upgrades",
-    640000,
+    3500000,
     function () {}
 )
 //quantum privilege [5]
 new quantum_upgrade(
     "Quantum Privilege",
     "Quantize no longer resets Challenge completions",
-    7.68 * 10 ** 7,
+    8 * 10 ** 8,
     function () {}
 )
 //helium avalanche [6]
 new quantum_upgrade(
     "Helium Avalanche",
     "The Snowball Effect perk becomes stronger",
-    4.8 * 10 ** 10,
+    5 * 10 ** 11,
     function () {}
 )
 //gravity well [7]
 new quantum_upgrade(
     "Gravity Well",
     "Unlocks the Gravity Well",
-    4.32 * 10 ** 13,
+    2 * 10 ** 15,
     function () {
         document.getElementById("quantum_tabs").style.display = "flex"
         if (!game.achievements[143]) get_achievement(143)
@@ -4620,14 +4783,14 @@ class dark_upgrade {
         dk_button.className = "qu_button unlit"
         dk_button.addEventListener("click", () => {
             if (
-                game.photons >= this.price &&
+                game.photons.cmp(this.price) >= 0 &&
                 game.dk_bought[this.id] === false
             ) {
-                game.photons -= this.price
+                game.photons = game.photons.sub(this.price)
                 game.dk_bought[this.id] = true
                 this.on_purchase()
                 prism_update()
-                if (game.photons === 1 && game.notation !== 8)
+                if (game.photons.cmp(1) === 0 && game.notation !== 8)
                     document.getElementById("photons_text").innerHTML = "photon"
                 else
                     document.getElementById("photons_text").innerHTML =
@@ -4658,56 +4821,56 @@ class dark_upgrade {
 new dark_upgrade(
     "Expert Auto-Reboot",
     "Unlocks automation for not rebooting (to push levels for gaining photons)",
-    5.2 * 10 ** 16,
+    4.2 * 10 ** 17,
     function () {}
 )
-//auto-quantize [1]
-new dark_upgrade(
-    "Auto-Quantize",
-    "Unlocks Quantize automation",
-    7.8 * 10 ** 19,
-    function () {}
-)
-//photonic infusion [2]
+//photonic infusion [1]
 new dark_upgrade(
     "Photonic Infusion",
     "EXP production is boosted based on unspent photons",
-    1.56 * 10 ** 23,
+    5 * 10 ** 19,
+    function () {}
+)
+//auto-quantize [2]
+new dark_upgrade(
+    "Auto-Quantize",
+    "Unlocks Quantize automation",
+    2.5 * 10 ** 22,
     function () {}
 )
 //extended difficulty [3]
 new dark_upgrade(
     "Extended Difficulty",
     "All challenges can now be completed up to 20 times<br>Completions past 12 also give a helium production boost",
-    1.872 * 10 ** 27,
+    8 * 10 ** 24,
     function () {}
 )
 //atomic refraction [4]
 new dark_upgrade(
     "Atomic Refraction",
     "Helium production is boosted based on Prism LVL",
-    9.36 * 10 ** 32,
+    7.5 * 10 ** 30,
     function () {}
 )
 //open sesame [5]
 new dark_upgrade(
     "Open Sesame",
     "Hydrogen now no longer requires 98,304 watts to be gained<br>Deuterium Power now also boosts 3x instead",
-    10 ** 39,
+    5 * 10 ** 40,
     function () {}
 )
 //gravitational waves [6]
 new dark_upgrade(
     "Gravitational Waves",
     "Dark matter also boosts helium production at a reduced amount",
-    1.5 * 10 ** 45,
+    2.5 * 10 ** 54,
     function () {}
 )
 //omega drive [7]
 new dark_upgrade(
     "Omega Drive",
     "Unlocks the Omega Drive",
-    3.75 * 10 ** 51,
+    10 ** 72,
     function () {
         if (!game.achievements[156]) get_achievement(156)
     }
@@ -4750,14 +4913,14 @@ class omega_upgrade {
         om_button.className = "qu_button unlit"
         om_button.addEventListener("click", () => {
             if (
-                game.photons >= this.price &&
+                game.photons.cmp(this.price) >= 0 &&
                 game.om_bought[this.id] === false
             ) {
-                game.photons -= this.price
+                game.photons = game.photons.sub(this.price)
                 game.om_bought[this.id] = true
                 this.on_purchase()
                 prism_update()
-                if (game.photons === 1 && game.notation !== 8)
+                if (game.photons.cmp(1) === 0 && game.notation !== 8)
                     document.getElementById("photons_text").innerHTML = "photon"
                 else
                     document.getElementById("photons_text").innerHTML =
@@ -4788,56 +4951,56 @@ class omega_upgrade {
 new omega_upgrade(
     "Auto-Collapse",
     "Unlocks automation for collapse",
-    1.875 * 10 ** 59,
+    10 ** 80,
     function () {}
 )
 //advanced auto-quantize [1]
 new omega_upgrade(
     "Advanced Auto-Quantize",
     "Unlocks Step mode for Quantize automation",
-    2.813 * 10 ** 67,
+    10 ** 88,
     function () {}
 )
 //omega supplement [2]
 new omega_upgrade(
     "Omega Supplement",
     "Dark matter growth factor is boosted based on your Highest Omega LVL",
-    8.438 * 10 ** 75,
+    10 ** 96,
     function () {}
 )
-//auto-growth [3]
-new omega_upgrade(
-    "Auto-Growth",
-    "Unlocks automation for Growth Factor upgrade",
-    4.219 * 10 ** 84,
-    function () {}
-)
-//auto-prism [4]
+//auto-prism [3]
 new omega_upgrade(
     "Auto-Prism",
     "Unlocks automation for Prism upgrading",
-    3.164 * 10 ** 93,
+    10 ** 108,
     function () {}
 )
-//transfinite liberty [5]
+//transfinite liberty [4]
 new omega_upgrade(
     "Transfinite Liberty",
     "The penalty for collapse is weaker",
-    3.322 * 10 ** 102,
+    10 ** 123,
+    function () {}
+)
+//auto-growth [5]
+new omega_upgrade(
+    "Auto-Growth",
+    "Unlocks automation for Growth Factor upgrade",
+    10 ** 140,
     function () {}
 )
 //the great beyond [6]
 new omega_upgrade(
     "The Great Beyond",
     "You can gain more than ∞ kg dark matter<br>Growth Factor will be reduced the further past ∞ kg you go",
-    4.651 * 10 ** 111,
+    10 ** 165,
     function () {}
 )
 //omega challenge [7]
 new omega_upgrade(
     "Omega Challenge",
     "Unlocks the Omega Challenge",
-    8.372 * 10 ** 120,
+    10 ** 200,
     function () {}
 )
 //done initializing omega upgrades
