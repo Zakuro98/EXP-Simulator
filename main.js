@@ -1696,7 +1696,7 @@ function tick() {
             "<br><br><br>EXP Simulator v?.?.???<br>Made by ???<br><br>Last updated ???"
     } else {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v2.3.300<br>Made by Zakuro<br><br>Last updated March 14, 2024"
+            "<br><br><br>EXP Simulator v2.3.300<br>Made by Zakuro<br><br>Last updated July 18, 2024"
     }
 }
 
