@@ -330,7 +330,6 @@ function goto_tab(id) {
     document.getElementById("past_resets_page").style.display = "none"
     document.getElementById("achievements_page").style.display = "none"
     document.getElementById("settings_page").style.display = "none"
-    document.getElementById("the_end_page").style.display = "none"
 
     document.getElementById("prestige_tabs").style.display = "none"
     document.getElementById("reboot_tabs").style.display = "none"
@@ -387,9 +386,6 @@ function goto_tab(id) {
             break
         case 7:
             document.getElementById("settings_page").style.display = "flex"
-            break
-        case 8:
-            document.getElementById("the_end_page").style.display = "block"
             break
     }
 }
@@ -523,116 +519,252 @@ function max_toggle() {
 
 //buy max cores
 function max_all() {
-    let efficiency = new Array(8).fill(Infinity)
-    let selection = 0
+    let cores = 0
+    let available = []
     for (let i = 0; i < 8; i++) {
-        if (i === 0) {
-            efficiency[i] =
-                game.core_price[i] /
-                ((game.core_level[i] + 1) / game.core_level[i] - 1)
-        } else {
-            efficiency[i] =
-                game.core_price[i] /
-                ((game.core_level[i] + 2) / (game.core_level[i] + 1) - 1)
+        if (game.hydrogen >= game.core_price[i]) {
+            cores++
+            available.push(i)
         }
-        if (
-            efficiency[i] < efficiency[selection] &&
-            game.hydrogen >= game.core_price[i]
-        )
-            selection = i
     }
-    while (game.hydrogen >= game.core_price[selection]) {
-        game.hydrogen -= game.core_price[selection]
-        game.budget -= game.core_price[selection]
-        if (game.budget < 0) game.budget = 0
-        game.core_level[selection]++
-        if (game.core_level[selection] > Math.floor(500000 / 2 ** selection)) {
-            game.core_price[selection] +=
-                (core.cores[selection].base_price *
-                    (game.core_level[selection] -
-                        Math.floor(500000 / 2 ** selection)) **
-                        1.65) /
-                4
-        } else {
-            game.core_price[selection] += core.cores[selection].base_price / 4
-        }
 
-        selection = 0
+    let budget = game.hydrogen / cores
+    const scaling_array = [60000, 40000, 20000, 10000, 5000, 2500, 1250, 625]
+    while (budget >= game.core_price[0] && cores > 0) {
+        for (let i = 0; i < available.length; i++) {
+            let budget2 = budget
+            let c = core.cores[available[i]]
+            let scaling = scaling_array[c.id]
 
-        for (let i = 0; i < 8; i++) {
-            if (i === 0) {
-                efficiency[i] =
-                    game.core_price[i] /
-                    ((game.core_level[i] + 1) / game.core_level[i] - 1)
-            } else {
-                efficiency[i] =
-                    game.core_price[i] /
-                    ((game.core_level[i] + 2) / (game.core_level[i] + 1) - 1)
+            if (game.core_level[c.id] < scaling) {
+                let n = Math.floor(
+                    ((game.core_level[c.id] + 3.5) ** 2 +
+                        (8 * budget2) / c.base_price) **
+                        0.5 -
+                        game.core_level[c.id] -
+                        3.5
+                )
+                if (n >= scaling - game.core_level[c.id])
+                    n = scaling - game.core_level[c.id]
+
+                let hydrogen_before = game.hydrogen
+                game.hydrogen -=
+                    (c.base_price * n ** 2 +
+                        n *
+                            (2 * c.base_price * game.core_level[c.id] +
+                                7 * c.base_price)) /
+                    8
+                budget2 -= hydrogen_before - game.hydrogen
+                if (budget2 < 0) budget2 = 0
+                for (let i = 0; i < 9; i++) {
+                    game.budget[i] -= (hydrogen_before - game.hydrogen) / 9
+                    if (game.budget[i] < 0) game.budget[i] = 0
+                }
+
+                game.core_level[c.id] += n
+                game.core_price[c.id] =
+                    (c.base_price / 4) * (game.core_level[c.id] + 4)
             }
-            if (
-                efficiency[i] < efficiency[selection] &&
-                game.hydrogen >= game.core_price[i]
-            )
-                selection = i
+
+            if (game.core_level[c.id] >= scaling) {
+                let m = game.core_level[c.id] - scaling
+                let p = (6 * scaling - 31) / 3
+                let q =
+                    12 * (budget2 / c.base_price) +
+                    (3 * scaling - 15) +
+                    m * (3 * scaling - 14) +
+                    m ** 2 * 1.5 +
+                    m ** 3 / 2
+                let n = Math.floor(
+                    Math.cbrt(q + Math.sqrt(p ** 3 + q ** 2)) -
+                        p / Math.cbrt(q + Math.sqrt(p ** 3 + q ** 2)) -
+                        m -
+                        1.5
+                )
+
+                let a = 3 - 2 * scaling
+                let b = scaling ** 2 - scaling + 8
+                let u = n - 1
+                let hydrogen_before = game.hydrogen
+                game.hydrogen -=
+                    (c.base_price / 48) *
+                    (2 * u ** 3 +
+                        3 * u * (1 + a) * (u + 2 * game.core_level[c.id]) +
+                        u * (3 * a + 6 * b + 1) +
+                        6 *
+                            (game.core_level[c.id] * u ** 2 +
+                                game.core_level[c.id] ** 2 * u +
+                                game.core_level[c.id] ** 2 +
+                                a * game.core_level[c.id] +
+                                b))
+                budget2 -= hydrogen_before - game.hydrogen
+                if (budget2 < 0) budget2 = 0
+                for (let i = 0; i < 9; i++) {
+                    game.budget[i] -= (hydrogen_before - game.hydrogen) / 9
+                    if (game.budget[i] < 0) game.budget[i] = 0
+                }
+
+                game.core_level[c.id] += n
+                game.core_price[c.id] =
+                    (c.base_price / 8) *
+                    (game.core_level[c.id] ** 2 + a * game.core_level[c.id] + b)
+
+                if (budget2 >= game.core_price[c.id]) {
+                    game.hydrogen -= game.core_price[c.id]
+                    for (let i = 0; i < 9; i++) {
+                        game.budget[i] -= game.core_price[c.id] / 9
+                        if (game.budget[i] < 0) game.budget[i] = 0
+                    }
+                    game.core_level[c.id]++
+
+                    game.core_price[c.id] =
+                        (c.base_price / 8) *
+                        (game.core_level[c.id] ** 2 -
+                            game.core_level[c.id] * (2 * scaling - 3) +
+                            scaling ** 2 -
+                            scaling +
+                            8)
+                }
+            }
         }
+
+        cores = 0
+        available = []
+        for (let i = 0; i < 8; i++) {
+            if (game.hydrogen >= game.core_price[i]) {
+                cores++
+                available.push(i)
+            }
+        }
+
+        budget = game.hydrogen / cores
     }
 }
 
-//buy max cores with half money
+//buy max cores with half hydrogen
 function max_half() {
-    let efficiency = new Array(8).fill(Infinity)
-    let selection = 0
-    let budget = game.hydrogen / 2
+    let half_hydrogen = game.hydrogen / 2
+    let cores = 0
+    let available = []
     for (let i = 0; i < 8; i++) {
-        if (i === 0) {
-            efficiency[i] =
-                game.core_price[i] /
-                ((game.core_level[i] + 1) / game.core_level[i] - 1)
-        } else {
-            efficiency[i] =
-                game.core_price[i] /
-                ((game.core_level[i] + 2) / (game.core_level[i] + 1) - 1)
+        if (half_hydrogen >= game.core_price[i]) {
+            cores++
+            available.push(i)
         }
-        if (
-            efficiency[i] < efficiency[selection] &&
-            game.hydrogen >= game.core_price[i]
-        )
-            selection = i
     }
-    while (budget >= game.core_price[selection]) {
-        game.hydrogen -= game.core_price[selection]
-        budget -= game.core_price[selection]
-        game.budget -= game.core_price[selection]
-        if (game.budget < 0) game.budget = 0
-        game.core_level[selection]++
-        if (game.core_level[selection] > Math.floor(500000 / 2 ** selection)) {
-            game.core_price[selection] +=
-                (core.cores[selection].base_price *
-                    (game.core_level[selection] -
-                        Math.floor(500000 / 2 ** selection)) **
-                        1.65) /
-                4
-        } else {
-            game.core_price[selection] += core.cores[selection].base_price / 4
-        }
 
-        selection = 0
+    let budget = half_hydrogen / cores
+    const scaling_array = [60000, 40000, 20000, 10000, 5000, 2500, 1250, 625]
+    while (budget >= game.core_price[0] && cores > 0) {
+        for (let i = 0; i < available.length; i++) {
+            let budget2 = budget
+            let c = core.cores[available[i]]
+            let scaling = scaling_array[c.id]
 
-        for (let i = 0; i < 8; i++) {
-            if (i === 0) {
-                efficiency[i] =
-                    game.core_price[i] /
-                    ((game.core_level[i] + 1) / game.core_level[i] - 1)
-            } else {
-                efficiency[i] =
-                    game.core_price[i] /
-                    ((game.core_level[i] + 2) / (game.core_level[i] + 1) - 1)
+            if (game.core_level[c.id] < scaling) {
+                let n = Math.floor(
+                    ((game.core_level[c.id] + 3.5) ** 2 +
+                        (8 * budget2) / c.base_price) **
+                        0.5 -
+                        game.core_level[c.id] -
+                        3.5
+                )
+                if (n >= scaling - game.core_level[c.id])
+                    n = scaling - game.core_level[c.id]
+
+                let hydrogen_before = game.hydrogen
+                game.hydrogen -=
+                    (c.base_price * n ** 2 +
+                        n *
+                            (2 * c.base_price * game.core_level[c.id] +
+                                7 * c.base_price)) /
+                    8
+                half_hydrogen -= hydrogen_before - game.hydrogen
+                budget2 -= hydrogen_before - game.hydrogen
+                if (budget2 < 0) budget2 = 0
+                for (let i = 0; i < 9; i++) {
+                    game.budget[i] -= (hydrogen_before - game.hydrogen) / 9
+                    if (game.budget[i] < 0) game.budget[i] = 0
+                }
+
+                game.core_level[c.id] += n
+                game.core_price[c.id] =
+                    (c.base_price / 4) * (game.core_level[c.id] + 4)
             }
-            if (
-                efficiency[i] < efficiency[selection] &&
-                game.hydrogen >= game.core_price[i]
-            )
-                selection = i
+
+            if (game.core_level[c.id] >= scaling) {
+                let m = game.core_level[c.id] - scaling
+                let p = (6 * scaling - 31) / 3
+                let q =
+                    12 * (budget2 / c.base_price) +
+                    (3 * scaling - 15) +
+                    m * (3 * scaling - 14) +
+                    m ** 2 * 1.5 +
+                    m ** 3 / 2
+                let n = Math.floor(
+                    Math.cbrt(q + Math.sqrt(p ** 3 + q ** 2)) -
+                        p / Math.cbrt(q + Math.sqrt(p ** 3 + q ** 2)) -
+                        m -
+                        1.5
+                )
+
+                let a = 3 - 2 * scaling
+                let b = scaling ** 2 - scaling + 8
+                let u = n - 1
+                let hydrogen_before = game.hydrogen
+                game.hydrogen -=
+                    (c.base_price / 48) *
+                    (2 * u ** 3 +
+                        3 * u * (1 + a) * (u + 2 * game.core_level[c.id]) +
+                        u * (3 * a + 6 * b + 1) +
+                        6 *
+                            (game.core_level[c.id] * u ** 2 +
+                                game.core_level[c.id] ** 2 * u +
+                                game.core_level[c.id] ** 2 +
+                                a * game.core_level[c.id] +
+                                b))
+                half_hydrogen -= hydrogen_before - game.hydrogen
+                budget2 -= hydrogen_before - game.hydrogen
+                if (budget2 < 0) budget2 = 0
+                for (let i = 0; i < 9; i++) {
+                    game.budget[i] -= (hydrogen_before - game.hydrogen) / 9
+                    if (game.budget[i] < 0) game.budget[i] = 0
+                }
+
+                game.core_level[c.id] += n
+                game.core_price[c.id] =
+                    (c.base_price / 8) *
+                    (game.core_level[c.id] ** 2 + a * game.core_level[c.id] + b)
+
+                if (budget2 >= game.core_price[c.id]) {
+                    game.hydrogen -= game.core_price[c.id]
+                    half_hydrogen -= game.core_price[c.id]
+                    for (let i = 0; i < 9; i++) {
+                        game.budget[i] -= game.core_price[c.id] / 9
+                        if (game.budget[i] < 0) game.budget[i] = 0
+                    }
+                    game.core_level[c.id]++
+
+                    game.core_price[c.id] =
+                        (c.base_price / 8) *
+                        (game.core_level[c.id] ** 2 -
+                            game.core_level[c.id] * (2 * scaling - 3) +
+                            scaling ** 2 -
+                            scaling +
+                            8)
+                }
+            }
         }
+
+        cores = 0
+        available = []
+        for (let i = 0; i < 8; i++) {
+            if (half_hydrogen >= game.core_price[i]) {
+                cores++
+                available.push(i)
+            }
+        }
+
+        budget = half_hydrogen / cores
     }
 }
