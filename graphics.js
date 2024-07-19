@@ -4477,7 +4477,7 @@ function description_update() {
         "Reach " + format_num(150) + " clicks/s on the Autoclicker"
     achievement.achievements[95].requirement =
         "Reach " + format_num(1000) + " clicks/s on the Autoclicker"
-    achievement.achievements[96].requirement =
+    achievement.achievements[97].requirement =
         "Reboot " + format_num(3) + " times"
     achievement.achievements[98].requirement =
         "Reboot " + format_num(5) + " times"
