@@ -1059,6 +1059,10 @@ function assign(chamber, max) {
                         1079 *
                             1.422 ** ((game.om_assigned[chamber] - 15) ** 1.25)
                     )
+                if (game.om_assigned[chamber] >= 30)
+                    game.om_boost[chamber] = Math.round(
+                        35204148 * 2.37 ** (game.om_assigned[chamber] - 30)
+                    )
                 break
             case 1:
                 game.om_boost[chamber] = Math.round(
@@ -1068,6 +1072,12 @@ function assign(chamber, max) {
                     game.om_boost[chamber] = Math.round(
                         1505885455 *
                             2.903 ** ((game.om_assigned[chamber] - 15) ** 1.25)
+                    )
+                if (game.om_assigned[chamber] >= 30)
+                    game.om_boost[chamber] = Math.round(
+                        6.933694888160306 *
+                            10 ** 22 *
+                            13.5 ** (game.om_assigned[chamber] - 30)
                     )
                 break
             case 2:
@@ -1080,6 +1090,9 @@ function assign(chamber, max) {
                             4 * (game.om_assigned[chamber] - 15) ** 1.25
                         ) /
                             100
+                if (game.om_assigned[chamber] >= 30)
+                    game.om_boost[chamber] =
+                        2.93 + 0.09 * (game.om_assigned[chamber] - 30)
                 break
         }
     }
