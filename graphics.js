@@ -3861,28 +3861,6 @@ function achievements_update() {
                             ).innerHTML = "?????"
                         break
                     case 4:
-                        if (game.perks[17] || game.quantum >= 1)
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML =
-                                achievement.achievements[p].requirement
-                        else
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML = "?????"
-                        break
-                    case 5:
-                        if (game.perks[23] || game.quantum >= 1)
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML =
-                                achievement.achievements[p].requirement
-                        else
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML = "?????"
-                        break
-                    case 6:
                         if (game.quantum >= 1)
                             document.getElementById(
                                 "ach_reqr" + (i + 1)
@@ -3893,143 +3871,88 @@ function achievements_update() {
                                 "ach_reqr" + (i + 1)
                             ).innerHTML = "?????"
                         break
-                    case 7:
-                        if (game.qu_bought[7])
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML =
-                                achievement.achievements[p].requirement
-                        else
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML = "?????"
-                        break
-                    case 8:
-                        if (game.dk_bought[3])
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML =
-                                achievement.achievements[p].requirement
-                        else
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML = "?????"
-                        break
-                    case 9:
-                        if (game.dk_bought[7])
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML =
-                                achievement.achievements[p].requirement
-                        else
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML = "?????"
-                        break
-                    case 10:
-                        if (game.om_bought[6])
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML =
-                                achievement.achievements[p].requirement
-                        else
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML = "?????"
-                        break
-                    case 11:
-                        if (game.om_bought[7])
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML =
-                                achievement.achievements[p].requirement
-                        else
-                            document.getElementById(
-                                "ach_reqr" + (i + 1)
-                            ).innerHTML = "?????"
-                        break
-                    case 12:
+                    case 5:
                         if (!game.hints) {
                             document.getElementById(
                                 "ach_reqr" + (i + 1)
                             ).innerHTML = "?????"
                         } else {
                             switch (p) {
-                                case 157:
+                                case 161:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerHTML =
                                         "And with our combined powers we will make great progress"
                                     break
-                                case 158:
+                                case 162:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerHTML =
                                         "Imagine if the game didn't play itself"
                                     break
-                                case 159:
+                                case 163:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerHTML =
                                         "Maybe you should take a break from making progress for a bit"
                                     break
-                                case 160:
+                                case 164:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerHTML =
                                         "Ask nicely for this one first"
                                     break
-                                case 161:
+                                case 165:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerHTML = 'Do something "funny"'
                                     break
-                                case 162:
+                                case 166:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerHTML = "Be very lucky"
                                     break
-                                case 163:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML = "Pay respects"
-                                    break
-                                case 164:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "A lot of work if you're blind"
-                                    break
-                                case 165:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML = "Throw it all away"
-                                    break
-                                case 166:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "Acquire appreciation for emoji"
-                                    break
                                 case 167:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "Excessively challenging if you're blind"
+                                    ).innerHTML = "Pay respects"
                                     break
                                 case 168:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerHTML =
-                                        "Straight to number two without number one"
+                                        "A lot of work if you're blind"
                                     break
                                 case 169:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerHTML = "Throw it all away"
+                                    break
+                                case 170:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerHTML =
+                                        "Acquire appreciation for emoji"
+                                    break
+                                case 171:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerHTML =
+                                        "Excessively challenging if you're blind"
+                                    break
+                                case 172:
+                                    document.getElementById(
+                                        "ach_reqr" + (i + 1)
+                                    ).innerHTML =
+                                        "Straight to number two without number one"
+                                    break
+                                case 173:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerHTML =
                                         "Do it yourself when there's no point"
                                     break
-                                case 170:
+                                case 174:
                                     document.getElementById(
                                         "ach_reqr" + (i + 1)
                                     ).innerHTML = "This is a no helium zone"
