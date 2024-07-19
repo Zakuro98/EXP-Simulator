@@ -749,8 +749,8 @@
                         <button id="supply_button" class="core_button core_locked" onclick="
                             if (game.hydrogen >= game.supply_price) {
                                 game.hydrogen -= game.supply_price
-                                game.budget -= game.supply_price
-                                if (game.budget < 0) game.budget = 0
+                                game.budget[8] -= game.supply_price
+                                if (game.budget[8] < 0) game.budget[8] = 0
                                 game.supply_level++
                                 if (game.supply_level > 11)
                                     game.supply_price *= 5 ** (game.supply_level - 10)
@@ -1633,7 +1633,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.3.300<br>Made by Zakuro<br><br>Last updated July 18, 2024
+                    <br><br><br>EXP Simulator v2.3.301<br>Made by Zakuro<br><br>Last updated July 19, 2024
                 </p>
                 <a id="changelog" href="changelog.html" target="_blank" class="info link">
                     Changelog
