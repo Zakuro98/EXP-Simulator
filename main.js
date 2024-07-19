@@ -1696,7 +1696,7 @@ function tick() {
             "<br><br><br>EXP Simulator v?.?.???<br>Made by ???<br><br>Last updated ???"
     } else {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v2.3.300<br>Made by Zakuro<br><br>Last updated July 18, 2024"
+            "<br><br><br>EXP Simulator v2.3.301<br>Made by Zakuro<br><br>Last updated July 19, 2024"
     }
 }
 
@@ -2387,6 +2387,7 @@ function load(savegame) {
             let old_budget = game.budget
             game.budget = new Array(9).fill(old_budget / 9)
             game.autohy_deuterium = Math.round(1 / game.autohy_importance) / 100
+            console.log(old_budget)
             let old_price = [game.growth_price[0], game.growth_price[1]]
             game.growth_level = [0, 0]
             game.growth_price[0] = new Decimal(10 ** 17)
@@ -2460,6 +2461,7 @@ function load(savegame) {
             game.omega_best = new Decimal(game.omega_best)
         }
         //v2.3.300
+        if (game.budget === null) game.budget = new Array(9).fill(0)
         game.dark_matter = new Decimal(game.dark_matter)
         game.total_exp = new Decimal(game.total_exp)
         game.exp = new Decimal(game.exp)
