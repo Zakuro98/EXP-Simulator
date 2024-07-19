@@ -1486,7 +1486,7 @@ function stats_update() {
         }
 
         let exp_eff = ""
-        let level_rate
+        let level_rate = new Decimal(10 ** 20 / game.tickspeed)
         if (
             game.cps >= 10 ||
             game.prestige >= 1 ||
@@ -1698,15 +1698,19 @@ function stats_update() {
         document.getElementById("autoclicking_stat").innerHTML =
             "<br>" + format_num(game.cps) + " clicks/s"
         document.getElementById("auto_power_stat").innerHTML = exp_eff
-        document.getElementById("level_rate_stat").innerHTML =
-            "1 level every " +
-            format_time(
-                level_rate.clamp(1, Decimal.pow(2, 1023)).toNumber() *
-                    game.tickspeed
-            )
-        if (level_rate < 1)
+        if (level_rate.cmp(10 ** 20 / game.tickspeed) >= 0) {
             document.getElementById("level_rate_stat").innerHTML =
-                format_eff_infinity(Decimal.div(1, level_rate)) + " levels/sec"
+                format_num(0) + " levels/sec"
+        } else {
+            document.getElementById("level_rate_stat").innerHTML =
+                format_num(1) +
+                " level every " +
+                format_time(level_rate.toNumber() * game.tickspeed)
+            if (level_rate < 1)
+                document.getElementById("level_rate_stat").innerHTML =
+                    format_eff_infinity(Decimal.div(1, level_rate)) +
+                    " levels/sec"
+        }
         document.getElementById("total_clicks_cp_stat").innerHTML =
             "<br>" + format_num(game.clicks)
         document.getElementById("total_clicks_cr_stat").innerHTML = format_num(
@@ -3831,7 +3835,11 @@ function achievements_update() {
                             ).innerHTML = "?????"
                         break
                     case 2:
-                        if (game.pp_bought[6])
+                        if (
+                            game.pp_bought[6] ||
+                            game.reboot >= 1 ||
+                            game.quantum >= 1
+                        )
                             document.getElementById(
                                 "ach_reqr" + (i + 1)
                             ).innerHTML =
@@ -3853,7 +3861,7 @@ function achievements_update() {
                             ).innerHTML = "?????"
                         break
                     case 4:
-                        if (game.quantum >= 1)
+                        if (game.perks[17] || game.quantum >= 1)
                             document.getElementById(
                                 "ach_reqr" + (i + 1)
                             ).innerHTML =
@@ -3864,6 +3872,83 @@ function achievements_update() {
                             ).innerHTML = "?????"
                         break
                     case 5:
+                        if (game.perks[23] || game.quantum >= 1)
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 6:
+                        if (game.quantum >= 1)
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 7:
+                        if (game.qu_bought[7])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 8:
+                        if (game.dk_bought[3])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 9:
+                        if (game.dk_bought[7])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 10:
+                        if (game.om_bought[6])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 11:
+                        if (game.om_bought[7])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 12:
                         if (!game.hints) {
                             document.getElementById(
                                 "ach_reqr" + (i + 1)
@@ -4541,12 +4626,9 @@ function description_update() {
             format_infinity(new Decimal(1.7976931348622053 * 10 ** 308)) +
             " kg dark matter"
     achievement.achievements[154].requirement =
-        "Reach more than ∞ kg dark matter"
-    if (game.om_bought[6])
-        achievement.achievements[154].requirement =
-            "Reach " +
-            format_infinity(new Decimal(10).pow(2000)) +
-            " kg dark matter"
+        "Reach " +
+        format_infinity(new Decimal(10).pow(2000)) +
+        " kg dark matter"
     achievement.achievements[155].name =
         "Gone, reduced to " + format_num(1) + " kg"
     achievement.achievements[155].requirement =
@@ -4725,9 +4807,6 @@ function description_update() {
                 "Reach ??? kg dark matter"
         achievement.achievements[153].requirement =
             "Reach ??? kg dark matter in under ???"
-        if (!game.om_bought[6])
-            achievement.achievements[154].requirement =
-                "Reach ??? kg dark matter"
         achievement.achievements[162].requirement = "Gain no EXP for ???"
         if (game.perks[9]) {
             pp_upgrade.upgrades[35].desc =
