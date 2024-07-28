@@ -2417,8 +2417,8 @@ function get_level(xp) {
                 xp
                     .sub(get_exp(guess - 1))
                     .abs()
-                    .cmp(xp.div(precision)) === 0 &&
-                iterations < 1000
+                    .cmp(xp.div(precision)) === 1 &&
+                iterations < 10000
             ) {
                 guess =
                     xp
