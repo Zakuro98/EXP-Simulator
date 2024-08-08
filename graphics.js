@@ -340,7 +340,7 @@ function reset_button_update() {
             document.getElementById("pp").style.display = "none"
         }
 
-        if (game.challenge !== 4 && (game.challenge !== 9 || game.alt_rule)) {
+        if (game.challenge !== 4) {
             if (game.level >= game.pr_min) {
                 document.getElementById("amp_up").style.display = "inline"
                 document.getElementById("amp_up").innerHTML =
@@ -353,7 +353,7 @@ function reset_button_update() {
                         )
                     ) +
                     " AMP"
-                if (game.challenge === 9 && game.alt_rule)
+                if (game.challenge === 9)
                     document.getElementById("amp_up").innerHTML =
                         "+" + format_num(0) + " AMP"
                 let pp_amount = 0
@@ -731,10 +731,7 @@ function upgrade_update() {
     document.getElementById("boost_button").style.display = "inline"
     if (game.pp_bought[2])
         document.getElementById("boost_auto").style.display = "inline"
-    if (
-        game.boost_level < game.pr_min ||
-        (game.pp_bought[6] && game.boost_level < 1000000)
-    ) {
+    if (game.boost_level < game.pr_min || game.pp_bought[6]) {
         if (game.level >= game.boost_level) {
             document.getElementById("boost_button").innerHTML = "UPGRADE!"
             if (!meme)
@@ -861,10 +858,7 @@ function upgrade_update() {
     document.getElementById("auto_button").style.display = "inline"
     if (game.pp_bought[2])
         document.getElementById("auto_auto").style.display = "inline"
-    if (
-        game.auto_level < game.pr_min ||
-        (game.pp_bought[6] && game.auto_level < 1000000)
-    ) {
+    if (game.auto_level < game.pr_min || game.pp_bought[6]) {
         if (game.level >= game.auto_level) {
             document.getElementById("auto_button").innerHTML = "UPGRADE!"
             if (!meme)
@@ -913,10 +907,7 @@ function upgrade_update() {
         if (game.pp_bought[2])
             document.getElementById("fluct_auto").style.display = "inline"
     }
-    if (
-        game.fluct_level < game.pr_min ||
-        (game.pp_bought[6] && game.fluct_level < 1000000)
-    ) {
+    if (game.fluct_level < game.pr_min || game.pp_bought[6]) {
         if (game.level >= game.fluct_level) {
             document.getElementById("fluct_button").innerHTML = "UPGRADE!"
             if (!meme)
@@ -1026,10 +1017,7 @@ function upgrade_update() {
         if (game.pp_bought[2])
             document.getElementById("fact_auto").style.display = "inline"
     }
-    if (
-        game.fact_level < game.pr_min ||
-        (game.pp_bought[6] && game.fact_level < 1000000)
-    ) {
+    if (game.fact_level < game.pr_min || game.pp_bought[6]) {
         if (game.level >= game.fact_level) {
             document.getElementById("fact_button").innerHTML = "UPGRADE!"
             if (!meme)
@@ -1078,10 +1066,7 @@ function upgrade_update() {
         if (game.pp_bought[2])
             document.getElementById("flux_auto").style.display = "inline"
     }
-    if (
-        game.flux_level < game.pr_min ||
-        (game.pp_bought[6] && game.flux_level < 1000000)
-    ) {
+    if (game.flux_level < game.pr_min || game.pp_bought[6]) {
         if (game.level >= game.flux_level) {
             document.getElementById("flux_button").innerHTML = "UPGRADE!"
             if (!meme)
@@ -1159,10 +1144,7 @@ function upgrade_update() {
         if (game.pp_bought[2])
             document.getElementById("battery_auto").style.display = "inline"
     }
-    if (
-        game.battery_level < game.pr_min ||
-        (game.pp_bought[6] && game.battery_level < 1000000)
-    ) {
+    if (game.battery_level < game.pr_min || game.pp_bought[6]) {
         if (game.level >= game.battery_level) {
             document.getElementById("battery_button").innerHTML = "UPGRADE!"
             if (!meme)
@@ -1883,14 +1865,14 @@ function stats_update() {
             document.getElementById("exp_click_au_name").innerHTML =
                 "<br>Automated EXP/click:"
             document.getElementById("exp_multi_au_name").innerHTML =
-                "Total Automated EXP Multipler:"
+                "Total Automated EXP Multiplier:"
         } else {
             document.getElementById("exp_click_mn").style.display = "none"
             document.getElementById("exp_multi_mn").style.display = "none"
             document.getElementById("exp_click_au_name").innerHTML =
                 "<br>EXP/click:"
             document.getElementById("exp_multi_au_name").innerHTML =
-                "Total EXP Multipler:"
+                "Total EXP Multiplier:"
         }
 
         if (game.perks[23]) {
@@ -1926,7 +1908,10 @@ function stats_update() {
         }
     }
 
-    if (game.pp_bought[3] && game.tab === 5) {
+    if (
+        (game.prestige >= 1 || game.reboot >= 1 || game.quantum >= 1) &&
+        game.tab === 5
+    ) {
         document.getElementById("statistics_tabs").style.display = "flex"
     } else {
         document.getElementById("statistics_tabs").style.display = "none"
@@ -1939,90 +1924,239 @@ function stats_update() {
         let entries = 0
         for (let i = 0; i < 5; i++) {
             reset_str += "<br>[" + format_num(i + 1) + "]"
-            if (game.amp_amount[i] === -1) {
-                reset_str += " no data"
-            } else {
-                reset_str +=
-                    " +" +
-                    format_num(Math.round(game.amp_amount[i])) +
-                    " AMP in " +
-                    format_time(game.amp_time[i] * game.tickspeed) +
-                    " (+" +
-                    format_eff(game.amp_eff[i]) +
-                    " AMP/sec)"
-                entries++
-                amp_sec += game.amp_eff[i]
-            }
-        }
 
-        if (entries !== 0) {
-            amp_sec /= entries
-            reset_str +=
-                "<br><br>Average AMP gain: +" + format_eff(amp_sec) + " AMP/sec"
-        } else {
-            reset_str += "<br><br>Average AMP gain: undefined"
-        }
-
-        if (game.perks[13]) {
-            reset_str += "<br><br><br>Past Reboots:"
-
-            let watts_sec = 0
-            entries = 0
-            for (let i = 0; i < 5; i++) {
-                reset_str += "<br>[" + format_num(i + 1) + "]"
-                if (game.watts_amount[i] === -1) {
-                    reset_str += "no data"
+            if (!game.past_alt[0]) {
+                if (game.amp_amount[i] === -1) {
+                    reset_str += " no data"
                 } else {
                     reset_str +=
                         " +" +
-                        format_num(game.watts_amount[i]) +
-                        " watts in " +
-                        format_time(game.watts_time[i] * game.tickspeed)
-                    if (game.watts_eff[i] < 1 / 60) {
+                        format_num(Math.round(game.amp_amount[i])) +
+                        " AMP in " +
+                        format_time(game.amp_time[i] * game.tickspeed) +
+                        " (+" +
+                        format_eff(game.amp_eff[i]) +
+                        " AMP/sec)"
+                    entries++
+                    amp_sec += game.amp_eff[i]
+                }
+            } else {
+                if (game.pp_amount[i] === -1) {
+                    reset_str += " no data"
+                } else {
+                    reset_str +=
+                        " +" +
+                        format_num(Math.round(game.pp_amount[i])) +
+                        " PP in " +
+                        format_time(game.amp_time[i] * game.tickspeed)
+                }
+            }
+        }
+
+        if (!game.past_alt[0]) {
+            if (entries !== 0) {
+                amp_sec /= entries
+                reset_str +=
+                    "<br><br>Average AMP gain: +" +
+                    format_eff(amp_sec) +
+                    " AMP/sec"
+            } else {
+                reset_str += "<br><br>Average AMP gain: undefined"
+            }
+        }
+
+        document.getElementById("past_prestiges_text").innerHTML = reset_str
+
+        if (game.perks[28]) {
+            document.getElementById("past_prestiges_mode").style.display =
+                "none"
+            if (game.past_alt[0]) past_resets_mode(1)
+        } else {
+            document.getElementById("past_prestiges_mode").style.display =
+                "block"
+        }
+
+        if (game.reboot >= 1 || game.quantum >= 1) {
+            document.getElementById("past_reboots").style.display = "block"
+            reset_str = "Past Reboots:"
+
+            let watts_sec = 0
+            let hydrogen_sec = 0
+            entries = 0
+            for (let i = 0; i < 5; i++) {
+                reset_str += "<br>[" + format_num(i + 1) + "]"
+
+                if (!game.past_alt[1]) {
+                    if (game.watts_amount[i] === -1) {
+                        reset_str += " no data"
+                    } else {
+                        reset_str +=
+                            " +" +
+                            format_num(game.watts_amount[i]) +
+                            " watts in " +
+                            format_time(game.watts_time[i] * game.tickspeed)
+                        if (game.watts_eff[i] < 1 / 60) {
+                            reset_str +=
+                                " (+" +
+                                format_eff(game.watts_eff[i] * 3600) +
+                                " watts/hour)"
+                        } else if (game.watts_eff[i] < 1) {
+                            reset_str +=
+                                " (+" +
+                                format_eff(game.watts_eff[i] * 60) +
+                                " watts/min)"
+                        } else {
+                            reset_str +=
+                                " (+" +
+                                format_eff(game.watts_eff[i]) +
+                                " watts/sec)"
+                        }
+                        entries++
+                        watts_sec += game.watts_eff[i]
+                    }
+                } else {
+                    if (game.hydrogen_amount[i] === -1) {
+                        reset_str += " no data"
+                    } else {
+                        reset_str +=
+                            " +" +
+                            format_eff(game.hydrogen_amount[i]) +
+                            " g hydrogen in " +
+                            format_time(game.watts_time[i] * game.tickspeed)
+                        if (game.hydrogen_eff[i] < 1 / 60) {
+                            reset_str +=
+                                " (+" +
+                                format_eff(game.hydrogen_eff[i] * 3600) +
+                                " g hydrogen/hour)"
+                        } else if (game.hydrogen_eff[i] < 1) {
+                            reset_str +=
+                                " (+" +
+                                format_eff(game.hydrogen_eff[i] * 60) +
+                                " g hydrogen/min)"
+                        } else {
+                            reset_str +=
+                                " (+" +
+                                format_eff(game.hydrogen_eff[i]) +
+                                " g hydrogen/sec)"
+                        }
+                        entries++
+                        hydrogen_sec += game.hydrogen_eff[i]
+                    }
+                }
+            }
+
+            if (!game.past_alt[1]) {
+                if (entries !== 0) {
+                    watts_sec /= entries
+                    if (watts_sec < 1 / 60) {
+                        reset_str +=
+                            "<br><br>Average watts gain: +" +
+                            format_eff(watts_sec * 3600) +
+                            " watts/hour"
+                    } else if (watts_sec < 1) {
+                        reset_str +=
+                            "<br><br>Average watts gain: +" +
+                            format_eff(watts_sec * 60) +
+                            " watts/min"
+                    } else {
+                        reset_str +=
+                            "<br><br>Average watts gain: +" +
+                            format_eff(watts_sec) +
+                            " watts/sec"
+                    }
+                } else {
+                    reset_str += "<br><br>Average watts gain: undefined"
+                }
+            } else {
+                if (entries !== 0) {
+                    hydrogen_sec /= entries
+                    if (hydrogen_sec < 1 / 60) {
+                        reset_str +=
+                            "<br><br>Average hydrogen gain: +" +
+                            format_eff(hydrogen_sec * 3600) +
+                            " g hydrogen/hour"
+                    } else if (hydrogen_sec < 1) {
+                        reset_str +=
+                            "<br><br>Average hydrogen gain: +" +
+                            format_eff(hydrogen_sec * 60) +
+                            " g hydrogen/min"
+                    } else {
+                        reset_str +=
+                            "<br><br>Average hydrogen gain: +" +
+                            format_eff(hydrogen_sec) +
+                            " g hydrogen/sec"
+                    }
+                } else {
+                    reset_str += "<br><br>Average hydrogen gain: undefined"
+                }
+            }
+
+            document.getElementById("past_reboots_text").innerHTML = reset_str
+
+            if (game.perks[23]) {
+                document.getElementById("past_reboots_mode").style.display =
+                    "block"
+            } else {
+                document.getElementById("past_reboots_mode").style.display =
+                    "none"
+            }
+        } else {
+            document.getElementById("past_reboots").style.display = "none"
+        }
+
+        if (game.quantum >= 1) {
+            document.getElementById("past_quantum_text").style.display = "block"
+            reset_str = "Past Quantum Iterations:"
+
+            let photons_sec = new Decimal(0)
+            entries = 0
+            for (let i = 0; i < 5; i++) {
+                reset_str += "<br>[" + format_num(i + 1) + "]"
+                if (game.photons_amount[i] === -1) {
+                    reset_str += " no data"
+                } else {
+                    reset_str +=
+                        " +" +
+                        format_infinity(game.photons_amount[i]) +
+                        " photons in " +
+                        format_time(game.photons_time[i] * game.tickspeed)
+                    if (game.photons_eff[i].cmp(1 / 60) === -1) {
                         reset_str +=
                             " (+" +
-                            format_eff(game.watts_eff[i] * 3600) +
-                            " watts/hour)"
-                    } else if (game.watts_eff[i] < 1) {
-                        reset_str +=
-                            " (+" +
-                            format_eff(game.watts_eff[i] * 60) +
-                            " watts/min)"
+                            format_eff_infinity(game.photons_eff[i].mul(3600)) +
+                            " photons/hour)"
                     } else {
                         reset_str +=
                             " (+" +
-                            format_eff(game.watts_eff[i]) +
-                            " watts/sec)"
+                            format_eff_infinity(game.photons_eff[i].mul(60)) +
+                            " photons/min)"
                     }
                     entries++
-                    watts_sec += game.watts_eff[i]
+                    photons_sec = photons_sec.add(game.photons_eff[i])
                 }
             }
 
             if (entries !== 0) {
-                watts_sec /= entries
-                if (watts_sec < 1 / 60) {
+                photons_sec = photons_sec.div(entries)
+                if (photons_sec.cmp(1 / 60) === -1) {
                     reset_str +=
-                        "<br><br>Average watts gain: +" +
-                        format_eff(watts_sec * 3600) +
-                        " watts/hour"
-                } else if (watts_sec < 1) {
-                    reset_str +=
-                        "<br><br>Average watts gain: +" +
-                        format_eff(watts_sec * 60) +
-                        " watts/min"
+                        "<br><br>Average photons gain: +" +
+                        format_eff_infinity(photons_sec.mul(3600)) +
+                        " photons/hour"
                 } else {
                     reset_str +=
-                        "<br><br>Average watts gain: +" +
-                        format_eff(watts_sec) +
-                        " watts/sec"
+                        "<br><br>Average photons gain: +" +
+                        format_eff_infinity(photons_sec.mul(60)) +
+                        " photons/min"
                 }
             } else {
-                reset_str += "<br><br>Average watts gain: undefined"
+                reset_str += "<br><br>Average photons gain: undefined"
             }
-        }
 
-        document.getElementById("past_resets_text").innerHTML = reset_str
+            document.getElementById("past_quantum_text").innerHTML = reset_str
+        } else {
+            document.getElementById("past_quantum_text").style.display = "none"
+        }
     }
 }
 
@@ -2034,7 +2168,7 @@ function pp_update() {
         "creating " + format_num(game.amp) + "x EXP production"
     document.getElementById("pp2").innerHTML = format_num(game.pp)
 
-    if (game.challenge !== 4 && (game.challenge !== 9 || game.alt_rule)) {
+    if (game.challenge !== 4) {
         if (game.level >= game.pr_min) {
             document.getElementById("amp_up2").innerHTML =
                 "+" +
@@ -2044,7 +2178,7 @@ function pp_update() {
                     )
                 ) +
                 " AMP"
-            if (game.challenge === 9 && game.alt_rule)
+            if (game.challenge === 9)
                 document.getElementById("amp_up2").innerHTML =
                     "+" + format_num(0) + " AMP"
             let pp_amount = 0
@@ -2633,7 +2767,7 @@ function watts_update() {
         document.getElementById("autorb_block").style.display = "block"
         document.getElementById("watt_auto").style.display = "inline"
 
-        if (game.perks[28] && (game.challenge !== 6 || !game.alt_rule)) {
+        if (game.perks[28] && game.challenge !== 6) {
             document.getElementById("pendingrb_enabled").style.display = "none"
         } else {
             document.getElementById("pendingrb_enabled").style.display = "block"
@@ -2864,45 +2998,6 @@ function challenge_update() {
             }
         }
     }
-
-    switch (game.completions[5]) {
-        case 0:
-            challenge.challenges[5].goal = 1420000
-            break
-        case 1:
-            challenge.challenges[5].goal = 1680000
-            break
-        case 2:
-            challenge.challenges[5].goal = 1855000
-            break
-        case 3:
-            challenge.challenges[5].goal = 2045000
-            break
-        case 4:
-            challenge.challenges[5].goal = 2360000
-            break
-        case 5:
-            challenge.challenges[5].goal = 2485000
-            break
-        case 6:
-            challenge.challenges[5].goal = 2415000
-            break
-        case 7:
-            challenge.challenges[5].goal = 2520000
-            break
-        case 8:
-            challenge.challenges[5].goal = 1210000
-            break
-        case 9:
-            challenge.challenges[5].goal = 1350000
-            break
-        case 10:
-            challenge.challenges[5].goal = 1485000
-            break
-        case 11:
-        default:
-            challenge.challenges[5].goal = 1590000
-    }
 }
 
 //updating reactor page
@@ -3036,6 +3131,12 @@ function prism_update() {
     if (game.level > highest_level) highest_level = game.level
 
     let amount = Decimal.pow(1000, (highest_level - 65536) / 16384).floor()
+    if (amount.cmp(Decimal.pow(2, 1024)) >= 0)
+        amount = amount
+            .div(Decimal.pow(2, 1024))
+            .pow(0.5)
+            .mul(Decimal.pow(2, 1024))
+            .floor()
 
     if (total_completions >= 108 && amount.cmp(1) >= 0) {
         document.getElementById("quantize_button").className = "lit"
@@ -3331,7 +3432,8 @@ function gravity_update() {
             "Effective Growth Factor " +
             format_eff(
                 (game.growth_factor * game.op_dark_boost) **
-                    (0.5 ** game.omega_level)
+                    (0.5 ** game.omega_level),
+                true
             ) +
             "x"
         if (game.om_bought[2]) {
@@ -3341,7 +3443,8 @@ function gravity_update() {
                     (game.growth_factor *
                         1.15 ** game.highest_omega_level *
                         game.op_dark_boost) **
-                        (0.5 ** game.omega_level)
+                        (0.5 ** game.omega_level),
+                    true
                 ) +
                 "x"
             if (game.om_bought[4])
@@ -3351,7 +3454,8 @@ function gravity_update() {
                         (game.growth_factor *
                             1.15 ** game.highest_omega_level *
                             game.op_dark_boost) **
-                            ((2 / 3) ** game.omega_level)
+                            ((2 / 3) ** game.omega_level),
+                        true
                     ) +
                     "x"
         }
@@ -3381,7 +3485,7 @@ function gravity_update() {
     }
     document.getElementById("growth_text").innerHTML =
         "Growth Factor<br>" +
-        format_eff(game.growth_factor * game.op_dark_boost) +
+        format_eff(game.growth_factor * game.op_dark_boost, true) +
         "x"
     if (game.om_bought[2])
         document.getElementById("growth_text").innerHTML =
@@ -3389,7 +3493,8 @@ function gravity_update() {
             format_eff(
                 game.growth_factor *
                     1.15 ** game.highest_omega_level *
-                    game.op_dark_boost
+                    game.op_dark_boost,
+                true
             ) +
             "x"
     document.getElementById("growth_button").innerHTML =
@@ -3502,7 +3607,7 @@ function gravity_update() {
                 .toNumber()
             document.getElementById("collapse_time").innerHTML =
                 "Effective Growth Factor " +
-                format_eff(f ** penalty) +
+                format_eff(f ** penalty, true) +
                 "x<br>" +
                 format_eff_infinity(next) +
                 " kg dark matter in " +
@@ -3749,7 +3854,7 @@ function omega_update() {
                 format_infinity(
                     Decimal.pow(
                         150,
-                        5 * ((game.free_omega_points + 1) / 5) ** (4 / 3) - 1
+                        5 * ((game.free_omega_points + 1) / 5) ** 2 - 1
                     ).mul(2 * 10 ** 16)
                 ) +
                 " photons"
@@ -3861,7 +3966,7 @@ function achievements_update() {
                             ).innerHTML = "?????"
                         break
                     case 4:
-                        if (game.quantum >= 1)
+                        if (game.perks[17] || game.quantum >= 1)
                             document.getElementById(
                                 "ach_reqr" + (i + 1)
                             ).innerHTML =
@@ -3872,93 +3977,81 @@ function achievements_update() {
                             ).innerHTML = "?????"
                         break
                     case 5:
-                        if (!game.hints) {
+                        if (game.perks[23] || game.quantum >= 1)
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
                             document.getElementById(
                                 "ach_reqr" + (i + 1)
                             ).innerHTML = "?????"
-                        } else {
-                            switch (p) {
-                                case 160:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "And with our combined powers we will make great progress"
-                                    break
-                                case 161:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "Imagine if the game didn't play itself"
-                                    break
-                                case 162:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "Maybe you should take a break from making progress for a bit"
-                                    break
-                                case 163:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "Ask nicely for this one first"
-                                    break
-                                case 164:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML = 'Do something "funny"'
-                                    break
-                                case 165:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML = "Be very lucky"
-                                    break
-                                case 166:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML = "Pay respects"
-                                    break
-                                case 167:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "A lot of work if you're blind"
-                                    break
-                                case 168:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML = "Throw it all away"
-                                    break
-                                case 169:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "Acquire appreciation for emoji"
-                                    break
-                                case 170:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "Excessively challenging if you're blind"
-                                    break
-                                case 171:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "Straight to number two without number one"
-                                    break
-                                case 172:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML =
-                                        "Do it yourself when there's no point"
-                                    break
-                                case 173:
-                                    document.getElementById(
-                                        "ach_reqr" + (i + 1)
-                                    ).innerHTML = "This is a no helium zone"
-                                    break
-                            }
-                        }
+                        break
+                    case 6:
+                        if (game.quantum >= 1)
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 7:
+                        if (game.qu_bought[7])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 8:
+                        if (game.dk_bought[3])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 9:
+                        if (game.dk_bought[7])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 10:
+                        if (game.om_bought[6])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
+                        break
+                    case 11:
+                        if (game.om_bought[7])
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML =
+                                achievement.achievements[p].requirement
+                        else
+                            document.getElementById(
+                                "ach_reqr" + (i + 1)
+                            ).innerHTML = "?????"
                         break
                 }
             }
@@ -3996,11 +4089,11 @@ function achievements_update() {
 //updating descriptions of various things
 function description_update() {
     pp_upgrade.upgrades[1].desc =
-        "Unautomated clicks are " + format_num(2) + "x stronger"
+        "Unautomated clicks are now " + format_num(2) + "x stronger"
     pp_map.get(pp_upgrade.upgrades[1]).querySelector(".pp_desc").innerHTML =
         pp_upgrade.upgrades[1].desc
     pp_upgrade.upgrades[4].desc =
-        "Unautomated clicks are " + format_num(4) + "x stronger"
+        "Unautomated clicks are now " + format_num(4) + "x stronger"
     pp_map.get(pp_upgrade.upgrades[4]).querySelector(".pp_desc").innerHTML =
         pp_upgrade.upgrades[4].desc
     pp_upgrade.upgrades[6].desc =
@@ -4012,32 +4105,23 @@ function description_update() {
     pp_map.get(pp_upgrade.upgrades[6]).querySelector(".pp_desc").innerHTML =
         pp_upgrade.upgrades[6].desc
     pp_upgrade.upgrades[7].desc =
-        "All further Prestiges start at LVL " +
-        format_lvl(15) +
-        "; Prestiging now requires LVL " +
-        format_lvl(70)
+        "All further Prestiges start at LVL " + format_lvl(15)
     pp_map.get(pp_upgrade.upgrades[7]).querySelector(".pp_desc").innerHTML =
         pp_upgrade.upgrades[7].desc
     pp_upgrade.upgrades[10].desc =
-        "All further Prestiges start at LVL " +
-        format_lvl(30) +
-        "; Prestiging now requires LVL " +
-        format_lvl(80)
+        "All further Prestiges start at LVL " + format_lvl(30)
     pp_map.get(pp_upgrade.upgrades[10]).querySelector(".pp_desc").innerHTML =
         pp_upgrade.upgrades[10].desc
     pp_upgrade.upgrades[11].desc =
-        "Unautomated clicks are " + format_num(8) + "x stronger"
+        "Unautomated clicks are now " + format_num(8) + "x stronger"
     pp_map.get(pp_upgrade.upgrades[11]).querySelector(".pp_desc").innerHTML =
         pp_upgrade.upgrades[11].desc
     pp_upgrade.upgrades[13].desc =
-        "All further Prestiges start at LVL " +
-        format_lvl(60) +
-        "; Prestiging now requires LVL " +
-        format_lvl(90)
+        "All further Prestiges start at LVL " + format_lvl(45)
     pp_map.get(pp_upgrade.upgrades[13]).querySelector(".pp_desc").innerHTML =
         pp_upgrade.upgrades[13].desc
     pp_upgrade.upgrades[17].desc =
-        "Unautomated clicks are " + format_num(16) + "x stronger"
+        "Unautomated clicks are now " + format_num(16) + "x stronger"
     pp_map.get(pp_upgrade.upgrades[17]).querySelector(".pp_desc").innerHTML =
         pp_upgrade.upgrades[17].desc
     pp_upgrade.upgrades[19].desc =
@@ -4122,7 +4206,7 @@ function description_update() {
     generator_perk.perks[13].desc =
         "The spare PP requirement for Reboot stops increasing, and you gain more watts on Reboot the farther past " +
         format_num(200000) +
-        " PP you go<br>Also unlocks Past Reboots in Statistics"
+        " PP you go"
     perk_map
         .get(generator_perk.perks[13])
         .querySelector(".perk_desc").innerHTML = generator_perk.perks[13].desc
@@ -4477,103 +4561,111 @@ function description_update() {
         "Reach " + format_num(150) + " clicks/s on the Autoclicker"
     achievement.achievements[95].requirement =
         "Reach " + format_num(1000) + " clicks/s on the Autoclicker"
+    achievement.achievements[96].requirement =
+        "Manually click " + format_num(10000) + " times"
     achievement.achievements[97].requirement =
-        "Reboot " + format_num(3) + " times"
-    achievement.achievements[98].requirement =
-        "Reboot " + format_num(5) + " times"
-    achievement.achievements[99].requirement =
-        "Reboot " + format_num(10) + " times"
-    achievement.achievements[100].requirement =
-        "Reboot " + format_num(25) + " times"
+        "Prestige " + format_num(1000) + " times while using Cancer notation"
     achievement.achievements[101].requirement =
-        "Reboot " + format_num(50) + " times"
+        "Reboot " + format_num(3) + " times"
     achievement.achievements[102].requirement =
-        "Reboot " + format_num(100) + " times"
+        "Reboot " + format_num(5) + " times"
     achievement.achievements[103].requirement =
+        "Reboot " + format_num(10) + " times"
+    achievement.achievements[104].requirement =
+        "Reboot " + format_num(25) + " times"
+    achievement.achievements[105].requirement =
+        "Reboot " + format_num(50) + " times"
+    achievement.achievements[106].requirement =
+        "Reboot " + format_num(100) + " times"
+    achievement.achievements[107].requirement =
         "Reboot " + format_num(1000) + " times"
-    achievement.achievements[117].requirement =
-        "Complete a single challenge " + format_num(12) + " times"
-    achievement.achievements[118].requirement =
-        "Complete a single challenge " + format_num(20) + " times"
-    achievement.achievements[119].requirement =
-        "Get " + format_num(27) + " total challenge completions"
-    achievement.achievements[120].requirement =
-        "Get " + format_num(54) + " total challenge completions"
     achievement.achievements[121].requirement =
-        "Get " + format_num(108) + " total challenge completions"
+        "Complete a single challenge " + format_num(12) + " times"
     achievement.achievements[122].requirement =
-        "Get " + format_num(180) + " total challenge completions"
+        "Complete a single challenge " + format_num(20) + " times"
     achievement.achievements[123].requirement =
-        "Unlock all " + format_num(29) + " Generator Perks"
+        "Get " + format_num(27) + " total challenge completions"
+    achievement.achievements[124].requirement =
+        "Get " + format_num(54) + " total challenge completions"
+    achievement.achievements[125].requirement =
+        "Get " + format_num(108) + " total challenge completions"
     achievement.achievements[126].requirement =
-        "Make " + format_num(10 ** 30) + " mg helium/sec"
-    achievement.achievements[127].requirement =
-        "Make " + format_num(10 ** 60) + " mg helium/sec"
+        "Get " + format_num(180) + " total challenge completions"
     achievement.achievements[128].requirement =
-        "Make " + format_num(10 ** 90) + " mg helium/sec"
-    achievement.achievements[129].requirement =
-        "Make " + format_num(10 ** 120) + " mg helium/sec"
+        "Unlock all " + format_num(29) + " Generator Perks"
     achievement.achievements[131].requirement =
-        "Quantize " + format_num(3) + " times"
+        "Make " + format_num(10 ** 30) + " mg helium/sec"
     achievement.achievements[132].requirement =
-        "Quantize " + format_num(5) + " times"
+        "Make " + format_num(10 ** 60) + " mg helium/sec"
     achievement.achievements[133].requirement =
-        "Quantize " + format_num(10) + " times"
+        "Make " + format_num(10 ** 90) + " mg helium/sec"
     achievement.achievements[134].requirement =
-        "Quantize " + format_num(25) + " times"
+        "Make " + format_num(10 ** 120) + " mg helium/sec"
     achievement.achievements[135].requirement =
-        "Quantize " + format_num(50) + " times"
-    achievement.achievements[136].requirement =
-        "Quantize " + format_num(100) + " times"
-    achievement.achievements[137].requirement =
-        "Quantize " + format_num(1000) + " times"
-    achievement.achievements[138].requirement =
-        "Reach Prism LVL " + format_lvl(1)
+        "Manually upgrade a Reactor core when it has been upgraded exactly " +
+        format_num(100000) +
+        " times"
     achievement.achievements[139].requirement =
-        "Reach Prism LVL " + format_lvl(10)
+        "Quantize " + format_num(3) + " times"
     achievement.achievements[140].requirement =
-        "Reach Prism LVL " + format_lvl(30)
+        "Quantize " + format_num(5) + " times"
     achievement.achievements[141].requirement =
-        "Reach Prism LVL " + format_lvl(100)
+        "Quantize " + format_num(10) + " times"
     achievement.achievements[142].requirement =
-        "Reach Prism LVL " + format_lvl(200)
+        "Quantize " + format_num(25) + " times"
     achievement.achievements[143].requirement =
-        "Reach Prism LVL " + format_lvl(300)
+        "Quantize " + format_num(50) + " times"
     achievement.achievements[144].requirement =
+        "Quantize " + format_num(100) + " times"
+    achievement.achievements[145].requirement =
+        "Quantize " + format_num(1000) + " times"
+    achievement.achievements[146].requirement =
+        "Reach Prism LVL " + format_lvl(1)
+    achievement.achievements[147].requirement =
+        "Reach Prism LVL " + format_lvl(10)
+    achievement.achievements[148].requirement =
+        "Reach Prism LVL " + format_lvl(30)
+    achievement.achievements[149].requirement =
+        "Reach Prism LVL " + format_lvl(100)
+    achievement.achievements[150].requirement =
+        "Reach Prism LVL " + format_lvl(200)
+    achievement.achievements[151].requirement =
+        "Reach Prism LVL " + format_lvl(300)
+    achievement.achievements[152].requirement =
         "Reach Prism LVL " + format_lvl(500)
-    achievement.achievements[148].name = "Mach " + format_num(874030)
-    achievement.achievements[152].requirement = "Reach ∞ kg dark matter"
+    achievement.achievements[156].name = "Mach " + format_num(874030)
+    achievement.achievements[160].requirement = "Reach ∞ kg dark matter"
     if (game.om_bought[6])
-        achievement.achievements[152].requirement =
+        achievement.achievements[160].requirement =
             "Reach " +
             format_infinity(new Decimal(1.7976931348622053 * 10 ** 308)) +
             " kg dark matter"
-    achievement.achievements[154].requirement =
+    achievement.achievements[162].requirement =
         "Reach " +
         format_infinity(new Decimal(10).pow(2000)) +
         " kg dark matter"
-    achievement.achievements[155].name =
+    achievement.achievements[163].name =
         "Gone, reduced to " + format_num(1) + " kg"
-    achievement.achievements[155].requirement =
+    achievement.achievements[164].requirement =
         "Reach Omega LVL " + format_num(1)
-    achievement.achievements[156].requirement =
-        "Reach Omega LVL " + format_num(5)
-    achievement.achievements[157].requirement =
-        "Reach Omega LVL " + format_num(20)
-    achievement.achievements[159].requirement =
-        "Get " + format_num(5) + " free Omega Points from the Omega Challenge"
     achievement.achievements[165].requirement =
+        "Reach Omega LVL " + format_num(5)
+    achievement.achievements[166].requirement =
+        "Reach Omega LVL " + format_num(20)
+    achievement.achievements[167].requirement =
+        "Get " + format_num(5) + " free Omega Points from the Omega Challenge"
+    if (game.achievements[64])
+        achievement.achievements[170].requirement =
+            "Click on this achievement's box"
+    else
+        achievement.achievements[170].requirement =
+            "Ask nicely for this achievement"
+    achievement.achievements[173].requirement =
         "There is a " +
         format_num(1) +
         " in " +
-        format_num(7777) +
+        format_num(77777) +
         " chance every second you will get this achievement"
-    achievement.achievements[169].requirement =
-        "Reboot " + format_num(10) + " times while using Cancer notation"
-    achievement.achievements[172].requirement =
-        "Manually upgrade a Reactor core when it has already been upgraded " +
-        format_num(100000) +
-        " times"
 
     challenge.challenges[1].desc =
         "All upgrades require " + format_num(5) + "x as many levels"
@@ -4587,13 +4679,6 @@ function description_update() {
         .get(challenge.challenges[4])
         .querySelector(".challenge_desc").innerHTML =
         challenge.challenges[4].desc
-    challenge.challenges[8].desc =
-        "All rules from the first four challenges, simultaneously<br>All EXP production is divided by " +
-        format_num(10 ** 16)
-    if (game.alt_rule) {
-        challenge.challenges[8].desc =
-            "All rules from the first three challenges, simultaneously<br>You cannot gain AMP"
-    }
     challenge_map
         .get(challenge.challenges[8])
         .querySelector(".challenge_desc").innerHTML =
@@ -4715,22 +4800,22 @@ function description_update() {
         achievement.achievements[67].requirement = "Play for ???"
         achievement.achievements[68].requirement = "Play for ???"
         achievement.achievements[69].requirement = "Play for ???"
-        achievement.achievements[104].requirement = "Reboot in under ???"
-        achievement.achievements[105].requirement = "Reboot in under ???"
-        achievement.achievements[106].requirement = "Reboot in under ???"
-        achievement.achievements[107].requirement = "Reboot in under ???"
-        achievement.achievements[130].requirement = "Quantize ??? times"
-        achievement.achievements[145].requirement = "Quantize in under ???"
-        achievement.achievements[146].requirement = "Quantize in under ???"
-        achievement.achievements[147].requirement = "Quantize in under ???"
-        achievement.achievements[148].requirement = "Quantize in under ???"
-        achievement.achievements[149].requirement = "Quantize in under ???"
+        achievement.achievements[108].requirement = "Reboot in under ???"
+        achievement.achievements[109].requirement = "Reboot in under ???"
+        achievement.achievements[110].requirement = "Reboot in under ???"
+        achievement.achievements[111].requirement = "Reboot in under ???"
+        achievement.achievements[138].requirement = "Quantize ??? times"
+        achievement.achievements[153].requirement = "Quantize in under ???"
+        achievement.achievements[154].requirement = "Quantize in under ???"
+        achievement.achievements[155].requirement = "Quantize in under ???"
+        achievement.achievements[156].requirement = "Quantize in under ???"
+        achievement.achievements[157].requirement = "Quantize in under ???"
         if (!game.om_bought[6])
-            achievement.achievements[152].requirement =
+            achievement.achievements[160].requirement =
                 "Reach ??? kg dark matter"
-        achievement.achievements[153].requirement =
+        achievement.achievements[161].requirement =
             "Reach ??? kg dark matter in under ???"
-        achievement.achievements[162].requirement = "Gain no EXP for ???"
+        achievement.achievements[171].requirement = "Gain no EXP for ???"
         if (game.perks[9]) {
             pp_upgrade.upgrades[35].desc =
                 "Unlocks ??? Capacitance mode, which gives a ???x boost on Discharge"
@@ -4834,27 +4919,27 @@ function description_update() {
         achievement.achievements[67].requirement = "Play for 24 hours"
         achievement.achievements[68].requirement = "Play for 72 hours"
         achievement.achievements[69].requirement = "Play for 168 hours"
-        achievement.achievements[104].requirement = "Reboot in under 1 hour"
-        achievement.achievements[105].requirement = "Reboot in under 10 minutes"
-        achievement.achievements[106].requirement = "Reboot in under 1 minute"
-        achievement.achievements[107].requirement = "Reboot in under 1 second"
-        achievement.achievements[130].requirement = "Quantize 1 time"
-        achievement.achievements[145].requirement = "Quantize in under 1 hour"
-        achievement.achievements[146].requirement =
+        achievement.achievements[108].requirement = "Reboot in under 1 hour"
+        achievement.achievements[109].requirement = "Reboot in under 10 minutes"
+        achievement.achievements[110].requirement = "Reboot in under 1 minute"
+        achievement.achievements[111].requirement = "Reboot in under 1 second"
+        achievement.achievements[138].requirement = "Quantize 1 time"
+        achievement.achievements[153].requirement = "Quantize in under 1 hour"
+        achievement.achievements[154].requirement =
             "Quantize in under 5 minutes"
-        achievement.achievements[147].requirement = "Quantize in under 1 minute"
-        achievement.achievements[148].requirement =
+        achievement.achievements[155].requirement = "Quantize in under 1 minute"
+        achievement.achievements[156].requirement =
             "Quantize in under 30 seconds"
-        achievement.achievements[149].requirement =
+        achievement.achievements[157].requirement =
             "Quantize in under 10 seconds"
-        achievement.achievements[153].requirement =
+        achievement.achievements[161].requirement =
             "Reach ∞ kg dark matter in under 1 minute"
         if (game.om_bought[6])
-            achievement.achievements[153].requirement =
+            achievement.achievements[161].requirement =
                 "Reach " +
                 format_infinity(new Decimal(1.7976931348622053 * 10 ** 308)) +
                 " kg dark matter in under 1 minute"
-        achievement.achievements[162].requirement = "Gain no EXP for 10 minutes"
+        achievement.achievements[171].requirement = "Gain no EXP for 10 minutes"
 
         if (game.perks[9]) {
             pp_upgrade.upgrades[35].desc =
@@ -5060,151 +5145,27 @@ function description_update() {
             generator_perk.perks[15].desc
     }
 
-    switch (game.completions[5]) {
-        case 0:
-            challenge.challenges[5].desc =
-                "All EXP production is divided by " +
-                format_num(10 ** 12) +
-                ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in " +
-                format_num(6) +
-                " Prestiges or less"
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-            break
-        case 1:
-            challenge.challenges[5].desc =
-                "All EXP production is divided by " +
-                format_num(10 ** 12) +
-                ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in " +
-                format_num(5) +
-                " Prestiges or less"
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-            break
-        case 2:
-        case 3:
-            challenge.challenges[5].desc =
-                "All EXP production is divided by " +
-                format_num(10 ** 12) +
-                ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in " +
-                format_num(4) +
-                " Prestiges or less"
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-            break
-        case 4:
-        case 5:
-            challenge.challenges[5].desc =
-                "All EXP production is divided by " +
-                format_num(10 ** 12) +
-                ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in " +
-                format_num(3) +
-                " Prestiges or less"
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-            break
-        case 6:
-        case 7:
-            challenge.challenges[5].desc =
-                "All EXP production is divided by " +
-                format_num(10 ** 12) +
-                ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in " +
-                format_num(2) +
-                " Prestiges or less"
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-            break
-        case 8:
-        case 9:
-        case 10:
-        case 11:
-            challenge.challenges[5].desc =
-                "All EXP production is divided by " +
-                format_num(10 ** 12) +
-                ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in 1 Prestige or less"
-            if (game.notation === 8)
-                challenge.challenges[5].desc =
-                    "All EXP production is divided by " +
-                    format_num(10 ** 12) +
-                    ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in ??? Prestiges or less"
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-            break
-        case 12:
-        case 13:
-        case 14:
-        case 15:
-        case 16:
-        case 17:
-        case 18:
-        case 19:
-        default:
-            if (game.dk_bought[3]) {
-                challenge.challenges[5].desc =
-                    "All EXP production is divided by " +
-                    format_num(10 ** (12 + 6 * (game.completions[5] - 11))) +
-                    "<br>Multi-Prestige, Reboot Residue, Ease of Completion do not apply<br>Reboot in " +
-                    format_num(0) +
-                    " Prestiges or less"
-            } else {
-                challenge.challenges[5].desc =
-                    "All EXP production is divided by " +
-                    format_num(10 ** 12) +
-                    ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in 1 Prestige or less"
-                if (game.notation === 8)
-                    challenge.challenges[5].desc =
-                        "All EXP production is divided by " +
-                        format_num(10 ** 12) +
-                        ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in ??? Prestiges or less"
-            }
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-            break
-    }
-
-    if (game.alt_rule) {
-        if (game.perks[25]) {
-            challenge.challenges[5].desc =
-                "You can only Prestige " +
-                format_num(1) +
-                " time<br>Multi-Prestige, Reboot Residue, AMP Conversion, and PP Shift do not apply"
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-        } else if (game.perks[24]) {
-            challenge.challenges[5].desc =
-                "You can only Prestige " +
-                format_num(1) +
-                " time<br>Multi-Prestige, Reboot Residue, and AMP Conversion do not apply"
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-        } else {
-            challenge.challenges[5].desc =
-                "You can only Prestige " +
-                format_num(1) +
-                " time<br>Multi-Prestige and Reboot Residue do not apply"
-            challenge_map
-                .get(challenge.challenges[5])
-                .querySelector(".challenge_desc").innerHTML =
-                challenge.challenges[5].desc
-        }
+    if (game.perks[25]) {
+        challenge.challenges[5].desc =
+            "You can only Prestige once<br>Multi-Prestige, Reboot Residue, AMP Conversion, and PP Shift do not apply"
+        challenge_map
+            .get(challenge.challenges[5])
+            .querySelector(".challenge_desc").innerHTML =
+            challenge.challenges[5].desc
+    } else if (game.perks[24]) {
+        challenge.challenges[5].desc =
+            "You can only Prestige once<br>Multi-Prestige, Reboot Residue, and AMP Conversion do not apply"
+        challenge_map
+            .get(challenge.challenges[5])
+            .querySelector(".challenge_desc").innerHTML =
+            challenge.challenges[5].desc
+    } else {
+        challenge.challenges[5].desc =
+            "You can only Prestige once<br>Multi-Prestige and Reboot Residue do not apply"
+        challenge_map
+            .get(challenge.challenges[5])
+            .querySelector(".challenge_desc").innerHTML =
+            challenge.challenges[5].desc
     }
 }
 
@@ -5363,11 +5324,6 @@ function regenerate_ui() {
         case 2:
             document.getElementById("layer_button").innerHTML = "REBOOT"
             break
-    }
-    if (game.hints) {
-        document.getElementById("hints_button").innerHTML = "ENABLED"
-    } else {
-        document.getElementById("hints_button").innerHTML = "DISABLED"
     }
 
     if (game.pp_bought[39] == true) {
@@ -5584,12 +5540,13 @@ function regenerate_ui() {
 
     if (game.perks[14]) {
         document.getElementById("smart_config").style.display = "block"
-        document.getElementById("smart_peak_input").value = game.smartpr_peak
-        document.getElementById("smart_pp_input").value = game.smartpr_pp
-        document.getElementById("smart_amp_input").value = game.smartpr_amp
-        smart_toggle()
-        smart_toggle()
-        initial_switch(game.smartpr_start)
+        smart_load()
+        smart_mode(game.smartpr_mode)
+        smart_repeat()
+        smart_repeat()
+        smart_start()
+        smart_start()
+        smart_select(game.smartpr_select)
     } else {
         document.getElementById("smart_config").style.display = "none"
     }
@@ -5659,6 +5616,16 @@ function regenerate_ui() {
     if (game.om_bought[3]) {
         ps_toggle()
         ps_toggle()
+    }
+
+    if (game.prestige >= 1 || game.reboot >= 1 || game.quantum >= 1) {
+        past_resets_mode(1)
+        past_resets_mode(1)
+    }
+
+    if (game.reboot >= 1 || game.quantum >= 1) {
+        past_resets_mode(2)
+        past_resets_mode(2)
     }
 
     document.getElementById("level_input").value = game.autopr_goal[0]
