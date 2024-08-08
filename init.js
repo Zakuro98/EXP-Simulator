@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.3.300",
+    version: "2.3.302",
 
     //v2.0.000 variables
     total_exp: new Decimal(0),
@@ -136,7 +136,6 @@ let game = {
     achievements: new Array(175).fill(false),
     ach_power: 1,
     achiev_page: 0,
-    no_automation: true,
     blind: true,
     afk_time: 0,
     hold_notify: false,
@@ -148,19 +147,9 @@ let game = {
     autocp_toggle: false,
     smartds_oc: false,
 
-    smartpr_toggle: false,
-    smartpr_time: 0,
-    smartpr_peak: 60,
-    smartpr_pp: 120,
-    smartpr_mode: 0,
-    smartpr_amp: 0,
-    smartpr_start: 0,
-
     autorb_toggle: false,
     autorb_goal: [1, 0.8],
     autorb_pending: false,
-
-    cancer_reboots: 0,
 
     //v2.2.102 variables
     beta: false,
@@ -187,10 +176,10 @@ let game = {
     helium_boost: 1,
     hps: 0,
     core_level: new Array(8).fill(0),
-    core_price: [1, 3, 10, 36, 136, 528, 2080, 8256],
+    core_price: [5, 15, 50, 180, 680, 2640, 10400, 41280],
     buy_max: false,
     supply_level: 0,
-    supply_price: 16,
+    supply_price: 80,
 
     true_banked_prestige: 0,
 
@@ -274,6 +263,26 @@ let game = {
     omega_best: new Decimal(0),
     free_omega_points: 0,
     op_dark_boost: 1,
+
+    //v2.3.302 variables
+    cancer_prestiges: 0,
+    no_upgrades: true,
+    pp_amount: new Array(5).fill(-1),
+    hydrogen_amount: new Array(5).fill(-1),
+    hydrogen_eff: new Array(5).fill(-1),
+    photons_amount: new Array(5).fill(-1),
+    photons_time: new Array(5).fill(-1),
+    photons_eff: new Array(5).fill(-1),
+    past_alt: [0, 0],
+
+    smartpr_phase: 0,
+    smartpr_condition: 0,
+    smartpr_queue: [],
+    smartpr_presets: [[], [], []],
+    smartpr_mode: 0,
+    smartpr_repeat: false,
+    smartpr_start: false,
+    smartpr_select: 0,
 }
 
 //initialize maps
@@ -945,7 +954,7 @@ function format_infinity(num) {
     }
     let output = ""
     if (num.cmp(1.7976931348622053 * 10 ** 308) === -1) {
-        output = num.toNumber().toString()
+        output = Math.round(num.toNumber()).toString()
         if (num.cmp(1000) >= 0) {
             let digits = output.length
             if (num.cmp(Decimal.pow(10, 21)) === -1) {
@@ -1899,7 +1908,7 @@ function format_lvl(num) {
 }
 
 //special decimal formatting
-function format_eff(num) {
+function format_eff(num, growth) {
     if (game.notation === 8) {
         return "???"
     } else if (game.notation === 10) {
@@ -2014,6 +2023,20 @@ function format_eff(num) {
 
             if (num < 64) {
                 output += char_array[Math.floor(num * 64 ** 2) % 64]
+
+                if (growth) {
+                    let precision = Math.max(
+                        -Math.floor(Math.log(num - 1) / Math.log(64)) - 1,
+                        0
+                    )
+                    if (num === 1) precision = 1
+                    if (precision > 0) {
+                        for (let i = 0; i < precision; i++) {
+                            output +=
+                                char_array[Math.floor(num * 64 ** (3 + i)) % 64]
+                        }
+                    }
+                }
             }
             if (num < 1) {
                 output += char_array[Math.floor(num * 64 ** 3) % 64]
@@ -2027,7 +2050,16 @@ function format_eff(num) {
         } else if (num >= 10) {
             return num.toFixed(1)
         } else if (num >= 1) {
-            return num.toFixed(2)
+            if (growth) {
+                let precision = Math.max(
+                    -Math.floor(Math.log10(num - 1)) + 1,
+                    2
+                )
+                if (num === 1) precision = 3
+                return num.toFixed(precision)
+            } else {
+                return num.toFixed(2)
+            }
         } else {
             return num.toFixed(3)
         }
@@ -2736,7 +2768,7 @@ class pp_upgrade_child extends pp_upgrade {
     //manual labor 1 [1]
     let ml1 = new pp_upgrade(
         "Manual Labor I",
-        "Unautomated clicks are 2x stronger",
+        "Unautomated clicks are now 2x stronger",
         1,
         function () {
             if (game.challenge !== 7) game.ml_boost = 2
@@ -2751,8 +2783,8 @@ class pp_upgrade_child extends pp_upgrade {
     )
     //auto prestige [3]
     let autoprestige = new pp_upgrade_child(
-        "Auto-Prestiging",
-        "Unlocks automation for Prestige<br>Also unlocks Past Prestiges in Statistics",
+        "Auto-Prestige",
+        "Unlocks automation for Prestige",
         3,
         function () {
             document.getElementById("auto_config").style.display = "block"
@@ -2765,7 +2797,7 @@ class pp_upgrade_child extends pp_upgrade {
     //manual labor 2 [4]
     let ml2 = new pp_upgrade_child(
         "Manual Labor II",
-        "Unautomated clicks are 4x stronger",
+        "Unautomated clicks are now 4x stronger",
         4,
         function () {
             if (game.challenge !== 7) game.ml_boost = 4
@@ -2796,14 +2828,10 @@ class pp_upgrade_child extends pp_upgrade {
     //jumpstart 1 [7]
     let js1 = new pp_upgrade_child(
         "Jumpstart I",
-        "All further Prestiges start at LVL 15; Prestiging now requires LVL 70",
+        "All further Prestiges start at LVL 15",
         5,
         function () {
             game.jumpstart = 1
-            game.pr_min = 70
-            if (Number(document.getElementById("level_input").value) < 70) {
-                document.getElementById("level_input").value = 70
-            }
         },
         lim_break
     )
@@ -2839,21 +2867,17 @@ class pp_upgrade_child extends pp_upgrade {
     //jumpstart 2 [10]
     let js2 = new pp_upgrade_child(
         "Jumpstart II",
-        "All further Prestiges start at LVL 30; Prestiging now requires LVL 80",
+        "All further Prestiges start at LVL 30",
         15,
         function () {
             game.jumpstart = 2
-            game.pr_min = 80
-            if (Number(document.getElementById("level_input").value) < 80) {
-                document.getElementById("level_input").value = 80
-            }
         },
         js1
     )
     //manual labor 3 [11]
     let ml3 = new pp_upgrade_child(
         "Manual Labor III",
-        "Unautomated clicks are 8x stronger",
+        "Unautomated clicks are now 8x stronger",
         20,
         function () {
             if (game.challenge !== 7) game.ml_boost = 8
@@ -2862,7 +2886,7 @@ class pp_upgrade_child extends pp_upgrade {
     )
     //advanced auto prestige [12]
     new pp_upgrade_child(
-        "Advanced Auto-Prestiging",
+        "Advanced Auto-Prestige",
         "Unlocks three additional modes for Auto-Prestige configuration",
         30,
         function () {
@@ -2875,14 +2899,10 @@ class pp_upgrade_child extends pp_upgrade {
     //jumpstart 3 [13]
     let js3 = new pp_upgrade_child(
         "Jumpstart III",
-        "All further Prestiges start at LVL 60; Prestiging now requires LVL 90",
+        "All further Prestiges start at LVL 45",
         45,
         function () {
             game.jumpstart = 3
-            game.pr_min = 90
-            if (Number(document.getElementById("level_input").value) < 90) {
-                document.getElementById("level_input").value = 90
-            }
         },
         js2
     )
@@ -2931,7 +2951,7 @@ class pp_upgrade_child extends pp_upgrade {
     //manual labor 4 [17]
     let ml4 = new pp_upgrade_child(
         "Manual Labor IV",
-        "Unautomated clicks are 16x stronger",
+        "Unautomated clicks are now 16x stronger",
         120,
         function () {
             if (game.challenge !== 7) game.ml_boost = 16
@@ -3401,8 +3421,8 @@ class generator_perk {
     )
     //smart auto-prestige [14]
     new generator_perk(
-        "Smart Auto-Prestige",
-        "Unlocks a customizable Auto-Prestige setting that automatically switches between Peak and PP mode",
+        "Expert Auto-Prestige",
+        "Unlocks a fully customizable Auto-Prestige menu that can automatically switch between modes",
         32
     )
     //auto-reboot [15]
@@ -3461,25 +3481,25 @@ class generator_perk {
     new generator_perk(
         "Snowball Effect",
         "Helium production is boosted based on how much helium you have",
-        1769472
+        2359296
     )
     //deuterium channeling [26]
     new generator_perk(
         "Deuterium Channeling",
         "Deuterium Power now boosts hydrogen gains 2.50x per tier instead<br>(This applies retroactively)",
-        4423680
+        7077888
     )
     //amp conversion [27]
     new generator_perk(
         "AMP Conversion",
         "You gain 20% of your pending AMP every second",
-        8847360
+        14155776
     )
     //pp shift [28]
     new generator_perk(
         "PP Shift",
         "PP is immediately granted on leveling up rather than Prestiging<br>AMP Conversion now gives 100% of your pending AMP instead",
-        15482880
+        28311552
     )
 }
 //done initializing generator perks
@@ -3511,56 +3531,56 @@ class achievement {
     new achievement("Decathlevel", "Reach LVL 10", 1, 0)
     new achievement("Whoa, we're halfway there", "Reach LVL 30", 2, 0)
     new achievement("Push it to the limit", "Reach LVL 60", 3, 0)
-    new achievement("Level 100 boss", "Reach LVL 100", 4, 0)
-    new achievement("What do all these levels even do?", "Reach LVL 200", 5, 0)
-    new achievement("The limit does not exist", "Reach LVL 300", 6, 0)
-    new achievement("Addicted to EXP", "Reach LVL 500", 7, 0)
-    new achievement("The pursuit of madness", "Reach LVL 1,000", 8, 0)
-    new achievement("I tried so hard and got so far", "Reach LVL 2,000", 9, 0)
-    new achievement("Overexperienced", "Reach LVL 3,000", 10, 0)
-    new achievement("Blood, sweat, and EXP", "Reach LVL 6,000", 11, 0)
-    new achievement("Event horizon", "Reach LVL 12,000", 12, 0)
+    new achievement("Level 100 boss", "Reach LVL 100", 4, 2)
+    new achievement("What do all these levels even do?", "Reach LVL 200", 5, 2)
+    new achievement("The limit does not exist", "Reach LVL 300", 6, 2)
+    new achievement("Addicted to EXP", "Reach LVL 500", 7, 2)
+    new achievement("The pursuit of madness", "Reach LVL 1,000", 8, 2)
+    new achievement("I tried so hard and got so far", "Reach LVL 2,000", 9, 2)
+    new achievement("Overexperienced", "Reach LVL 3,000", 10, 2)
+    new achievement("Blood, sweat, and EXP", "Reach LVL 6,000", 11, 2)
+    new achievement("Event horizon", "Reach LVL 12,000", 12, 2)
     new achievement(
         "And this is to go even further beyond",
         "Reach LVL 18,000",
         77,
-        0
+        2
     )
-    new achievement("You're still here?", "Reach LVL 24,000", 95, 0)
-    new achievement("On a whole new level", "Reach LVL 30,000", 97, 0)
-    new achievement("LVL -> BIG", "Reach LVL 40,000", 98, 0)
+    new achievement("You're still here?", "Reach LVL 24,000", 95, 2)
+    new achievement("On a whole new level", "Reach LVL 30,000", 97, 2)
+    new achievement("LVL -> BIG", "Reach LVL 40,000", 98, 2)
     new achievement(
         "I dunno man I don't think it's enough progress",
         "Reach LVL 50,000",
         115,
-        0
+        2
     )
     new achievement(
         "Your parents wouldn't be proud",
         "Reach LVL 60,000",
         116,
-        0
+        2
     )
-    new achievement("To hell and back again", "Reach LVL 80,000", 130, 0)
-    new achievement("The big one-oh-oh-oh-oh-oh", "Reach LVL 100,000", 131, 0)
-    new achievement("The grandmaster of level ups", "Reach LVL 150,000", 135, 0)
-    new achievement("200 Grand™", "Reach LVL 200,000", 137, 0)
-    new achievement("Stare into the abyss", "Reach LVL 300,000", 145, 0)
-    new achievement("Levels all the way down", "Reach LVL 500,000", 149, 0)
-    new achievement("Bottom of the EXP iceberg", "Reach LVL 750,000", 150, 0)
+    new achievement("To hell and back again", "Reach LVL 80,000", 130, 2)
+    new achievement("The big one-oh-oh-oh-oh-oh", "Reach LVL 100,000", 131, 2)
+    new achievement("The grandmaster of level ups", "Reach LVL 150,000", 135, 2)
+    new achievement("200 Grand™", "Reach LVL 200,000", 137, 2)
+    new achievement("Stare into the abyss", "Reach LVL 300,000", 145, 2)
+    new achievement("Levels all the way down", "Reach LVL 500,000", 149, 2)
+    new achievement("Bottom of the EXP iceberg", "Reach LVL 750,000", 150, 2)
     new achievement(
         "CONGRATULATIONS!!! THAT WAS YOUR ONE MILLIONTH LEVEL! YOU WIN 1 EXP",
         "Reach LVL 1,000,000",
         151,
-        0
+        2
     )
     new achievement(
         "How deep DOES the rabbit hole go?",
         "Reach LVL 1,250,000",
         170,
-        0
+        2
     )
-    new achievement("That never-ending journey", "Reach LVL 1,500,000", 171, 0)
+    new achievement("That never-ending journey", "Reach LVL 1,500,000", 171, 2)
     new achievement("Square one", "Prestige 1 time", 13, 1)
     new achievement("See you in another life", "Prestige 10 times", 14, 1)
     new achievement("Nowhere to go but up", "Prestige 100 times", 15, 1)
@@ -3588,169 +3608,169 @@ class achievement {
         "Who wants to be a billionaire?",
         "Get " + format_num(10 ** 9) + " all time EXP",
         20,
-        0
+        2
     )
     new achievement(
         "US national debt",
         "Get " + format_num(10 ** 12) + " all time EXP",
         21,
-        0
+        2
     )
     new achievement(
         "The entire world economy",
         "Get " + format_num(10 ** 15) + " all time EXP",
         22,
-        0
+        2
     )
     new achievement(
         "Unfathomable wealth",
         "Get " + format_num(10 ** 18) + " all time EXP",
         23,
-        0
+        2
     )
     new achievement(
         "So big it breaks Long notation",
         "Get " + format_num(10 ** 21) + " all time EXP",
         24,
-        0
+        2
     )
     new achievement(
         "Satisfied yet?",
         "Get " + format_num(10 ** 24) + " all time EXP",
         25,
-        0
+        2
     )
     new achievement(
         "Definitely can't count this on my hands",
         "Get " + format_num(10 ** 27) + " all time EXP",
         26,
-        0
+        2
     )
     new achievement(
         "Absolute unit",
         "Get " + format_num(10 ** 30) + " all time EXP",
         27,
-        0
+        2
     )
     new achievement(
         "Top ten numbers you'll never use",
         "Get " + format_num(10 ** 33) + " all time EXP",
         28,
-        0
+        2
     )
     new achievement(
         "One chonker number",
         "Get " + format_num(10 ** 39) + " all time EXP",
         29,
-        0
+        2
     )
     new achievement(
         "Endless growth",
         "Get " + format_num(10 ** 45) + " all time EXP",
         30,
-        0
+        2
     )
     new achievement(
         "It's okay I lost track too",
         "Get " + format_num(10 ** 51) + " all time EXP",
         70,
-        0
+        2
     )
     new achievement(
         "I like my women like I like my numbers",
         "Get " + format_num(10 ** 57) + " all time EXP",
         79,
-        0
+        2
     )
     new achievement(
         "64 digits is a lot",
         "Get " + format_num(10 ** 63) + " all time EXP",
         80,
-        0
+        2
     )
     new achievement(
         "Honestly quite sizeable",
         "Get " + format_num(10 ** 78) + " all time EXP",
         93,
-        0
+        2
     )
     new achievement(
         "Big numbers for a big boy",
         "Get " + format_num(10 ** 93) + " all time EXP",
         96,
-        0
+        2
     )
     new achievement(
         "An introduction to googology",
         "Get " + format_num(10 ** 108) + " all time EXP",
         99,
-        0
+        2
     )
     new achievement(
         "Hungolomghnonoloughongous",
         "Get " + format_num(10 ** 123) + " all time EXP",
         100,
-        0
+        2
     )
     new achievement(
         "Generic large number achievement name #20",
         "Get " + format_num(10 ** 138) + " all time EXP",
         101,
-        0
+        2
     )
     new achievement(
         "More! More! More!!",
         "Get " + format_num(10 ** 153) + " all time EXP",
         102,
-        0
+        2
     )
     new achievement(
         "Well the digits keep comin and they don't stop comin",
         "Get " + format_num(10 ** 183) + " all time EXP",
         118,
-        0
+        2
     )
     new achievement(
         "Honestly bro, this is just a really huge number... like I can't even think of anything good to say for this one so this is what you get",
         "Get " + format_num(10 ** 213) + " all time EXP",
         132,
-        0
+        2
     )
     new achievement(
         "*notices your EXP*",
         "Get " + format_num(10 ** 243) + " all time EXP",
         134,
-        0
+        2
     )
     new achievement(
         "EXP singularity",
         "Get " + format_num(10 ** 273) + " all time EXP",
         138,
-        0
+        2
     )
     new achievement(
         "Even Zakuro didn't expect you to make it this far",
         "Get " + format_num(10 ** 303) + " all time EXP",
         146,
-        0
+        2
     )
     new achievement(
         "Yeah, that's like a couple",
         "Get " + format_infinity(Decimal.pow(10, 333)) + " all time EXP",
         152,
-        0
+        2
     )
     new achievement(
         "Are we there yet?",
         "Get " + format_infinity(Decimal.pow(10, 363)) + " all time EXP",
         153,
-        0
+        2
     )
     new achievement(
         "What if the real EXP was the friends we made along the way?",
         "Get " + format_infinity(Decimal.pow(10, 393)) + " all time EXP",
         174,
-        0
+        2
     )
     new achievement("Hot minute", "Play for 1 hour", 31, 0)
     new achievement("Time well spent", "Play for 6 hours", 32, 0)
@@ -3854,19 +3874,43 @@ class achievement {
         "Speedy clicking",
         "Reach 30 clicks/s on the Autoclicker",
         53,
-        0
+        2
     )
     new achievement(
         "Sir, do you know how fast you were going?",
         "Reach 150 clicks/s on the Autoclicker",
         54,
-        0
+        2
     )
     new achievement(
         "WE HAVE REAHCED MXAIMUN VLELOCIPY",
         "Reach 1,000 clicks/s on the Autoclicker",
         55,
-        0
+        2
+    )
+    new achievement(
+        "Who's gonna tell em?",
+        "Manually click 10,000 times",
+        92,
+        1
+    )
+    new achievement(
+        "Yes I love cancer",
+        "Prestige 1,000 times while using Cancer notation",
+        76,
+        1
+    )
+    new achievement(
+        "#intentionalfeature",
+        "Discharge the Capacitor while the Overclocker is active",
+        61,
+        2
+    )
+    new achievement(
+        "But for why though?",
+        "Respec when you already have all the PP upgrades",
+        75,
+        1
     )
     new achievement("Cube one", "Activate the Generator", 56, 3)
     new achievement("All is lost again", "Reboot 3 times", 57, 3)
@@ -3889,312 +3933,283 @@ class achievement {
         "Did you miss them?",
         "Complete Challenge I for the first time",
         86,
-        3
+        4
     )
     new achievement(
         "That's some serious markup",
         "Complete Challenge II for the first time",
         87,
-        3
+        4
     )
     new achievement(
         "When the levels are not so easy",
         "Complete Challenge III for the first time",
         88,
-        3
+        4
     )
     new achievement(
         "Oops! All pushing",
         "Complete Challenge IV for the first time",
         89,
-        3
+        4
     )
     new achievement(
         "The definition of diminishing returns",
         "Complete Challenge V for the first time",
         108,
-        3
+        4
     )
     new achievement(
         "Calculated",
         "Complete Challenge VI for the first time",
         109,
-        3
+        4
     )
     new achievement(
         "Helium is love Helium is life",
         "Complete Challenge VII for the first time",
         110,
-        3
+        4
     )
     new achievement(
         "Like kicking a brick wall",
         "Complete Challenge VIII for the first time",
         111,
-        3
+        4
     )
     new achievement(
         "Jack of all trades",
         "Complete Challenge IX for the first time",
         112,
-        3
+        4
     )
     new achievement(
         "Ace of one trade",
         "Complete a single challenge 12 times",
         90,
-        3
+        4
     )
     new achievement(
         "One down, eight to go",
         "Complete a single challenge 20 times",
         158,
-        4
+        8
     )
     new achievement(
         "I like a little challenge in my life",
         "Get 27 total challenge completions",
         91,
-        3
+        4
     )
     new achievement(
         "That was only half as difficult",
         "Get 54 total challenge completions",
         113,
-        3
+        4
     )
     new achievement(
         "Ultimate completionism",
         "Get 108 total challenge completions",
         114,
-        3
+        4
     )
     new achievement(
         "Never again again",
         "Get 180 total challenge completions",
         159,
-        4
+        8
     )
+    new achievement("Task failed successfully", "Fail a challenge", 65, 4)
     new achievement(
         "Congration, you done it",
         "Unlock all 29 Generator Perks",
         104,
         3
     )
-    new achievement("Fusion mailed", "Unlock the Nuclear Reactor", 105, 3)
+    new achievement("Fusion mailed", "Unlock the Nuclear Reactor", 105, 5)
     new achievement(
         "This bad boy can fit so much hydrogen in it",
         "Upgrade every core of the Reactor",
         106,
-        3
+        5
     )
     new achievement(
         "Critical mass",
         "Make " + format_num(10 ** 30) + " mg helium/sec",
         107,
-        3
+        5
     )
     new achievement(
         "In case of implosion look at implosion",
         "Make " + format_num(10 ** 60) + " mg helium/sec",
         148,
-        3
+        5
     )
     new achievement(
         "No shortage of helium for sure",
         "Make " + format_num(10 ** 90) + " mg helium/sec",
         157,
-        3
+        5
     )
     new achievement(
         "Photonic boom",
         "Make " + format_num(10 ** 120) + " mg helium/sec",
         173,
-        3
-    )
-    new achievement("Tesseract one", "Quantize 1 time", 120, 4)
-    new achievement(
-        "Now you're thinking with photons!",
-        "Quantize 3 times",
-        121,
-        4
-    )
-    new achievement("Your life, in particles", "Quantize 5 times", 122, 4)
-    new achievement(
-        "Luckily they banished him to an island",
-        "Quantize 10 times",
-        123,
-        4
-    )
-    new achievement(
-        "Haha what if we turned everything you've ever done into light",
-        "Quantize 25 times",
-        124,
-        4
-    )
-    new achievement("Back into the blender again", "Quantize 50 times", 139, 4)
-    new achievement("You should go get a PhD", "Quantize 100 times", 140, 4)
-    new achievement(
-        "Heat death of the universe",
-        "Quantize 1,000 times",
-        160,
-        4
-    )
-    new achievement("All hail the Prism", "Reach Prism LVL 1", 126, 4)
-    new achievement("Let its light inside you", "Reach Prism LVL 10", 127, 4)
-    new achievement("Dazzling brilliance", "Reach Prism LVL 30", 125, 4)
-    new achievement("Superluminous", "Reach Prism LVL 100", 141, 4)
-    new achievement(
-        "Okay that was too bright I'm blind now",
-        "Reach Prism LVL 200",
-        161,
-        4
-    )
-    new achievement("Total internal reflection", "Reach Prism LVL 300", 169, 4)
-    new achievement(
-        "The whole electromagnetic spectrum",
-        "Reach Prism LVL 500",
-        172,
-        4
-    )
-    new achievement("With great haste", "Quantize in under 1 hour", 128, 4)
-    new achievement(
-        "Look at the sparks fly",
-        "Quantize in under 5 minutes",
-        129,
-        4
-    )
-    new achievement(
-        "Quickest reset in the west",
-        "Quantize in under 1 minute",
-        136,
-        4
-    )
-    new achievement("Mach 874,030", "Quantize in under 30 seconds", 142, 4)
-    new achievement(
-        "Actually faster than light",
-        "Quantize in under 10 seconds",
-        147,
-        4
-    )
-    new achievement(
-        "Objects in well are heavier than they appear",
-        "Unlock the Gravity Well",
-        143,
-        4
-    )
-    new achievement("Transfinite windup toy", "Unlock the Omega Drive", 156, 4)
-    new achievement(
-        "To infinity and not beyond",
-        "Reach ∞ kg dark matter",
-        144,
-        4
-    )
-    new achievement(
-        "Infinity doesn't seem so far anymore",
-        "Reach ∞ kg dark matter in under 1 minute",
-        154,
-        4
-    )
-    new achievement(
-        "At any point did someone say it was too much dark matter?",
-        "Reach more than ∞ kg dark matter",
-        155,
-        4
-    )
-    new achievement("Gone, reduced to 1 kg", "Reach Omega LVL 1", 162, 4)
-    new achievement("Dark matter markup", "Reach Omega LVL 5", 163, 4)
-    new achievement(
-        "A classic case of the Timewall™",
-        "Reach Omega LVL 20",
-        164,
-        4
-    )
-    new achievement(
-        "You have no idea what's in-store for you!",
-        "Enter the Omega Challenge for the first time",
-        165,
-        4
-    )
-    new achievement(
-        "An offer you can't refuse",
-        "Get 5 free Omega Points from the Omega Challenge",
-        166,
-        4
-    )
-    new achievement(
-        "#intentionalfeature",
-        "Discharge the Capacitor while the Overclocker is active",
-        61,
         5
     )
     new achievement(
-        "What a madman",
-        "Go an entire Reboot with all automation turned off",
+        "Like adding a needle to a haystack",
+        "Manually upgrade a Reactor core when it has been upgraded exactly 100,000 times",
+        167,
+        6
+    )
+    new achievement(
+        "I never needed those upgrades anyway",
+        "Complete a Reboot without upgrading anything on the UPGRADES tab the entire time",
         62,
-        5
-    )
-    new achievement(
-        "A whole lot of nothing",
-        "Gain no EXP for 10 minutes",
-        63,
-        5
-    )
-    new achievement("Wish granted", "Click this achievement's box", 64, 5)
-    new achievement(
-        "Did it for the memes",
-        "Enter a meme number into any input box",
-        65,
-        5
-    )
-    new achievement(
-        "Spontaneous Fortune",
-        "There is a 1 in 7,777 chance every second you will get this achievement",
-        66,
-        5
-    )
-    new achievement("F in the chat", "Pay respects", 67, 5)
-    new achievement(
-        "As we can see you can't",
-        "Spend an entire Reboot with ??? notation",
-        68,
-        5
-    )
-    new achievement(
-        "But for why though?",
-        "Respec when you already have all the PP upgrades",
-        75,
-        5
-    )
-    new achievement(
-        "Yes I love cancer",
-        "Reboot 10 times while using Cancer notation",
-        76,
-        5
-    )
-    new achievement(
-        "Stuck between no eyes and a hard place",
-        "Complete a challenge while using ??? notation",
-        92,
-        5
+        3
     )
     new achievement(
         "You could stop at five or six Prestiges, or just none",
         "Reboot without Prestiging",
         119,
-        5
+        3
+    )
+    new achievement("Tesseract one", "Quantize 1 time", 120, 6)
+    new achievement(
+        "Now you're thinking with photons!",
+        "Quantize 3 times",
+        121,
+        6
+    )
+    new achievement("Your life, in particles", "Quantize 5 times", 122, 6)
+    new achievement(
+        "Luckily they banished him to an island",
+        "Quantize 10 times",
+        123,
+        6
     )
     new achievement(
-        "Like adding a needle to a haystack",
-        "Manually upgrade a Reactor core when it has been upgraded at least 100,000 times",
-        167,
-        5
+        "Haha what if we turned everything you've ever done into light",
+        "Quantize 25 times",
+        124,
+        6
+    )
+    new achievement("Back into the blender again", "Quantize 50 times", 139, 6)
+    new achievement("You should go get a PhD", "Quantize 100 times", 140, 6)
+    new achievement(
+        "Heat death of the universe",
+        "Quantize 1,000 times",
+        160,
+        6
+    )
+    new achievement("All hail the Prism", "Reach Prism LVL 1", 126, 6)
+    new achievement("Let its light inside you", "Reach Prism LVL 10", 127, 6)
+    new achievement("Dazzling brilliance", "Reach Prism LVL 30", 125, 6)
+    new achievement("Superluminous", "Reach Prism LVL 100", 141, 6)
+    new achievement(
+        "Okay that was too bright I'm blind now",
+        "Reach Prism LVL 200",
+        161,
+        6
+    )
+    new achievement("Total internal reflection", "Reach Prism LVL 300", 169, 6)
+    new achievement(
+        "The whole electromagnetic spectrum",
+        "Reach Prism LVL 500",
+        172,
+        6
+    )
+    new achievement("With great haste", "Quantize in under 1 hour", 128, 6)
+    new achievement(
+        "Look at the sparks fly",
+        "Quantize in under 5 minutes",
+        129,
+        6
+    )
+    new achievement(
+        "Quickest reset in the west",
+        "Quantize in under 1 minute",
+        136,
+        6
+    )
+    new achievement("Mach 874,030", "Quantize in under 30 seconds", 142, 6)
+    new achievement(
+        "Actually faster than light",
+        "Quantize in under 10 seconds",
+        147,
+        6
+    )
+    new achievement(
+        "Objects in well are heavier than they appear",
+        "Unlock the Gravity Well",
+        143,
+        7
+    )
+    new achievement("Transfinite windup toy", "Unlock the Omega Drive", 156, 9)
+    new achievement(
+        "To infinity and not beyond",
+        "Reach ∞ kg dark matter",
+        144,
+        7
+    )
+    new achievement(
+        "Infinity doesn't seem so far anymore",
+        "Reach ∞ kg dark matter in under 1 minute",
+        154,
+        7
+    )
+    new achievement(
+        "At any point did someone say it was too much dark matter?",
+        "Reach more than ∞ kg dark matter",
+        155,
+        10
+    )
+    new achievement("Gone, reduced to 1 kg", "Reach Omega LVL 1", 162, 9)
+    new achievement("Dark matter markup", "Reach Omega LVL 5", 163, 9)
+    new achievement(
+        "A classic case of the Timewall™",
+        "Reach Omega LVL 20",
+        164,
+        9
+    )
+    new achievement(
+        "You have no idea what's in-store for you!",
+        "Enter the Omega Challenge for the first time",
+        165,
+        11
+    )
+    new achievement(
+        "An offer you can't refuse",
+        "Get 5 free Omega Points from the Omega Challenge",
+        166,
+        11
+    )
+    new achievement(
+        "As we can see you can't",
+        "Complete a Quantum Iteration while using ??? notation the entire time",
+        68,
+        6
     )
     new achievement(
         "A real power move",
         "Quantize without upgrading the Reactor",
         168,
-        5
+        6
+    )
+    new achievement("Wish granted", "Click this achievement's box", 64, 0)
+    new achievement(
+        "A whole lot of nothing",
+        "Gain no EXP for 10 minutes",
+        63,
+        0
+    )
+    new achievement("F in the chat", "Pay respects", 67, 0)
+    new achievement(
+        "Spontaneous Fortune",
+        "There is a 1 in 77,777 chance every second you will get this achievement",
+        66,
+        0
     )
     new achievement("The end", "Get every achievement", 69, 0)
 }
@@ -4329,8 +4344,8 @@ class challenge {
     new challenge(
         "Challenge II",
         "All upgrades require " + format_num(5) + "x as many levels",
-        280000,
-        95000,
+        240000,
+        90000,
         5000,
         79305000,
         46065000,
@@ -4368,22 +4383,20 @@ class challenge {
     )
     new challenge(
         "Challenge VI",
-        "All EXP production is divided by " +
-            format_num(10 ** 12) +
-            ", Multi-Prestige and Reboot Residue do not apply<br>Reboot in 6 Prestiges or less",
-        1420000,
-        0,
-        0,
-        65430000,
-        11225000,
-        -325000
+        "You can only Prestige once<br>Multi-Prestige and Reboot Residue do not apply",
+        800000,
+        230000,
+        -10000,
+        24450000,
+        18650000,
+        10500000
     )
     new challenge(
         "Challenge VII",
         "All Upgrades tab things except EXP Boost and Autoclicker are disabled<br>The only EXP multipliers that apply are AMP, Challenge boosts, and Helium",
         1745000,
-        185000,
-        30000,
+        225000,
+        15000,
         11195000,
         3155000,
         2160000
@@ -4391,8 +4404,8 @@ class challenge {
     new challenge(
         "Challenge VIII",
         "Helium production is disabled",
-        1645000,
-        115000,
+        1575000,
+        110000,
         -5000,
         9420000,
         250000,
@@ -4400,14 +4413,13 @@ class challenge {
     )
     new challenge(
         "Challenge IX",
-        "All rules from the first four challenges, simultaneously<br>All EXP production is divided by " +
-            format_num(10 ** 16),
-        2650000,
-        150000,
+        "All rules from the first three challenges, simultaneously<br>You cannot gain AMP",
+        3750000,
+        100000,
         10000,
-        35000000,
-        13500000,
-        3000000
+        54500000,
+        19700000,
+        3400000
     )
 }
 //done initializing challenges
@@ -4445,7 +4457,7 @@ class core {
         core_button.className = "core_button core_locked"
         core_button.addEventListener("click", () => {
             const scaling_array = [
-                60000, 40000, 20000, 10000, 5000, 2500, 1250, 625,
+                24000, 16000, 8000, 4000, 2000, 1000, 500, 250,
             ]
             let scaling = scaling_array[this.id]
             if (!game.buy_max) {
@@ -4476,7 +4488,7 @@ class core {
 
                     if (
                         !game.achievements[167] &&
-                        game.core_level[this.id] >= 100000
+                        game.core_level[this.id] === 100000
                     )
                         get_achievement(167)
                 }
@@ -4606,14 +4618,14 @@ class core {
 }
 
 //initializing reactor cores
-new core(1)
-new core(3)
-new core(10)
-new core(36)
-new core(136)
-new core(528)
-new core(2080)
-new core(8256)
+new core(5)
+new core(15)
+new core(50)
+new core(180)
+new core(680)
+new core(2640)
+new core(10400)
+new core(41280)
 //done initializing cores
 
 //quantum upgrade class
@@ -5004,3 +5016,24 @@ new omega_upgrade(
     function () {}
 )
 //done initializing omega upgrades
+
+//advanced auto-prestige phase class
+class phase {
+    mode
+    update
+    goal
+    until
+    condition
+
+    //phase constructor
+    constructor(mode, update, goal, until, condition) {
+        this.mode = mode
+        this.update = update
+        this.goal = goal
+        this.until = until
+        this.condition = condition
+        this.id = game.smartpr_queue.length
+
+        return this
+    }
+}
