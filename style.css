@@ -634,6 +634,19 @@ main {
     margin-bottom: 0em;
 }
 
+#past_prestiges_mode, #past_reboots_mode {
+    display: block;
+    font-size: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.5em;
+    margin-bottom: 2em;
+}
+
+#past_reboots {
+    margin-top: 2em;
+}
+
 .settings {
     font-size: 0.857em;
     color: white;
@@ -1071,44 +1084,67 @@ main {
     padding: 0.4em;
 }
 
-#smart_enabled {
+.smart_header {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.25em;
+}
+
+.smart_button {
+    display: inline;
+}
+
+#smart_footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 2em;
+}
+
+#create_phase {
     display: block;
-    margin-top: 0.15em;
-    margin-bottom: 0.1em;
 }
 
-#smart_toggle {
-    display: inline;
-    color: #ff0000;
-}
-
-#smart_time {
-    display: inline;
-}
-
-#smart_time_reset {
-    display: inline;
-    margin-left: 0.375em;
-    color: #cccccc;
-    cursor: pointer;
-}
-
-#smart_time_reset:hover {
-    color: #aaaaaa;
-}
-
-#smart_peak {
+#clear_phases {
     display: block;
-    margin-top: 0.1em;
+    margin-left: 0.35em;
 }
 
-#smart_pp, #smart_amp, #smart_start {
+.smart_block {
+    display: flex;
+    margin-top: 1em;
+}
+
+.smart_index {
+    display: flex;
+    width: 3em;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.5em;
+    flex-grow: 0;
+}
+
+.smart_number {
+    color: white;
+    margin: 0em;
+    font-size: 1.5em;
     display: block;
-    margin-top: 0.1em;
 }
 
-#smart_peak_mode, #smart_pp_mode {
-    display: inline;
+.current {
+    color: #d000ff;
+    font-weight: bold;
+}
+
+.smart_lower_line {
+    margin-top: 0.25em;
+}
+
+.smart_delete {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin-left: 0.5em;
+    flex-grow: 1;
 }
 
 #autopp_config {
@@ -1216,7 +1252,7 @@ main {
     border: 2px solid #ffff00;
 }
 
-#generator_requirements{
+#generator_requirements {
     flex-grow: 1;
 }
 
