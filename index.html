@@ -436,54 +436,6 @@
                             <input class="goal_input" id="time_input" type="number" value="0" step="0.01" min="0">
                         </div>
                     </div>
-                    <div id="smart_config">
-                        <p class="auto_header">
-                            Smart Auto-Prestige Configuration
-                        </p>
-                        <div id="smart_enabled">
-                            <p class="goal_text">
-                                Smart Mode:
-                            </p>
-                            <button id="smart_toggle" class="button" onclick="smart_toggle()">
-                                DISABLED
-                            </button>
-                        </div>
-                        <p id="smart_time" class="goal_text">
-                            Current Mode Time: 0.00s
-                        </p>
-                        <p id="smart_time_reset" class="goal_text" onclick="game.smartpr_time = 0">
-                            Reset
-                        </p>
-                        <div id="smart_peak">
-                            <p class="goal_text">
-                                Time to wait in Peak mode (in seconds):
-                            </p>
-                            <input class="goal_input" id="smart_peak_input" type="number" value="60" step="0.01" min="0">
-                        </div>
-                        <div id="smart_pp">
-                            <p class="goal_text">
-                                Time to wait in PP mode (in seconds):
-                            </p>
-                            <input class="goal_input" id="smart_pp_input" type="number" value="120" step="0.01" min="0">
-                        </div>
-                        <div id="smart_amp">
-                            <p class="goal_text">
-                                AMP Limit (0 for no limit):
-                            </p>
-                            <input class="goal_input" id="smart_amp_input" type="number" value="0" min="0">
-                        </div>
-                        <div id="smart_start">
-                            <p class="goal_text">
-                                Starting Mode:
-                            </p>
-                            <button id="smart_peak_mode" class="button mode_active" onclick="initial_switch(0)">
-                                PEAK
-                            </button>
-                            <button id="smart_pp_mode" class="button" onclick="initial_switch(1)">
-                                PP
-                            </button>
-                        </div>
-                    </div>
                     <div id="autopp_config">
                         <p class="auto_header">
                             PP Auto-upgrade Configuration
@@ -515,6 +467,53 @@
                             <br>WEAK Mode: Behaves like IGNORE, but if given a choice of multiple upgrades to buy, will buy the cheapest one with the lowest priority value
                             <br>STRICT Mode: Will wait until it can afford the cheapest upgrade with the lowest priority value that hasn't been purchased
                         </p>
+                    </div>
+                    <div id="smart_config">
+                        <p class="auto_header">
+                            Expert Auto-Prestige Configuration
+                        </p>
+                        <div class="smart_header">
+                            <div>
+                                <button id="edit_mode" class="button smart_button mode_active" onclick="smart_mode(0)">
+                                    EDIT
+                                </button>
+                                <button id="play_mode" class="button smart_button" onclick="smart_mode(1)">
+                                    PLAY
+                                </button>
+                                <button id="pause_mode" class="button smart_button" onclick="smart_mode(2)">
+                                    PAUSE
+                                </button>
+                                <button id="stop_mode" class="button smart_button" onclick="smart_mode(3)">
+                                    STOP
+                                </button>
+                                <button id="smart_repeat" class="button smart_button" onclick="smart_repeat()">
+                                    REPEAT
+                                </button>
+                                <button id="smart_start" class="button smart_button" onclick="smart_start()">
+                                    PLAY ON REBOOT
+                                </button>
+                            </div>
+                            <div>
+                                <button id="smart_select" class="button smart_button" onclick="smart_select()">
+                                    PRESET 1
+                                </button>
+                                <button id="smart_save" class="button smart_button" onclick="smart_save(game.smartpr_select)">
+                                    SAVE
+                                </button>
+                                <button id="smart_load" class="button smart_button" onclick="smart_load(game.smartpr_select)">
+                                    LOAD
+                                </button>
+                            </div>
+                        </div>
+                        <div id="smart_panel"></div>
+                        <div id="smart_footer">
+                            <button id="create_phase" class="button" onclick="new_phase()">
+                                ADD NEW PHASE
+                            </button>
+                            <button id="clear_phases" class="button" onclick="clear_phases()">
+                                CLEAR ALL PHASES
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1385,15 +1384,45 @@
                 </div>
 
                 <div id="past_resets_page">
-                    <p id="past_resets_text" class="stats">
-                        Past Prestiges:
+                    <div>
+                        <p id="past_prestiges_text" class="stats">
+                            Past Prestiges:
+                            <br>[1] no data
+                            <br>[2] no data
+                            <br>[3] no data
+                            <br>[4] no data
+                            <br>[5] no data
+                            <br><br>
+                            Average AMP gain: undefined
+                        </p>
+                        <button id="past_prestiges_mode" class="button" onclick="past_resets_mode(1)">
+                            Display Mode: AMP
+                        </button>
+                    </div>
+                    <div id="past_reboots">
+                        <p id="past_reboots_text" class="stats">
+                            Past Reboots:
+                            <br>[1] no data
+                            <br>[2] no data
+                            <br>[3] no data
+                            <br>[4] no data
+                            <br>[5] no data
+                            <br><br>
+                            Average watts gain: undefined
+                        </p>
+                        <button id="past_reboots_mode" class="button" onclick="past_resets_mode(2)">
+                            Display Mode: WATTS
+                        </button>
+                    </div>
+                    <p id="past_quantum_text" class="stats">
+                        Past Quantum Iterations:
                         <br>[1] no data
                         <br>[2] no data
                         <br>[3] no data
                         <br>[4] no data
                         <br>[5] no data
                         <br><br>
-                        Average AMP gain: undefined
+                        Average photons gain: undefined
                     </p>
                 </div>
 
@@ -1528,7 +1557,7 @@
                             Notation
                         </p>
                         <button id="notation_button" class="option_button small" onclick="notation()">
-                            LONG
+                            STANDARD
                         </button>
                     </div>
                     <div class="option">
@@ -1583,14 +1612,6 @@
                         </button>
                     </div>
                     <div class="option">
-                        <p id="hints_text" class="option_text">
-                            Hidden Achievement Hints
-                        </p>
-                        <button id="hints_button" class="option_button small" onclick="hints()">
-                            DISABLED
-                        </button>
-                    </div>
-                    <div class="option">
                         <p id="epilepsy_text" class="option_text">
                             Photosensitivity Mode
                         </p>
@@ -1633,7 +1654,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.3.301<br>Made by Zakuro<br><br>Last updated July 19, 2024
+                    <br><br><br>EXP Simulator v2.3.302<br>Made by Zakuro<br><br>Last updated August 8, 2024
                 </p>
                 <a id="changelog" href="changelog.html" target="_blank" class="info link">
                     Changelog
