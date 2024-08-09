@@ -2521,6 +2521,13 @@ function load(savegame) {
             game.achievements[68] = false
             game.achievements[76] = false
             game.achievements[92] = false
+        } else {
+            for (let i = 0; i < 5; i++) {
+                if (game.photons_amount[i] !== -1)
+                    game.photons_amount[i] = new Decimal(game.photons_amount)
+                if (game.photons_eff[i] !== -1)
+                    game.photons_eff[i] = new Decimal(game.photons_eff)
+            }
         }
         //v2.3.302
         if (game.budget === null) game.budget = new Array(9).fill(0)
