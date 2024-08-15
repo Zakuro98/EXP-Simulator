@@ -87,13 +87,6 @@ function increment(num) {
                 new notify("Protip: you can hold the EXP button", "#ffc400")
                 game.hold_notify = true
             }
-            if (game.level >= 30 && !game.halfway_notify) {
-                new notify(
-                    "Hang in there! Something happens at LVL 60...",
-                    "#ffc400"
-                )
-                game.halfway_notify = true
-            }
         }
 
         if (!game.achievements[19] && game.all_time_exp.cmp(10 ** 6) >= 0)
@@ -190,21 +183,11 @@ function player_increment() {
         else legit = false
     }
     if (legit) {
-        if (game.battery_mode === 0 || game.perks[8])
-            increment(
-                game.global_multiplier
-                    .mul(game.exp_add + fluct_increment(game.exp_fluct))
-                    .mul(game.ml_boost)
-                    .mul(game.exp_battery)
-                    .round()
-            )
-        else
-            increment(
-                game.global_multiplier
-                    .mul(game.exp_add + fluct_increment(game.exp_fluct))
-                    .mul(game.ml_boost)
-                    .round()
-            )
+        increment(
+            game.global_multiplier
+                .mul(game.exp_add + fluct_increment(game.exp_fluct))
+                .round()
+        )
         game.clicks += 1
         game.prestige_clicks += 1
         game.reboot_clicks += 1
@@ -260,6 +243,15 @@ function upgrade(id, max) {
                                 1) *
                             game.amp
                         game.no_upgrades = false
+                        if (game.pp_bought[24] && game.challenge !== 7)
+                            game.au_boost =
+                                6 +
+                                (game.boost_tier +
+                                    game.fluct_tier +
+                                    game.fact_tier +
+                                    game.flux_tier +
+                                    game.battery_tier) *
+                                    0.0025
                     }
                 }
                 break
@@ -286,12 +278,6 @@ function upgrade(id, max) {
                             (game.auto_tier +
                                 game.starter_kit +
                                 game.generator_kit)
-                        if (!game.achievements[53] && game.cps >= 30)
-                            get_achievement(53)
-                        if (!game.achievements[54] && game.cps >= 150)
-                            get_achievement(54)
-                        if (!game.achievements[55] && game.cps >= 1000)
-                            get_achievement(55)
                         game.no_upgrades = false
                     }
                 }
@@ -332,6 +318,15 @@ function upgrade(id, max) {
                                 game.amp *
                                 2
                         game.no_upgrades = false
+                        if (game.pp_bought[24] && game.challenge !== 7)
+                            game.au_boost =
+                                6 +
+                                (game.boost_tier +
+                                    game.fluct_tier +
+                                    game.fact_tier +
+                                    game.flux_tier +
+                                    game.battery_tier) *
+                                    0.0025
                     }
                 }
                 break
@@ -366,6 +361,15 @@ function upgrade(id, max) {
                             game.generator_kit +
                             1
                         game.no_upgrades = false
+                        if (game.pp_bought[24])
+                            game.au_boost =
+                                6 +
+                                (game.boost_tier +
+                                    game.fluct_tier +
+                                    game.fact_tier +
+                                    game.flux_tier +
+                                    game.battery_tier) *
+                                    0.0025
                     }
                 }
                 break
@@ -378,7 +382,7 @@ function upgrade(id, max) {
                 ) {
                     if (game.level >= game.flux_level) {
                         game.flux_tier += 1
-                        game.flux_level = game.flux_tier * 75 + 75
+                        game.flux_level = game.flux_tier * 75 + 300
                         if (game.challenge === 0) {
                             if (game.perks[21])
                                 game.flux_level = Math.round(
@@ -392,6 +396,15 @@ function upgrade(id, max) {
                         if (game.challenge === 2 || game.challenge === 9)
                             game.flux_level = game.flux_level * 5
                         game.no_upgrades = false
+                        if (game.pp_bought[24] && game.challenge !== 7)
+                            game.au_boost =
+                                6 +
+                                (game.boost_tier +
+                                    game.fluct_tier +
+                                    game.fact_tier +
+                                    game.flux_tier +
+                                    game.battery_tier) *
+                                    0.0025
                     }
                 }
                 break
@@ -404,7 +417,7 @@ function upgrade(id, max) {
                 ) {
                     if (game.level >= game.battery_level) {
                         game.battery_tier += 1
-                        game.battery_level = game.battery_tier * 90 + 90
+                        game.battery_level = game.battery_tier * 90 + 1080
                         if (game.challenge === 0) {
                             if (game.perks[21])
                                 game.battery_level = Math.round(
@@ -420,25 +433,35 @@ function upgrade(id, max) {
 
                         if (!game.pp_bought[31])
                             game.exp_battery =
-                                game.battery_tier +
-                                game.starter_kit +
-                                game.generator_kit +
+                                (game.battery_tier +
+                                    game.starter_kit +
+                                    game.generator_kit) *
+                                    0.25 +
                                 1
                         else if (!game.pp_bought[36])
                             game.exp_battery =
                                 (game.battery_tier +
                                     game.starter_kit +
-                                    game.generator_kit +
-                                    1) *
+                                    game.generator_kit) *
+                                    0.75 +
                                 3
                         else
                             game.exp_battery =
                                 (game.battery_tier +
                                     game.starter_kit +
-                                    game.generator_kit +
-                                    1) *
+                                    game.generator_kit) *
+                                    2.25 +
                                 9
                         game.no_upgrades = false
+                        if (game.pp_bought[24] && game.challenge !== 7)
+                            game.au_boost =
+                                6 +
+                                (game.boost_tier +
+                                    game.fluct_tier +
+                                    game.fact_tier +
+                                    game.flux_tier +
+                                    game.battery_tier) *
+                                    0.0025
                     }
                 }
                 break
@@ -474,6 +497,15 @@ function upgrade(id, max) {
                             1) *
                         game.amp
                     if (game.boost_tier !== old_tier) game.no_upgrades = false
+                    if (game.pp_bought[24] && game.challenge !== 7)
+                        game.au_boost =
+                            6 +
+                            (game.boost_tier +
+                                game.fluct_tier +
+                                game.fact_tier +
+                                game.flux_tier +
+                                game.battery_tier) *
+                                0.0025
                 }
                 break
             case 1:
@@ -533,17 +565,9 @@ function upgrade(id, max) {
                             game.auto_level = game.auto_tier * 25
                         }
                     }
-
                     game.cps =
                         2 *
                         (game.auto_tier + game.starter_kit + game.generator_kit)
-                    if (!game.achievements[53] && game.cps >= 30)
-                        get_achievement(53)
-                    if (!game.achievements[54] && game.cps >= 150)
-                        get_achievement(54)
-                    if (!game.achievements[55] && game.cps >= 1000)
-                        get_achievement(55)
-
                     if (game.auto_tier !== old_tier) game.no_upgrades = false
                 }
                 break
@@ -612,6 +636,15 @@ function upgrade(id, max) {
                             2
 
                     if (game.fluct_tier !== old_tier) game.no_upgrades = false
+                    if (game.pp_bought[24] && game.challenge !== 7)
+                        game.au_boost =
+                            6 +
+                            (game.boost_tier +
+                                game.fluct_tier +
+                                game.fact_tier +
+                                game.flux_tier +
+                                game.battery_tier) *
+                                0.0025
                 }
                 break
             case 3:
@@ -678,6 +711,15 @@ function upgrade(id, max) {
                         game.generator_kit +
                         1
                     if (game.fact_tier !== old_tier) game.no_upgrades = false
+                    if (game.pp_bought[24] && game.challenge !== 7)
+                        game.au_boost =
+                            6 +
+                            (game.boost_tier +
+                                game.fluct_tier +
+                                game.fact_tier +
+                                game.flux_tier +
+                                game.battery_tier) *
+                                0.0025
                 }
                 break
             case 4:
@@ -688,26 +730,42 @@ function upgrade(id, max) {
                     game.challenge !== 7
                 ) {
                     let old_tier = game.flux_tier
-                    game.flux_tier = Math.floor(game.level / 75)
-                    game.flux_level = game.flux_tier * 75 + 75
+                    game.flux_tier = Math.max(
+                        0,
+                        Math.floor((game.level - 225) / 75)
+                    )
+                    game.flux_level = game.flux_tier * 75 + 300
                     if (game.challenge === 0) {
                         if (game.perks[21]) {
-                            game.flux_tier = Math.floor(game.level / 37.5)
+                            game.flux_tier = Math.floor(
+                                (game.level - 112.5) / 37.5
+                            )
                             game.flux_level = Math.ceil(
-                                game.flux_tier * 37.5 + 37.5
+                                game.flux_tier * 37.5 + 150
                             )
                         } else if (game.perks[6]) {
-                            game.flux_tier = Math.floor(game.level / 56.25)
+                            game.flux_tier = Math.floor(
+                                (game.level - 168.75) / 56.25
+                            )
                             game.flux_level = Math.ceil(
-                                game.flux_tier * 56.25 + 56.25
+                                game.flux_tier * 56.25 + 225
                             )
                         }
                     }
                     if (game.challenge === 2 || game.challenge === 9) {
-                        game.flux_tier = Math.floor(game.level / 375)
-                        game.flux_level = game.flux_tier * 375 + 375
+                        game.flux_tier = Math.floor((game.level - 1125) / 375)
+                        game.flux_level = game.flux_tier * 375 + 1500
                     }
                     if (game.flux_tier !== old_tier) game.no_upgrades = false
+                    if (game.pp_bought[24] && game.challenge !== 7)
+                        game.au_boost =
+                            6 +
+                            (game.boost_tier +
+                                game.fluct_tier +
+                                game.fact_tier +
+                                game.flux_tier +
+                                game.battery_tier) *
+                                0.0025
                 }
                 break
             case 5:
@@ -718,44 +776,63 @@ function upgrade(id, max) {
                     game.challenge !== 7
                 ) {
                     let old_tier = game.battery_tier
-                    game.battery_tier = Math.floor(game.level / 90)
-                    game.battery_level = game.battery_tier * 90 + 90
+                    game.battery_tier = Math.max(
+                        0,
+                        Math.floor((game.level - 990) / 90)
+                    )
+                    game.battery_level = game.battery_tier * 90 + 1080
                     if (game.challenge === 0) {
                         if (game.perks[21]) {
-                            game.battery_tier = Math.floor(game.level / 45)
-                            game.battery_level = game.battery_tier * 45 + 45
+                            game.battery_tier = Math.floor(
+                                (game.level - 495) / 45
+                            )
+                            game.battery_level = game.battery_tier * 45 + 540
                         } else if (game.perks[6]) {
-                            game.flux_tier = Math.floor(game.level / 67.5)
-                            game.flux_level = Math.ceil(
-                                game.flux_tier * 67.5 + 67.5
+                            game.battery_tier = Math.floor(
+                                (game.level - 742.5) / 67.5
+                            )
+                            game.battery_level = Math.ceil(
+                                game.battery_tier * 67.5 + 810
                             )
                         }
                     }
                     if (game.challenge === 2 || game.challenge === 9) {
-                        game.battery_tier = Math.floor(game.level / 450)
-                        game.battery_level = game.battery_tier * 450 + 450
+                        game.battery_tier = Math.floor(
+                            (game.level - 4950) / 450
+                        )
+                        game.battery_level = game.battery_tier * 450 + 5400
                     }
                     if (!game.pp_bought[31])
                         game.exp_battery =
-                            game.battery_tier +
-                            game.starter_kit +
-                            game.generator_kit +
+                            (game.battery_tier +
+                                game.starter_kit +
+                                game.generator_kit) *
+                                0.25 +
                             1
                     else if (!game.pp_bought[36])
                         game.exp_battery =
                             (game.battery_tier +
                                 game.starter_kit +
-                                game.generator_kit +
-                                1) *
+                                game.generator_kit) *
+                                0.75 +
                             3
                     else
                         game.exp_battery =
                             (game.battery_tier +
                                 game.starter_kit +
-                                game.generator_kit +
-                                1) *
+                                game.generator_kit) *
+                                2.25 +
                             9
                     if (game.battery_tier !== old_tier) game.no_upgrades = false
+                    if (game.pp_bought[24] && game.challenge !== 7)
+                        game.au_boost =
+                            6 +
+                            (game.boost_tier +
+                                game.fluct_tier +
+                                game.fact_tier +
+                                game.flux_tier +
+                                game.battery_tier) *
+                                0.0025
                 }
                 break
         }
@@ -781,12 +858,6 @@ function oc_activate() {
 //capacitance switching
 function set_capacitance(mode) {
     if (game.challenge !== 1 && game.challenge !== 9) {
-        if (game.cap_mode !== 0) game.prev_mode = game.cap_mode
-        if (mode > game.prev_mode) {
-            game.cap_mode = game.prev_mode
-            discharge()
-        }
-
         game.cap_mode = mode
 
         document.getElementById("cap_off").className = "button"
@@ -833,17 +904,12 @@ function discharge() {
     ) {
         let eps = game.global_multiplier
             .mul(game.exp_add + game.exp_fluct / 2)
-            .mul(game.cps)
-        if (game.battery_mode === 1 || game.perks[8])
-            eps = eps.mul(game.exp_battery)
-        if (!game.perks[9])
-            increment(
-                eps.mul(game.stored_exp / game.tickspeed).mul(game.cap_mode * 2)
+            .mul(
+                game.cps *
+                    game.au_boost *
+                    game.exp_battery ** game.battery_charge
             )
-        else
-            increment(
-                eps.mul(game.stored_exp / game.tickspeed).mul(game.cap_mode * 4)
-            )
+        increment(eps.mul(game.stored_exp / game.tickspeed).mul(game.ds_boost))
         game.stored_exp = 0
 
         if (!game.achievements[61] && game.oc_state === 2) get_achievement(61)
