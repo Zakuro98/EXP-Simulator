@@ -56,7 +56,6 @@ function tick() {
             reduction = reduction.div(
                 game.global_multiplier
                     .mul(game.exp_add + game.exp_fluct / 2)
-                    .mul(game.exp_battery)
                     .pow(0.5)
             )
         } else {
@@ -70,26 +69,20 @@ function tick() {
 
     //autoclicker operation
     if (game.cps > 0) {
-        game.click_time += game.cps / delta_time
+        game.click_time +=
+            (game.cps *
+                game.au_boost *
+                game.exp_battery ** game.battery_charge) /
+            delta_time
         if (game.click_time >= 1) {
             if (game.challenge !== 7) {
-                if (game.battery_mode === 1 || game.perks[8])
-                    increment(
-                        game.global_multiplier
-                            .mul(game.exp_add + fluct_increment(game.exp_fluct))
-                            .mul(Math.floor(game.click_time))
-                            .mul(game.exp_battery)
-                            .mul(game.cap_boost)
-                            .round()
-                    )
-                else
-                    increment(
-                        game.global_multiplier
-                            .mul(game.exp_add + fluct_increment(game.exp_fluct))
-                            .mul(Math.floor(game.click_time))
-                            .mul(game.cap_boost)
-                            .round()
-                    )
+                increment(
+                    game.global_multiplier
+                        .mul(game.exp_add + fluct_increment(game.exp_fluct))
+                        .mul(Math.floor(game.click_time))
+                        .mul(game.cap_boost)
+                        .round()
+                )
             } else {
                 increment(
                     game.global_multiplier
@@ -311,6 +304,25 @@ function tick() {
     if (!game.achievements[35] && game.all_time >= 604800 * game.tickspeed)
         get_achievement(35)
 
+    //clicks/s based achievements
+    if (
+        !game.achievements[53] &&
+        game.cps * game.au_boost * game.exp_battery ** game.battery_charge >= 30
+    )
+        get_achievement(53)
+    if (
+        !game.achievements[54] &&
+        game.cps * game.au_boost * game.exp_battery ** game.battery_charge >=
+            600
+    )
+        get_achievement(54)
+    if (
+        !game.achievements[55] &&
+        game.cps * game.au_boost * game.exp_battery ** game.battery_charge >=
+            10000
+    )
+        get_achievement(55)
+
     //achievement for all upgrades tab unlocks
     if (
         !game.achievements[50] &&
@@ -338,16 +350,16 @@ function tick() {
     //discharge automation
     if (
         (game.pp_bought[35] || (game.pp_bought[32] && game.perks[9])) &&
+        game.autods_toggle &&
         game.challenge !== 1 &&
         game.challenge !== 7 &&
         game.challenge !== 9
     ) {
-        if (game.autods_toggle === 1) {
+        if (game.autods_goal !== -1) {
             if (game.stored_exp >= game.autods_goal * game.tickspeed) {
                 discharge()
             }
-        }
-        if (game.autods_toggle === 2) {
+        } else {
             let oc_cycle = 45
             if (game.pp_bought[21]) oc_cycle = 90
             if (game.pp_bought[26] && game.perks[5]) oc_cycle += 90
@@ -427,6 +439,24 @@ function tick() {
         pp_map
             .get(pp_upgrade.upgrades[20])
             .querySelector(".pp_desc").innerHTML = pp_upgrade.upgrades[20].desc
+    }
+
+    //battery charging
+    if (game.pp_bought[25] && game.challenge !== 7) {
+        if (game.perks[8]) {
+            game.battery_charge = 1
+        } else {
+            if (game.battery_mode === 0) {
+                if (game.time >= 30 * game.tickspeed) game.battery_charge = 0
+                else if (game.time >= 10 * game.tickspeed)
+                    game.battery_charge =
+                        1.5 - game.time / (20 * game.tickspeed)
+                else game.battery_charge = 1
+            } else if (game.battery_mode === 1) {
+                if (game.time >= 300 * game.tickspeed) game.battery_charge = 1
+                else game.battery_charge = game.time / (300 * game.tickspeed)
+            }
+        }
     }
 
     //grabbing level from autoprestige level config
@@ -942,9 +972,9 @@ function tick() {
     //patience handling
     if (game.pp_bought[29]) {
         if (game.time > 10 * game.tickspeed) {
-            game.patience = 30
+            game.patience = 50
         } else {
-            game.patience = 1 + 0.29 * (game.time / game.tickspeed) ** 2
+            game.patience = 1 + 0.49 * (game.time / game.tickspeed) ** 2
         }
     } else {
         game.patience = 1
@@ -959,9 +989,11 @@ function tick() {
     ) {
         let eps = game.global_multiplier
             .mul(game.exp_add + game.exp_fluct / 2)
-            .mul(game.cps)
-        if (game.battery_mode === 1 || game.perks[8])
-            eps = eps.mul(game.exp_battery)
+            .mul(
+                game.cps *
+                    game.au_boost *
+                    game.exp_battery ** game.battery_charge
+            )
         let base_exp =
             "Base EXP Production: " + format_infinity(eps) + " EXP/sec"
         let effective_exp =
@@ -974,32 +1006,14 @@ function tick() {
         let if_discharge =
             "If Discharged: +" + format_num(0) + " EXP (Not Active)"
         if (game.cap_mode >= 1 || game.notation === 8) {
-            if (!game.perks[9])
-                if_discharge =
-                    "If Discharged: +" +
-                    format_infinity(
-                        eps.mul(
-                            (game.stored_exp / game.tickspeed) *
-                                game.cap_mode *
-                                2
-                        )
-                    ) +
-                    " EXP (" +
-                    format_num(game.cap_mode * 2) +
-                    "x)"
-            else
-                if_discharge =
-                    "If Discharged: +" +
-                    format_infinity(
-                        eps.mul(
-                            (game.stored_exp / game.tickspeed) *
-                                game.cap_mode *
-                                4
-                        )
-                    ) +
-                    " EXP (" +
-                    format_num(game.cap_mode * 4) +
-                    "x)"
+            if_discharge =
+                "If Discharged: +" +
+                format_infinity(
+                    eps.mul((game.stored_exp / game.tickspeed) * game.ds_boost)
+                ) +
+                " EXP (" +
+                format_num(game.ds_boost) +
+                "x)"
         }
         document.getElementById("cap_stats").innerHTML =
             base_exp +
@@ -1047,6 +1061,8 @@ function tick() {
     if (game.autods_goal < 1 && !game.pp_bought[38]) game.autods_goal = 1
     else if (game.autods_goal < 0 && game.pp_bought[38]) game.autods_goal = 0
     if (game.autods_goal > 300) game.autods_goal = 300
+    if (document.getElementById("dis_input").value === "" && game.perks[11])
+        game.autods_goal = -1
 
     //prestige upgrade automation
     if (game.perks[7] && game.autopp_toggle) {
@@ -1715,7 +1731,7 @@ function tick() {
             "<br><br><br>EXP Simulator v?.?.???<br>Made by ???<br><br>Last updated ???"
     } else {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v2.3.302<br>Made by Zakuro<br><br>Last updated August 8, 2024"
+            "<br><br><br>EXP Simulator v2.3.303<br>Made by Zakuro<br><br>Last updated August 8, 2024"
     }
 }
 
@@ -1879,7 +1895,7 @@ function pre_save() {
 function save() {
     pre_save()
     game.beta = false
-    game.version = "2.3.302"
+    game.version = "2.3.303"
     localStorage.setItem("exp_simulator_save", JSON.stringify(game))
 }
 
@@ -1968,7 +1984,7 @@ function load(savegame) {
             game.exp_flux = 1
             game.pp_power = 1
             game.fluct_tier = 0
-            game.flux_level = 75
+            game.flux_level = 300
             game.pr_min = 60
         }
         //v2.1.200
@@ -1977,7 +1993,7 @@ function load(savegame) {
             game.exp_battery = 1
             game.battery_mode = 0
             game.battery_tier = 0
-            game.battery_level = 90
+            game.battery_level = 1080
             game.patience = 1
             game.prestige_power = 1
             game.depth_power = 1
@@ -1992,7 +2008,7 @@ function load(savegame) {
             game.stored_exp = 0
             game.global_multiplier = new Decimal(1)
             game.flux_boost = 1
-            game.autods_toggle = 0
+            game.autods_toggle = false
             game.autods_goal = 30
         }
         //v2.1.400
@@ -2023,7 +2039,7 @@ function load(savegame) {
             game.mouse_held = false
         }
         //v2.1.405
-        game.version = "2.3.302"
+        game.version = "2.3.303"
         if (game.tab > 2) game.tab += 2
         if (game.tab > 3) game.tab += 1
         game.reboot = 0
@@ -2159,6 +2175,29 @@ function load(savegame) {
         game.smartpr_repeat = false
         game.smartpr_start = false
         game.smartpr_select = 0
+        if (game.challenge === 2 || game.challenge === 9) {
+            game.flux_level += 1500
+            game.battery_level += 5400
+        } else {
+            if (game.challenge === 0) {
+                if (game.perks[21]) {
+                    game.flux_level += 150
+                    game.battery_level += 540
+                } else if (game.perks[6]) {
+                    game.flux_level += 225
+                    game.battery_level += 810
+                } else {
+                    game.flux_level += 300
+                    game.battery_level += 1080
+                }
+            } else {
+                game.flux_level += 300
+                game.battery_level += 1080
+            }
+        }
+        game.battery_charge = 1
+        game.ds_boost = 2
+        game.range_mode = 0
     } else if (major < 3) {
         game = savegame
         //v2.2.000
@@ -2243,7 +2282,7 @@ function load(savegame) {
             game.switchpoint = 0
         }
         //v2.2.301
-        game.version = "2.3.302"
+        game.version = "2.3.303"
         game.amp_eff = new Array(5).fill(-1)
         game.watts_eff = new Array(5).fill(-1)
         game.quantum = 0
@@ -2328,8 +2367,31 @@ function load(savegame) {
         game.smartpr_repeat = false
         game.smartpr_start = false
         game.smartpr_select = 0
+        if (game.challenge === 2 || game.challenge === 9) {
+            game.flux_level += 1500
+            game.battery_level += 5400
+        } else {
+            if (game.challenge === 0) {
+                if (game.perks[21]) {
+                    game.flux_level += 150
+                    game.battery_level += 540
+                } else if (game.perks[6]) {
+                    game.flux_level += 225
+                    game.battery_level += 810
+                } else {
+                    game.flux_level += 300
+                    game.battery_level += 1080
+                }
+            } else {
+                game.flux_level += 300
+                game.battery_level += 1080
+            }
+        }
+        game.battery_charge = 1
+        game.ds_boost = 2
+        game.range_mode = 0
     } else {
-        if (minor > 302) {
+        if (minor > 303) {
             alert(
                 "You cannot load saves from game versions that do not exist\nIf you think you are recieving this alert in error, reload and try again"
             )
@@ -2530,6 +2592,33 @@ function load(savegame) {
             }
         }
         //v2.3.302
+        if (minor < 303) {
+            game.au_boost = game.ml_boost
+            if (game.challenge === 2 || game.challenge === 9) {
+                game.flux_level += 1500
+                game.battery_level += 5400
+            } else {
+                if (game.challenge === 0) {
+                    if (game.perks[21]) {
+                        game.flux_level += 150
+                        game.battery_level += 540
+                    } else if (game.perks[6]) {
+                        game.flux_level += 225
+                        game.battery_level += 810
+                    } else {
+                        game.flux_level += 300
+                        game.battery_level += 1080
+                    }
+                } else {
+                    game.flux_level += 300
+                    game.battery_level += 1080
+                }
+            }
+            game.battery_charge = 1
+            game.ds_boost = 2
+            game.range_mode = 0
+        }
+        //v2.3.303
         if (game.budget === null) game.budget = new Array(9).fill(0)
         game.dark_matter = new Decimal(game.dark_matter)
         game.total_exp = new Decimal(game.total_exp)
@@ -2539,7 +2628,7 @@ function load(savegame) {
         game.reboot_exp = new Decimal(game.reboot_exp)
         game.global_multiplier = new Decimal(game.global_multiplier)
         game.photons = new Decimal(game.photons)
-        game.version = "2.3.302"
+        game.version = "2.3.303"
     }
     if (game.om_boost[2] === 0) game.om_boost[2] === 1
     if (game.question) {
