@@ -938,6 +938,10 @@ main {
     padding-right: 1.2em;
 }
 
+.small_text {
+    font-size: 0.75em;
+}
+
 .pp_name {
     color: #d000ff;
     margin-top: 0em;
@@ -2513,7 +2517,11 @@ main {
     margin-top: 1.285em;
 }
 
-.page_left, .page_right {
+.page_left {
+    display: none;
+}
+
+.page_right {
     display: inline;
 }
 
