@@ -123,37 +123,14 @@ function oc_toggle() {
 
 //discharge automation toggle
 function ds_toggle() {
-    game.autods_toggle++
-    if (game.perks[11]) {
-        if (game.autods_toggle > 2) game.autods_toggle = 0
+    if (game.autods_toggle) {
+        game.autods_toggle = false
+        document.getElementById("dis_auto").innerHTML = "OFF"
+        if (!meme) document.getElementById("dis_auto").style.color = "#ff0000"
     } else {
-        if (game.autods_toggle > 1) game.autods_toggle = 0
-    }
-    switch (game.autods_toggle) {
-        case 0:
-            document.getElementById("dis_auto").innerHTML = "OFF"
-            if (!meme)
-                document.getElementById("dis_auto").style.color = "#ff0000"
-            if (
-                (game.pp_bought[32] && game.perks[9]) ||
-                (game.pp_bought[35] && !game.perks[9])
-            ) {
-                document.getElementById("dis_text").style.display = "block"
-                document.getElementById("dis_input").style.display = "block"
-            }
-            break
-        case 1:
-            document.getElementById("dis_auto").innerHTML = "ON"
-            if (!meme)
-                document.getElementById("dis_auto").style.color = "#00ff00"
-            break
-        case 2:
-            document.getElementById("dis_auto").innerHTML = "SMART"
-            if (!meme)
-                document.getElementById("dis_auto").style.color = "#00ffff"
-            document.getElementById("dis_text").style.display = "none"
-            document.getElementById("dis_input").style.display = "none"
-            break
+        game.autods_toggle = true
+        document.getElementById("dis_auto").innerHTML = "ON"
+        if (!meme) document.getElementById("dis_auto").style.color = "#00ff00"
     }
 }
 
@@ -495,7 +472,7 @@ function toggle_all_automation() {
     if (
         game.autopr_toggle ||
         game.autooc_toggle ||
-        game.autods_toggle >= 1 ||
+        game.autods_toggle ||
         game.autopp_toggle ||
         game.autocp_toggle ||
         game.autorb_toggle ||
@@ -511,7 +488,7 @@ function toggle_all_automation() {
         }
         game.autopr_toggle = true
         game.autooc_toggle = true
-        game.autods_toggle = 1
+        game.autods_toggle = true
         game.autopp_toggle = true
         game.autocp_toggle = true
         game.autorb_toggle = true
@@ -524,7 +501,7 @@ function toggle_all_automation() {
         }
         game.autopr_toggle = false
         game.autooc_toggle = false
-        game.autods_toggle = 0
+        game.autods_toggle = false
         game.autopp_toggle = false
         game.autocp_toggle = false
         game.autorb_toggle = false
@@ -973,21 +950,28 @@ function smart_save(preset) {
 
 //loading phase loadout from a preset, or intiailizing when the game is first loaded
 function smart_load(preset) {
+    let refresh = true
     if (preset >= 0) {
-        game.smartpr_queue = JSON.parse(
-            JSON.stringify(game.smartpr_presets[preset])
-        )
-        if (game.smartpr_mode === 1) {
-            game.smartpr_phase = 0
-            game.smartpr_condition = 0
+        refresh = false
+        if (game.smartpr_presets[preset].length > 0) {
+            refresh = true
+            game.smartpr_queue = JSON.parse(
+                JSON.stringify(game.smartpr_presets[preset])
+            )
+            if (game.smartpr_mode === 1) {
+                game.smartpr_phase = 0
+                game.smartpr_condition = 0
+            }
         }
     }
 
-    document.getElementById("smart_panel").innerHTML = ""
-    for (const p of game.smartpr_queue) {
-        phase_ui(p)
+    if (refresh) {
+        document.getElementById("smart_panel").innerHTML = ""
+        for (const p of game.smartpr_queue) {
+            phase_ui(p)
+        }
+        smart_mode(game.smartpr_mode)
     }
-    smart_mode(game.smartpr_mode)
 }
 
 //creating a new auto-prestige phase
