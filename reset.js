@@ -29,6 +29,8 @@ function reset() {
     game.exp_fact = 1
     game.exp_flux = 1
     game.exp_battery = 1
+    if (game.battery_mode === 0) game.battery_charge = 1
+    else game.battery_charge = 0
     game.level = 1
     game.exp = new Decimal(0)
     game.goal = new Decimal(32)
@@ -47,9 +49,9 @@ function reset() {
     game.fact_tier = 0
     game.fact_level = 15
     game.flux_tier = 0
-    game.flux_level = 75
+    game.flux_level = 300
     game.battery_tier = 0
-    game.battery_level = 90
+    game.battery_level = 1080
 
     game.time = 0
 
@@ -192,13 +194,26 @@ function prestige() {
             game.exp_fact = 1 + game.starter_kit + game.generator_kit
             if (game.pp_bought[25] && game.challenge !== 7) {
                 if (!game.pp_bought[31])
-                    game.exp_battery = 1 + game.starter_kit + game.generator_kit
+                    game.exp_battery =
+                        (game.battery_tier +
+                            game.starter_kit +
+                            game.generator_kit) *
+                            0.25 +
+                        1
                 else if (!game.pp_bought[36])
                     game.exp_battery =
-                        (1 + game.starter_kit + game.generator_kit) * 3
+                        (game.battery_tier +
+                            game.starter_kit +
+                            game.generator_kit) *
+                            0.75 +
+                        3
                 else
                     game.exp_battery =
-                        (1 + game.starter_kit + game.generator_kit) * 9
+                        (game.battery_tier +
+                            game.starter_kit +
+                            game.generator_kit) *
+                            2.25 +
+                        9
             }
             game.cps = (game.starter_kit + game.generator_kit) * 2
             if (game.challenge === 7) {
@@ -215,16 +230,16 @@ function prestige() {
                 game.auto_level = Math.round(5 * 0.75)
                 game.fluct_level = Math.round(6 * 0.75)
                 game.fact_level = Math.round(15 * 0.75)
-                game.flux_level = Math.round(75 * 0.75)
-                game.battery_level = Math.round(90 * 0.75)
+                game.flux_level = Math.round(300 * 0.75)
+                game.battery_level = Math.round(1080 * 0.75)
 
                 if (game.perks[21]) {
                     game.boost_level = Math.round(2 * 0.5)
                     game.auto_level = Math.round(5 * 0.5)
                     game.fluct_level = Math.round(6 * 0.5)
                     game.fact_level = Math.round(15 * 0.5)
-                    game.flux_level = Math.round(75 * 0.5)
-                    game.battery_level = Math.round(90 * 0.5)
+                    game.flux_level = Math.round(300 * 0.5)
+                    game.battery_level = Math.round(1080 * 0.5)
                 }
             }
 
@@ -233,8 +248,8 @@ function prestige() {
                 game.auto_level = 25
                 game.fluct_level = 30
                 game.fact_level = 75
-                game.flux_level = 375
-                game.battery_level = 450
+                game.flux_level = 1500
+                game.battery_level = 5400
             }
 
             if (
@@ -429,13 +444,26 @@ function prestige() {
             game.exp_fact = 1 + game.starter_kit + game.generator_kit
             if (game.pp_bought[25] && game.challenge !== 7) {
                 if (!game.pp_bought[31])
-                    game.exp_battery = 1 + game.starter_kit + game.generator_kit
+                    game.exp_battery =
+                        (game.battery_tier +
+                            game.starter_kit +
+                            game.generator_kit) *
+                            0.25 +
+                        1
                 else if (!game.pp_bought[36])
                     game.exp_battery =
-                        (1 + game.starter_kit + game.generator_kit) * 3
+                        (game.battery_tier +
+                            game.starter_kit +
+                            game.generator_kit) *
+                            0.75 +
+                        3
                 else
                     game.exp_battery =
-                        (1 + game.starter_kit + game.generator_kit) * 9
+                        (game.battery_tier +
+                            game.starter_kit +
+                            game.generator_kit) *
+                            2.25 +
+                        9
             }
             game.cps = (game.starter_kit + game.generator_kit) * 2
             if (game.challenge === 7) {
@@ -448,16 +476,16 @@ function prestige() {
                 game.auto_level = Math.round(5 * 0.75)
                 game.fluct_level = Math.round(6 * 0.75)
                 game.fact_level = Math.round(15 * 0.75)
-                game.flux_level = Math.round(75 * 0.75)
-                game.battery_level = Math.round(90 * 0.75)
+                game.flux_level = Math.round(300 * 0.75)
+                game.battery_level = Math.round(1080 * 0.75)
 
                 if (game.perks[21]) {
                     game.boost_level = Math.round(2 * 0.5)
                     game.auto_level = Math.round(5 * 0.5)
                     game.fluct_level = Math.round(6 * 0.5)
                     game.fact_level = Math.round(15 * 0.5)
-                    game.flux_level = Math.round(75 * 0.5)
-                    game.battery_level = Math.round(90 * 0.5)
+                    game.flux_level = Math.round(300 * 0.5)
+                    game.battery_level = Math.round(1080 * 0.5)
                 }
             }
 
@@ -466,8 +494,8 @@ function prestige() {
                 game.auto_level = 25
                 game.fluct_level = 30
                 game.fact_level = 75
-                game.flux_level = 375
-                game.battery_level = 450
+                game.flux_level = 1500
+                game.battery_level = 5400
             }
 
             if (
@@ -552,10 +580,20 @@ function empty_prestige() {
     game.exp_fact = 1 + game.starter_kit + game.generator_kit
     if (game.pp_bought[25] && game.challenge !== 7) {
         if (!game.pp_bought[31])
-            game.exp_battery = 1 + game.starter_kit + game.generator_kit
+            game.exp_battery =
+                (game.battery_tier + game.starter_kit + game.generator_kit) *
+                    0.25 +
+                1
         else if (!game.pp_bought[36])
-            game.exp_battery = (1 + game.starter_kit + game.generator_kit) * 3
-        else game.exp_battery = (1 + game.starter_kit + game.generator_kit) * 9
+            game.exp_battery =
+                (game.battery_tier + game.starter_kit + game.generator_kit) *
+                    0.75 +
+                3
+        else
+            game.exp_battery =
+                (game.battery_tier + game.starter_kit + game.generator_kit) *
+                    2.25 +
+                9
     }
     game.cps = (game.starter_kit + game.generator_kit) * 2
     if (game.challenge === 7) {
@@ -568,16 +606,16 @@ function empty_prestige() {
         game.auto_level = Math.round(5 * 0.75)
         game.fluct_level = Math.round(6 * 0.75)
         game.fact_level = Math.round(15 * 0.75)
-        game.flux_level = Math.round(75 * 0.75)
-        game.battery_level = Math.round(90 * 0.75)
+        game.flux_level = Math.round(300 * 0.75)
+        game.battery_level = Math.round(1080 * 0.75)
 
         if (game.perks[21]) {
             game.boost_level = Math.round(2 * 0.5)
             game.auto_level = Math.round(5 * 0.5)
             game.fluct_level = Math.round(6 * 0.5)
             game.fact_level = Math.round(15 * 0.5)
-            game.flux_level = Math.round(75 * 0.5)
-            game.battery_level = Math.round(90 * 0.5)
+            game.flux_level = Math.round(300 * 0.5)
+            game.battery_level = Math.round(1080 * 0.5)
         }
     }
 
@@ -586,8 +624,8 @@ function empty_prestige() {
         game.auto_level = 25
         game.fluct_level = 30
         game.fact_level = 75
-        game.flux_level = 375
-        game.battery_level = 450
+        game.flux_level = 1500
+        game.battery_level = 5400
     }
 
     if (
@@ -653,6 +691,7 @@ function empty_prestige() {
 function respec() {
     if (game.challenge !== 7 && game.pp_bought[33]) game.flux_boost /= 5
 
+    let overclocker = game.pp_bought[14]
     let all_pp_upgrades = true
     for (const upgrade3 of pp_upgrade.upgrades) {
         if (
@@ -668,7 +707,7 @@ function respec() {
     }
 
     autopr_switch(0)
-    game.ml_boost = 1
+    game.au_boost = 1
     document.getElementById("amp_auto").style.display = "none"
     document.getElementById("auto_config").style.display = "none"
     game.jumpstart = 0
@@ -677,7 +716,7 @@ function respec() {
     document.getElementById("auto_mode").style.display = "none"
     game.exp_oc = 1
     game.oc_state = 0
-    game.oc_time = 0
+    if (overclocker) game.oc_time = 0
     document.getElementById("overclock").style.display = "none"
     document.getElementById("oc_auto").style.display = "none"
     document.getElementById("oc_button").style.display = "none"
@@ -689,11 +728,12 @@ function respec() {
     game.prev_mode = 0
     game.stored_exp = 0
     game.cap_boost = 1
+    game.ds_boost = 2
+    if (game.perks[9]) game.ds_boost = 4
     document.getElementById("capacitor").style.display = "none"
     document.getElementById("cap_50").style.display = "none"
     document.getElementById("cap_75").style.display = "none"
     document.getElementById("cap_100").style.display = "none"
-    document.getElementById("cap_disc").style.display = "none"
     document.getElementById("dis_auto").style.display = "none"
     document.getElementById("dis_text").style.display = "none"
     document.getElementById("dis_input").style.display = "none"
@@ -1162,13 +1202,15 @@ function reboot() {
                 autopr_switch(game.autopr_mode)
             }
 
-            game.ml_boost = 1
+            game.au_boost = 1
             game.jumpstart = 0
             game.starter_kit = 0
             game.pp_power = 1
 
             game.exp_oc = 1
             game.exp_battery = 1
+            if (game.battery_mode === 0) game.battery_charge = 1
+            else game.battery_charge = 0
             game.pp_power = 1
             game.prestige_power = 1
             game.depth_power = 1
@@ -1178,6 +1220,8 @@ function reboot() {
             set_capacitance(0)
             game.prev_mode = 0
             game.cap_boost = 1
+            game.ds_boost = 2
+            if (game.perks[9]) game.ds_boost = 4
             game.stored_exp = 0
             game.flux_boost = 1
             game.flux_increase = 1
@@ -1232,7 +1276,6 @@ function reboot() {
             document.getElementById("cap_50").style.display = "none"
             document.getElementById("cap_75").style.display = "none"
             document.getElementById("cap_100").style.display = "none"
-            document.getElementById("cap_disc").style.display = "none"
             document.getElementById("dis_auto").style.display = "none"
             document.getElementById("dis_text").style.display = "none"
             document.getElementById("dis_input").style.display = "none"
@@ -1299,13 +1342,15 @@ function empty_reboot() {
         autopr_switch(game.autopr_mode)
     }
 
-    game.ml_boost = 1
+    game.au_boost = 1
     game.jumpstart = 0
     game.starter_kit = 0
     game.pp_power = 1
 
     game.exp_oc = 1
     game.exp_battery = 1
+    if (game.battery_mode === 0) game.battery_charge = 1
+    else game.battery_charge = 0
     game.pp_power = 1
     game.prestige_power = 1
     game.depth_power = 1
@@ -1315,6 +1360,8 @@ function empty_reboot() {
     set_capacitance(0)
     game.prev_mode = 0
     game.cap_boost = 1
+    game.ds_boost = 2
+    if (game.perks[9]) game.ds_boost = 4
     game.stored_exp = 0
     game.flux_boost = 1
     game.flux_increase = 1
@@ -1367,7 +1414,6 @@ function empty_reboot() {
     document.getElementById("cap_50").style.display = "none"
     document.getElementById("cap_75").style.display = "none"
     document.getElementById("cap_100").style.display = "none"
-    document.getElementById("cap_disc").style.display = "none"
     document.getElementById("dis_auto").style.display = "none"
     document.getElementById("dis_text").style.display = "none"
     document.getElementById("dis_input").style.display = "none"
