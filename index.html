@@ -276,9 +276,6 @@
                                     <button id="cap_auto" class="button autoup" onclick="cp_toggle()">
                                         OFF
                                     </button>
-                                    <p id="cap_disc" class="cap_text">
-                                        (switching Discharges)
-                                    </p>
                                 </div>
                                 <p id="cap_stats" class="cap_text">
                                     Base EXP Production: 0 EXP/sec
@@ -1173,14 +1170,6 @@
                             <br>-
                         </p>
                     </div>
-                    <div id="exp_click_mn" class="stat_item">
-                        <p id="exp_click_mn_name" class="stat_left">
-                            Manual EXP/click:
-                        </p>
-                        <p id="exp_click_mn_stat" class="stat_right">
-                            -
-                        </p>
-                    </div>
                     <div id="exp_multi_au" class="stat_item">
                         <p id="exp_multi_au_name" class="stat_left">
                             Total EXP Multiplier:
@@ -1189,20 +1178,12 @@
                             -
                         </p>
                     </div>
-                    <div id="exp_multi_mn" class="stat_item">
-                        <p id="exp_mult_mn_name" class="stat_left">
-                            Total Manual EXP Multipler:
-                        </p>
-                        <p id="exp_multi_mn_stat" class="stat_right">
-                            -
-                        </p>
-                    </div>
                     <div id="autoclicking" class="stat_item">
                         <p id="autoclicking_name" class="stat_left">
-                            <br>Autoclicking:
+                            Autoclicking:
                         </p>
                         <p id="autoclicking_stat" class="stat_right">
-                            <br>-
+                            -
                         </p>
                     </div>
                     <div id="auto_power" class="stat_item">
@@ -1568,6 +1549,14 @@
                             MILLION
                         </button>
                     </div>
+                    <div class="option">
+                        <p id="range_text" class="option_text">
+                            EXP Range Display
+                        </p>
+                        <button id="range_button" class="option_button small" onclick="range_mode()">
+                            RANGE
+                        </button>
+                    </div>
                     <div class="option" id="hotkeys">
                         <p id="hotkeys_text" class="option_text">
                             Hotkeys
@@ -1654,7 +1643,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.3.302<br>Made by Zakuro<br><br>Last updated August 8, 2024
+                    <br><br><br>EXP Simulator v2.3.303<br>Made by Zakuro<br><br>Last updated August 8, 2024
                 </p>
                 <a id="changelog" href="changelog.html" target="_blank" class="info link">
                     Changelog
