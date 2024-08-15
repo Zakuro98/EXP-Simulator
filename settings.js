@@ -70,8 +70,16 @@ function notation() {
         document.getElementById("oc_state").innerHTML =
             "Boosting " + format_num(game.exp_oc) + "x"
     pp_upgrade.upgrades[24].desc =
-        "Unautomated clicks are boosted a further +32% for every Autoclicker tier<br>(Currently: " +
-        format_eff(16 + game.cps * 0.16) +
+        "The autoclicker is a further +1% faster for every other upgrade tier<br>(Currently: " +
+        format_eff(
+            16 +
+                (game.boost_tier +
+                    game.fluct_tier +
+                    game.fact_tier +
+                    game.flux_tier +
+                    game.battery_tier) *
+                    0.01
+        ) +
         "x)"
     pp_map.get(pp_upgrade.upgrades[24]).querySelector(".pp_desc").innerHTML =
         pp_upgrade.upgrades[24].desc
@@ -99,6 +107,23 @@ function switchpoint() {
             break
         case 1:
             document.getElementById("switchpoint_button").innerHTML = "BILLION"
+            break
+    }
+}
+
+//exp range display mode
+function range_mode() {
+    game.range_mode += 1
+    if (game.range_mode >= 3) game.range_mode = 0
+    switch (game.range_mode) {
+        case 0:
+            document.getElementById("range_button").innerHTML = "RANGE"
+            break
+        case 1:
+            document.getElementById("range_button").innerHTML = "AVERAGE"
+            break
+        case 2:
+            document.getElementById("range_button").innerHTML = "VARIANCE"
             break
     }
 }
@@ -252,17 +277,6 @@ function quantum_confirmation() {
         if (!meme)
             document.getElementById("autoqu_toggle").style.color = "#ff0000"
         document.getElementById("qu_confirm_button").innerHTML = "ENABLED"
-    }
-}
-
-//??? toggle
-function question() {
-    if (game.question) {
-        game.question = false
-        document.getElementById("question_button").innerHTML = "DISABLED"
-    } else {
-        game.question = true
-        document.getElementById("question_button").innerHTML = "ENABLED"
     }
 }
 
