@@ -2197,6 +2197,10 @@ function load(savegame) {
         }
         game.battery_charge = 1
         game.ds_boost = 2
+        if (game.pp_bought[35]) game.ds_boost = 4
+        if (game.pp_bought[37]) game.ds_boost = 6
+        if (game.pp_bought[38]) game.ds_boost = 8
+        if (game.perks[9]) game.ds_boost *= 2
         game.range_mode = 0
     } else if (major < 3) {
         game = savegame
@@ -2389,6 +2393,10 @@ function load(savegame) {
         }
         game.battery_charge = 1
         game.ds_boost = 2
+        if (game.pp_bought[35]) game.ds_boost = 4
+        if (game.pp_bought[37]) game.ds_boost = 6
+        if (game.pp_bought[38]) game.ds_boost = 8
+        if (game.perks[9]) game.ds_boost *= 2
         game.range_mode = 0
     } else {
         if (minor > 303) {
@@ -2616,6 +2624,10 @@ function load(savegame) {
             }
             game.battery_charge = 1
             game.ds_boost = 2
+            if (game.pp_bought[35]) game.ds_boost = 4
+            if (game.pp_bought[37]) game.ds_boost = 6
+            if (game.pp_bought[38]) game.ds_boost = 8
+            if (game.perks[9]) game.ds_boost *= 2
             game.range_mode = 0
         }
         //v2.3.303
