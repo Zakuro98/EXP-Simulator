@@ -5053,8 +5053,8 @@ function regenerate_ui() {
         document.getElementById("page_left1").style.display = "none"
         document.getElementById("page_left2").style.display = "none"
     } else {
-        document.getElementById("page_left1").style.display = "block"
-        document.getElementById("page_left2").style.display = "block"
+        document.getElementById("page_left1").style.display = "inline"
+        document.getElementById("page_left2").style.display = "inline"
     }
     if (
         game.achiev_page === Math.ceil(achievement.achievements.length / 10 - 1)
