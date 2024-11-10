@@ -746,6 +746,7 @@ function respec() {
 
     game.pp = game.total_pp
     document.getElementById("pp").innerHTML = format_num(game.pp) + " PP"
+    document.getElementById("prestige_tabs").style.display = "none"
 }
 
 //rebooting code
