@@ -2163,6 +2163,7 @@ function load(savegame) {
         game.no_upgrades = true
         game.pp_amount = new Array(5).fill(-1)
         game.hydrogen_amount = new Array(5).fill(-1)
+        game.hydrogen_eff = new Array(5).fill(-1)
         game.photons_amount = new Array(5).fill(-1)
         game.photons_time = new Array(5).fill(-1)
         game.photons_eff = new Array(5).fill(-1)
@@ -2359,6 +2360,7 @@ function load(savegame) {
         game.no_upgrades = true
         game.pp_amount = new Array(5).fill(-1)
         game.hydrogen_amount = new Array(5).fill(-1)
+        game.hydrogen_eff = new Array(5).fill(-1)
         game.photons_amount = new Array(5).fill(-1)
         game.photons_time = new Array(5).fill(-1)
         game.photons_eff = new Array(5).fill(-1)
