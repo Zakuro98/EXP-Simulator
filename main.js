@@ -2148,6 +2148,7 @@ function load(savegame) {
         game.omega_challenge = false
         game.omega_best = new Decimal(0)
         game.free_omega_points = 0
+        game.op_dark_boost = 1
         game.autocl_toggle = false
         game.autogr_toggle = false
         game.autops_toggle = false
@@ -2345,6 +2346,7 @@ function load(savegame) {
         game.omega_challenge = false
         game.omega_best = new Decimal(0)
         game.free_omega_points = 0
+        game.op_dark_boost = 1
         game.autocl_toggle = false
         game.autogr_toggle = false
         game.autops_toggle = false
