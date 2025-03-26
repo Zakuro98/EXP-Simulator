@@ -12,6 +12,102 @@
         <link id="meme_css" rel="stylesheet alternate" type="text/css" href="meme.css">
     </head>
     <body>
+        <div id="catchup_screen" class="catchup_screen">
+            <div class="catchup_panel">
+                <div class="catchup_title">
+                    <p class="exp_simulator1">
+                        EXP
+                    </p>
+                    <p class="exp_simulator2">
+                        SIMULATOR
+                    </p>
+                    <p class="catchup_version">
+                        v2.15.4
+                    </p>
+                </div>
+                <p id="catchup_header" class="catchup_header">
+                    A game about leveling up
+                </p>
+                <div id="offline_panel">
+                    <p id="catchup_info" class="catchup_text">
+                        0 / 0 ticks run
+                        <br>Currently running about 0 ticks/sec
+                        <br>Estimated time to completion: 0 seconds
+                    </p>
+                    <div class="catchup_back">
+                        <div id="catchup_progress" class="catchup_progress"></div>
+                    </div>
+                    <p class="catchup_warning">
+                        Heads up! Increasing offline speed or skipping<br>ticks may make automation less efficient
+                    </p>
+                    <div id="catchup_skips" class="center_button">
+                        <button id="catchup_half_skip" class="catchup_button" onclick="offline_skip('half')">
+                            SKIP HALF OF TICKS
+                        </button>
+                        <button class="catchup_button" onclick="offline_skip('all')">
+                            SKIP OFFLINE PROGRESS
+                        </button>
+                    </div>
+                </div>
+                <div id="startup_panel">
+                    <div class="center_button">
+                        <button class="startup_button" onclick="start_game()">
+                            START GAME
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal">
+            <div class="modal_background"></div>
+            <div class="modal_center">
+                <div id="modal_alert" class="modal_panel">
+                    <p id="alert_text" class="modal_text">
+                        Alert modal text here
+                    </p>
+
+                    <div class="center_button">
+                        <button class="modal_button modal_last" onclick="close_modal()">
+                            OK
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="modal_confirm" class="modal_panel">
+                    <p id="confirm_text" class="modal_text">
+                        Confirmation modal text here
+                    </p>
+
+                    <div class="center_button">
+                        <button id="confirm_yes" class="modal_button">
+                            YES
+                        </button>
+                        <button class="modal_button modal_last" onclick="close_modal()">
+                            NO
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="modal_import" class="modal_panel">
+                    <p class="modal_text">
+                        Paste your exported save code here:
+                    </p>
+
+                    <textarea class="input" id="import_input"></textarea>
+
+                    <div class="center_button">
+                        <button class="modal_button" onclick="import_save()">
+                            IMPORT
+                        </button>
+                        <button class="modal_button modal_last" onclick="close_modal()">
+                            CANCEL
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <main>
             <div class="ui">
                 <div class="lvlbar">
@@ -59,7 +155,7 @@
                             </p>
                         </div>
                         <div id="reboot_area" class="reboot_area">
-                            <button id="watt_button" class="button no_reboot_power" onclick="reboot()">
+                            <button id="watt_button" class="button no_reboot_power" onclick="pre_reboot()">
                                 REBOOT!
                             </button>
                             <button id="watt_auto" class="button autoup" onclick="rb_toggle()">
@@ -73,7 +169,7 @@
                             </p>
                         </div>
                         <div id="quantum_area" class="quantum_area">
-                            <button id="photon_button" class="button unlit" onclick="quantize()">
+                            <button id="photon_button" class="button unlit" onclick="pre_quantize()">
                                 QUANTIZE!
                             </button>
                             <button id="photon_auto" class="button autoup" onclick="qu_toggle()">
@@ -548,6 +644,9 @@
                                 g hydrogen
                             </p>
                         </div>
+                        <p id="quantum_hydrogen1" class="watts_text">
+                            Reach 98,304 watts to start gaining hydrogen!
+                        </p>
 
                         <div id="reboot_block">
                             <div id="generator_requirements">
@@ -562,7 +661,7 @@
                                 </p>
                             </div>
                             <div id="reboot_panel">
-                                <button id="reboot_button" class="no_reboot_power" onclick="reboot()">
+                                <button id="reboot_button" class="no_reboot_power" onclick="pre_reboot()">
                                     ACTIVATE!
                                 </button>
                                 <div>
@@ -652,6 +751,15 @@
                         Total EXP boost from all challenges: 1.00x
                     </p>
 
+                    <div class="option" id="challenges_hidden">
+                        <p id="challenges_hidden_text" class="option_text">
+                            Hide Completed Challenges
+                        </p>
+                        <button id="challenges_hidden_button" class="option_button small" onclick="challenges_hidden()">
+                            DISABLED
+                        </button>
+                    </div>
+
                     <div id="exit_center">
                         <button id="exit_button" class="button" onclick="exit_challenge()">
                             EXIT CHALLENGE
@@ -687,6 +795,9 @@
                             g hydrogen
                         </p>
                     </div>
+                    <p id="quantum_hydrogen2" class="helium_text">
+                        Reach 98,304 watts to start gaining hydrogen!
+                    </p>
 
                     <div id="autohy_block">
                         <div id="autohy_config">
@@ -782,7 +893,7 @@
 
                 <div id="prism_page">
                     <div id="quantize_block">
-                        <button id="quantize_button" class="lit" onclick="quantize()">
+                        <button id="quantize_button" class="lit" onclick="pre_quantize()">
                             QUANTIZE!
                         </button>
                         <div id="quantize_details">
@@ -1069,7 +1180,7 @@
                                     <br>Free Omega Points: +0 Ω (next at +2.000e16 photons)
                                 </p>
                             </div>
-                            <button id="omega_enter_button" class="cannot_enter" onclick="enter_omega_challenge()">
+                            <button id="omega_enter_button" class="cannot_enter" onclick="pre_enter_omega_challenge()">
                                 ENTER CHALLENGE
                             </button>
                         </div>
@@ -1522,7 +1633,7 @@
                     <button id="export_button" class="option option_button" onclick="export_save()">
                         EXPORT
                     </button>
-                    <button id="import_button" class="option option_button" onclick="import_save()">
+                    <button id="import_button" class="option option_button" onclick="pre_import_save()">
                         IMPORT
                     </button>
                     <div id="work" class="option">
@@ -1562,11 +1673,30 @@
                             Hotkeys
                         </p>
                         <button id="hotkeys_button" class="option_button small" onclick="hotkeys()">
-                            DISABLED
+                            ENABLED
                         </button>
                         <button id="hotkeys_reset_button" class="option_button small" onclick="reset_hotkeys()">
                             RESET HOTKEYS
                         </button>
+                    </div>
+                    <div class="option">
+                        <p id="offline_text" class="option_text">
+                            Offline Progress
+                        </p>
+                        <button id="offline_button" class="option_button small" onclick="offline_progress()">
+                            ENABLED
+                        </button>
+                    </div>
+                    <div class="option">
+                        <p id="speed_text" class="option_text">
+                            Offline Speed
+                        </p>
+                        <div>
+                            <input class="goal_input" id="speed_input" type="number" value="1" min="1" max="10" step="0.1">
+                            <p id="speed_text2" class="option_text">
+                                x
+                            </p>
+                        </div>
                     </div>
                     <div class="option" id="reboot_confirm">
                         <p id="confirm_text" class="option_text">
@@ -1631,7 +1761,7 @@
                             </p>
                         </div>
                     </div>
-                    <button id="wipe_button" class="option wipe_button" onclick="wipe()">
+                    <button id="wipe_button" class="option wipe_button" onclick="pre_wipe()">
                         DELETE SAVE
                     </button>
                     <p id="hotkeys_list" class="option_text">
@@ -1643,7 +1773,7 @@
                 </div>
 
                 <p id="version" class="info">
-                    <br><br><br>EXP Simulator v2.3.303<br>Made by Zakuro<br><br>Last updated August 15, 2024
+                    <br><br><br>EXP Simulator v2.15.4<br>Made by Zakuro<br><br>Last updated March 26, 2025
                 </p>
                 <a id="changelog" href="changelog.html" target="_blank" class="info link">
                     Changelog
@@ -1658,6 +1788,7 @@
                 <div id="notifications"></div>
             </div>
         </main>
+        <script src="hack_timer.js" charset="utf-8" type="text/javascript"></script>
         <script src="break_infinity.js" charset="utf-8" type="text/javascript"></script>
         <script src="init.js" charset="utf-8" type="text/javascript"></script>
         <script src="auto.js" charset="utf-8" type="text/javascript"></script>
