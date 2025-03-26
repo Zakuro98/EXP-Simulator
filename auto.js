@@ -187,9 +187,12 @@ function rb_toggle() {
                 document.getElementById("autorb_toggle").style.color = "#ff0000"
         }
     } else {
-        alert(
-            "Reboot Confirmation must be turned off to enable Reboot automation"
-        )
+        if (modal === "none") {
+            open_modal(
+                "alert",
+                "Reboot Confirmation must be turned off to enable Reboot automation"
+            )
+        }
     }
 }
 
@@ -214,9 +217,12 @@ function qu_toggle() {
                 document.getElementById("autoqu_toggle").style.color = "#ff0000"
         }
     } else {
-        alert(
-            "Quantize Confirmation must be turned off to enable Quantize automation"
-        )
+        if (modal === "none") {
+            open_modal(
+                "alert",
+                "Quantize Confirmation must be turned off to enable Quantize automation"
+            )
+        }
     }
 }
 
