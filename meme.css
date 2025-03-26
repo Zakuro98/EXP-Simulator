@@ -40,6 +40,215 @@ main {
     clear: both;
 }
 
+.catchup_screen {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.catchup_title {
+    width: 32.8em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 3.5em;
+    justify-content: center;
+}
+
+.exp_simulator1 {
+    display: inline;
+    font-size: 4em;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.exp_simulator2 {
+    display: inline;
+    font-size: 4em;
+    font-weight: bold;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.catchup_version {
+    display: block;
+    font-size: 1.25em;
+    text-align: right;
+    margin-top: -0.5em;
+    margin-bottom: 0em;
+}
+
+.catchup_header {
+    font-size: 1.25em;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.catchup_text {
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.catchup_warning {
+    font-size: 0.714em;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0.5em;
+}
+
+.catchup_back {
+    width: 40em;
+    height: 1.5em;
+    background: lightgray;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.catchup_progress {
+    width: 0%;
+    height: 100%;
+    background: black;
+}
+
+.catchup_set {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1em;
+}
+
+#catchup_input {
+    font-size: 0.714em;
+    width: 4em;
+    height: 1.5em;
+    margin-left: 0.5em;
+}
+
+.catchup_button {
+    padding: 0.3em 0.5em;
+    font-size: 0.714em;
+    font-weight: normal;
+    margin-bottom: 0.3em;
+    margin-right: 0.3em;
+    cursor: pointer;
+}
+
+.startup_button {
+    padding: 0.2em 0.4em;
+    font-size: 1.2em;
+    font-weight: normal;
+    margin-bottom: 0.3em;
+    margin-right: 0em;
+    cursor: pointer;
+}
+
+@media (pointer: coarse) {
+    .catchup_panel {
+        width: 100%;
+    }
+
+    .catchup_header, .catchup_text {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #catchup_input_text {
+        width: auto;
+        margin-left: 0em;
+        margin-right: 0em;
+    }
+
+    .catchup_back {
+        width: 80%;
+    }
+}
+
+.center_button {
+    display: flex;
+    justify-content: center;
+}
+
+#modal {
+    display: none;
+}
+
+.modal_center {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+}
+
+.modal_background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 50%;
+    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+}
+
+.modal_panel {
+    background: white;
+    border: 1px solid black;
+    box-shadow: 0 0 1em black;
+    width: 20em;
+    padding: 0.75em;
+}
+
+@media (pointer: coarse) {
+    .modal_panel {
+        width: calc(90% - 1.5em);
+    }
+}
+
+.modal_text {
+    font-size: 1em;
+    text-align: center;
+    margin-top: 0em;
+}
+
+#import_input {
+    width: calc(100% - 0.25em - 2px);
+    height: 20em;
+    padding: 0.1em 0.25em;
+    font-size: 0.714em;
+    font-weight: normal;
+    margin-bottom: 1em;
+    resize: none;
+}
+
+#modal_confirm, #modal_import {
+    display: none;
+}
+
+.modal_button {
+    padding: 0.3em 0.5em;
+    font-size: 0.75em;
+    font-weight: normal;
+    cursor: pointer;
+    margin-right: 0.5em;
+}
+
+.modal_last {
+    margin-right: 0em;
+}
+
 .menu {
     display: flex;
     justify-content: center;
@@ -538,6 +747,15 @@ main {
     margin-bottom: 0em;
 }
 
+#past_prestiges_mode, #past_reboots_mode {
+    display: block;
+    font-size: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.5em;
+    margin-bottom: 2em;
+}
+
 .settings {
     font-size: 0.857em;
     display: none;
@@ -580,7 +798,13 @@ main {
     width: 2em;
 }
 
-#hertz_text {
+#speed_input {
+    display: inline;
+    font-size: 0.8em;
+    width: 2.35em;
+}
+
+#hertz_text, #speed_text2 {
     margin-top: 0.25em;
     display: inline;
 }
