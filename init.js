@@ -1,6 +1,6 @@
 //initializing game variables
 let game = {
-    version: "2.3.303",
+    version: "2.15.4",
 
     //v2.0.000 variables
     total_exp: new Decimal(0),
@@ -103,7 +103,7 @@ let game = {
     //v2.1.401 variables
     total_pp: 0,
     pp_progress: true,
-    hotkeys: false,
+    hotkeys: true,
 
     //v2.1.403 variables
     hotkey_configurations: {},
@@ -244,7 +244,7 @@ let game = {
     autops_toggle: false,
     prev_photons: 0,
 
-    perks_hide: false,
+    perks_hidden: false,
 
     //v2.3.201 variables
     amp_amount: new Array(5).fill(-1),
@@ -288,6 +288,12 @@ let game = {
     battery_charge: 1,
     ds_boost: 2,
     range_mode: 0,
+
+    //v2.15.4 variables
+    challenges_hidden: false,
+    offline_progress: true,
+    offline_speed: 1,
+    prestige_amount: new Array(5).fill(-1),
 }
 
 //initialize maps
@@ -2914,7 +2920,8 @@ class pp_upgrade_child extends pp_upgrade {
         'Breaks the limits, allowing you to go beyond LVL 60<br>Also allows Auto-Prestige configuration<br><span class="small_text">(Heads up! PP gain past LVL 60 is based on highest level instead)</span>',
         5,
         function () {
-            document.getElementById("auto_level").style.display = "block"
+            if (game.autopr_mode === 0)
+                document.getElementById("auto_level").style.display = "block"
             if (!game.achievements[45]) get_achievement(45)
         },
         autoprestige
@@ -3786,7 +3793,7 @@ class achievement {
         2
     )
     new achievement(
-        "I like my women like I like my numbers",
+        "What goes up... apparently doesn't come down",
         "Get " + format_num(10 ** 57) + " all time EXP",
         79,
         2
@@ -4199,7 +4206,7 @@ class achievement {
         6
     )
     new achievement(
-        "Haha what if we turned everything you've ever done into light",
+        "One must imagine Sisyphus happy",
         "Quantize 25 times",
         124,
         6
@@ -4415,7 +4422,7 @@ class challenge {
         enter_button.innerHTML = "ENTER CHALLENGE"
         enter_button.className = "enter_button"
         enter_button.addEventListener("click", () => {
-            enter_challenge(this.id)
+            pre_enter_challenge(this.id)
         })
 
         //all text div
