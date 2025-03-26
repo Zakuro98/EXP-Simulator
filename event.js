@@ -917,23 +917,8 @@ function discharge() {
 }
 
 //entering a challenge
-function enter_challenge(id) {
+function pre_enter_challenge(id) {
     if (game.challenge === 0) {
-        let all_pp_upgrades = true
-        for (const upgrade4 of pp_upgrade.upgrades) {
-            if (
-                upgrade4.id < 39 &&
-                upgrade4.id !== 8 &&
-                !game.pp_bought[upgrade4.id]
-            )
-                all_pp_upgrades = false
-        }
-
-        let reboot_requirement = 0
-        if (game.reboot >= 1 || game.quantum >= 1)
-            reboot_requirement = 5000 * game.reboot + 80000
-        if (game.reboot >= 24 || game.quantum >= 1) reboot_requirement = 200000
-
         let roman = "undefined"
         switch (id) {
             case 1:
@@ -965,74 +950,93 @@ function enter_challenge(id) {
                 break
         }
 
-        let confirmed = false
-        if (!game.challenge_confirmation) {
-            confirmed = true
-        } else {
-            if (
-                confirm(
+        if (game.challenge_confirmation) {
+            if (modal === "none") {
+                open_modal(
+                    "confirm",
                     "You are entering Challenge " +
                         roman +
-                        "\nYou must reset to enter a challenge, you will still gain watts if you were able to\nAre you sure you want to enter the challenge?"
+                        "<br>You must reset to enter a challenge, you will still gain watts if you were able to<br>Are you sure you want to enter the challenge?",
+                    function () {
+                        enter_challenge(id)
+                    }
                 )
-            ) {
-                confirmed = true
-            } else {
-                confirmed = false
             }
+        } else {
+            enter_challenge(id)
         }
-        if (confirmed) {
-            game.challenge = id
-            if (game.qu_bought[2])
-                game.prev_completions = game.completions[game.challenge - 1]
-            challenge_update()
-            entering = true
-
-            if (all_pp_upgrades && game.pp >= reboot_requirement) {
-                reboot()
-            } else {
-                empty_reboot()
-                watts_update()
-            }
-
-            entering = false
-
-            game.global_multiplier = Decimal.mul(game.exp_fact, game.exp_oc)
-                .mul(game.exp_flux)
-                .mul(game.pp_power)
-                .mul(game.prestige_power)
-                .mul(game.depth_power)
-                .mul(game.ach_power)
-                .mul(game.speed_power)
-                .mul(game.ch_boost[0])
-                .mul(game.ch_boost[1])
-                .mul(game.ch_boost[2])
-                .mul(game.ch_boost[3])
-                .mul(game.ch_boost[4])
-                .mul(game.ch_boost[5])
-                .mul(game.ch_boost[6])
-                .mul(game.ch_boost[7])
-                .mul(game.ch_boost[8])
-                .mul(reduction)
-                .mul(game.helium_boost)
-
-            if (game.challenge === 7) {
-                game.global_multiplier = Decimal.mul(
-                    game.ch_boost[0],
-                    game.ch_boost[1]
-                )
-                    .mul(game.ch_boost[2])
-                    .mul(game.ch_boost[3])
-                    .mul(game.ch_boost[4])
-                    .mul(game.ch_boost[5])
-                    .mul(game.ch_boost[6])
-                    .mul(game.ch_boost[7])
-                    .mul(game.ch_boost[8])
-                    .mul(game.helium_boost)
-            }
-        }
+    } else if (game.challenge === id) {
+        pre_reboot()
     } else if (game.challenge !== id) {
-        alert("You cannot enter a challenge if you are already in one!")
+        if (modal === "none") {
+            open_modal(
+                "alert",
+                "You cannot enter a challenge if you are already in one!"
+            )
+        }
+    }
+}
+
+function enter_challenge(id) {
+    let all_pp_upgrades = true
+    for (const upgrade4 of pp_upgrade.upgrades) {
+        if (
+            upgrade4.id < 39 &&
+            upgrade4.id !== 8 &&
+            !game.pp_bought[upgrade4.id]
+        )
+            all_pp_upgrades = false
+    }
+
+    let reboot_requirement = 0
+    if (game.reboot >= 1 || game.quantum >= 1)
+        reboot_requirement = 5000 * game.reboot + 80000
+    if (game.reboot >= 24 || game.quantum >= 1) reboot_requirement = 200000
+
+    game.challenge = id
+    if (game.qu_bought[2])
+        game.prev_completions = game.completions[game.challenge - 1]
+    challenge_update()
+    entering = true
+
+    if (all_pp_upgrades && game.pp >= reboot_requirement) {
+        pre_reboot()
+    } else {
+        empty_reboot()
+        watts_update()
+    }
+
+    entering = false
+
+    game.global_multiplier = Decimal.mul(game.exp_fact, game.exp_oc)
+        .mul(game.exp_flux)
+        .mul(game.pp_power)
+        .mul(game.prestige_power)
+        .mul(game.depth_power)
+        .mul(game.ach_power)
+        .mul(game.speed_power)
+        .mul(game.ch_boost[0])
+        .mul(game.ch_boost[1])
+        .mul(game.ch_boost[2])
+        .mul(game.ch_boost[3])
+        .mul(game.ch_boost[4])
+        .mul(game.ch_boost[5])
+        .mul(game.ch_boost[6])
+        .mul(game.ch_boost[7])
+        .mul(game.ch_boost[8])
+        .mul(reduction)
+        .mul(game.helium_boost)
+
+    if (game.challenge === 7) {
+        game.global_multiplier = Decimal.mul(game.ch_boost[0], game.ch_boost[1])
+            .mul(game.ch_boost[2])
+            .mul(game.ch_boost[3])
+            .mul(game.ch_boost[4])
+            .mul(game.ch_boost[5])
+            .mul(game.ch_boost[6])
+            .mul(game.ch_boost[7])
+            .mul(game.ch_boost[8])
+            .mul(game.helium_boost)
     }
 }
 
@@ -1452,7 +1456,7 @@ function retrieve() {
 }
 
 //entering the omega challenge
-function enter_omega_challenge() {
+function pre_enter_omega_challenge() {
     if (!game.omega_challenge) {
         let total_completions =
             game.completions[0] +
@@ -1471,126 +1475,110 @@ function enter_omega_challenge() {
         if (game.level > highest_level) highest_level = game.level
 
         if (total_completions >= 108 && highest_level >= 65536) {
-            let confirmed = false
-            if (!game.quantum_confirmation) confirmed = true
-            else {
-                let message = ""
-                message =
-                    "Are you sure you want to enter the Omega Challenge? You must Quantize before entering."
-
-                if (confirm(message)) confirmed = true
-            }
-
-            if (confirmed) {
-                game.quantum++
-                game.photons = game.photons.add(
-                    Decimal.pow(1000, (highest_level - 65536) / 16384).floor()
-                )
-
-                if (!game.achievements[120] && game.quantum >= 1)
-                    get_achievement(120)
-                if (!game.achievements[121] && game.quantum >= 3)
-                    get_achievement(121)
-                if (!game.achievements[122] && game.quantum >= 5)
-                    get_achievement(122)
-                if (!game.achievements[123] && game.quantum >= 10)
-                    get_achievement(123)
-                if (!game.achievements[124] && game.quantum >= 25)
-                    get_achievement(124)
-                if (!game.achievements[139] && game.quantum >= 50)
-                    get_achievement(139)
-                if (!game.achievements[140] && game.quantum >= 100)
-                    get_achievement(140)
-                if (!game.achievements[160] && game.quantum >= 1000)
-                    get_achievement(160)
-
-                if (!game.achievements[168] && game.hps === 0)
-                    get_achievement(168)
-
-                if (!game.achievements[68] && game.blind) get_achievement(68)
-                game.blind = true
-
-                game.watts = 0
-                game.watt_boost = 1
-
-                game.challenge = 0
-                if (!game.qu_bought[5]) {
-                    for (let i = 0; i < 9; i++) {
-                        game.completions[i] = 0
-                        game.ch_boost[i] = 1
-                    }
+            if (game.quantum_confirmation) {
+                if (modal === "none") {
+                    open_modal(
+                        "confirm",
+                        "Are you sure you want to enter the Omega Challenge? You must Quantize before entering.",
+                        enter_omega_challenge
+                    )
                 }
-
-                game.hydrogen = 0
-                game.budget = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-                game.core_level = [0, 0, 0, 0, 0, 0, 0, 0]
-                game.core_price = [5, 15, 50, 180, 680, 2640, 10400, 41280]
-                game.supply_level = 0
-                game.supply_price = 80
-                game.autohy_spent = 0
-
-                game.dark_matter = new Decimal(1)
-                game.dark_matter_boost = 1
-                game.omega_level = 0
-
-                if (game.reboot_time < game.fastest_quantize)
-                    game.fastest_quantize = game.reboot_time
-
-                if (
-                    !game.achievements[128] &&
-                    game.fastest_quantize <= game.tickspeed * 3600
-                )
-                    get_achievement(128)
-                if (
-                    !game.achievements[129] &&
-                    game.fastest_quantize <= game.tickspeed * 300
-                )
-                    get_achievement(129)
-                if (
-                    !game.achievements[136] &&
-                    game.fastest_quantize <= game.tickspeed * 60
-                )
-                    get_achievement(136)
-                if (
-                    !game.achievements[142] &&
-                    game.fastest_quantize <= game.tickspeed * 30
-                )
-                    get_achievement(142)
-                if (
-                    !game.achievements[147] &&
-                    game.fastest_quantize <= game.tickspeed * 10
-                )
-                    get_achievement(147)
-
-                if (game.reboot_highest_level > game.all_time_highest_level)
-                    game.all_time_highest_level = game.reboot_highest_level
-
-                if (game.highest_level > game.all_time_highest_level) {
-                    game.all_time_highest_level = game.highest_level
-                }
-
-                if (game.level > game.all_time_highest_level) {
-                    game.all_time_highest_level = game.level
-                }
-
-                game.omega_challenge = true
-
-                retrieve()
-
-                empty_reboot()
-
-                game.reboot = 0
-                game.true_banked_prestige = 0
-                game.reboot_exp = new Decimal(0)
-                game.reboot_time = 0
-                game.highest_level = 1
-                game.reboot_highest_level = 1
-                game.reboot_clicks = 0
-
-                if (!game.achievements[165]) get_achievement(165)
+            } else {
+                enter_omega_challenge()
             }
         }
     }
+}
+
+function enter_omega_challenge() {
+    game.quantum++
+    game.photons = game.photons.add(
+        Decimal.pow(1000, (highest_level - 65536) / 16384).floor()
+    )
+
+    if (!game.achievements[120] && game.quantum >= 1) get_achievement(120)
+    if (!game.achievements[121] && game.quantum >= 3) get_achievement(121)
+    if (!game.achievements[122] && game.quantum >= 5) get_achievement(122)
+    if (!game.achievements[123] && game.quantum >= 10) get_achievement(123)
+    if (!game.achievements[124] && game.quantum >= 25) get_achievement(124)
+    if (!game.achievements[139] && game.quantum >= 50) get_achievement(139)
+    if (!game.achievements[140] && game.quantum >= 100) get_achievement(140)
+    if (!game.achievements[160] && game.quantum >= 1000) get_achievement(160)
+
+    if (!game.achievements[168] && game.hps === 0) get_achievement(168)
+
+    if (!game.achievements[68] && game.blind) get_achievement(68)
+    game.blind = true
+
+    game.watts = 0
+    game.watt_boost = 1
+
+    game.challenge = 0
+    if (!game.qu_bought[5]) {
+        for (let i = 0; i < 9; i++) {
+            game.completions[i] = 0
+            game.ch_boost[i] = 1
+        }
+    }
+
+    game.hydrogen = 0
+    game.budget = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    game.core_level = [0, 0, 0, 0, 0, 0, 0, 0]
+    game.core_price = [5, 15, 50, 180, 680, 2640, 10400, 41280]
+    game.supply_level = 0
+    game.supply_price = 80
+    game.autohy_spent = 0
+
+    game.dark_matter = new Decimal(1)
+    game.dark_matter_boost = 1
+    game.omega_level = 0
+
+    if (game.reboot_time < game.fastest_quantize)
+        game.fastest_quantize = game.reboot_time
+
+    if (
+        !game.achievements[128] &&
+        game.fastest_quantize <= game.tickspeed * 3600
+    )
+        get_achievement(128)
+    if (
+        !game.achievements[129] &&
+        game.fastest_quantize <= game.tickspeed * 300
+    )
+        get_achievement(129)
+    if (!game.achievements[136] && game.fastest_quantize <= game.tickspeed * 60)
+        get_achievement(136)
+    if (!game.achievements[142] && game.fastest_quantize <= game.tickspeed * 30)
+        get_achievement(142)
+    if (!game.achievements[147] && game.fastest_quantize <= game.tickspeed * 10)
+        get_achievement(147)
+
+    if (game.reboot_highest_level > game.all_time_highest_level)
+        game.all_time_highest_level = game.reboot_highest_level
+
+    if (game.highest_level > game.all_time_highest_level) {
+        game.all_time_highest_level = game.highest_level
+    }
+
+    if (game.level > game.all_time_highest_level) {
+        game.all_time_highest_level = game.level
+    }
+
+    game.omega_challenge = true
+
+    retrieve()
+
+    empty_reboot()
+
+    game.reboot = 0
+    game.true_banked_prestige = 0
+    game.reboot_exp = new Decimal(0)
+    game.reboot_time = 0
+    game.highest_level = 1
+    game.reboot_highest_level = 1
+    game.reboot_clicks = 0
+
+    if (!game.achievements[165]) get_achievement(165)
 }
 
 //exiting the omega challenge
@@ -1643,4 +1631,19 @@ function exit_omega_challenge() {
         game.reboot_highest_level = 1
         game.reboot_clicks = 0
     }
+}
+
+//leaving the title screen
+function start_game() {
+    document.getElementsByTagName("main")[0].style.display = "block"
+    document.getElementById("catchup_screen").style.display = "none"
+
+    tick_loop()
+    refresh()
+
+    window.setInterval(function () {
+        save()
+        if (document.visibilityState === "visible")
+            new notify("Game saved", "#00ddff")
+    }, 60000)
 }
