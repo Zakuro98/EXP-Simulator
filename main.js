@@ -505,6 +505,12 @@ function tick() {
     if (game.refresh_rate < 2) game.refresh_rate = 2
     if (game.refresh_rate > 30) game.refresh_rate = 30
 
+    //grabbing offline speed from input
+    game.offline_speed = Number(document.getElementById("speed_input").value)
+    if (game.offline_speed === NaN) game.offline_speed = 1
+    if (game.offline_speed < 1) game.offline_speed = 1
+    if (game.offline_speed > 10) game.offline_speed = 10
+
     //prestige automation
     if (game.autopr_toggle && game.pp_bought[3]) {
         if (game.pp_bought[6]) {
@@ -1265,7 +1271,7 @@ function tick() {
                         get_watts(game.pp) * game.prism_boost >=
                         game.autorb_goal[0]
                     ) {
-                        reboot()
+                        pre_reboot()
                     }
                     break
                 case 1:
@@ -1273,7 +1279,7 @@ function tick() {
                         game.prestige_time >=
                         game.autorb_goal[1] * game.tickspeed
                     ) {
-                        reboot()
+                        pre_reboot()
                     }
                     break
             }
@@ -1473,12 +1479,12 @@ function tick() {
                     Math.floor(1000000 ** ((highest_level - 65536) / 32768)) >=
                     game.autoqu_goal[0]
                 ) {
-                    quantize()
+                    pre_quantize()
                 }
                 break
             case 1:
                 if (game.reboot_time >= game.autoqu_goal[1] * game.tickspeed) {
-                    quantize()
+                    pre_quantize()
                 }
                 break
             case 2:
@@ -1488,7 +1494,7 @@ function tick() {
                             1000000 ** ((highest_level - 65536) / 32768)
                         ) >= game.autoqu_goal[2]
                     ) {
-                        quantize()
+                        pre_quantize()
                     }
                 } else {
                     if (
@@ -1497,7 +1503,7 @@ function tick() {
                         ) >=
                         game.prev_photons * game.autoqu_goal[2]
                     ) {
-                        quantize()
+                        pre_quantize()
                     }
                 }
                 break
@@ -1632,10 +1638,23 @@ function tick() {
         if (game.prestige > 1) {
             exit_challenge()
             if (!game.achievements[65]) get_achievement(65)
-            alert(
-                "You have Prestiged more than once, you will now exit Challenge VI."
-            )
+            if (modal === "none") {
+                open_modal(
+                    "alert",
+                    "You have Prestiged more than once, so you have now left Challenge VI."
+                )
+            } else {
+                c6_modal = true
+            }
         }
+    }
+
+    if (modal === "none" && c6_modal) {
+        open_modal(
+            "alert",
+            "You have Prestiged more than once, so you have now left Challenge VI."
+        )
+        c6_modal = false
     }
 
     //update achievements tab
@@ -1693,16 +1712,19 @@ function tick() {
     if (game.notation !== 8) game.blind = false
 
     //notification age handling
-    for (const notif of notify.queue) {
-        notif.age += 30 / delta_time
-        if (notif.age >= game.tickspeed * 4) {
-            notif_map.get(notif).remove()
-            notif_map.delete(notif)
-            notify.queue.splice(notif, 1)
-        } else if (notif.age >= game.tickspeed * 3) {
-            let notif_box = notif_map.get(notif)
-            notif_box.style.opacity =
-                1 - (notif.age - game.tickspeed * 3) / game.tickspeed
+    if (notify.queue.length >= 1 && !pause) {
+        for (let i = notify.queue.length - 1; i >= 0; i--) {
+            let notif = notify.queue[i]
+            notif.age += 30 / delta_time
+            if (notif.age >= game.tickspeed * 4) {
+                notif_map.get(notif).remove()
+                notif_map.delete(notif)
+                notify.queue.splice(i, 1)
+            } else if (notif.age >= game.tickspeed * 3) {
+                let notif_box = notif_map.get(notif)
+                notif_box.style.opacity =
+                    1 - (notif.age - game.tickspeed * 3) / game.tickspeed
+            }
         }
     }
 
@@ -1728,10 +1750,10 @@ function tick() {
     //???
     if (game.notation === 8) {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v?.?.???<br>Made by ???<br><br>Last updated ???"
+            "<br><br><br>EXP Simulator v?.?.?<br>Made by ???<br><br>Last updated ???"
     } else {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v2.3.303<br>Made by Zakuro<br><br>Last updated August 15, 2024"
+            "<br><br><br>EXP Simulator v2.15.4<br>Made by Zakuro<br><br>Last updated March 26, 2025"
     }
 }
 
@@ -1772,6 +1794,9 @@ document.addEventListener("keydown", function (event) {
             recorded_hotkey.name
         }`
     }
+
+    if (!game.achievements[67] && event.code === "KeyF") get_achievement(67)
+
     if (!game.hotkeys) return
 
     let total_completions =
@@ -1839,8 +1864,6 @@ document.addEventListener("keydown", function (event) {
         }
     }
 
-    if (!game.achievements[67] && event.code === "KeyF") get_achievement(67)
-
     if (game.tab === 1)
         for (let i = 1; i <= 6; i++) {
             if (event.shiftKey && event.code === "Digit" + i) {
@@ -1895,7 +1918,8 @@ function pre_save() {
 function save() {
     pre_save()
     game.beta = false
-    game.version = "2.3.303"
+    game.version = "2.15.4"
+    game.save_time = Date.now()
     localStorage.setItem("exp_simulator_save", JSON.stringify(game))
 }
 
@@ -1908,8 +1932,19 @@ function export_save() {
 }
 
 //importing a save file
+function pre_import_save() {
+    if (modal === "none") {
+        document.getElementById("import_input").value = ""
+        open_modal("import")
+        document.getElementById("import_input").focus()
+    }
+}
+
 function import_save() {
-    let save_file = atob(prompt("Paste your exported save code here:"))
+    let input = document.getElementById("import_input").value
+    close_modal()
+
+    let save_file = atob(input)
     let valid_json = true
     try {
         JSON.parse(save_file)
@@ -1930,7 +1965,12 @@ function load(savegame) {
 
     //beta reject check
     if (savegame.beta) {
-        alert("Beta saves cannot be imported into the live game")
+        if (modal === "none") {
+            open_modal(
+                "alert",
+                "Beta saves cannot be imported into the live game"
+            )
+        }
         return
     }
 
@@ -1938,26 +1978,35 @@ function load(savegame) {
 
     //v2.0.000, v2.0.100, v2.0.200
     if (savegame.version == "2.0.200" || savegame.version == undefined) {
-        alert(
-            "Your save has been wiped, very sorry!\nv2.0.xxx saves are not compatible with the current version"
-        )
+        if (modal === "none") {
+            open_modal(
+                "alert",
+                "Your save has been wiped, very sorry!<br>Pre-v2.3.0 saves are not compatible with the current version"
+            )
+        }
         regenerate_ui()
         return
     }
     const [edition, major, minor] = savegame.version
         .split(".")
         .map(val => parseInt(val))
-    if (major >= 4) {
-        alert(
-            "You cannot load saves from game versions that do not exist\nIf you think you are recieving this alert in error, reload and try again"
-        )
+    if (major >= 16) {
+        if (modal === "none") {
+            open_modal(
+                "alert",
+                "You cannot load saves from game versions that do not exist<br>If you think you are recieving this alert in error, reload and try again"
+            )
+        }
         return
     }
     if (major < 2) {
         if (minor < 100 && savegame.highest_level >= 300) {
-            alert(
-                "Your save has been wiped, very sorry!\nThere were balancing issues past LVL 300 that have now been fixed, making this wipe necessary"
-            )
+            if (modal === "none") {
+                open_modal(
+                    "alert",
+                    "Your save has been wiped, very sorry!<br>There were balancing issues past LVL 300 that have now been fixed, making this wipe necessary"
+                )
+            }
             regenerate_ui()
             return
         }
@@ -2039,7 +2088,7 @@ function load(savegame) {
             game.mouse_held = false
         }
         //v2.1.405
-        game.version = "2.3.303"
+        game.version = "2.15.4"
         if (game.tab > 2) game.tab += 2
         if (game.tab > 3) game.tab += 1
         game.reboot = 0
@@ -2204,6 +2253,10 @@ function load(savegame) {
         if (game.pp_bought[38]) game.ds_boost = 8
         if (game.perks[9]) game.ds_boost *= 2
         game.range_mode = 0
+        game.challenges_hidden = false
+        game.offline_progress = true
+        game.offline_speed = 1
+        game.prestige_amount = new Array(5).fill(-1)
     } else if (major < 3) {
         game = savegame
         //v2.2.000
@@ -2288,7 +2341,7 @@ function load(savegame) {
             game.switchpoint = 0
         }
         //v2.2.301
-        game.version = "2.3.303"
+        game.version = "2.15.4"
         game.amp_eff = new Array(5).fill(-1)
         game.watts_eff = new Array(5).fill(-1)
         game.quantum = 0
@@ -2402,11 +2455,18 @@ function load(savegame) {
         if (game.pp_bought[38]) game.ds_boost = 8
         if (game.perks[9]) game.ds_boost *= 2
         game.range_mode = 0
-    } else {
+        game.challenges_hidden = false
+        game.offline_progress = true
+        game.offline_speed = 1
+        game.prestige_amount = new Array(5).fill(-1)
+    } else if (major < 15) {
         if (minor > 303) {
-            alert(
-                "You cannot load saves from game versions that do not exist\nIf you think you are recieving this alert in error, reload and try again"
-            )
+            if (modal === "none") {
+                open_modal(
+                    "alert",
+                    "You cannot load saves from game versions that do not exist<br>If you think you are recieving this alert in error, reload and try again"
+                )
+            }
             return
         }
         game = savegame
@@ -2598,9 +2658,9 @@ function load(savegame) {
         } else {
             for (let i = 0; i < 5; i++) {
                 if (game.photons_amount[i] !== -1)
-                    game.photons_amount[i] = new Decimal(game.photons_amount)
+                    game.photons_amount[i] = new Decimal(game.photons_amount[i])
                 if (game.photons_eff[i] !== -1)
-                    game.photons_eff[i] = new Decimal(game.photons_eff)
+                    game.photons_eff[i] = new Decimal(game.photons_eff[i])
             }
         }
         //v2.3.302
@@ -2644,7 +2704,44 @@ function load(savegame) {
         game.reboot_exp = new Decimal(game.reboot_exp)
         game.global_multiplier = new Decimal(game.global_multiplier)
         game.photons = new Decimal(game.photons)
-        game.version = "2.3.303"
+        game.version = "2.15.4"
+        game.challenges_hidden = false
+        game.offline_progress = true
+        game.offline_speed = 1
+        game.prestige_amount = new Array(5).fill(-1)
+    } else {
+        if (minor > 4) {
+            if (modal === "none") {
+                open_modal(
+                    "alert",
+                    "You cannot load saves from game versions that do not exist<br>If you think you are recieving this alert in error, reload and try again"
+                )
+            }
+            return
+        }
+        game = savegame
+        game.version = "2.15.4"
+
+        game.goal = new Decimal(game.goal)
+        game.prism_price = new Decimal(game.prism_price)
+        game.growth_price[0] = new Decimal(game.growth_price[0])
+        game.growth_price[1] = new Decimal(game.growth_price[1])
+        game.omega_best = new Decimal(game.omega_best)
+        for (let i = 0; i < 5; i++) {
+            if (game.photons_amount[i] !== -1)
+                game.photons_amount[i] = new Decimal(game.photons_amount[i])
+            if (game.photons_eff[i] !== -1)
+                game.photons_eff[i] = new Decimal(game.photons_eff[i])
+        }
+        if (game.budget === null) game.budget = new Array(9).fill(0)
+        game.dark_matter = new Decimal(game.dark_matter)
+        game.total_exp = new Decimal(game.total_exp)
+        game.exp = new Decimal(game.exp)
+        game.all_time_exp = new Decimal(game.all_time_exp)
+        game.prestige_exp = new Decimal(game.prestige_exp)
+        game.reboot_exp = new Decimal(game.reboot_exp)
+        game.global_multiplier = new Decimal(game.global_multiplier)
+        game.photons = new Decimal(game.photons)
     }
     if (game.om_boost[2] === 0) game.om_boost[2] === 1
     if (game.question) {
@@ -2668,15 +2765,55 @@ function load(savegame) {
 }
 
 //wiping the save
-function wipe() {
-    if (
-        confirm(
-            "Are you sure you want to wipe your save?\nThis will reset EVERYTHING!"
+function pre_wipe() {
+    if (modal === "none") {
+        open_modal(
+            "confirm",
+            "Are you sure you want to wipe your save?<br>This will reset EVERYTHING!",
+            wipe
         )
-    ) {
-        localStorage.removeItem("exp_simulator_save")
-        window.location.reload()
     }
+}
+
+function wipe() {
+    localStorage.removeItem("exp_simulator_save")
+    window.location.reload()
+}
+
+//setting up modals
+let modal = "none"
+let c6_modal = false
+
+function open_modal(type, text, onclick) {
+    modal = type
+
+    document.getElementById("modal").style.display = "block"
+    document.getElementById("modal_alert").style.display = "none"
+    document.getElementById("modal_confirm").style.display = "none"
+    document.getElementById("modal_import").style.display = "none"
+
+    switch (type) {
+        case "alert":
+            document.getElementById("modal_alert").style.display = "block"
+            document.getElementById("alert_text").innerHTML = text
+            break
+        case "confirm":
+            document.getElementById("modal_confirm").style.display = "block"
+            document.getElementById("confirm_text").innerHTML = text
+            document.getElementById("confirm_yes").onclick = function () {
+                onclick()
+                close_modal()
+            }
+            break
+        case "import":
+            document.getElementById("modal_import").style.display = "block"
+            break
+    }
+}
+
+function close_modal() {
+    modal = "none"
+    document.getElementById("modal").style.display = "none"
 }
 
 //hotkey customization
@@ -2829,7 +2966,7 @@ function tick_loop() {
 
     tick_time = Date.now()
 
-    if (delta_ms >= 333) {
+    if (delta_ms >= 1000) {
         if (delta_ticks > 60 * game.tickspeed) delta_ticks = 60 * game.tickspeed
         delta_time *= delta_ticks
         while (delta_ticks > 0) {
@@ -2847,6 +2984,166 @@ function tick_loop() {
         window.setTimeout(tick_loop, 1000 / game.tickspeed - total_time)
     } else {
         tick_loop()
+    }
+}
+
+//setting up the offline progress loop
+function offline_loop() {
+    let mobile = Number(
+        getComputedStyle(document.body).getPropertyValue("--mobile")
+    )
+
+    if (total_ticks - ticks_run < 100) {
+        delta_time =
+            (1000 * (total_ticks - start_ticks)) / (offline_ms - start_ms)
+        for (let i = 0; i < total_ticks - ticks_run; i++) {
+            tick()
+            ticks_run++
+        }
+    } else {
+        delta_time =
+            (1000 * (total_ticks - start_ticks)) / (offline_ms - start_ms)
+        for (let i = 0; i < 100; i++) {
+            tick()
+            ticks_run++
+        }
+    }
+
+    document.getElementById("catchup_progress").style.width =
+        (ticks_run / total_ticks) * 100 + "%"
+
+    if (ticks_run > Math.floor(total_ticks / 2))
+        document.getElementById("catchup_half_skip").style.display = "none"
+
+    let total_time = Date.now() - offline_time
+    offline_time = Date.now()
+
+    average_time += total_time
+    if (average_time >= 1000) {
+        average_rate = ((ticks_run - average_ticks) * 1000) / average_time
+        average_ticks = ticks_run
+        average_time = 0
+    }
+
+    let eta = "Estimated time to completion: "
+    if (mobile) eta = "ETA: "
+
+    if (total_ticks >= 300000)
+        document.getElementById("catchup_info").innerHTML =
+            format_num(ticks_run) +
+            " / " +
+            format_num(total_ticks) +
+            " ticks run (capped)<br>Currently running about " +
+            format_eff(average_rate) +
+            " ticks/sec<br>" +
+            eta +
+            format_time(
+                ((total_ticks - ticks_run) * game.tickspeed) / average_rate
+            )
+    else
+        document.getElementById("catchup_info").innerHTML =
+            format_num(ticks_run) +
+            " / " +
+            format_num(total_ticks) +
+            " ticks run<br>Currently running about " +
+            format_eff(average_rate) +
+            " ticks/sec<br>" +
+            eta +
+            format_time(
+                ((total_ticks - ticks_run) * game.tickspeed) / average_rate
+            )
+
+    between_time += total_time
+    while (between_time >= 1000 / game.tickspeed) {
+        delta_time = game.tickspeed
+        between_time -= 1000 / game.tickspeed
+        tick()
+    }
+
+    if (ticks_run < total_ticks) {
+        window.setTimeout(offline_loop, 0)
+    } else {
+        if (game.autopr_toggle && game.pp_bought[3] >= 1) {
+            if (
+                prestige_count < Math.floor((offline_ms * prestige_rate) / 1000)
+            ) {
+                if (reboot_count === 0)
+                    game.prestige +=
+                        Math.floor((offline_ms * prestige_rate) / 1000) -
+                        prestige_count
+            }
+        }
+        if (game.autopr_toggle && game.pp_bought[3]) {
+            if (
+                game.amp - old_amp <
+                Math.floor((offline_ms * amp_rate) / 1000)
+            ) {
+                if (reboot_count === 0)
+                    game.amp +=
+                        Math.floor((offline_ms * amp_rate) / 1000) -
+                        game.amp +
+                        old_amp
+            }
+        }
+        if (game.autorb_toggle && game.perks[15]) {
+            if (reboot_count < Math.floor((offline_ms * reboot_rate) / 1000)) {
+                if (quantum_count === 0)
+                    game.reboot +=
+                        Math.floor((offline_ms * reboot_rate) / 1000) -
+                        reboot_count
+            }
+        }
+        if (game.autorb_toggle && game.perks[15]) {
+            if (
+                game.watts - old_watts <
+                Math.floor((offline_ms * watts_rate) / 1000)
+            ) {
+                if (quantum_count === 0) {
+                    game.watts +=
+                        Math.floor((offline_ms * watts_rate) / 1000) -
+                        game.watts +
+                        old_watts
+                    if (game.watts < 96)
+                        game.watt_boost =
+                            ((game.watts + 1) *
+                                (game.watts + 2) *
+                                (game.watts + 3)) /
+                            6
+                    else
+                        game.watt_boost =
+                            ((game.watts + 4755) * (game.watts + 4756)) / 2 -
+                            11611677
+                }
+            }
+        }
+        if (game.autorb_toggle && game.perks[15]) {
+            if (
+                game.hydrogen - old_hydrogen <
+                Math.floor((offline_ms * hydrogen_rate) / 1000)
+            ) {
+                if (quantum_count === 0)
+                    game.hydrogen +=
+                        Math.floor((offline_ms * hydrogen_rate) / 1000) -
+                        game.hydrogen +
+                        old_hydrogen
+            }
+        }
+
+        document.getElementsByTagName("main")[0].style.display = "block"
+        document.getElementById("catchup_screen").style.display = "none"
+
+        pause = false
+
+        tick_time = Date.now() - 1000 / game.tickspeed
+
+        tick_loop()
+        refresh()
+
+        window.setInterval(function () {
+            save()
+            if (document.visibilityState === "visible")
+                new notify("Game saved", "#00ddff")
+        }, 60000)
     }
 }
 
@@ -2876,20 +3173,112 @@ goto_tab(0)
 //load the game when opened
 load(JSON.parse(localStorage.getItem("exp_simulator_save")))
 
+let pause = false
+let offline_ms, total_ticks
+let ticks_run = 0
+let average_time = 0
+let average_rate = 100 * game.tickspeed
+let average_ticks = 0
+let between_time = 0
+let offline_time = Date.now()
+let start_ms = 0
+let start_ticks = 0
+
+let prestige_count, reboot_count, quantum_count
+let prestige_rate, amp_rate, reboot_rate, watts_rate, hydrogen_rate
+let old_amp, old_watts, old_hydrogen
+
+if (game.save_time === undefined) {
+    document.getElementById("catchup_screen").style.display = "flex"
+    document.getElementById("startup_panel").style.display = "block"
+    document.getElementById("catchup_header").innerHTML =
+        "A game about leveling up"
+    document.getElementById("offline_panel").style.display = "none"
+    document.getElementsByTagName("main")[0].style.display = "none"
+} else if (game.offline_progress) {
+    let mobile = Number(
+        getComputedStyle(document.body).getPropertyValue("--mobile")
+    )
+
+    document.getElementById("catchup_screen").style.display = "flex"
+    document.getElementById("offline_panel").style.display = "block"
+    document.getElementById("catchup_header").innerHTML =
+        "Catching up on time since the game was last saved...<br>Please keep the game on-screen"
+    if (mobile)
+        document.getElementById("catchup_header").innerHTML =
+            "Catching up on time since the game was last saved...<br><br>Please keep the game on-screen"
+    document.getElementById("catchup_half_skip").style.display = "block"
+    document.getElementById("startup_panel").style.display = "none"
+    document.getElementsByTagName("main")[0].style.display = "none"
+
+    offline_ms = Date.now() - game.save_time
+    total_ticks = Math.floor(
+        (offline_ms * game.tickspeed) / (1000 * game.offline_speed)
+    )
+    if (total_ticks >= 1000000) total_ticks = 1000000
+
+    prestige_count = 0
+    reboot_count = 0
+    quantum_count = 0
+
+    prestige_rate = 0
+    amp_rate = 0
+    reboot_rate = 0
+    watts_rate = 0
+    hydrogen_rate = 0
+
+    old_amp = game.amp
+    old_watts = game.watts
+    old_hydrogen = game.hydrogen
+
+    let entries = [0, 0, 0, 0, 0]
+    let average = [0, 0, 0, 0, 0]
+    for (let i = 0; i < 5; i++) {
+        if (game.prestige_amount[i] !== -1) {
+            entries[0]++
+            average[0] += game.prestige_amount[i] / game.amp_time[i]
+        }
+        if (game.amp_amount[i] !== -1) {
+            entries[1]++
+            average[1] += game.amp_amount[i] / game.amp_time[i]
+        }
+        if (game.watts_amount[i] !== -1) {
+            entries[2]++
+            average[2] += 1 / game.watts_time[i]
+        }
+        if (game.watts_amount[i] !== -1) {
+            entries[3]++
+            average[3] += game.watts_amount[i] / game.watts_time[i]
+        }
+        if (game.hydrogen_amount[i] !== -1) {
+            entries[4]++
+            average[4] += game.hydrogen_amount[i] / game.watts_time[i]
+        }
+    }
+    if (entries[0] > 0) prestige_rate = average[0] / entries[0]
+    if (entries[1] > 0) amp_rate = average[1] / entries[1]
+    if (entries[2] > 0) reboot_rate = average[2] / entries[2]
+    if (entries[3] > 0) watts_rate = average[3] / entries[3]
+    if (entries[4] > 0) hydrogen_rate = average[4] / entries[4]
+
+    pause = true
+
+    offline_loop()
+} else {
+    tick_loop()
+    refresh()
+
+    window.setInterval(function () {
+        save()
+        if (document.visibilityState === "visible")
+            new notify("Game saved", "#00ddff")
+    }, 60000)
+}
+
 if (game.work_unlocked) {
     document.getElementById("work").style.display = "flex"
 } else {
     document.getElementById("work").style.display = "none"
 }
-
-tick_loop()
-refresh()
-
-//setting up the autosave loop
-let save_loop = window.setInterval(function () {
-    save()
-    if (document.visibilityState === "visible")
-        new notify("Game saved", "#00ddff")
-}, 60000)
 
 console.log("*hacker voice* I'm in")
