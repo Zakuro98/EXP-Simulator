@@ -2550,6 +2550,91 @@ function challenge_update() {
         document.getElementById("quantum").style.display = "none"
     }
 
+    let all_pp_upgrades = true
+    for (const upgrade2 of pp_upgrade.upgrades) {
+        if (
+            upgrade2.id < 39 &&
+            upgrade2.id !== 8 &&
+            !game.pp_bought[upgrade2.id]
+        )
+            all_pp_upgrades = false
+    }
+
+    let reboot_requirement = 200000
+    if (game.qu_bought[2]) {
+        if (game.challenge !== 0 && !entering) {
+            if (game.prev_completions < 12) {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step *
+                        game.prev_completions +
+                    (challenge.challenges[game.challenge - 1].step2 *
+                        (game.prev_completions - 1) *
+                        game.prev_completions) /
+                        2
+            } else {
+                if (game.dk_bought[3]) {
+                    if (game.prev_completions < 20) {
+                        reboot_requirement =
+                            challenge.challenges[game.challenge - 1].goal2 +
+                            challenge.challenges[game.challenge - 1].step3 *
+                                (game.prev_completions - 12) +
+                            (challenge.challenges[game.challenge - 1].step4 *
+                                (game.prev_completions - 13) *
+                                (game.prev_completions - 12)) /
+                                2
+                    } else {
+                        reboot_requirement =
+                            challenge.challenges[game.challenge - 1].goal2 +
+                            challenge.challenges[game.challenge - 1].step3 * 7 +
+                            challenge.challenges[game.challenge - 1].step4 * 21
+                    }
+                } else {
+                    reboot_requirement =
+                        challenge.challenges[game.challenge - 1].goal +
+                        challenge.challenges[game.challenge - 1].step * 11 +
+                        challenge.challenges[game.challenge - 1].step2 * 55
+                }
+            }
+        }
+    } else {
+        if (game.challenge !== 0 && !entering) {
+            if (game.completions[game.challenge - 1] < 12) {
+                reboot_requirement =
+                    challenge.challenges[game.challenge - 1].goal +
+                    challenge.challenges[game.challenge - 1].step *
+                        game.completions[game.challenge - 1] +
+                    (challenge.challenges[game.challenge - 1].step2 *
+                        (game.completions[game.challenge - 1] - 1) *
+                        game.completions[game.challenge - 1]) /
+                        2
+            } else {
+                if (game.dk_bought[3]) {
+                    if (game.completions[game.challenge - 1] < 20) {
+                        reboot_requirement =
+                            challenge.challenges[game.challenge - 1].goal2 +
+                            challenge.challenges[game.challenge - 1].step3 *
+                                (game.completions[game.challenge - 1] - 12) +
+                            (challenge.challenges[game.challenge - 1].step4 *
+                                (game.completions[game.challenge - 1] - 13) *
+                                (game.completions[game.challenge - 1] - 12)) /
+                                2
+                    } else {
+                        reboot_requirement =
+                            challenge.challenges[game.challenge - 1].goal2 +
+                            challenge.challenges[game.challenge - 1].step3 * 7 +
+                            challenge.challenges[game.challenge - 1].step4 * 21
+                    }
+                } else {
+                    reboot_requirement =
+                        challenge.challenges[game.challenge - 1].goal +
+                        challenge.challenges[game.challenge - 1].step * 11 +
+                        challenge.challenges[game.challenge - 1].step2 * 55
+                }
+            }
+        }
+    }
+
     for (const chg of challenge.challenges) {
         let element = challenge_map.get(chg)
         let button = element.querySelector(".enter_button")
@@ -2557,9 +2642,15 @@ function challenge_update() {
         let complete = element.querySelector(".challenge_complete")
 
         if (game.challenge === chg.id) {
-            button.className = "enter_button in_progress"
-            button.innerHTML = "IN PROGRESS"
-            if (meme) button.disabled = true
+            if (all_pp_upgrades && game.pp >= reboot_requirement) {
+                button.className = "enter_button completed"
+                button.innerHTML = "COMPLETE CHALLENGE"
+                if (meme) button.disabled = false
+            } else {
+                button.className = "enter_button in_progress"
+                button.innerHTML = "IN PROGRESS"
+                if (meme) button.disabled = true
+            }
         } else {
             button.className = "enter_button"
             button.innerHTML = "ENTER CHALLENGE"
@@ -2638,6 +2729,16 @@ function challenge_update() {
                 element.style.display = "none"
             }
         }
+
+        if (game.challenges_hidden) {
+            if (game.dk_bought[3]) {
+                if (game.completions[chg.id - 1] >= 20)
+                    element.style.display = "none"
+            } else {
+                if (game.completions[chg.id - 1] >= 12)
+                    element.style.display = "none"
+            }
+        }
     }
 }
 
@@ -2651,6 +2752,18 @@ function reactor_update() {
     }
 
     document.getElementById("hydrogen2").innerHTML = format_eff(game.hydrogen)
+
+    if (game.watts < 98304 && game.quantum >= 1 && !game.dk_bought[5]) {
+        document.getElementById("quantum_hydrogen1").style.display = "block"
+        document.getElementById("quantum_hydrogen2").style.display = "block"
+        document.getElementById("quantum_hydrogen1").innerHTML =
+            "Reach " + format_num(98304) + " watts to start gaining hydrogen!"
+        document.getElementById("quantum_hydrogen2").innerHTML =
+            "Reach " + format_num(98304) + " watts to start gaining hydrogen!"
+    } else {
+        document.getElementById("quantum_hydrogen1").style.display = "none"
+        document.getElementById("quantum_hydrogen2").style.display = "none"
+    }
 
     document.getElementById("helium").innerHTML = format_eff(game.helium)
     document.getElementById("helium_boost").innerHTML =
@@ -4938,6 +5051,13 @@ function regenerate_ui() {
     } else {
         document.getElementById("perks_hidden_button").innerHTML = "DISABLED"
     }
+    if (game.challenges_hidden) {
+        document.getElementById("challenges_hidden_button").innerHTML =
+            "ENABLED"
+    } else {
+        document.getElementById("challenges_hidden_button").innerHTML =
+            "DISABLED"
+    }
     if (
         game.pp_progress &&
         (game.prestige >= 1 || game.reboot >= 1 || game.quantum >= 1)
@@ -5008,6 +5128,11 @@ function regenerate_ui() {
         case 3:
             document.getElementById("layer_button").innerHTML = "QUANTUM"
             break
+    }
+    if (game.offline_progress) {
+        document.getElementById("offline_button").innerHTML = "ENABLED"
+    } else {
+        document.getElementById("offline_button").innerHTML = "DISABLED"
     }
 
     if (game.pp_bought[39] == true) {
@@ -5316,4 +5441,6 @@ function regenerate_ui() {
     document.getElementById("hue_input").value = game.custom_hue
 
     document.getElementById("refresh_input").value = game.refresh_rate
+
+    document.getElementById("speed_input").value = game.offline_speed
 }
