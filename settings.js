@@ -178,6 +178,19 @@ function perks_hidden() {
     }
 }
 
+//hidden completed challenges toggle
+function challenges_hidden() {
+    if (game.challenges_hidden) {
+        game.challenges_hidden = false
+        document.getElementById("challenges_hidden_button").innerHTML =
+            "DISABLED"
+    } else {
+        game.challenges_hidden = true
+        document.getElementById("challenges_hidden_button").innerHTML =
+            "ENABLED"
+    }
+}
+
 //pp progress bar toggle
 function pp_bar() {
     if (game.pp_progress) {
@@ -303,6 +316,17 @@ function priority_layer() {
         case 3:
             document.getElementById("layer_button").innerHTML = "QUANTUM"
             break
+    }
+}
+
+//toggling offline progress
+function offline_progress() {
+    if (game.offline_progress) {
+        game.offline_progress = false
+        document.getElementById("offline_button").innerHTML = "DISABLED"
+    } else {
+        game.offline_progress = true
+        document.getElementById("offline_button").innerHTML = "ENABLED"
     }
 }
 
