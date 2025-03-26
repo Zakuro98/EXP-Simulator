@@ -22,6 +22,15 @@ body {
     font-family: var(--font_small);
     font-size: var(--font_size);
     font-weight: normal;
+    margin: 0em;
+    padding: 0em;
+    --mobile: 0;
+}
+
+@media (pointer: coarse) {
+    body {
+        --mobile: 1;
+    }
 }
 
 main {
@@ -37,6 +46,248 @@ main {
 
 .clr {
     clear: both;
+}
+
+.catchup_screen {
+    display: none;
+    background: #311838;
+    width: 100%;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.catchup_title {
+    width: 30.4em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 3.5em;
+    justify-content: center;
+}
+
+.exp_simulator1 {
+    display: inline;
+    font-family: var(--font_small);
+    font-size: 4em;
+    color: white;
+    margin-top: 0em;
+    margin-bottom: 0em;
+    margin-right: -0.15em;
+}
+
+.exp_simulator2 {
+    display: inline;
+    font-family: var(--font_large);
+    font-size: 4em;
+    font-weight: bold;
+    color: #0055ff;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.catchup_version {
+    display: block;
+    font-size: 1.25em;
+    color: white;
+    text-align: right;
+    margin-top: -0.75em;
+    margin-bottom: 0em;
+}
+
+.catchup_header {
+    font-size: 1.25em;
+    color: white;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+.catchup_text {
+    font-size: 1em;
+    color: white;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+.catchup_warning {
+    font-size: 0.714em;
+    color: white;
+    text-align: center;
+    margin-top: 0em;
+    margin-bottom: 0.5em;
+}
+
+.catchup_back {
+    width: 40em;
+    height: 1.5em;
+    background: black;
+    margin-top: 1em;
+    margin-bottom: 1.5em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.catchup_progress {
+    width: 0%;
+    height: 100%;
+    background: #0055ff;
+}
+
+.catchup_set {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1em;
+}
+
+.catchup_button {
+    padding: 0.3em 0.5em;
+    background: #410a4a;
+    font-family: var(--font_small);
+    font-size: 0.714em;
+    font-weight: 400;
+    color: white;
+    border: 1px solid white;
+    margin-bottom: 0.3em;
+    margin-right: 0.3em;
+    cursor: pointer;
+}
+
+.startup_button {
+    padding: 0.2em 0.4em;
+    background: #410a4a;
+    font-family: var(--font_small);
+    font-size: 1.2em;
+    font-weight: 400;
+    color: white;
+    border: 1px solid white;
+    margin-bottom: 0.3em;
+    margin-right: 0em;
+    cursor: pointer;
+}
+
+.catchup_button:hover, .startup_button:hover {
+    background: #5d0d61;
+    color: white;
+}
+
+.catchup_button:active, .startup_button:active {
+    background-color: var(--button_background);
+    color: var(--button_color);
+}
+
+@media (pointer: coarse) {
+    .catchup_panel {
+        width: 100%;
+    }
+
+    .catchup_header, .catchup_text {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .catchup_back {
+        width: 80%;
+    }
+}
+
+.center_button {
+    display: flex;
+    justify-content: center;
+}
+
+#modal {
+    display: none;
+}
+
+.modal_center {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+}
+
+.modal_background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    opacity: 50%;
+    z-index: 2;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+}
+
+.modal_panel {
+    background: #311838;
+    border: 1px solid white;
+    box-shadow: 0 0 1em black;
+    width: 20em;
+    padding: 0.75em;
+}
+
+@media (pointer: coarse) {
+    .modal_panel {
+        width: calc(90% - 1.5em);
+    }
+}
+
+.modal_text {
+    font-size: 1em;
+    color: white;
+    text-align: center;
+    margin-top: 0em;
+}
+
+#import_input {
+    background-color: #410a4a;
+    width: calc(100% - 0.25em - 2px);
+    height: 20em;
+    color: white;
+    padding: 0.1em 0.25em;
+    font-family: var(--font_small);
+    font-size: 0.714em;
+    font-weight: normal;
+    border: 1px solid white;
+    margin-bottom: 1em;
+    resize: none;
+}
+
+#modal_confirm, #modal_import {
+    display: none;
+}
+
+.modal_button {
+    background-color: #410a4a;
+    color: white;
+    padding: 0.3em 0.5em;
+    font-family: var(--font_small);
+    font-size: 0.75em;
+    font-weight: normal;
+    border: 1px solid white;
+    cursor: pointer;
+    margin-right: 0.5em;
+}
+
+.modal_button:hover {
+    background-color: #5d0d61;
+}
+
+.modal_button:active {
+    background-color: var(--button_background);
+    color: var(--button_color);
+}
+
+.modal_last {
+    margin-right: 0em;
 }
 
 .menu {
@@ -690,7 +941,13 @@ main {
     width: 2em;
 }
 
-#hertz_text {
+#speed_input {
+    display: inline;
+    font-size: 0.8em;
+    width: 2.25em;
+}
+
+#hertz_text, #speed_text2 {
     margin-top: 0.25em;
     display: inline;
 }
@@ -1531,6 +1788,22 @@ main {
     cursor: default;
 }
 
+.completed {
+    background-color: #303030;
+    color: var(--enter_color);
+    border: 1px solid var(--enter_color);
+    text-shadow: 0em 0em 0.2em var(--enter_shadow);
+    cursor: pointer;
+}
+
+.completed:hover {
+    background-color: #606060;
+    color: var(--enter_color);
+    border: 1px solid var(--enter_color);
+    text-shadow: 0em 0em 0.2em var(--enter_shadow);
+    cursor: pointer;
+}
+
 #exit_center {
     display: flex;
     justify-content: center;
@@ -1540,6 +1813,11 @@ main {
     display: block;
     margin-top: 0.0714em;
     margin-bottom: 1em;
+}
+
+#challenges_hidden {
+    font-size: 0.857em;
+    color: white;
 }
 
 .helium_text {
