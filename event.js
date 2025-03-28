@@ -1633,6 +1633,19 @@ function exit_omega_challenge() {
     }
 }
 
+//skipping offline ticks
+function offline_skip(type) {
+    if (type === "half") {
+        if (ticks_run < Math.floor(total_ticks / 2)) {
+            total_ticks = Math.floor(total_ticks / 2)
+            start_ms = Math.floor((ticks_run * 1000) / 30)
+            start_ticks = ticks_run
+        }
+    } else if (type === "all") {
+        ticks_run = total_ticks - 100
+    }
+}
+
 //leaving the title screen
 function start_game() {
     document.getElementsByTagName("main")[0].style.display = "block"
