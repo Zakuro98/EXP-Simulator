@@ -471,74 +471,111 @@ function autoqu_switch(mode) {
 
 //toggling all automation
 function toggle_all_automation() {
-    let all_off = true
-    for (let i = 0; i < 6; i++) {
-        if (game.autoup_toggle[i]) all_off = false
-    }
-    if (
-        game.autopr_toggle ||
-        game.autooc_toggle ||
-        game.autods_toggle ||
-        game.autopp_toggle ||
-        game.autocp_toggle ||
-        game.autorb_toggle ||
-        game.smartpr_toggle ||
-        game.autohy_toggle ||
-        game.autoqu_toggle
-    )
-        all_off = false
-
-    if (all_off) {
+    if (game.pp_bought[2] || game.reboot >= 1 || game.quantum >= 1) {
+        let all_off = true
         for (let i = 0; i < 6; i++) {
-            game.autoup_toggle[i] = true
+            if (game.autoup_toggle[i]) all_off = false
         }
-        game.autopr_toggle = true
-        game.autooc_toggle = true
-        game.autods_toggle = true
-        game.autopp_toggle = true
-        game.autocp_toggle = true
-        game.autorb_toggle = true
-        game.smartpr_toggle = true
-        game.autohy_toggle = true
-        game.autoqu_toggle = true
-    } else {
-        for (let i = 0; i < 6; i++) {
-            game.autoup_toggle[i] = false
-        }
-        game.autopr_toggle = false
-        game.autooc_toggle = false
-        game.autods_toggle = false
-        game.autopp_toggle = false
-        game.autocp_toggle = false
-        game.autorb_toggle = false
-        game.smartpr_toggle = false
-        game.autohy_toggle = false
-        game.autoqu_toggle = false
-    }
+        if (game.autopr_toggle && game.pp_bought[3]) all_off = false
+        if (game.autooc_toggle && game.pp_bought[16]) all_off = false
+        if (game.autods_toggle && game.pp_bought[35]) all_off = false
+        if (game.autopp_toggle && game.perks[7]) all_off = false
+        if (game.autocp_toggle && game.perks[11]) all_off = false
+        if (game.autorb_toggle && game.perks[15] && !game.confirmation)
+            all_off = false
+        if (game.autohy_toggle && game.qu_bought[4]) all_off = false
+        if (
+            game.autoqu_toggle &&
+            game.dk_bought[2] &&
+            !game.quantum_confirmation
+        )
+            all_off = false
+        if (game.autocl_toggle && game.om_bought[0]) all_off = false
+        if (game.autops_toggle && game.om_bought[3]) all_off = false
+        if (game.autogr_toggle && game.om_bought[5]) all_off = false
 
-    for (let i = 0; i < 6; i++) {
-        up_toggle(i)
-        up_toggle(i)
+        if (all_off) {
+            for (let i = 0; i < 6; i++) {
+                game.autoup_toggle[i] = true
+            }
+            if (game.pp_bought[3]) game.autopr_toggle = true
+            if (game.pp_bought[16]) game.autooc_toggle = true
+            if (game.pp_bought[35]) game.autods_toggle = true
+            if (game.perks[7]) game.autopp_toggle = true
+            if (game.perks[11]) game.autocp_toggle = true
+            if (game.perks[15] && !game.confirmation) game.autorb_toggle = true
+            if (game.qu_bought[4]) game.autohy_toggle = true
+            if (game.dk_bought[2] && !game.quantum_confirmation)
+                game.autoqu_toggle = true
+            if (game.om_bought[0]) game.autocl_toggle = true
+            if (game.om_bought[3]) game.autops_toggle = true
+            if (game.om_bought[5]) game.autogr_toggle = true
+        } else {
+            for (let i = 0; i < 6; i++) {
+                game.autoup_toggle[i] = false
+            }
+            if (game.pp_bought[3]) game.autopr_toggle = false
+            if (game.pp_bought[16]) game.autooc_toggle = false
+            if (game.pp_bought[35]) game.autods_toggle = false
+            if (game.perks[7]) game.autopp_toggle = false
+            if (game.perks[11]) game.autocp_toggle = false
+            if (game.perks[15] && !game.confirmation) game.autorb_toggle = false
+            if (game.qu_bought[4]) game.autohy_toggle = false
+            if (game.dk_bought[2]) game.autoqu_toggle = false
+            if (game.om_bought[0]) game.autocl_toggle = false
+            if (game.om_bought[3]) game.autops_toggle = false
+            if (game.om_bought[5]) game.autogr_toggle = false
+        }
+
+        for (let i = 0; i < 6; i++) {
+            up_toggle(i)
+            up_toggle(i)
+        }
+        if (game.pp_bought[3]) {
+            pr_toggle()
+            pr_toggle()
+        }
+        if (game.pp_bought[16]) {
+            oc_toggle()
+            oc_toggle()
+        }
+        if (game.pp_bought[35]) {
+            ds_toggle()
+            ds_toggle()
+        }
+        if (game.perks[7]) {
+            pp_toggle()
+            pp_toggle()
+        }
+        if (game.perks[11]) {
+            cp_toggle()
+            cp_toggle()
+        }
+        if (game.perks[15] && !game.confirmation) {
+            rb_toggle()
+            rb_toggle()
+        }
+        if (game.qu_bought[4]) {
+            hy_toggle()
+            hy_toggle()
+        }
+        if (game.dk_bought[2] && !game.quantum_confirmation) {
+            qu_toggle()
+            qu_toggle()
+        }
+        if (game.om_bought[0]) {
+            cl_toggle()
+            cl_toggle()
+        }
+        if (game.om_bought[3]) {
+            ps_toggle()
+            ps_toggle()
+        }
+        if (game.om_bought[5]) {
+            gr_toggle()
+            gr_toggle()
+        }
     }
-    pr_toggle()
-    pr_toggle()
-    oc_toggle()
-    oc_toggle()
-    ds_toggle()
-    ds_toggle()
-    if (game.perks[11]) ds_toggle()
-    pp_toggle()
-    pp_toggle()
-    cp_toggle()
-    cp_toggle()
-    rb_toggle()
-    rb_toggle()
-    hy_toggle()
-    hy_toggle()
-    qu_toggle()
-    qu_toggle()
-    battery_toggle()
-    battery_toggle()
 }
 
 //changing advanced auto-prestige mode
