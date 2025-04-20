@@ -1046,9 +1046,15 @@ function tick() {
                 if (game.level < 60) {
                     document.getElementById("discharge_button").style.color =
                         get_color(Math.floor(game.level / 10))
-                } else {
+                } else if (game.level < 12000) {
                     document.getElementById("discharge_button").style.color =
                         get_color((Math.floor(game.level / 60) + 5) % 12)
+                } else if (game.level < 60000) {
+                    document.getElementById("discharge_button").style.color =
+                        get_color((Math.floor(game.level / 300) - 3) % 12)
+                } else {
+                    document.getElementById("discharge_button").style.color =
+                        get_color((Math.floor(game.level / 1200) + 3) % 12)
                 }
             }
         } else {
@@ -1230,20 +1236,24 @@ function tick() {
             ) {
                 if (
                     game.autorb_pending &&
-                    (!game.perks[28] || game.challenge === 6) &&
-                    game.pp + get_pp(game.level) - get_pp(game.highest_level) >=
-                        Math.ceil(20000 * game.autorb_goal[0] + 180000)
+                    !game.perks[28] &&
+                    game.total_pp +
+                        get_pp(game.level) -
+                        get_pp(game.highest_level) >=
+                        Math.ceil(20000 * game.autorb_goal[0] + 443060)
                 ) {
                     prestige()
                 }
             } else {
                 if (
                     game.autorb_pending &&
-                    (!game.perks[28] || game.challenge === 6) &&
-                    game.pp + get_pp(game.level) - get_pp(game.highest_level) >=
+                    !game.perks[28] &&
+                    game.total_pp +
+                        get_pp(game.level) -
+                        get_pp(game.highest_level) >=
                         Math.ceil(
                             20000 * (game.autorb_goal[0] - 526) ** 1.25 +
-                                10720000
+                                10983060
                         )
                 ) {
                     prestige()
@@ -1252,10 +1262,12 @@ function tick() {
         } else if (game.autorb_mode === 1) {
             if (
                 game.autorb_pending &&
-                (!game.perks[28] || game.challenge === 6) &&
+                !game.perks[28] &&
                 game.prestige_time >= game.autorb_goal[1] * game.tickspeed &&
-                game.pp + get_pp(game.level) - get_pp(game.highest_level) >=
-                    200000
+                game.total_pp +
+                    get_pp(game.level) -
+                    get_pp(game.highest_level) >=
+                    463060
             ) {
                 prestige()
             }
@@ -1753,7 +1765,7 @@ function tick() {
             "<br><br><br>EXP Simulator v?.?.?<br>Made by ???<br><br>Last updated ???"
     } else {
         document.getElementById("version").innerHTML =
-            "<br><br><br>EXP Simulator v2.15.4<br>Made by Zakuro<br><br>Last updated March 26, 2025"
+            "<br><br><br>EXP Simulator v2.15.5<br>Made by Zakuro<br><br>Last updated April 20, 2025"
     }
 }
 
@@ -1784,6 +1796,24 @@ document.addEventListener("touchend", function () {
 
 //hotkeys handling
 document.addEventListener("keydown", function (event) {
+    if (modal !== "none") {
+        if (event.code === "Escape") close_modal()
+        else if (event.code === "Enter") {
+            switch (modal) {
+                case "alert":
+                    close_modal()
+                    break
+                case "confirm":
+                    document.getElementById("confirm_yes").onclick()
+                    break
+                case "import":
+                    import_save()
+                    break
+            }
+        }
+        return
+    }
+
     if (recorded_hotkey) {
         if (!["Control", "Shift", "Alt"].includes(code_to_readable(event.code)))
             recorded_hotkey.keycode = event.code
@@ -2896,14 +2926,19 @@ new configurable_hotkey(
     pr_toggle,
     () => game.pp_bought[3] || game.reboot > 0 || game.quantum > 0
 )
-new configurable_hotkey("Reboot", "KeyR", reboot, () => !game.confirmation)
+new configurable_hotkey("Reboot", "KeyR", pre_reboot, () => !game.confirmation)
 new configurable_hotkey(
     "Toggle auto-Reboot",
     "Shift+KeyR",
     rb_toggle,
     () => game.perks[15]
 )
-new configurable_hotkey("Quantize", "KeyQ", quantize, () => game.quantum >= 1)
+new configurable_hotkey(
+    "Quantize",
+    "KeyQ",
+    pre_quantize,
+    () => game.quantum >= 1
+)
 new configurable_hotkey(
     "Activate Overclocker",
     "KeyO",
@@ -3063,7 +3098,12 @@ function offline_loop() {
     if (ticks_run < total_ticks) {
         window.setTimeout(offline_loop, 0)
     } else {
-        if (game.autopr_toggle && game.pp_bought[3] >= 1) {
+        if (
+            game.autopr_toggle &&
+            game.pp_bought[3] &&
+            (game.pp_bought[7] || game.pp_bought[9]) &&
+            prestige_rate > 0
+        ) {
             if (
                 prestige_count < Math.floor((offline_ms * prestige_rate) / 1000)
             ) {
@@ -3073,7 +3113,12 @@ function offline_loop() {
                         prestige_count
             }
         }
-        if (game.autopr_toggle && game.pp_bought[3]) {
+        if (
+            game.autopr_toggle &&
+            game.pp_bought[3] &&
+            (game.pp_bought[7] || game.pp_bought[9]) &&
+            amp_rate > 0
+        ) {
             if (
                 game.amp - old_amp <
                 Math.floor((offline_ms * amp_rate) / 1000)
@@ -3085,7 +3130,7 @@ function offline_loop() {
                         old_amp
             }
         }
-        if (game.autorb_toggle && game.perks[15]) {
+        if (game.autorb_toggle && game.perks[15] && reboot_rate > 0) {
             if (reboot_count < Math.floor((offline_ms * reboot_rate) / 1000)) {
                 if (quantum_count === 0)
                     game.reboot +=
@@ -3093,7 +3138,7 @@ function offline_loop() {
                         reboot_count
             }
         }
-        if (game.autorb_toggle && game.perks[15]) {
+        if (game.autorb_toggle && game.perks[15] && watts_rate > 0) {
             if (
                 game.watts - old_watts <
                 Math.floor((offline_ms * watts_rate) / 1000)
@@ -3116,7 +3161,7 @@ function offline_loop() {
                 }
             }
         }
-        if (game.autorb_toggle && game.perks[15]) {
+        if (game.autorb_toggle && game.perks[15] && hydrogen_rate > 0) {
             if (
                 game.hydrogen - old_hydrogen <
                 Math.floor((offline_ms * hydrogen_rate) / 1000)
@@ -3215,7 +3260,7 @@ if (game.save_time === undefined) {
     total_ticks = Math.floor(
         (offline_ms * game.tickspeed) / (1000 * game.offline_speed)
     )
-    if (total_ticks >= 1000000) total_ticks = 1000000
+    if (total_ticks >= 300000) total_ticks = 300000
 
     prestige_count = 0
     reboot_count = 0
@@ -3234,23 +3279,23 @@ if (game.save_time === undefined) {
     let entries = [0, 0, 0, 0, 0]
     let average = [0, 0, 0, 0, 0]
     for (let i = 0; i < 5; i++) {
-        if (game.prestige_amount[i] !== -1) {
+        if (game.prestige_amount[i] !== -1 && game.amp_time[i] > 0) {
             entries[0]++
             average[0] += game.prestige_amount[i] / game.amp_time[i]
         }
-        if (game.amp_amount[i] !== -1) {
+        if (game.amp_amount[i] !== -1 && game.amp_time[i] > 0) {
             entries[1]++
             average[1] += game.amp_amount[i] / game.amp_time[i]
         }
-        if (game.watts_amount[i] !== -1) {
+        if (game.watts_amount[i] !== -1 && game.watts_time[i] > 0) {
             entries[2]++
             average[2] += 1 / game.watts_time[i]
         }
-        if (game.watts_amount[i] !== -1) {
+        if (game.watts_amount[i] !== -1 && game.watts_time[i] > 0) {
             entries[3]++
             average[3] += game.watts_amount[i] / game.watts_time[i]
         }
-        if (game.hydrogen_amount[i] !== -1) {
+        if (game.hydrogen_amount[i] !== -1 && game.watts_time[i] > 0) {
             entries[4]++
             average[4] += game.hydrogen_amount[i] / game.watts_time[i]
         }
