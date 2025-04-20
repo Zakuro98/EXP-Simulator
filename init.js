@@ -2,7 +2,7 @@
 let game = {
     version: "2.15.4",
 
-    //v2.0.000 variables
+    //v2.0.0 variables
     total_exp: new Decimal(0),
     exp_add: 1,
     level: 1,
@@ -21,7 +21,7 @@ let game = {
 
     tickspeed: 30,
 
-    //v2.0.200 variables
+    //v2.2.0 variables
     all_time_exp: new Decimal(0),
     highest_level: 1,
     clicks: 0,
@@ -34,7 +34,7 @@ let game = {
     tab: 0,
     notation: 1,
 
-    //v2.1.000 variables
+    //v2.3.0 variables
     pp: 0,
     pp_bought: new Array(40).fill(false),
 
@@ -55,10 +55,10 @@ let game = {
     fact_tier: 0,
     fact_level: 15,
 
-    //v2.1.003 variables
+    //v2.3.3 variables
     pp_hide: 0,
 
-    //v2.1.100 variables
+    //v2.4.0 variables
     amp_eff: new Array(5).fill(-1),
     autopr_mode: 0,
     exp_oc: 1,
@@ -66,14 +66,14 @@ let game = {
     oc_time: 180 * 30,
     autooc_toggle: false,
 
-    //v2.1.200 variables
+    //v2.5.0 variables
     exp_flux: 1,
     pp_power: 1,
 
     flux_tier: 0,
     flux_level: 300,
 
-    //v2.1.300 variables
+    //v2.6.0 variables
     exp_battery: 1,
     battery_mode: 0,
     patience: 1,
@@ -85,7 +85,7 @@ let game = {
 
     epilepsy: true,
 
-    //v2.1.400 variables
+    //v2.7.0 variables
     cap_mode: 0,
     prev_mode: 0,
     cap_boost: 1,
@@ -100,20 +100,20 @@ let game = {
     color_mode: 0,
     custom_hue: 0,
 
-    //v2.1.401 variables
+    //v2.7.1 variables
     total_pp: 0,
     pp_progress: true,
     hotkeys: true,
 
-    //v2.1.403 variables
+    //v2.7.3 variables
     hotkey_configurations: {},
 
-    //v2.1.405 variables
+    //v2.7.5 variables
     hold_time: 0,
     mouse_time: 0,
     mouse_held: false,
 
-    //v2.2.000 variables
+    //v2.8.0 variables
     reboot: 0,
     prestige_exp: new Decimal(0),
     prestige_time: 0,
@@ -142,7 +142,7 @@ let game = {
     confirmation: true,
     amp_sec_prev: 0,
 
-    //v2.2.100 variables
+    //v2.9.0 variables
     autocp_toggle: false,
     smartds_oc: false,
 
@@ -150,10 +150,10 @@ let game = {
     autorb_goal: [1, 0.8],
     autorb_pending: false,
 
-    //v2.2.102 variables
+    //v2.9.2 variables
     beta: false,
 
-    //v2.2.200 variables
+    //v2.10.0 variables
     speed_power: 1,
     banked_prestige: 0,
 
@@ -166,10 +166,10 @@ let game = {
     hints: false,
     refresh_rate: 30,
 
-    //v2.2.201 variables
+    //v2.10.1 variables
     watts_eff: new Array(5).fill(-1),
 
-    //v2.2.300 variables
+    //v2.11.0 variables
     hydrogen: 0,
     helium: 0,
     helium_boost: 1,
@@ -182,11 +182,11 @@ let game = {
 
     true_banked_prestige: 0,
 
-    //v2.2.301 variables
+    //v2.11.1 variables
     priority_layer: 1,
     switchpoint: 0,
 
-    //v2.3.000 variables
+    //v2.12.0 variables
     quantum: 0,
     reboot_exp: new Decimal(0),
     reboot_time: 0,
@@ -209,7 +209,7 @@ let game = {
 
     quantum_confirmation: true,
 
-    //v2.3.100 variables
+    //v2.13.0 variables
     dark_matter: new Decimal(1),
     dark_matter_boost: 1,
     growth_interval: 60,
@@ -226,10 +226,10 @@ let game = {
     autoqu_mode: 0,
     autoqu_goal: [1, 60, 2],
 
-    //v2.3.103 variables
+    //v2.13.3 variables
     omega_base: 10,
 
-    //v2.3.200 variables
+    //v2.14.0 variables
     omega_level: 0,
     highest_omega_level: 0,
     omega_points: 0,
@@ -246,24 +246,24 @@ let game = {
 
     perks_hidden: false,
 
-    //v2.3.201 variables
+    //v2.14.1 variables
     amp_amount: new Array(5).fill(-1),
     amp_time: new Array(5).fill(-1),
     watts_amount: new Array(5).fill(-1),
     watts_time: new Array(5).fill(-1),
 
-    //v2.3.205 variables
+    //v2.14.5 variables
     work: true,
     work_unlocked: false,
 
-    //v2.3.300 variables
+    //v2.15.0 variables
     prism_price: new Decimal(1),
     growth_level: [0, 0],
     omega_best: new Decimal(0),
     free_omega_points: 0,
     op_dark_boost: 1,
 
-    //v2.3.302 variables
+    //v2.15.2 variables
     cancer_prestiges: 0,
     no_upgrades: true,
     pp_amount: new Array(5).fill(-1),
@@ -283,7 +283,7 @@ let game = {
     smartpr_start: false,
     smartpr_select: 0,
 
-    //v2.3.303 variables
+    //v2.15.3 variables
     au_boost: 1,
     battery_charge: 1,
     ds_boost: 2,

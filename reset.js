@@ -711,6 +711,8 @@ function respec() {
         game.pp_bought[i] = false
     }
 
+    document.getElementById("boost_auto").style.display = "none"
+    document.getElementById("auto_auto").style.display = "none"
     autopr_switch(0)
     game.au_boost = 1
     document.getElementById("amp_auto").style.display = "none"

@@ -101,97 +101,111 @@ function level_update() {
             if (game.prestige < 21) {
                 if (game.level < 60) {
                     document.getElementById("pp_progress").style.width =
-                        game.total_exp
-                            .div(get_exp(59))
-                            .mul(100)
-                            .clamp(0, 100)
-                            .toNumber() + "%"
+                        (100 *
+                            (game.level -
+                                1 +
+                                game.exp
+                                    .div(game.goal)
+                                    .clamp(0, 1)
+                                    .toNumber())) /
+                            59 +
+                        "%"
                     goal2 = get_exp(59)
                 } else {
-                    if (game.level < game.highest_level + 1) {
-                        let goal = get_exp(
-                            Math.ceil(
-                                20 *
-                                    (get_pp(game.highest_level) + 2) **
-                                        (1 / 2) +
-                                    40
-                            ) - 1
-                        ).sub(get_exp(59))
-                        let prog = game.total_exp.sub(get_exp(59))
-                        document.getElementById("pp_progress").style.width =
-                            prog.div(goal).mul(100).clamp(0, 100).toNumber() +
-                            "%"
-                        goal2 = goal
-                    } else {
-                        let goal = get_exp(
-                            Math.ceil(
-                                20 * (get_pp(game.level) + 2) ** (1 / 2) + 40
-                            ) - 1
-                        ).sub(
-                            get_exp(
-                                Math.ceil(
-                                    20 * (get_pp(game.level) + 1) ** (1 / 2) +
-                                        40
-                                ) - 1
-                            )
-                        )
-                        let prog = game.total_exp.sub(
-                            get_exp(
-                                Math.ceil(
-                                    20 * (get_pp(game.level) + 1) ** (1 / 2) +
-                                        40
-                                ) - 1
-                            )
-                        )
-                        document.getElementById("pp_progress").style.width =
-                            prog.div(goal).mul(100).clamp(0, 100).toNumber() +
-                            "%"
-                        goal2 = goal
-                    }
-                }
-            } else {
-                if (game.level < game.highest_level + 1) {
-                    let goal = get_exp(
+                    if (
+                        game.level <
                         Math.ceil(
                             20 * (get_pp(game.highest_level) + 2) ** (1 / 2) +
                                 40
-                        ) - 1
-                    )
-                    let prog = game.total_exp
-                    document.getElementById("pp_progress").style.width =
-                        prog.div(goal).mul(100).clamp(0, 100).toNumber() + "%"
-                    goal2 = goal
-                } else {
-                    let goal = get_exp(
-                        Math.ceil(
+                        )
+                    ) {
+                        let goal = Math.ceil(
+                            20 * (get_pp(game.highest_level) + 2) ** (1 / 2) +
+                                40
+                        )
+                        let prog =
+                            (game.level -
+                                60 +
+                                game.exp
+                                    .div(game.goal)
+                                    .clamp(0, 1)
+                                    .toNumber()) /
+                            (goal - 60)
+                        document.getElementById("pp_progress").style.width =
+                            Math.min(Math.max(100 * prog, 0), 100) + "%"
+                        goal2 = get_exp(goal - 1).sub(get_exp(59))
+                    } else {
+                        let goal = Math.ceil(
                             20 * (get_pp(game.level) + 2) ** (1 / 2) + 40
-                        ) - 1
-                    ).sub(
-                        get_exp(
-                            Math.ceil(
-                                20 * (get_pp(game.level) + 1) ** (1 / 2) + 40
-                            ) - 1
                         )
-                    )
-                    let prog = game.total_exp.sub(
-                        get_exp(
-                            Math.ceil(
-                                20 * (get_pp(game.level) + 1) ** (1 / 2) + 40
-                            ) - 1
+                        let prev = Math.ceil(
+                            20 * (get_pp(game.level) + 1) ** (1 / 2) + 40
                         )
+                        let prog =
+                            (game.level -
+                                prev +
+                                game.exp
+                                    .div(game.goal)
+                                    .clamp(0, 1)
+                                    .toNumber()) /
+                            (goal - prev)
+                        document.getElementById("pp_progress").style.width =
+                            Math.min(Math.max(100 * prog, 0), 100) + "%"
+                        goal2 = get_exp(goal - 1).sub(get_exp(prev - 1))
+
+                        if (goal > 221)
+                            document.getElementById("pp_progress").style.width =
+                                game.exp.div(game.goal).mul(100).clamp(0, 100) +
+                                "%"
+                    }
+                }
+            } else {
+                if (
+                    game.level <
+                    Math.ceil(
+                        20 * (get_pp(game.highest_level) + 2) ** (1 / 2) + 40
                     )
+                ) {
+                    let goal = Math.ceil(
+                        20 * (get_pp(game.highest_level) + 2) ** (1 / 2) + 40
+                    )
+                    let prog =
+                        (game.level -
+                            1 +
+                            game.exp.div(game.goal).clamp(0, 1).toNumber()) /
+                        (goal - 1)
                     document.getElementById("pp_progress").style.width =
-                        prog.div(goal).mul(100).clamp(0, 100).toNumber() + "%"
-                    goal2 = goal
+                        Math.min(Math.max(100 * prog, 0), 100) + "%"
+                    goal2 = get_exp(goal - 1)
+                } else {
+                    let goal = Math.ceil(
+                        20 * (get_pp(game.level) + 2) ** (1 / 2) + 40
+                    )
+                    let prev = Math.ceil(
+                        20 * (get_pp(game.level) + 1) ** (1 / 2) + 40
+                    )
+                    let prog =
+                        (game.level -
+                            prev +
+                            game.exp.div(game.goal).clamp(0, 1).toNumber()) /
+                        (goal - prev)
+                    document.getElementById("pp_progress").style.width =
+                        Math.min(Math.max(100 * prog, 0), 100) + "%"
+                    goal2 = get_exp(goal - 1).sub(get_exp(prev - 1))
+
+                    if (goal > 221)
+                        document.getElementById("pp_progress").style.width =
+                            game.exp.div(game.goal).mul(100).clamp(0, 100) + "%"
                 }
             }
         } else {
             document.getElementById("pp_progress").style.width =
-                game.total_exp
-                    .div(get_exp(59))
-                    .mul(100)
-                    .clamp(0, 100)
-                    .toNumber() + "%"
+                (100 *
+                    (game.level -
+                        1 +
+                        game.exp.div(game.goal).clamp(0, 1).toNumber())) /
+                    59 +
+                "%"
             goal2 = get_exp(59)
         }
         if (!game.epilepsy) {
@@ -2732,10 +2746,16 @@ function challenge_update() {
 
         if (game.challenges_hidden) {
             if (game.dk_bought[3]) {
-                if (game.completions[chg.id - 1] >= 20)
+                if (
+                    game.completions[chg.id - 1] >= 20 &&
+                    game.challenge !== chg.id
+                )
                     element.style.display = "none"
             } else {
-                if (game.completions[chg.id - 1] >= 12)
+                if (
+                    game.completions[chg.id - 1] >= 12 &&
+                    game.challenge !== chg.id
+                )
                     element.style.display = "none"
             }
         }
